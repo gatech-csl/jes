@@ -321,7 +321,7 @@ class JESProgram:
 
                 # error 4. didn't occur,
                 # give the command area the focus
-		self.gui.commandWindow.showText("\n======= Loading Progam =======\n")
+		self.gui.commandWindow.showText("\n======= Loading Program =======\n")
                 self.interpreter.load( self.filename)   
                 self.gui.commandWindow.requestFocus()
                 self.gui.editor.getDocument().removeErrorHighlighting()
