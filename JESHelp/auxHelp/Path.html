@@ -1,0 +1,94 @@
+<html>
+<head>
+<title>JES Help</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<a href="../JESHelp/0_Table_of_Contents.html">Table of Contents</a> &gt; <a href="../JESHelp/2_Getting_Started_with_JES.html">Getting 
+Started</a> &gt; <a href="InstallTroubleshoot.html">Troubleshooting</a> &gt; Modifying 
+the Path 
+<hr size="1">
+<table width="80%" border="0" cellspacing="0" cellpadding="5">
+  <tr> 
+    <td bgcolor="#dddddd"> <b>Modifying the Path</b><br>
+      Modifying the path is serious business; you have to be extremely careful 
+      not to delete the wrong thing. If you don't feel comfortable changing your 
+      computer's path, see your TA for help. 
+      <ul>
+        <li><a href="#win">Modify Windows Path (XP or 2000)</a></li>
+        <li><a href="#mac">Modify Mac OS X Path</a></li>
+        <li><a href="#linux">Modify Linux Path</a></li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td> 
+      <p><b><br>
+        <a name="win"></a>To modify your path in Windows XP or 2000: </b><br>
+      </p>
+      <ol>
+        <li>Right click on the &quot;My Computer&quot; icon on your desktop and 
+          select &quot;properties&quot; from the menu. This displays the System 
+          Properties dialog box.<br>
+        <li>Click on &quot;Advanced&quot; and then &quot;Environment Variables.&quot;<br>
+        <li>Now you'll see a list of variables including Path. Double click on 
+          Path to edit it but BE CAREFUL NOT TO DELETE ANY OF THE INFORMATION ALREADY 
+          IN PATH. You need to ADD the location of java, but you don't want to 
+          take anything out. To add the location of java, use a semi-colon at 
+          the end of the path variable and type in the location where you installed 
+          java.<br>
+          <br>
+          EXAMPLES: <br>
+          An example of a Windows Path that has been modified to include the folder 
+          <b>j2re1.4.1_01</b>, which is in the folder <b>Java</b>, which is in the folder <b>Program Files</b>: 
+          <pre>%SystemRoot%\system32;%SystemRoot%;%SystemRoot%\System32\Wbem;C:\Program Files\Java\j2re1.4.1_01</pre>
+          Note: <b>%SystemRoot%</b>
+          usually refers to the WINDOWS folder. For example, if you create a folder in the WINDOWS folder called JVM, you will need to modify the path as show below.<br>
+          <br>
+          An example of a Windows Path that has been modified to include the folder 
+          <b>JVM</b>, which is in the folder <b>WINDOWS</b>: 
+          <pre>%SystemRoot%\system32;%SystemRoot%;%SystemRoot%\System32\Wbem;%SystemRoot%\JVM</pre>
+          &nbsp; 
+      </ol>
+      <b><a name="mac"></a>To modify your path in Mac OS X:</b><br>
+      <ol>
+        <li>Open the <a href="InstallJython_Mac_Terminal.html">Terminal</a>.<br>
+        <li>Type: <br>
+          <pre>emacs .cshrc</pre>
+          this command tells the computer to use the text editor emacs to open 
+          the file <b>.cshrc</b>. Or, if there was no file called .cshrc, it will 
+          create one. 
+        <li>Make sure that the following line appears in the <b>.cshrc</b> file:
+		<pre>set path=( /Users/<i>yourusername</i>/Jython-2.1 $path)</pre> 
+        <li>Type 'Ctrl-x' followed by 's' to save the edited document. 
+        <li>Type 'Ctrl-x' followed by 'Ctrl-c' to exit the emacs program. 
+        <li>Close the Terminal and open it again so the new path can take effect. 
+          <br>
+          &nbsp; 
+      </ol>
+      <b><a name="linux"></a>To modify your path in Red Hat Linux: </b><br>
+      <ol>
+        <li>Open the <a href="InstallJython_Linux_Terminal.html">Terminal Emulation 
+          Progam</a>. 
+        <li>Type:
+          <pre>emacs .bashrc</pre>
+          this command tells the computer to use the text editor emacs to open 
+          the file <b>.bashrc</b>. Or, if there was no file called .bashrc, it 
+          will create one. <br>
+        <li>Make sure that the following line appears in the <b>.bashrc</b> file:
+         <pre>export PATH=/usr/java:/usr/java/j2re1.4.0_01/bin:$PATH</pre>
+          if there is already other information in the file, simply type the line shown above 
+          at the end of the file. 
+        <li>Type 'Ctrl-x' followed by 's' to save the edited document. 
+        <li>Type 'Ctrl-x' followed by 'Ctrl-c' to exit the emacs program. 
+        <li>Close the Terminal Emulation Program and open it again so the new 
+          path can take effect. 
+      </ol>
+      </td>
+  </tr>
+</table>
+
+</body>
+</html>

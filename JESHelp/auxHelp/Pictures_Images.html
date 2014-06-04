@@ -1,0 +1,92 @@
+<html>
+<head>
+<title>JES Help</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<a name="top"></a><a href="../JESHelp/0_Table_of_Contents.html">Table of Contents</a>
+&gt; <a href="../JESHelp/6_Understanding_Pictures.html">Understanding Pictures in JES
+</a> &gt; How Does a Computer Store Images?
+<hr size="1">
+<table width="80%" border="0" cellspacing="0" cellpadding="5">
+  <tr>
+    <td bgcolor="#dddddd" height="107" colspan="2">
+      <p><b>How Does a Computer Store Images?</b>
+<br>
+       <br>
+      In order to understand how to manipulate and create pictures on a computer, you must understand how a computer stores images. Use this help page as a reference guide. For detailed information, or if you have not done so already, be sure to read the  Pictures section of your textbook. </p>
+      <ul>
+        <li><a href="#pixels">Pixels</a></li>
+        <li><a href="#rgb">RGB</a></li>
+        <li><a href="#arrays">Pictures as Matrices of Pixels</a></li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <br>
+        <b><a name="pixels"></a>Pixels</b>
+      <p>A pixel is literally a <b><font color="#990033">pic</font></b>ture <b><font color="#990033">el</font></b>ement. Pixels are the building blocks that computers use to build pictures. Everything you see on your screen is made up of tiny little dots of color--pixels. Each pixel  has a solid color, but because they are so small, when viewed together the pixels appear to make up pictures with continuous color.</p>
+      <p>If you look closely, you can distinguish individual pixels in a JPG image. <br>
+        <img src="images/pixellion.jpg" width="495" height="141"></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="right" colspan="2"> <a href="#top"><img src="images/arro.gif" width="13" height="10" border="0">jump
+      to top</a>
+      <hr size="1">
+       </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <br>
+        <b><a name="rgb"></a>RGB (Red Green Blue)</b>
+      <p>You may already know that any color can be created by  combining red, green, and blue. In fact, this is how the computer encodes the color of each pixel on the screen. Each pixel is associated with a red value, a green value, and a blue value. The ranges for each value are 0-255. </p>
+      <p>The functions <b>getRed(pixel)</b>, <b>getGreen(pixel)</b>, and <b>getBlue(pixel)</b> return the value of each for a pixel. The functions <b>setRed(pixel)</b>, <b>setGreen(pixel)</b>, and <b>setBlue(pixel)</b> allow you to set the value of each to something new for a pixel.  See <a href="../JESHelp/7_Picture_Functions.html">Picture Functions in JES</a> for more details and functions. </p>
+      </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center" valign="top"> &nbsp;&nbsp;Combining red, green and blue.<br>
+        <img src="images/rgb.jpg" width="200" height="191">
+</td>
+    <td width="50%" align="center" valign="top">
+      Examples of  colors with<br>
+        RGB values:
+      <p><img src="images/rgbsamples.gif" width="91" height="137"></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="right" colspan="2"> <a href="#top"><img src="images/arro.gif" width="13" height="10" border="0">jump
+      to top</a>
+      <hr size="1">
+       </td>
+  </tr>
+
+
+  <tr>
+    <td colspan="2">
+      <br>
+        <b><a name="arrays"></a>Pictures as Matrices of Pixels</b>
+      <p>Computers create images out of pixels not only by assigning them colors, but by arranging them in matrices. A  matrix has two dimensions, so each pixel in  a picture has two coordinates that define its position in the matrix. For pixels, the first coordinate is called x and represents a pixel's position from the left side of an image. The second coordinate is called y and represents a pixel's position from the top of the image.  (See the help section on <a href="Programming_DataStructures.html">data structures</a> for more help with matrices.) </p>
+      <p>The image below represents an extreme close-up of the eye  of the lion pictured above. The pixel at coordinates (5,4) is highlighted and magnified. It's RGB value is also displayed.</p>
+      <p>The functions <b>getX(pixel)</b> and <b>getY(pixel)</b> return the coordinates of a pixel. See <a href="../JESHelp/7_Picture_Functions.html">Picture Functions in JES</a> for more details.</p>
+      <p><img src="images/matrixsample.jpg" width="285" height="182"></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="right" colspan="2"> <a href="#top"><img src="images/arro.gif" width="13" height="10" border="0">jump
+      to top</a>
+      <hr size="1">
+    </td>
+  </tr>
+
+
+
+
+
+</table>
+<p>&nbsp;</p>
+</body>
+</html>

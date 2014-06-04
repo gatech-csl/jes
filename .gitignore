@@ -1,0 +1,18 @@
+# Compiled Java files
+*.class
+Sources/javadoc/
+
+# Files created during testing
+Sources/Tests/test*.jpg
+Sources/Tests/testSound.wav
+Sources/Tests/*Out.*
+Sources/Tests/writeTest.*
+
+# Jython cache
+cachedir/
+
+# JES-generated backup and log files
+*.pybak
+*.pylog
+
+.firsttimebuilding

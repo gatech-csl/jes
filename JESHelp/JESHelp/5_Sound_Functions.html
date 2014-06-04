@@ -1,0 +1,297 @@
+<html>
+<head>
+<title>JES Help</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<a name="top"></a><a href="0_Table_of_Contents.html">Table of Contents</a>
+&gt; <a href="4_Understanding_Sound.html">Understanding Sound in JES
+</a> &gt; Sound Functions
+in JES
+<hr size="1">
+<table width="80%" border="0" cellspacing="0" cellpadding="5">
+  <tr>
+    <td bgcolor="#dddddd" height="107">
+      <b>Sound Functions in JES</b><br>
+       <br>
+      This is a list of functions that you may find useful when you are creating programs to manipulate or create audio files in JES. Remember, these functions are part of a special library, and are not available in other Jython programming environments.
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <table width="100%" border="0" cellspacing="0" cellpadding="5">
+        <tr>
+          <td width="25%">blockingPlay<br>
+            </td>
+          <td width="75%">
+          <b>blockingPlay</b>(sound):<br>
+            <font color=blue>sound</font>: the sound that you want to play.<br>
+            Plays the sound provided as input, and makes sure that no other sound plays at the exact same time. (Try two play's right after each other.)
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">duplicateSound<br>
+            </td>
+          <td bgcolor="#eeeeee">
+          <b>duplicateSound</b>(sound):<br>
+            <font color=blue>sound</font>: the sound you want to duplicate<br>
+            <font color=blue>returns</font>: a new Sound object with the same Sample values as the original<br>
+            Takes a sound as input and returns a new Sound object with the same Sample values as the original.
+          </td>
+        </tr>
+        <tr>
+          <td>getDuration<br>
+            </td>
+          <td>
+          <b>getDuration</b>(sound):<br>
+            <font color=blue>sound</font>: the sound you want to find the length of (in seconds)<br>
+            <font color=blue>returns</font>: the number of seconds the sound lasts<br>
+            Takes a sound as input and returns the number of seconds that sound lasts.
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">getLength<br>
+            </td>
+          <td bgcolor="#eeeeee">
+          <b>getLength</b>(sound):<br>
+            <font color=blue>sound</font>: the sound you want to find the length of (how many samples it has)<br>
+            <font color=blue>returns</font>: the number of samples in sound<br>
+            Takes a sound as input and returns the number of samples in that sound.
+          </td>
+        </tr>
+        <tr>
+		  <td>getNumSamples<br>
+		    </td>
+		  <td>
+		  <b>getNumSamples</b>(sound):<br>
+		    <font color=blue>sound</font>: the sound you want to find the length of (how many samples it has)<br>
+		    <font color=blue>returns</font>: the number of samples in sound<br>
+		    Takes a sound as input and returns the number of samples in that sound. (Same as getLength)
+		  </td>
+        </tr>
+        <!-- Legacy support, getSampleValue preferred.
+        <tr>
+          <td>getSample<br>
+            </td>
+          <td>
+          <b>getSample</b>(sample):<br>
+            <font color=blue>sample</font>: A Sample, a sample of a sound.<br>
+            <font color=blue>returns</font>: The integer value of that sample.<br>
+            Takes a Sample object and returns its value (between -32000 and 32000). Legacy support, getSampleValue is preferred.
+          </td>
+        </tr>
+        -->
+        <tr>
+          <td bgcolor="#eeeeee">
+            <p>getSampleObjectAt</p>
+          </td>
+          <td bgcolor="#eeeeee">
+          <b>getSampleObjectAt</b>(sound, index):<br>
+            <font color=blue>sound</font>: the sound you want to get the sample from<br>
+            <font color=blue>index</font>: the index value of the sample you want to get<br>
+            <font color=blue>returns</font>: the sample object at that index<br>
+            Takes a sound and an index (an integer value), and returns the Sample object at that index
+          </td>
+        </tr>
+        <tr>
+          <td>getSamples<br>
+            </td>
+          <td>
+          <b>getSamples</b>(sound):<br>
+            <font color=blue>sound</font>: the sound you want to get the samples from<br>
+            <font color=blue>returns</font>: a list of all the samples in the sound<br>
+            Takes a sound as input and returns the Samples in that sound.
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">getSampleValue<br>
+            </td>
+          <td bgcolor="#eeeeee">
+          <b>getSampleValue</b>(sample):<br>
+            <font color=blue>sample</font>: a sample of a sound<br>
+			<font color=blue>returns</font>: the integer value of that sample<br>
+			Takes a Sample object and returns its value (between -32768 and 32767). (Formerly getSample)
+          </td>
+        </tr>
+        <tr>
+          <td>getSampleValueAt<br>
+            </td>
+          <td>
+          <b>getSampleValueAt</b>(sound, index):<br>
+            <font color=blue>sound</font>: the sound you want to get the sample from<br>
+            <font color=blue>index</font>: the index of the sample you want to get the value of<br>
+            Takes a sound and an index (an integer value), and returns the value of the sample (between -32768 and 32767) for that object.
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">getSamplingRate<br>
+            </td>
+          <td bgcolor="#eeeeee">
+          <b>getSamplingRate</b>(sound):<br>
+            <font color=blue>sound</font>: the sound you want to get the sampling rate from<br>
+            <font color=blue>returns</font>: the integer value representing the number of samples per second<br>
+            Takes a sound as input and returns the number representing the number of samples in each second for the sound.
+          </td>
+        </tr>
+        <tr>
+          <td>getSound<br>
+            </td>
+          <td>
+          <b>getSound</b>(sample):<br>
+            <font color=blue>sample</font>: a sample belonging to a sound<br>
+            <font color=blue>return</font>: the sound the sample belongs to<br>
+            Takes a Sample object and returns the Sound that it belongs to.
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">makeEmptySound</td>
+          <td bgcolor="#eeeeee">
+          <b>makeEmptySound</b>(numSamples[, samplingRate]):<br>
+            <font color=blue>numSamples</font>: the number of samples in sound<br>
+            <font color=blue>samplingRate</font>: the integer value representing the number of samples per second of sound (optional)<br>
+            <font color=blue>returns</font>: An Empty Sound.<br>
+            Takes one or two integers as input. Returns an empty Sound object with the given number of samples and (optionally) the given sampling rate. Default rate is 22050 bits/second. The resulting sound must not be longer than 600 seconds. Prints an error statement if numSamples or samplingRate are less than 0, or if (numSamples/samplingRate) > 600.
+            </td>
+        </tr>
+        <tr>
+          <td>makeEmptySoundBySeconds</td>
+          <td>
+          <b>makeEmptySoundBySeconds</b>(duration[, samplingRate]):<br>
+            <font color=blue>duration</font>: the time in seconds for the duration of the sound<br>
+            <font color=blue>samplingRate</font>: the integer value representing the number of samples per second of sound (optional)<br>
+            <font color=blue>returns</font>: An Empty Sound.<br>
+            Takes a floating point number and optionally an integer as input. Returns an empty Sound object of the given duration and (optionally) the given sampling rate. Default rate is 22050 bits/second. If the given arguments do not multiply to an integer, the number of samples is rounded up. Prints an error statement if duration or samplingRate are less than 0, or if duration > 600.
+            </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">makeSound</td>
+          <td bgcolor="#eeeeee">
+          <b>makeSound</b>(path):<br>
+            <font color=blue>path</font>: a string path of a wav file<br>
+            <font color=blue>returns</font>: the sound created from the file at the given path<br>
+            Takes a filename as input, reads the file, and creates a sound from it. Returns the sound.
+          </td>
+        </tr>
+
+        <tr>
+          <td>pickAFile</td>
+          <td>
+          <b>pickAFile</b>():<br>
+            <font color=blue>returns</font>: the string path to the file chosen in the dialog box<br>
+            Opens a file chooser to let the user pick a file and returns the complete path name as a string. Takes no input.
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">play</td>
+          <td bgcolor="#eeeeee">
+          <b>play</b>(sound):<br>
+            <font color=blue>sound</font>: the sound you want to be played.<br>
+            Plays a sound provided as input. No return value.
+          </td>
+        </tr>
+        <tr>
+          <td>playNote</td>
+          <td>
+          <b>playNote</b>(note, duration[, intensity]):<br>
+            <font color=blue>note</font>: the MIDI note number, from 0 to 127 (60 = Middle C) you want to be played<br>
+			<font color=blue>duration</font>: the duration you want the note to be played in milliseconds<br>
+			<font color=blue>intensity</font>: the intensity (a number between 0 and 127) you want the note to be played (optional)<br>
+			Plays the given note. No return value. Default intensity is 64.
+          </td>
+        </tr>
+        <!-- Legacy support only
+        <tr>
+          <td bgcolor="#eeeeee">playAtRate </td>
+          <td bgcolor="#eeeeee">
+          <b>playAtRate</b>(sound, rate):<br>
+            <font color=blue>sound</font>: A Sound, the sound you want to be played.<br>
+            <font color=blue>rate</font>: A Number, the rate you want the sound to be played.<br>
+            Takes a sound and a rate (1.0 means normal speed, 2.0 is twice as fast, and 0.5 is half as fast), and plays the sound at that rate. The duration is always the same, e.g., if you play it twice as fast, the sound plays twice to fill the given time.
+          </td>
+        </tr>
+        <tr>
+          <td>playAtRateDur</td>
+          <td>
+          <b>playAtRateDur</b>(sound, rate, duration):<br>
+            <font color=blue>sound</font>: A Sound, the sound you want to be played.<br>
+            <font color=blue>rate</font>: A Number, the rate at which you want the sound to be played.<br>
+            <font color=blue>duration</font>: A Number, the number of samples you want to be played.<br>
+            Takes a sound and a rate (1.0 means normal speed, 2.0 is twice as fast, and 0.5 is half as fast), and plays the sound at that rate.  The duration is the number of sample to play.
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">playInRange</td>
+          <td bgcolor="#eeeeee">
+            <b>playInRange</b>(sound, start, stop):<br>
+            <font color=blue>sound</font>: A Sound, the sound you want to play a piece of.<br>
+            <font color=blue>start</font>: A Number, the index of the sound you want the playback to start.<br>
+                <font color=blue>stop</font>: A Number, the index of the sound you want the playback to stop.<br>
+            Take a sound, a start index, and a stop index and plays a selection of the sound defined by the start and stop indexes.
+          </td>
+        </tr>
+        -->
+        <!-- Legacy support, getSampleValue preferred.
+        <tr>
+          <td>setSample<br>
+            </td>
+          <td>
+          <b>setSample</b>(sample, value):<br>
+            <font color=blue>sample</font>: A Sample, the sound sample tou want to change the value of.<br>
+            <font color=blue>value</font>: An Integer, the value you want to set the sample to.<br>
+            Takes a Sample object and a value, and sets the sample to that value. Legacy support, getSampleValue is preferred.
+          </td>
+        </tr>
+        -->
+        <tr>
+          <td bgcolor="#eeeeee">setSampleValue</td>
+          <td bgcolor="#eeeeee">
+          <b>setSampleValue</b>(sample, value):<br>
+            <font color=blue>sample</font>: the sound sample you want to change the value of<br>
+            <font color=blue>value</font>: the value you want to set the sample to<br>
+            Takes a Sample object and a value (should be between -32768 and 32767), and sets the sample to that value.<br>
+          </td>
+        </tr>
+        <tr>
+          <td>setSampleValueAt</td>
+          <td>
+          <b>setSampleValueAt</b>(sound, index, value):<br>
+            <font color=blue>sound</font>: the sound you want to change a sample in<br>
+            <font color=blue>index</font>: the index of the sample you want to set<br>
+            <font color=blue>value</font>: the value you want to set the sample to<br>
+            Takes a sound, an index, and a value (should be between -32768 and 32767), and sets the value of the sample at the given index in the given sound to the given value.
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">stopPlaying</td>
+          <td bgcolor="#eeeeee">
+          <b>stopPlaying</b>(sound):<br>
+            <font color=blue>sound</font>: the sound that you want to stop playing<br>
+            Stops a sound that is currently playing.
+          </td>
+        </tr>
+        <tr>
+          <td>writeSoundTo</td>
+          <td>
+          <b>writeSoundTo</b>(sound, path):<br>
+            <font color=blue>sound</font>: the sound you want to write out to a file<br>
+            <font color=blue>path</font>: the path to the file you want the picture written to<br>
+            Takes a sound and a filename (a string) and writes the sound to that file as a WAV file. (Make sure that the filename ends in '.wav' if you want the operating system to treat it right.)
+        </tr>
+      </table>
+      <p><br>
+        </p>
+      </td>
+  </tr>
+  <tr>
+    <td align="right"> <a href="#top"><img src="../auxHelp/images/arro.gif" width="13" height="10" border="0">jump
+      to top</a>
+      <hr size="1">
+       </td>
+  </tr>
+
+</table>
+<p>&nbsp;</p>
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
+<!-- Sat Oct 13 12:06:50 2007 -->
+<!-- USING HT2HTML 2.0 -->
+<!-- SEE http://ht2html.sf.net -->
+<!-- User-specified headers:
+Title: Subclassing Java Classes in Jython
+
+-->
+
+<head>
+<title>Subclassing Java Classes in Jython</title>
+<meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
+<meta name="generator" content="HT2HTML/2.0">
+<style type="text/css">
+body { margin: 0px; }
+</style>
+</head>
+<body bgcolor="#ffffff" text="#000000"
+      marginwidth="0" marginheight="0"
+      link="#0000bb"  vlink="#00000"
+      alink="#ff0000">
+<!-- start of page table -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<!-- start of banner row -->
+<tr>
+<!-- start of corner cells -->
+<td width="150" valign="middle" bgcolor="#cccccc" class="corner">
+
+<center>
+    <a href="http://www.jython.org/">
+    <img border="0" src="./images/jpython-new-small.gif"></a></center> </td>
+<td width="15" bgcolor="#cccccc">&nbsp;&nbsp;</td><!--spacer-->
+<!-- end of corner cells -->
+<!-- start of banner -->
+<td width="90%" bgcolor="#cccccc" class="banner">
+<!-- start of site links table -->
+<table width="100%" border="0"
+cellspacing="0" cellpadding="2"
+       bgcolor="#ffffff">
+<tr>
+    <td bgcolor="#cccccc">
+<a href="http://www.jython.org/">Home</a>
+    </td>
+    <td bgcolor="#cccccc">
+<a href="http://www.python.org/">www.python.org</a>
+    </td>
+</tr><tr>
+    <td bgcolor="#cccccc">
+<a href="http://www.jython.org/download.html">Download</a>
+    </td>
+    <td bgcolor="#cccccc">
+<a href="./index.html">Documentation</a>
+    </td>
+</tr>
+</table><!-- end of site links table -->
+
+</td><!-- end of banner -->
+</tr><!-- end of banner row -->
+<tr><!-- start of sidebar/body row -->
+<!-- start of sidebar cells -->
+<td width="150" valign="top" bgcolor="#cccccc" class="sidebar">
+<!-- start of sidebar table -->
+<table width="100%" border="0" cellspacing="0" cellpadding="3"
+       bgcolor="#ffffff">
+<tr><td bgcolor="#666699"><b><font color="#ffffff">
+Documentation
+</font></b></td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="./index.html">Overview</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="whatis.html">Executive Summary</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="interpreter.html">Invoking Jython</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="registry.html">Jython Registry</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="embedding.html">Embedding</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="compile.html">Compiling Jython from source</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">&nbsp;
+<tr><td bgcolor="#666699"><b><font color="#ffffff">
+Working with Java
+</font></b></td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="usejava.html">The Basics</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="properties.html">JavaBean Properties</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="jarray.html">Java arrays</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="subclassing.html">Subclassing</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="jythonc.html">Building applets, servlets, beans...</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="jreload.html">Reloading java classes</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="zxjdbc.html">zxJDBC</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">&nbsp;
+<tr><td bgcolor="#666699"><b><font color="#ffffff">
+Python Docs (exits)
+</font></b></td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="http://www.python.org/doc/tut/tut.html">Python Tutorial</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="http://www.python.org/doc/lib/lib.html">Library Reference</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">&nbsp;
+<tr><td bgcolor="#666699"><b><font color="#ffffff">
+Other
+</font></b></td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="differences.html">Jython vs. CPython</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="http://www.jython.org/cgi-bin/faqw.py?req=index">Jython FAQ (exit)</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="http://www.geocrawler.com/archives/3/7017/2000/">List Archives</a> (exit)
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="http://www.python.org/workshops/1997-10/proceedings/hugunin.html">JPython paper</a> (exit)
+</td></tr>
+<tr><td bgcolor="#cccccc">&nbsp;
+<tr><td bgcolor="#666699"><b><font color="#ffffff">
+Contact
+</font></b></td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="http://lists.sourceforge.net/lists/listinfo/jython-users">Questions on Jython?<br>jython-users</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+&nbsp;
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="http://www.python.org/">
+<center>
+    <img border="0" src="./images/PythonPoweredSmall.gif"></center>
+</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+&nbsp;
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="http://sourceforge.net/">
+<center>
+ <img src="http://sourceforge.net/sflogo.php?group_id=12867" width="88" height="31" border="0" alt="SourceForge Logo"></center>
+</a>
+</td></tr>
+</table><!-- end of sidebar table -->
+
+</td>
+<td width="15">&nbsp;&nbsp;</td><!--spacer-->
+<!-- end of sidebar cell -->
+<!-- start of body cell -->
+<td valign="top" width="90%" class="body"><br>
+<h3>Subclassing Java Classes in Jython</h3>
+
+<h3>A Short Example</h3>
+
+The example below should both demonstrate how this subclassing is
+performed and why it is useful.  At first glance, the code looks
+exactly like subclassing any other Python class.  The key difference
+in this example is that awt.event.ActionListener is a Java class, not
+a Python one.  In the 4th line from the end,
+"b.addListener(SpamListener())",
+a Java method is being called that
+requires an instance of the Java class ActionListener. By providing a
+Python subclass of this Java class, everybody is happy.
+
+<blockquote><PRE>
+from java import awt
+
+class SpamListener(awt.event.ActionListener):
+    def actionPerformed(self,event):
+        if event.getActionCommand() == "Spam":
+	    print 'Spam and eggs!'
+</PRE>
+
+<PRE>
+f = awt.Frame("Subclassing Example")
+b = awt.Button("Spam")
+b.addActionListener(SpamListener())
+f.add(b, "Center")
+f.pack()
+f.setVisible(1)
+</PRE></blockquote>
+
+Note: This example can be accomplished much more elegantly by using
+<A HREF="properties.html">JavaBeans properties 
+(and event properties)</A>.
+
+<h3>Calling Methods in Your Superclass</h3>
+
+In Python, if I want to call the foo method in my superclass, I use
+the form:
+
+<blockquote><PRE>
+SuperClass.foo(self)
+</PRE></blockquote>
+
+This works with the majority of methods, but protected methods cannot be
+called from subclasses in this way. 
+Instead you have to use the "self.super__foo()" call style.
+
+<h3>Example</h3>
+
+The following example shows how the java.io.InputStream class can be
+effectively subclassed.  What makes this class difficult is that the
+read method is overloaded for three different method signatures:
+
+<OL>
+    <LI>abstract int read()</LI>
+    <LI>int read(byte[])</LI>
+    <LI>int read(byte[], int, int)</LI>
+</OL>
+
+The first one of these methods must be overridden in a subclass.
+The other two versions can be ignored.  Unfortunately, Python has
+no notion of method overloading based on type signatures (this might
+be related to the fact that Python doesn't have type signatures
+;-)  In order to implement a subclass of java.io.InputStream that
+overrides the "read" method, a Python method must be implemented that
+handles all three possible cases.  The example below shows the easiest
+way to acheive this:
+
+<blockquote><PRE>
+from java.io import InputStream
+
+class InfiniteOnes(InputStream):
+    def read(self, *args):
+        if len(args) > 0:
+	    # int read(byte[])
+	    # int read(byte[], int, int)
+            return apply(InputStream.read, (self,)+args)
+        return 1
+
+io = InfiniteOnes()
+
+for i in range(10):
+    print io.read(),
+print
+</PRE></blockquote>
+
+<h3>Example Continued</h3>
+
+To continue the example above, this new instance of
+java.io.InputStream can be passed to any Java method that expects an
+InputStream as shown below:
+
+<blockquote><PRE>
+from java.io import DataInputStream
+
+dp = DataInputStream(io)
+dp.skipBytes(1000)
+print dp.readByte()
+print dp.readShort()
+print dp.readInt()
+</PRE></blockquote>
+
+<h3>Invoking Your Superclass's Constructor</h3>
+
+You can explictly invoke your superclass's constructor using the
+standard Python syntax of explictly calling the "__init__" method on
+the superclass and passing in "self" as the first argument.  If you
+wish to call your superclass's constructor, you must do so within your
+own "__init__" method.  When your "__init__" method finishes, if your
+Java superclasses have not yet been explicitly initialized, their
+empty constructors will be called at this point.
+
+<P>It's important to realize that your superclass is not initialized
+until you either explictly call it's "__init__" method, or your own
+"__init__" method terminates.  You must do one of these two things
+before accessing any methods in your superclass.
+
+<h3>Example</h3>
+
+<blockquote><PRE>
+from java.util import Random
+
+class rand(Random):
+    def __init__(self, multiplier=1.0, seed=None):
+        self.multiplier = multiplier
+        if seed is None:
+            Random.__init__(self)
+        else: 
+            Random.__init__(self, seed)
+
+    def nextDouble(self):
+        return Random.nextDouble(self) * self.multiplier
+
+r = rand(100, 23)
+
+for i in range(10):
+    print r.nextDouble()
+</PRE></blockquote>
+
+This example shows how the superclass's constructor can be effectively
+called in order to explictly choose a non-empty version.
+
+<p>
+
+</td><!-- end of body cell -->
+</tr><!-- end of sidebar/body row -->
+</table><!-- end of page table -->
+</body></html>

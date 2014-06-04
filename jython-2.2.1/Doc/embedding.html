@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
+<!-- Sat Oct 13 12:06:49 2007 -->
+<!-- USING HT2HTML 2.0 -->
+<!-- SEE http://ht2html.sf.net -->
+<!-- User-specified headers:
+Title: Embedding Jython
+
+-->
+
+<head>
+<title>Embedding Jython</title>
+<meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
+<meta name="generator" content="HT2HTML/2.0">
+<style type="text/css">
+body { margin: 0px; }
+</style>
+</head>
+<body bgcolor="#ffffff" text="#000000"
+      marginwidth="0" marginheight="0"
+      link="#0000bb"  vlink="#00000"
+      alink="#ff0000">
+<!-- start of page table -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<!-- start of banner row -->
+<tr>
+<!-- start of corner cells -->
+<td width="150" valign="middle" bgcolor="#cccccc" class="corner">
+
+<center>
+    <a href="http://www.jython.org/">
+    <img border="0" src="./images/jpython-new-small.gif"></a></center> </td>
+<td width="15" bgcolor="#cccccc">&nbsp;&nbsp;</td><!--spacer-->
+<!-- end of corner cells -->
+<!-- start of banner -->
+<td width="90%" bgcolor="#cccccc" class="banner">
+<!-- start of site links table -->
+<table width="100%" border="0"
+cellspacing="0" cellpadding="2"
+       bgcolor="#ffffff">
+<tr>
+    <td bgcolor="#cccccc">
+<a href="http://www.jython.org/">Home</a>
+    </td>
+    <td bgcolor="#cccccc">
+<a href="http://www.python.org/">www.python.org</a>
+    </td>
+</tr><tr>
+    <td bgcolor="#cccccc">
+<a href="http://www.jython.org/download.html">Download</a>
+    </td>
+    <td bgcolor="#cccccc">
+<a href="./index.html">Documentation</a>
+    </td>
+</tr>
+</table><!-- end of site links table -->
+
+</td><!-- end of banner -->
+</tr><!-- end of banner row -->
+<tr><!-- start of sidebar/body row -->
+<!-- start of sidebar cells -->
+<td width="150" valign="top" bgcolor="#cccccc" class="sidebar">
+<!-- start of sidebar table -->
+<table width="100%" border="0" cellspacing="0" cellpadding="3"
+       bgcolor="#ffffff">
+<tr><td bgcolor="#666699"><b><font color="#ffffff">
+Documentation
+</font></b></td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="./index.html">Overview</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="whatis.html">Executive Summary</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="interpreter.html">Invoking Jython</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="registry.html">Jython Registry</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="embedding.html">Embedding</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="compile.html">Compiling Jython from source</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">&nbsp;
+<tr><td bgcolor="#666699"><b><font color="#ffffff">
+Working with Java
+</font></b></td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="usejava.html">The Basics</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="properties.html">JavaBean Properties</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="jarray.html">Java arrays</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="subclassing.html">Subclassing</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="jythonc.html">Building applets, servlets, beans...</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="jreload.html">Reloading java classes</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="zxjdbc.html">zxJDBC</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">&nbsp;
+<tr><td bgcolor="#666699"><b><font color="#ffffff">
+Python Docs (exits)
+</font></b></td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="http://www.python.org/doc/tut/tut.html">Python Tutorial</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="http://www.python.org/doc/lib/lib.html">Library Reference</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">&nbsp;
+<tr><td bgcolor="#666699"><b><font color="#ffffff">
+Other
+</font></b></td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="differences.html">Jython vs. CPython</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="http://www.jython.org/cgi-bin/faqw.py?req=index">Jython FAQ (exit)</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="http://www.geocrawler.com/archives/3/7017/2000/">List Archives</a> (exit)
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="http://www.python.org/workshops/1997-10/proceedings/hugunin.html">JPython paper</a> (exit)
+</td></tr>
+<tr><td bgcolor="#cccccc">&nbsp;
+<tr><td bgcolor="#666699"><b><font color="#ffffff">
+Contact
+</font></b></td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="http://lists.sourceforge.net/lists/listinfo/jython-users">Questions on Jython?<br>jython-users</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+&nbsp;
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="http://www.python.org/">
+<center>
+    <img border="0" src="./images/PythonPoweredSmall.gif"></center>
+</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+&nbsp;
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="http://sourceforge.net/">
+<center>
+ <img src="http://sourceforge.net/sflogo.php?group_id=12867" width="88" height="31" border="0" alt="SourceForge Logo"></center>
+</a>
+</td></tr>
+</table><!-- end of sidebar table -->
+
+</td>
+<td width="15">&nbsp;&nbsp;</td><!--spacer-->
+<!-- end of sidebar cell -->
+<!-- start of body cell -->
+<td valign="top" width="90%" class="body"><br>
+<h3>Embedding Jython</h3>
+
+<P>There are several options for embedding Jython in a Java
+application.  Sometimes the nicest approach is to make a real Java
+class out of a Python class and then just use that Python class from
+Java code.  The simplest approach to embedding Jython is to use the
+PythonInterpreter object.</P>
+
+<P>JavaDoc documentation for 
+<A HREF="javadoc/org/python/util/PythonInterpreter.html">
+org.python.util.PythonInterpreter</A>
+<BR>
+The following example is distributed under Demo/embed/SimpleEmbedded.java
+
+<hr>
+<pre>
+import org.python.util.PythonInterpreter; 
+import org.python.core.*; 
+
+public class SimpleEmbedded { 
+    public static void main(String []args)
+	throws PyException
+    { 
+	PythonInterpreter interp =
+	    new PythonInterpreter();
+
+	System.out.println("Hello, brave new world");
+	interp.exec("import sys");
+	interp.exec("print sys");
+
+	interp.set("a", new PyInteger(42));
+	interp.exec("print a");
+	interp.exec("x = 2+2");
+	PyObject x = interp.get("x");
+
+	System.out.println("x: "+x);
+	System.out.println("Goodbye, cruel world");
+    }
+}
+</pre>
+
+</td><!-- end of body cell -->
+</tr><!-- end of sidebar/body row -->
+</table><!-- end of page table -->
+</body></html>

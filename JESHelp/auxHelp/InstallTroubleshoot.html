@@ -1,0 +1,50 @@
+<html>
+<head>
+<title>JES Help</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<a href="../JESHelp/0_Table_of_Contents.html">Table of Contents</a> &gt; <a href="../JESHelp/1_Setting_up_JES.html">Setting 
+Up JES</a>&gt; Troubleshooting 
+<hr size="1">
+<table width="80%" border="0" cellspacing="0" cellpadding="5">
+  <tr> 
+    <td bgcolor="#dddddd"><b>Troubleshooting</b> <br>
+      Look here for help with installing and running the technology required for 
+      this course. If you're having technical problems and can't find what you're 
+      looking for here, you should see your TA. 
+        <ul>
+          <li><a href="#windows">Windows Troubleshooting</a></li>
+          <li><a href="#mac">Macintosh Troubleshooting</a></li>
+        </ul>
+      </td>
+  </tr>
+  <tr>
+    <td> 
+      <br><a name="windows"></a><b>Windows Troubleshooting:</b>
+      <dl> 
+        <dt><b>
+          Q. Every time I start JES, I get a startup screen that just disappears and then nothing happens. </b><br>
+        </dt>
+        <dd>Make sure that your directory has all the files and folders pictured on the screenshot in the <a href="InstallJESWindows.html">Windows Install</a> page (It's okay if some of your icons don't look the same).  If you have everything, make sure that the folder is not <b>read-only</b>.  Right-click on the JES folder (the main folder you copied from your CD) and go to <b>Properties</b> at the bottom.  Make sure that the check box labeled "Read-only" is <b>not</b> checked.<br><br>
+          &nbsp;</dd>
+         <dt><b>Q. None of that stuff above helps me, and JES still going all wacky-wonky.</b></dt>
+        <dd>We include a Java Virtual Machine (the software that runs Java) with JES.  If you have an older version of windows, like Me, 98, or 95, it could be that it doesn't like the VM we packaged.  To install your own VM, go to the <a href="http://java.com/en/download/index.jsp">Java Download</a> page, and get the Windows JRE (NOT the Sun ONE update).  Run the program and follow these directions: <a href="InstalJava_Wiz.html">Java Install Wizard</a>.  To make JES use this java VM, simply delete the directory "j2re1.4.2" from your JES folder.<br>
+          </dd>
+      </dl>
+      
+      <br><a name="mac"></a><b>Macintosh Troubleshooting:</b>
+      <dl>
+        <dt><b>Q. When I try to run JES, the console spits back at me: "Permission denied." </b></dt><br>
+        <dd>This means that your file "jes" doesn't have its permissions set up to be executable.  To fix this simply type:
+        <pre>chmod u+x jes</pre> in the directory where you put JES.  This will tell your computer that the file "jes" is an executable file.</dd> 
+    </td>
+  </tr>
+</table>
+<dl> 
+  <dt>&nbsp;</dt>
+</dl>
+</body>
+</html>

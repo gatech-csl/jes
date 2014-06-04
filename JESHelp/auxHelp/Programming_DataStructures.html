@@ -1,0 +1,61 @@
+<html>
+<head>
+<title>JES Help</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<a name="top"></a><a href="../JESHelp/0_Table_of_Contents.html">Table of Contents</a> 
+&gt; <a href="../JESHelp/3_Programming_in_Jython.html">Programming in Jython</a> 
+&gt; Basic Data Structures
+<hr size="1">
+<table width="80%" border="0" cellspacing="0" cellpadding="5">
+  <tr> 
+    <td bgcolor="#dddddd"> <b>Basic Data Structures</b><br>
+       <br>
+      Data structures are simply  ways of arranging data that the computer understands. For media computation, you will mostly work with two structures: the array and the matrix.
+      <ul>
+        <li><a href="#arrays">Arrays</a></li>
+        <li><a href="#matrices">Matrices</a></li>
+      </ul>
+    </td>
+  </tr>
+  <tr> 
+    <td> <br>
+       <b><a name="arrays"></a>Arrays</b> 
+      <p>An array is something  like a list; it is a sequence of data elements. Arrays can be very short, just five or ten elements, or very long, thousands and even millions of elements. Each element in an array has both an index, which indicates its position in the array, and a value, which is the data it holds. A common way of thinking about arrays is as a row of boxes. <br>
+        <br>
+        <img src="images/array.gif" width="245" height="101"></p>
+      <p>When we do media computation, we don't usually define arrays from scratch, we use functions like <b>getSamples</b> or <b>getPixels </b>that create arrays for us. </p>
+      <p>If you <em>did</em> want to define an array of numbers from scratch, this is how you would do it:</p>
+      <pre>&gt;&gt;&gt; array1 = [59,39,16,10,-1]</pre>
+    </td>
+  </tr>
+  <tr> 
+    <td align="right"> <a href="#top"><img src="images/arro.gif" width="13" height="10" border="0">jump 
+      to top</a> 
+      <hr size="1">
+       </td>
+  </tr>
+  <tr> 
+    <td> <a name="matrices"></a><b>Matrices</b> 
+      <p>A matrix is a sequence of data elements that has two dimensions.  Each element in a matrix has both a pair of indices that indicate its position in the matrix, and a value, which is the data it holds. You can imagine a matrix as a kind of  map with vertical and horizontal coordinates.<br>
+        <br>
+        <img src="images/matrix.gif" width="284" height="185"></p>
+      <p>When we do media computation, we rarely create  matrices from scratch. Instead, we use x and y coordinates that tell us the horizontal(x) and vertical(y) positions. </p>
+      <p>If you wanted to define a matrix of numbers in Jython, this is how you would do it: </p>
+      <pre>&gt;&gt;&gt; matrix1 = [[59,36,16,10,-1],[33,150,2],[87,-35]]
+</pre>
+      </td>
+  </tr>
+  <tr> 
+    <td align="right"> <a href="#top"><img src="images/arro.gif" width="13" height="10" border="0">jump 
+      to top</a> 
+      <hr size="1">
+       </td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+</body>
+</html>

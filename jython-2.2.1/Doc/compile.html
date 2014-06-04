@@ -1,0 +1,303 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
+<!-- Sat Oct 13 12:06:49 2007 -->
+<!-- USING HT2HTML 2.0 -->
+<!-- SEE http://ht2html.sf.net -->
+<!-- User-specified headers:
+Title: Compiling Jython
+
+-->
+
+<head>
+<title>Compiling Jython</title>
+<meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
+<meta name="generator" content="HT2HTML/2.0">
+<style type="text/css">
+body { margin: 0px; }
+</style>
+</head>
+<body bgcolor="#ffffff" text="#000000"
+      marginwidth="0" marginheight="0"
+      link="#0000bb"  vlink="#00000"
+      alink="#ff0000">
+<!-- start of page table -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<!-- start of banner row -->
+<tr>
+<!-- start of corner cells -->
+<td width="150" valign="middle" bgcolor="#cccccc" class="corner">
+
+<center>
+    <a href="http://www.jython.org/">
+    <img border="0" src="./images/jpython-new-small.gif"></a></center> </td>
+<td width="15" bgcolor="#cccccc">&nbsp;&nbsp;</td><!--spacer-->
+<!-- end of corner cells -->
+<!-- start of banner -->
+<td width="90%" bgcolor="#cccccc" class="banner">
+<!-- start of site links table -->
+<table width="100%" border="0"
+cellspacing="0" cellpadding="2"
+       bgcolor="#ffffff">
+<tr>
+    <td bgcolor="#cccccc">
+<a href="http://www.jython.org/">Home</a>
+    </td>
+    <td bgcolor="#cccccc">
+<a href="http://www.python.org/">www.python.org</a>
+    </td>
+</tr><tr>
+    <td bgcolor="#cccccc">
+<a href="http://www.jython.org/download.html">Download</a>
+    </td>
+    <td bgcolor="#cccccc">
+<a href="./index.html">Documentation</a>
+    </td>
+</tr>
+</table><!-- end of site links table -->
+
+</td><!-- end of banner -->
+</tr><!-- end of banner row -->
+<tr><!-- start of sidebar/body row -->
+<!-- start of sidebar cells -->
+<td width="150" valign="top" bgcolor="#cccccc" class="sidebar">
+<!-- start of sidebar table -->
+<table width="100%" border="0" cellspacing="0" cellpadding="3"
+       bgcolor="#ffffff">
+<tr><td bgcolor="#666699"><b><font color="#ffffff">
+Documentation
+</font></b></td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="./index.html">Overview</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="whatis.html">Executive Summary</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="interpreter.html">Invoking Jython</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="registry.html">Jython Registry</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="embedding.html">Embedding</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="compile.html">Compiling Jython from source</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">&nbsp;
+<tr><td bgcolor="#666699"><b><font color="#ffffff">
+Working with Java
+</font></b></td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="usejava.html">The Basics</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="properties.html">JavaBean Properties</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="jarray.html">Java arrays</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="subclassing.html">Subclassing</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="jythonc.html">Building applets, servlets, beans...</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="jreload.html">Reloading java classes</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="zxjdbc.html">zxJDBC</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">&nbsp;
+<tr><td bgcolor="#666699"><b><font color="#ffffff">
+Python Docs (exits)
+</font></b></td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="http://www.python.org/doc/tut/tut.html">Python Tutorial</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="http://www.python.org/doc/lib/lib.html">Library Reference</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">&nbsp;
+<tr><td bgcolor="#666699"><b><font color="#ffffff">
+Other
+</font></b></td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="differences.html">Jython vs. CPython</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="http://www.jython.org/cgi-bin/faqw.py?req=index">Jython FAQ (exit)</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="http://www.geocrawler.com/archives/3/7017/2000/">List Archives</a> (exit)
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="http://www.python.org/workshops/1997-10/proceedings/hugunin.html">JPython paper</a> (exit)
+</td></tr>
+<tr><td bgcolor="#cccccc">&nbsp;
+<tr><td bgcolor="#666699"><b><font color="#ffffff">
+Contact
+</font></b></td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="http://lists.sourceforge.net/lists/listinfo/jython-users">Questions on Jython?<br>jython-users</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+&nbsp;
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="http://www.python.org/">
+<center>
+    <img border="0" src="./images/PythonPoweredSmall.gif"></center>
+</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+&nbsp;
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="http://sourceforge.net/">
+<center>
+ <img src="http://sourceforge.net/sflogo.php?group_id=12867" width="88" height="31" border="0" alt="SourceForge Logo"></center>
+</a>
+</td></tr>
+</table><!-- end of sidebar table -->
+
+</td>
+<td width="15">&nbsp;&nbsp;</td><!--spacer-->
+<!-- end of sidebar cell -->
+<!-- start of body cell -->
+<td valign="top" width="90%" class="body"><br>
+<h3>Compiling Jython</h3>
+
+<P>Most users of Jython will never be required to look at the
+contents of the source directories, or try and recompile any of the files
+in the org.python package. All of these files have been precompiled in
+jython.jar.</P>
+
+<P>For those people who do want to rebuild Jython from the source,
+for whatever reason, the following offers a few tips to keep in
+mind.</P>
+
+<ul>
+<li>The source directories from CVS or the nightly buils contain both
+makefiles and a build.xml file. Only the build.xml is updated at this time.
+We are using ant to compile the sources and create the .jar file.
+<p>
+The build.xml file will search for a properties file called
+<code>ant.properties</code> which can contain values to control paths
+and local options. My <code>ant.properties</code> file look like this:
+
+<blockquote><pre>
+# javaccHome is needed when making modification to the grammar.
+javaccHome = d:\\box\\javacc-3.0
+
+# PyXmlHome is needed when running the installXML ant task to
+# copy PyXML files to jython.
+PyXmlHome = d:\\python\\PyXML-0.6.6
+
+#build.compiler = classic
+build.compiler = jikes
+debug=on
+
+# python.home is needed when building the documentation and installing
+# PyXML sources.
+python.home=d:\\python\\python211
+
+# Needed when building documentation.
+ht2html.dir=d:\\jython\\ht2html-1.1
+jython.home=d:\\jython\\CVS
+
+# Needed when installing documentation.
+scp.command=scp
+scp.user=bckfnn
+
+# Needed for building PyServlet support.
+servlet.jar=d:/java/servlet/servlet.jar
+
+# Needed for building Readline support.
+readline.jar=d:/java/java_readline-0.6/java_readline.jar
+
+# Needed for building zxJDBC DataHandlers
+# If missing, the appropriate DataHandler will not be built
+oracle.jar=d:/java/lib/classes12.zip
+mysql.jar=d:/java/lib/mm.mysql-2.0.6.jar
+informix.jar=d:/java/lib/ifxjdbc.jar;d:/java/lib/ifxjdbcx.jar
+postgresql.jar=d:/java/lib/postgresql.jar
+jdbc.jar=d:/java/lib/jdbc2_0-stdext.jar
+</pre></blockquote>
+<p>
+
+<li>Some of the sources in the org.python.parser package are generated
+from python.jtt file by the JavaCC parser generator. If you need to
+make changes to the grammar file you will need to download this
+JavaCC. The generated files are also in the distribution, so usually
+this is not necessary.
+
+<P>To regenerate the parser from the grammar, run jjtree on python.jjt,
+and then run javacc on the resulting python.jj. This should produce all
+of the required source files to build the org.python.parser package.
+The build.xml file already contain the needed entries to run the JavaCC
+program when the python.jjt is modified.
+<p>
+
+<li>The source directories contain several files that require Java2. These
+files are normally easily recoqnizable because they have the number "2"
+in their name.
+
+<P>When compiling jython with Java1 compiler (like the JDK1.1), these
+java2 files can be safely ignored. Jython will work even when these classes
+files are missing.
+The build.xml file have a conditional check and will not try to compile
+the Java2 sources when using a Java1 compiler.
+<p>
+
+<li>One of the sources depends on the servlet classes and can only compile
+when servlet.jar is included on the classpath. Again, the build.xml have
+a conditional check and will not compile the PyServlet class if the
+servlet classes isn't available during compilation.
+<p>
+
+<li>The CVS only contain a few of the standard python modules. The rest
+most come from a CPython installation. Setting this up can be performed by
+creating a file ".jython" in your home directory and including a line like
+this:
+<blockquote><pre>
+python.path=d:\\python\\Python-2.1\\Lib
+</pre></blockquote>
+
+<li>The PyXML sources (the content of ./Lib/xml) is not included in the
+CVS repository. This is mainly because PyXML is developed and released in its
+own time cycle. To install PyXML support in a CVS version, the ant properties
+<code>PyXmlHome</code> and <code>python.home</code> must be configured and
+the ant task <code>installXML</code> must be executed.
+</ul>
+
+<P>If you have further interest in the Jython source and Jython's
+continued development, you can read the archives for the
+<a href="http://www.geocrawler.com/lists/3/SourceForge/7018/0/">
+Jython-dev mailing list</a> or you can
+<a href="http://lists.sourceforge.net/mailman/listinfo/jython-dev">join</a>
+the list.
+
+<P>
+
+<hr>
+
+Suggested tools and support software:
+
+<ul>
+<li> <A HREF="http://javacc.dev.java.net/">JavaCC</A>
+<li> <A HREF="http://jakarta.apache.org/ant/">Ant</A>
+<li> <A HREF="http://java.sun.com/products/servlet/index.html">Servlet classes</A>
+<li> <A HREF="http://mmmysql.sourceforge.net/">MySQL JDBC Driver</A>
+<li> <A HREF="http://www.informix.com/evaluate/">Informix JDBC Driver</A>
+<li> <A HREF="http://jdbc.postgresql.org/">Postgresql JDBC Driver</A>
+<li> <A HREF="http://otn.oracle.com/software/tech/java/sqlj_jdbc/content.html">Oracle JDBC Driver</A>
+</ul>
+
+
+</td><!-- end of body cell -->
+</tr><!-- end of sidebar/body row -->
+</table><!-- end of page table -->
+</body></html>

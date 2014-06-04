@@ -1,0 +1,121 @@
+<html>
+<head>
+<title>JES Help</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<a name="top"></a><a href="../JESHelp/0_Table_of_Contents.html">Table of Contents</a> 
+&gt; <a href="../JESHelp/3_Programming_in_Jython.html">Programming in Jython</a> 
+&gt; Math, Comparison, and Boolean Operators 
+<hr size="1">
+<table width="80%" border="0" cellspacing="0" cellpadding="5">
+  <tr> 
+    <td bgcolor="#dddddd"> <b>Math, Comparison and Boolean Operators</b><br> <br>
+      <a href="#math">Math operators</a> 
+      <ul>
+        <li>+ add</li>
+        <li>- subtract</li>
+        <li>* multiply</li>
+        <li>/ divide</li>
+      </ul>
+      <p><a href="#compare">Comparison operators</a> </p>
+      <ul>
+        <li>== equal to</li>
+        <li>!= &nbsp;not equal to</li>
+        <li>&gt; &nbsp;&nbsp;greater than</li>
+        <li>&lt;&nbsp;&nbsp; less than</li>
+        <li>&gt;= greater than or equal to</li>
+        <li>&lt;= less than or equal to</li>
+      </ul> 
+      <p><a href="#boolean">Boolean operators</a> </p>
+      <ul>
+        <li>and </li>
+        <li>or</li>
+      </ul></td>
+  </tr>
+  <tr> 
+    <td> <br>
+      <b><a name="math" id="math"></a>Math Operators</b> <p>Math operators include standard 
+        notation for add, subtract, multiply and divide. You can also use parentheses 
+        to indicate the order in which operations should be carried out. </p>
+      <p>Math operators can be used on number data types like <a href="Programming_DataTypes.html#int">integer</a> and <a href="Programming_DataTypes.html#float">float</a>. (Strings 
+        can be added together, but if you try to use most math operators 
+        on strings, you will get an error message.)</p>
+      <p>For example: </p>
+      <pre>&gt;&gt;&gt; print 5-9
+-4
+&gt;&gt;&gt; print 5+3/2+7*2
+20
+&gt;&gt;&gt; print 5+(3/(2+7))*2
+5</pre>
+      </td>
+  </tr>
+  <tr> 
+    <td align="right"> <a href="#top"><img src="images/arro.gif" width="13" height="10" border="0">jump 
+      to top</a> <hr size="1"> </td>
+  </tr>
+  <tr> 
+    <td> <a name="compare" id="compare"></a><b>Comparison Operators</b> 
+      <p>Comparison 
+        operators allow you to compare two different expressions. Comparisons 
+        evaluate to either <font color="#006600">true</font>, which is represented 
+        by the integer <font color="#006600">1</font>, or <font color="#990000">false</font>, 
+        which is represented by the integer <font color="#990000">0</font>. </p>
+      <p>You can  use comparison operators on <a href="Programming_DataTypes.html#int">integer</a>, <a href="Programming_DataTypes.html#float">float</a>  or <a href="Programming_DataTypes.html#string">string</a> data types. 
+        It  is possible to compare strings because the computer encodes a string as a sequence of 
+        numbers that represent each character. (Of course, even though you can do it, comparing 
+        whether one string is greater than or less than another string may not 
+        be a very useful comparison!)</p>
+      <p>For example: </p>
+      <pre>&gt;&gt;&gt; print 4 == 5
+0
+&gt;&gt;&gt; print 6 &gt; 2
+1
+&gt;&gt;&gt; print &quot;rrr&quot; == &quot;rrr&quot;
+1</pre>
+      <p>Because 
+        true and false statements are represented by the integers 1 and 0, you can also use standard math 
+        operators with comparison statements. </p>
+      <p>For example:</p>
+      <pre>&gt;&gt;&gt; print (6 &gt; 2) + (4 == 4)
+2 </pre>
+      </td>
+  </tr>
+  <tr> 
+    <td align="right"> <a href="#top"><img src="images/arro.gif" width="13" height="10" border="0">jump 
+      to top</a> <hr size="1"> </td>
+  </tr>
+  <tr> 
+    <td> <a name="boolean" id="boolean"></a><b>Boolean Operators</b> 
+      <p>Boolean 
+        operators make it possible to evaluate more complex expressions to either 
+        true (1) or false (0). </p>
+      <p>When you join multiple expressions with the boolean operator <b>and</b>, 
+        BOTH expressions must be true for the combined expression to evaluate 
+        to true.</p>
+      <pre>&gt;&gt;&gt; print (5 == 3) and (4 == 4)
+0
+&gt;&gt;&gt; print (5 &gt;= 5) and (&quot;rrr&quot; != &quot;eee&quot;)
+1</pre>
+      <p>When you join multiple expressions with the boolean operator or, then 
+        only ONE of the expressions must be true for the combined expression to 
+        be true; however, if both are true, the expression will still evaluate 
+        to true. Expressions joined with the or operator only evaluate to false 
+        if ALL the expressions evaluate to false. </p>
+      <pre>&gt;&gt;&gt; print (5 &gt; 2) or (5 == 3)
+1
+&gt;&gt;&gt; print (&quot;abc&quot; != &quot;xyz&quot;) or (1 &gt; 3) or (65 != 65)
+0
+</pre>
+    </td>
+  </tr>
+  <tr> 
+    <td align="right"> <a href="#top"><img src="images/arro.gif" width="13" height="10" border="0">jump 
+      to top</a> <hr size="1"> </td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+</body>
+</html>

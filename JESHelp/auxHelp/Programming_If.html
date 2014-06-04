@@ -1,0 +1,69 @@
+<html>
+<head>
+<title>JES Help</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<a name="top"></a><a href="../JESHelp/0_Table_of_Contents.html">Table of Contents</a> 
+&gt; <a href="../JESHelp/3_Programming_in_Jython.html">Programming in Jython</a> 
+&gt; &quot;If&quot; Statements
+<hr size="1">
+<table width="80%" border="0" cellspacing="0" cellpadding="5">
+  <tr> 
+    <td bgcolor="#dddddd"> 
+      <p><b>&quot;If&quot; Statements</b><br>
+       <br>
+      &quot;If&quot; statments in Jython let you tell the computer to do one thing in one case and  another thing in a different case. By using &quot;if&quot; statements in your program, you can use simple logic. </p>
+      <ul>
+        <li><a href="#if">if</a></li>
+        <li><a href="#elif">elif</a></li>
+      </ul>
+    </td>
+  </tr>
+  <tr> 
+    <td> 
+      <br>
+      <b><a name="if"></a>if</b> and <b>else</b>
+      <p>To use an &quot;if&quot; statment in your program, you'll define a set of conditions and some action that you want the computer to perform if the conditions are met. Then you'll define another set of actions that you want the computer to perform if the conditions are not met. This set of actions gets an &quot;else&quot; statement.</p>
+      <p>For example: <br>
+        </p>
+      <pre>if x &lt; 0:
+  print x, &quot; is less than zero.&quot;
+else: 
+  print x, &quot; is not less than zero.&quot;
+</pre>
+      </td>
+  </tr>
+  <tr> 
+    <td align="right"> <a href="#top"><img src="images/arro.gif" width="13" height="10" border="0">jump 
+      to top</a> 
+      <hr size="1">
+       </td>
+  </tr>
+  <tr>
+    <td>
+      <br>
+      <b><a name="elif"></a>elif</b>
+      <p>Suppose you have three or more sets of circumstances that you want to define. You could put &quot;if&quot; statements inside of other &quot;if&quot; statements but that gets very complicated. A better solution is to use the world &quot;elif,&quot; which is short for &quot;else if.&quot;</p>
+      <p>For example:</p>
+      <pre>if temperature &lt; 55:
+  print &quot;It's cold outside today!&quot;
+elif (temperature &gt;= 55) and (temperature &lt;= 75):
+  print &quot;The weather is fine today.&quot;
+else:
+  print &quot;It's a scorcher!&quot;</pre>
+      </td>
+  </tr>
+  <tr> 
+    <td align="right"> <a href="#top"><img src="images/arro.gif" width="13" height="10" border="0">jump 
+      to top</a> 
+      <hr size="1">
+       </td>
+  </tr>
+  
+</table>
+<p>&nbsp;</p>
+</body>
+</html>

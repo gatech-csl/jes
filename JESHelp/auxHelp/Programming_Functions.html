@@ -1,0 +1,94 @@
+<html>
+<head>
+<title>JES Help</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<a name="top"></a><a href="../JESHelp/0_Table_of_Contents.html">Table of Contents</a> 
+&gt; <a href="../JESHelp/3_Programming_in_Jython.html">Programming in Jython</a> 
+&gt; Functions
+<hr size="1">
+<table width="80%" border="0" cellspacing="0" cellpadding="5">
+  <tr> 
+    <td bgcolor="#dddddd"> 
+      <p><b>Functions</b><br>
+       <br>
+      Functions are like small, individually named recipes that can be used within a larger recipe (a program). People write whole libraries of functions that can be used to write specific kinds of recipes. Some functions are built right into a programming language because they are used so frequently; others need to be written by you. You can write a function to do pretty much anything you want.</p>
+      <ul>
+        <li><a href="#built">Built-in Functions</a></li>
+        <ul>
+          <li><a href="#range">Range</a></li>
+        </ul>
+        <li><a href="#original">Original Functions</a></li>
+      </ul>
+    </td>
+  </tr>
+  <tr> 
+    <td> 
+     <br>
+        <b><a name="built"></a>Built-in Functions</b>
+      <p>Some functions are used so often by programmers that they are built into Jython already. (Other functions have been included with JES to help you write  media computation programs. These functions let you do things with <a href="../JESHelp/7_Picture_Functions.html">pictures</a>, <a href="../JESHelp/5_Sound_Functions.html">sound</a>, and video. They are listed in the help sections for each media type.) </p>
+      <p>An example of a function that is built into Jython is the function for finding the square root of a number. The name of this function is <b>sqrt()</b>. To use this function, you need to tell Jython what number you want to find the square root of, and Jython will return the square root of that number.</p>
+      <p>For example: <br>
+        <br>
+      <pre>
+&gt;&gt;&gt; sqrt(25)
+5.0
+</pre>
+      <p>(Notice
+that the square root is returned as a float. See the help section on data types for more information about <a href="Programming_DataTypes.html#float">floats</a>.)</p>
+      <p>&nbsp;</p>
+    </td>
+  </tr>
+  <tr> 
+    <td align="right"> <a href="#top"><img src="images/arro.gif" width="13" height="10" border="0">jump 
+      to top</a> 
+      <hr size="1">
+       </td>
+  </tr>
+  
+  <tr>
+    <td><b><a name="range"></a>Range</b>
+      <p>One important built-in function is the <b>range</b> function. This function allows you to define a sequence of whole numbers by defining the first and last numbers. </p>
+      <p>For example, if you wanted <b>range1</b> to represent the sequence 4,5,6,7,8,9,10,11,12, you could do this by typing:</p>
+      <pre>&gt;&gt;&gt; range1 =  range(4,13)</pre>
+      (Notice that the range starts with the first number you type, but ends before the second number.)</td>
+  </tr>
+  <tr> 
+    <td align="right"> <a href="#top"><img src="images/arro.gif" width="13" height="10" border="0">jump 
+      to top</a> 
+      <hr size="1">
+       </td>
+  </tr>
+  <tr>
+    <td>
+      <br>
+      <b><a name="original"></a>Original Functions</b>
+      <p>It's very likely that you will want to write a function of your own at some point. To do this, you simply use the format for writing and naming a program.</p>
+      <p>For example, the following function could be written to add together two numbers: </p>
+      <pre>def addTwoNumbers(number1, number2):
+  total = number1 + number 2
+  print total
+</pre>
+      <p>The first word, <b>def</b>, tells Jython that we are about to define a function or program. The second word, <b>addTwoNumbers</b>, indicates what we want to name this particular function. The things in parentheses indicates that when we use the function addTwoNumbers, we should always include two things to be added! The words inside the parentheses, <b>number1</b> and <b>number2</b>,  are technically referred to as &quot;parameters.&quot; Everything after the colon is the body of the function, or the part that tells the computer what to do whenever the function is called:  add the two numbers and print the result. (Notice that the body of the function  is indented!)</p>
+      <p>If we write this function and then try to use it without including the two numbers to be added, we will get an error message because we specifically told Jython to expect two numbers. (Actually, we just told Jython to expect two somethings. If we pass it two strings, it will add those too!)</p>
+      <p>To call the function we wrote above, we simply use the function's name. </p>
+      <p>For example: </p>
+      <pre>&gt;&gt;&gt;addTwoNumbers(4,6)
+10</pre>
+    </td>
+  </tr>
+  <tr> 
+    <td align="right"> <a href="#top"><img src="images/arro.gif" width="13" height="10" border="0">jump 
+      to top</a> 
+      <hr size="1">
+       </td>
+  </tr>
+  
+  
+</table>
+<p>&nbsp;</p>
+</body>
+</html>

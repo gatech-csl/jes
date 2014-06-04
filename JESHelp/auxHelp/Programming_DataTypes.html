@@ -1,0 +1,91 @@
+<html>
+<head>
+<title>JES Help</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<a name="top"></a><a href="../JESHelp/0_Table_of_Contents.html">Table of Contents</a> 
+&gt; <a href="../JESHelp/3_Programming_in_Jython.html">Programming in Jython</a> 
+&gt; Basic Data Types 
+<hr size="1">
+<table width="80%" border="0" cellspacing="0" cellpadding="5">
+  <tr> 
+    <td bgcolor="#dddddd"> <b>Basic Data Types</b><br> <br>
+      Data types are simply different kinds of data that are recognized by a programming 
+      langauge. Jython, like almost all languages, recognizes the basic data types 
+      listed below. Although you usually don't need to tell Jython what kind of 
+      data you are using (it figures it out by looking at the data!) it is still 
+      important to understand how Jython uses the different data types. 
+      <ul>
+        <li><a href="#int">Integer</a></li>
+        <li><a href="#float">Float</a></li>
+        <li><a href="#string">String</a></li>
+      </ul></td>
+  </tr>
+  <tr> 
+    <td> <br>
+       <b><a name="int"></a>Integer</b>
+      <p>Integers are whole numbers that 
+        can be any value between -2147483648 and 2147483647. In programming, &quot;int&quot; is the abbreviated form of &quot;integer.&quot;</p>
+      <p>When you use a whole number in one of your recipes, Jython assumes that 
+        you want to use the integer data type. That works just fine until you 
+        run into a situation like this: </p>
+      <pre>&gt;&gt;&gt; print 5+3
+8
+&gt;&gt;&gt; print 5/3
+1</pre>
+      What happened? When Jython divided integer 5 by integer 3, it returned integer 
+      1. It is important, then, to understand how Jython uses data types. If you 
+      want Jython to return a more precise answer, you should use the float data 
+      type described below. </td>
+  </tr>
+  <tr> 
+    <td align="right"> <a href="#top"><img src="images/arro.gif" width="13" height="10" border="0">jump 
+      to top</a> <hr size="1"> </td>
+  </tr>
+  <tr> 
+    <td> <a name="float"></a><b>Float</b> 
+      <p>Floating points are more precise 
+        than integers. To indicate that you want to use floats in Jython, simply 
+        use a decimal point. </p>
+      <p>For example: </p>
+      <pre>&gt;&gt;&gt; print 5.0+3.0
+8.0
+&gt;&gt;&gt; print 5.0/3.0
+1.6666666666666667
+</pre></td>
+  </tr>
+  <tr> 
+    <td align="right"> <a href="#top"><img src="images/arro.gif" width="13" height="10" border="0">jump 
+      to top</a> <hr size="1"> </td>
+  </tr>
+  <tr> 
+    <td> <a name="string"></a><b>String</b> 
+      <p>A string is simply a sequence of 
+        characters. The characters can be any combination of numbers, letters 
+        or other symbols. &quot;a&quot; is a string; so is &quot;aaa&quot;; so 
+        is &quot;My age is 42.&quot;</p>
+      <p>Stings are very useful when you want Jython to print a sentence or word 
+        to the screen. You can even add strings together to form new strings. 
+        (This is called concatentation.) For example: </p>
+      <pre>&gt;&gt;&gt; print 4+4
+8
+&gt;&gt;&gt; print &quot;4&quot;+&quot;4&quot;
+44
+print &quot;My dog has &quot;+&quot;fleas.&quot;
+My dog has fleas.</pre>
+      <p>(For those who have had some programming experience: unlike some other 
+        langauges, Jython does not include a separate character data type for 
+        single characters.)</p>
+      </td>
+  </tr>
+  <tr> 
+    <td align="right"> <a href="#top"><img src="images/arro.gif" width="13" height="10" border="0">jump 
+      to top</a> <hr size="1"> </td>
+  </tr>
+</table>
+<p>&nbsp;</p>
+</body>
+</html>

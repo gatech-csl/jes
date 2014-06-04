@@ -1,0 +1,161 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>JES Help</title>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+</head>
+<body style="background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);">
+<a name="top"></a><a href="../JESHelp/0_Table_of_Contents.html">Table
+of Contents</a> &gt;&nbsp;<span style="text-decoration: underline;"><a
+ href="../JESHelp/11_Using_the_Debugger.html">Using the Debugger</a></span>
+&gt; Using the Debugger<br>
+<hr size="1">
+<table width="80%" border="0" cellspacing="0" cellpadding="5">
+  <tbody>
+    <tr>
+      <td bgcolor="#dddddd" height="107"><span
+ style="font-weight: bold;">Using the Debugger</span><br>
+      <br>
+This section will go through how to start up the debugger, how to run
+it, how to watch variables, and how to step through code one line by
+one. So basically, everything you need to know about the debugger.<br>
+      </td>
+    </tr>
+    <tr>
+      <td><br>
+      <b><a name="samples"></a>Starting up the debugger</b>
+      <p>To start up the debugger, either press the 'Watcher'
+button, or select the 'Watcher' item from the 'Watcher' menu.</p>
+      <p><img src="images/open_button.jpg" title=""
+ alt="'open' button image" style="width: 170px; height: 87px;"> or <img
+ src="images/Debug.jpg" title="" alt="open menu item"
+ style="width: 133px; height: 90px;"><br>
+      </p>
+      <p>You should now see the window below:<br>
+      <img src="images/new_debugger.jpg" title="" alt=""
+ style="width: 458px; height: 496px;"><br>
+      </p>
+      </td>
+    </tr>
+    <tr>
+      <td align="right"> <a href="#top"><img src="images/arro.gif"
+ width="13" height="10" border="0">jump to top</a>
+      <hr size="1"> </td>
+    </tr>
+    <tr>
+      <td> <br>
+      <b><a name="arrays"></a>How&nbsp; to run it<br>
+      </b>
+      <p>In order to run the debugger, all you need is to run some code
+as you normally would, once the debugger is open. But the debugger will
+only step through code that has been loaded into your editor window, so
+in order to see the debugger at work, you need to run a function that
+is defined and loaded in your editor. For example, in your editor, type:</p>
+&nbsp;&nbsp;&nbsp; <code>def hello():<br>
+&nbsp;&nbsp;&nbsp; print "Hello world!"<br>
+      </code>
+      <p>You would then invoke the function by typing 'hello()' in the
+command window, press enter, and viola! You should see this in the
+debugger window:</p>
+      <p><img src="images/hello_world.jpg" title="" alt=""
+ style="width: 582px; height: 175px;"><br>
+      </p>
+      <p>Congratulations, you have used the debugger for the first time!<br>
+      </p>
+      </td>
+    </tr>
+    <tr>
+      <td align="right"> <a href="#top"><img src="images/arro.gif"
+ width="13" height="10" border="0">jump to top</a>
+      <hr size="1"> </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><b><a name="arrays"></a>Watching
+variables<br>
+      </b>
+      <p>Okay, that was nice, but a debugger is not really useful until
+you can see the values of some variables, so lets add some variables to
+the program. We are going to use the sumlist program, the code looks
+like:<br>
+      </p>
+      <p><code>&nbsp;&nbsp;&nbsp; def sumlist(list):<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; sum = 0<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; for item in list:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; sum = sum
++ item<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return sum<br>
+      </code></p>
+      <p>This program has three variables: sum, item, and list. We will
+watch item and sum. To do this, either press the 'add var' button on
+the debugger or 'add variable...' from the debugger menu. <br>
+      <img src="images/addvar.jpg" title="" alt=""
+ style="width: 299px; height: 129px;"><br>
+      </p>
+      <p>When the dialog appear asking for a variable name, type in the
+name of the variable to watch. So in this case, type 'item', and click
+OK. You should now see a new column 'var:item' in the table:<br>
+      <img src="images/newcolumn.jpg" title="" alt=""
+ style="width: 591px; height: 88px;"><br>
+      </p>
+      <p>Next, do the same for the variable 'sum'. If you want to take
+a variable off of the table later, just click 'remove var' or 'remove
+variable...' from the debugger menu. A dialog will appear that lets you
+choose the variable to remove and then click OK.<br>
+      </p>
+      <p>Now, that you have added two variables for the debugger to
+watch, let's run it! Type this in the command window (remember to load
+your program first):<br>
+      </p>
+      <p><code>&nbsp;&nbsp;&nbsp; sumlist([4,5,2,1])<br>
+      </code></p>
+      <p>Rows should be added to the execution table one by one. Wait
+for execution to stop. (You can also change the speed it's going by
+moving the slider) When it's finished, you should see this:<br>
+      <img src="images/sumlist_result.jpg" title="" alt=""
+ style="width: 585px; height: 359px;"><br>
+      </p>
+      <p>As an exercise, please follow each line through the code and
+understand how each result was gotten.<br>
+      </p>
+      </td>
+    </tr>
+    <tr>
+      <td align="right"> <a href="#top"><img src="images/arro.gif"
+ width="13" height="10" border="0">jump to top</a>
+      <hr size="1"> </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><b><a name="arrays"></a>
+Playing, stopping, and changing speed<br>
+      </b><!--As an alternative to just watching the code passing you by,
+you can also 'step through it', in other words, the debugger only runs
+one line of code each time you click the step button. To do this, you
+need to first click on the pause button as the debugger is running.
+Once the debugger is paused, the step button is enabled, and clicking
+it will run the next instruction and thus add one row to the execution
+table. At anytime you can click the run button to get out of step mode.
+In either mode -- whether it is running or stepping -- you can hit the
+stop button to cause execution to halt. Finally, at any point, you may
+move the slider to the left or to the right to effect the speed that
+the program is running. When the slider is all the way to the left, the
+debugger is in step mode, and is thus paused. Moving it to the right in
+pause mode will cause the program to start running.<br> <!-- Commented out by Brian in hope that we bring back Pause someday-->
+
+While code is running in the debugger, you can hit the stop button at any 
+time to cause execution to halt. Also, at any point, you may move the slider
+to the left or to the right to effect the speed that the program is running.
+Moving the slider all the way to the right is full speed, which can also be
+achieved by pressing the Full Speed button.
+      <code></code></td>
+    </tr>
+    <tr>
+      <td align="right"> <a href="#top"><img src="images/arro.gif"
+ width="13" height="10" border="0">jump to top</a>
+      <hr size="1"> </td>
+    </tr>
+  </tbody>
+</table>
+<p>&nbsp;</p>
+</body>
+</html>

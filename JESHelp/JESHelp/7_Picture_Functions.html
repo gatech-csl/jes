@@ -1,0 +1,468 @@
+<html>
+<head>
+<title>JES Help</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<a name="top"></a><a href="0_Table_of_Contents.html">Table of Contents</a>
+&gt; <a href="6_Understanding_Pictures.html">Understanding Pictures in JES
+</a> &gt; Picture Functions
+in JES
+<hr size="1">
+<table width="80%" border="0" cellspacing="0" cellpadding="5">
+  <tr>
+    <td bgcolor="#dddddd" height="107">
+      <b>Picture Functions in JES</b><br>
+       <br>
+      This is a list of functions that you may find useful when you are creating programs to manipulate or create pictures in JES. Remember, these functions are part of a special library, and are not available in other Jython programming environments.
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <table width="100%" border="0" cellspacing="0" cellpadding="5">
+
+        <tr>
+          <td width="25%">addArc</td>
+          <td width="75%">
+          <b>addArc</b>(picture, startX, startY, width, height, start, angle[, color]):<br>
+            <font color=blue>picture</font>: the picture you want to draw the arc on<br>
+            <font color=blue>startX</font>: the x-coordinate of the center of the arc<br>
+            <font color=blue>startY</font>: the y-coordinate of the center of the arc<br>
+            <font color=blue>width</font>: the width of the arc<br>
+            <font color=blue>height</font>: the height of the arc<br>
+            <font color=blue>start</font>: the start angle of the arc in degrees<br>
+            <font color=blue>angle</font>: the angle of the arc relative to start in degrees<br>
+            <font color=blue>color</font>: the color you want to draw in (optional)<br>
+            Takes a picture, (x,y) coordinates, width, height, two integer angles, and (optionally) a color as input. Adds an outline of an arc starting at (x,y) at an initial angle of "start" with the given width and height. The angle of the arc itself is "angle", which is relative to "start." Default color is black.
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">addArcFilled</td>
+          <td bgcolor="#eeeeee">
+          <b>addArcFilled</b>(picture, startX, startY, width, height, start, angle[, color]):<br>
+            <font color=blue>picture</font>: the picture you want to draw the line on<br>
+            <font color=blue>startX</font>: the x position you want the arc to start<br>
+            <font color=blue>startY</font>: the y position you want the arc to start<br>
+            <font color=blue>width</font>: the width of the arc<br>
+            <font color=blue>height</font>: the height of the arc<br>
+            <font color=blue>start</font>: the start angle of the arc in degrees<br>
+            <font color=blue>angle</font>: the angle of the arc relative to start in degrees<br>
+            <font color=blue>color</font>: the color you want to draw in (optional)<br>
+            Takes a picture, (x,y) coordinates, width, height, two integer angles, and (optionally) a color as input. Adds a filled arc starting at (x,y) at an initial angle of "start" with the given width and height. The angle of the arc itself is "angle", which is relative to "start." Default color is black.
+          </td>
+        </tr>
+        <tr>
+          <td>addLine</td>
+          <td>
+          <b>addLine</b>(picture, startX, startY, endX, endY[, color]):<br>
+            <font color=blue>picture</font>: the picture you want to draw the line on<br>
+            <font color=blue>startX</font>: the x position you want the line to start<br>
+            <font color=blue>startY</font>: the y position you want the line to start<br>
+            <font color=blue>endX</font>: the x position you want the line to end<br>
+            <font color=blue>endY</font>: the y position you want the line to end<br>
+            <font color=blue>color</font>: the color you want to draw in (optional)<br>
+            Takes a picture, a starting (x, y) position (two numbers), and an ending (x, y) position (two more numbers, four total), and (optionally) a color as input. Adds a line from the starting point to the ending point in the picture. Default color is black.
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">addOval<br>
+            </td>
+          <td bgcolor="#eeeeee">
+          <b>addOval</b>(picture, startX, startY, width, height[, color]):<br>
+            <font color=blue>picture</font>: the picture you want to draw the rectangle on<br>
+            <font color=blue>startX</font>: the x-coordinate of the upper left-hand corner of the bounding rectangle of the oval<br>
+            <font color=blue>startY</font>: the y-coordinate of the upper left-hand corner of the bounding rectangle of the oval<br>
+            <font color=blue>width</font>: the width of the oval<br>
+            <font color=blue>height</font>: the height of the oval<br>
+            <font color=blue>color</font>: the color you want to draw in (optional)<br>
+			Takes a picture, a starting (x, y) position (two numbers), a width and height (two more numbers, four total), and (optionally) a color as input. Adds an oval outline of the given dimensions using the (x,y) as the upper left corner of the bounding rectangle. Default color is black.
+          </td>
+        </tr>
+        <tr>
+          <td>addOvalFilled<br>
+            </td>
+          <td>
+          <b>addOvalFilled</b>(picture, startX, startY, width, height[, color]):<br>
+            <font color=blue>picture</font>: the picture you want to draw the rectangle on<br>
+            <font color=blue>startX</font>: the x-coordinate of the upper left-hand corner of the bounding rectangle of the oval<br>
+            <font color=blue>startY</font>: the y-coordinate of the upper left-hand corner of the bounding rectangle of the oval<br>
+            <font color=blue>width</font>: the width of the oval<br>
+            <font color=blue>height</font>: the height of the oval<br>
+            <font color=blue>color</font>: the color you want to draw in (optional)<br>
+            Takes a picture, a starting (x, y) position (two numbers), a width and height (two more numbers, four total), and (optionally) a color as input. Adds a filled oval of the given dimensions using the (x,y) as the upper left corner of the bounding rectangle. Default color is black.
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">addRect<br>
+            </td>
+          <td bgcolor="#eeeeee">
+          <b>addRect</b>(picture, startX, startY, width, height[, color]):<br>
+            <font color=blue>picture</font>: the picture you want to draw the rectangle on<br>
+            <font color=blue>startX</font>: the x-coordinate of the upper left-hand corner of the rectangle<br>
+            <font color=blue>startY</font>: the y-coordinate of the upper left-hand corner of the rectangle<br>
+            <font color=blue>width</font>: the width of the rectangle<br>
+            <font color=blue>height</font>: the height of the rectangle<br>
+            <font color=blue>color</font>: the color you want to draw in (optional)<br>
+            Takes a picture, a starting (x, y) position (two numbers), a width and height (two more numbers, four total), and (optionally) a color as input. Adds a rectangular outline of the specified dimensions using the (x,y) as the upper left corner. Default color is black.
+          </td>
+        </tr>
+        <tr>
+          <td>addRectFilled</td>
+          <td>
+          <b>addRectFilled</b>(picture, startX, startY, width, height[, color]):<br>
+            <font color=blue>picture</font>: the picture you want to draw the rectangle on<br>
+            <font color=blue>startX</font>: the x-coordinate of the upper left-hand corner of the rectangle<br>
+            <font color=blue>startY</font>: the y-coordinate of the upper left-hand corner of the rectangle<br>
+            <font color=blue>width</font>: the width of the rectangle<br>
+            <font color=blue>height</font>: the height of the rectangle<br>
+            <font color=blue>color</font>: the color you want to draw in (optional)<br>
+            Takes a picture, a starting (x, y) position (two numbers), a width and height (two more numbers, four total), and (optionally) a color as input. Adds a filled rectangle of the specified dimensions using the (x,y) as the upper left corner. Default color is black.
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">addText</td>
+          <td bgcolor="#eeeeee">
+          <b>addText</b>(picture, xpos, ypos, text[, color]):<br>
+            <font color=blue>picture</font>: the picture you want to add the text to<br>
+            <font color=blue>xpos</font>: the x-coordinate where you want to start writing the text<br>
+            <font color=blue>ypos</font>: the y-coordinate where you want to start writing the text<br>
+            <font color=blue>text</font>: string containing the text you want written<br>
+            <font color=blue>color</font>: the color you want to draw in (optional)<br>
+            Takes a picture, an x position and a y position (two numbers), and some text as a string, which will get drawn into the picture, in the specified color. Default is black.
+          </td>
+        </tr>
+        <tr>
+          <td>addTextWithStyle</td>
+          <td>
+          <b>addTextWithStyle</b>(picture, xpos, ypos, text, style[, color]):<br>
+            <font color=blue>picture</font>: the picture you want to add the text to<br>
+            <font color=blue>xpos</font>: the x-coordinate where you want to start writing the text<br>
+            <font color=blue>ypos</font>: the y-coordinate where you want to start writing the text<br>
+            <font color=blue>text</font>: string containing the text you want written<br>
+            <font color=blue>style</font>: the font style you want to draw in (See makeStyle)<br>
+            <font color=blue>color</font>: the color you want to draw in (optional)<br>
+            Takes a picture, an x position and a y position (two numbers), and some text as a string, which will get drawn into the picture, in the given font style and specified color. Default is black.
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">copyInto</td>
+          <td bgcolor="#eeeeee">
+          <b>copyInto</b>(smallPicture, bigPicture, startX, startY):<br>
+            <font color=blue>smallPicture</font>: the picture to paste into the big picture<br>
+            <font color=blue>bigPicture</font>: the picture to be modified<br>
+            <font color=blue>startX</font>: the X coordinate of where to place the small picture on the big one<br>
+            <font color=blue>startY</font>: the Y coordinate of where to place the small picture on the big one<br>
+            Takes two pictures, a x position and a y position as input, and modifies bigPicture by copying into it as much of smallPicture as will fit, starting at the x,y position in the destination picture.
+          </td>
+		</tr>
+        <tr>
+          <td>distance</td>
+          <td>
+          <b>distance</b>(color1, color2):<br>
+            <font color=blue>color1</font>: the first color you want compared<br>
+            <font color=blue>color2</font>: the second color you want compared<br>
+            <font color=blue>returns</font>: a floating point number representing the Cartesian distance between the colors<br>
+            Takes two Color objects and returns a single number representing the distance between the colors. The red, green, and blue values of the colors are taken as a point in (x, y, z) space, and the Cartesian distance is computed.
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">duplicatePicture</td>
+          <td bgcolor="#eeeeee">
+          <b>duplicatePicture</b>(picture):<br>
+            <font color=blue>picture</font>: the picture you want to duplicate<br>
+            <font color=blue>returns</font>: a new picture object with the same image as the original<br>
+            Takes a picture as input and returns a new picture object with the same image as the original.
+          </td>
+        </tr>
+        <tr>
+          <td>getColor</td>
+          <td>
+          <b>getColor</b>(pixel):<br>
+            <font color=blue>pixel</font>: the pixel you want to extract the color from<br>
+            <font color=blue>returns</font>: the color of the pixel<br>
+            Takes a Pixel and returns the Color object at that pixel.
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">getRed</td>
+          <td bgcolor="#eeeeee">
+          <b>getRed</b>(pixel):<br>
+            <font color=blue>pixel</font>: the pixel you want to get the amount of red from<br>
+            <font color=blue>returns</font>: the red value of the pixel<br>
+            Takes a Pixel object and returns the value (between 0 and 255) of the amount of redness in that pixel.
+          </td>
+        </tr>
+        <tr>
+          <td>getGreen</td>
+          <td>
+          <b>getGreen</b>(pixel):<br>
+            <font color=blue>pixel</font>: the pixel you want to get the amount of green from<br>
+            <font color=blue>returns</font>: the green value of the pixel<br>
+            Takes a Pixel object and returns the value (between 0 and 255) of the amount of greenness in that pixel.
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">getBlue</td>
+          <td bgcolor="#eeeeee">
+          <b>getBlue</b>(pixel):<br>
+            <font color=blue>pixel</font>: the pixel you want to get the amount of blue from<br>
+            <font color=blue>returns</font>: the blue value of the pixel<br>
+            Takes a Pixel object and returns the value (between 0 and 255) of the amount of blueness in that pixel.
+          </td>
+        </tr>
+        <tr>
+          <td>getHeight</td>
+          <td>
+          <b>getHeight</b>(picture):<br>
+            <font color=blue>picture</font>: the picture you want to get the height of<br>
+            <font color=blue>returns</font>: the height of the picture<br>
+            Takes a picture as input and returns its length in the number of pixels top-to-bottom in the picture.
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">getPixels</td>
+          <td bgcolor="#eeeeee">
+          <b>getPixels</b>(picture):<br>
+            <font color=blue>picture</font>: the picture you want to get the pixels from<br>
+            <font color=blue>returns</font>: a list of all the pixels in the picture<br>
+            Takes a picture as input and returns the sequence of Pixel objects in the picture.
+          </td>
+        </tr>
+        <tr>
+          <td>getAllPixels</td>
+          <td>
+          <b>getAllPixels</b>(picture):<br>
+            <font color=blue>picture</font>: the picture you want to get the pixels from<br>
+            <font color=blue>returns</font>: a list of all the pixels in the picture<br>
+            Takes a picture as input and returns the sequence of Pixelobjects in the picture.
+            (Same as getPixels)
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">getPixel</td>
+          <td bgcolor="#eeeeee">
+          <b>getPixel</b>(picture, xpos, ypos):<br>
+            <font color=blue>picture</font>: the picture you want to get the pixel from<br>
+            <font color=blue>xpos</font>: the x-coordinate of the pixel you want<br>
+            <font color=blue>ypos</font>: the y-coordinate of the pixel you want<br>
+            Takes a picture, an x position and a y position (two numbers), and returns the Pixel object at that point in the picture. (Same as getPixelAt)
+          </td>
+        </tr>
+        <tr>
+          <td>getWidth</td>
+          <td>
+          <b>getWidth</b>(picture):<br>
+            <font color=blue>picture</font>: the picture you want to get the width of<br>
+            <font color=blue>returns</font>: the width of the picture<br>
+            Takes a picture as input and returns its length in the number of pixels left-to-right in the picture.
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">getX</td>
+          <td bgcolor="#eeeeee">
+          <b>getX</b>(pixel):<br>
+            <font color=blue>pixel</font>: the pixel you want to find the x-coordinate of<br>
+            <font color=blue>returns</font>: the x-coordinate of the pixel<br>
+            Takes in a pixel object and returns the x position of where that pixel is in the picture.
+          </td>
+        </tr>
+        <tr>
+          <td>getY</td>
+          <td>
+          <b>getY</b>(pixel):<br>
+            <font color=blue>pixel</font>: the pixel you want to find the y-coordinate of<br>
+            <font color=blue>returns</font>: the y-coordinate of the pixel<br>
+            Takes in a pixel object and returns the y position of where that pixel is in the picture.
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">makeBrighter</td>
+          <td bgcolor="#eeeeee">
+          <b>makeBrighter</b>(color):<br>
+            <font color=blue>color</font>: the color you want to lighten<br>
+            <font color=blue>returns</font>: the new, lighter color<br>
+            Takes a color and returns a slightly lighter version of the original color. (Same as makeLighter)
+          </td>
+        </tr>
+        <tr>
+          <td>makeDarker</td>
+          <td>
+          <b>makeDarker</b>(color):<br>
+            <font color=blue>color</font>: the color you want to darken<br>
+            <font color=blue>returns</font>: the new, darker color<br>
+            Takes a color and returns a slightly darker version of the original color.
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">makeLighter</td>
+          <td bgcolor="#eeeeee">
+          <b>makeLighter</b>(color):<br>
+            <font color=blue>color</font>: the color you want to lighten<br>
+            <font color=blue>returns</font>: the new, lighter color<br>
+            Takes a color and returns a slightly lighter version of the original color.
+          </td>
+        </tr>
+        <tr>
+          <td>makeColor</td>
+          <td>
+          <b>makeColor</b>(red[, green, blue]):<br>
+            <font color=blue>red</font>: the amount of red you want in the color (or a Color object you want to duplicate) <br>
+            <font color=blue>green</font>: the amount of green you want in the color (optional)<br>
+            <font color=blue>blue</font>: the amount of blue you want in the picture (optional)<br>
+            <font color=blue>returns</font>: the color made from the inputs<br>
+            Takes three integer inputs for the red, green, and blue components (in order) and returns a color object. If green and blue are omitted, the red value is used as the intensity of a gray color. Also it works with only a color as input and returns a new color object with the same RGB values as the original.
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">makeEmptyPicture</td>
+          <td bgcolor="#eeeeee">
+          <b>makeEmptyPicture</b>(width, height[, color]):<br>
+            <font color=blue>width</font>: the width of the empty picture<br>
+            <font color=blue>height</font>: height of the empty picture<br>
+            <font color=blue>color</font>: background color of the empty picture (optional)<br>
+            <font color=blue>returns</font>: a new picture object with all the pixels set to the specified color<br>
+            Makes a new "empty" picture and returns it to you. The width and height must be between 0 and 10000. Default color is white.
+          </td>
+        </tr>
+        <tr>
+          <td>makePicture</td>
+          <td>
+          <b>makePicture</b>(path):<br>
+            <font color=blue>path</font>: the name of the file you want to open as a picture<br>
+            <font color=blue>returns</font>: a picture object made from the file<br>
+            Takes a filename as input, reads the file, and creates a picture from it. Returns the picture.
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">makeStyle</td>
+          <td bgcolor="#eeeeee">
+          <b>makeStyle</b>(fontName, emphasis, size):<br>
+            <font color=blue>fontName</font>: the name of the font you want in the style (sansSerif, serif, mono)<br>
+            <font color=blue>emphasis</font>: the type of emphasis you want in the style (italic, bold, italic + bold, plain)<br>
+            <font color=blue>size</font>: the size of the font you want in the style<br>
+            <font color=blue>returns</font>: the style made from the inputs<br>
+            Takes a font name, emphasis, and size in points as input. Returns a Font object with the given parameters.
+          </td>
+        </tr>
+        <tr>
+          <td>pickAColor</td>
+          <td>
+          <b>pickAColor</b>():<br>
+            <font color=blue>returns</font>: the color chosen in the dialog box<br>
+            Opens a color chooser to let the user pick a color and returns it. Takes no input.
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">pickAFile</td>
+          <td bgcolor="#eeeeee">
+          <b>pickAFile</b>():<br>
+            <font color=blue>returns</font>: the string path to the file chosen in the dialog box<br>
+            Opens a file chooser to let the user pick a file and returns the complete path name as a string. Takes no input.
+          </td>
+        </tr>
+        <tr>
+          <td>setColor</td>
+          <td>
+            <b>setColor</b>(pixel, color):<br>
+            <font color=blue>pixel</font>: the pixel you want to set the color of<br>
+            <font color=blue>color</font>: the color you want to set the pixel to<br>
+            Takes in a pixel and a color, and sets the pixel to the given color.
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">repaint</td>
+          <td bgcolor="#eeeeee">
+          <b>repaint</b>(picture):<br>
+            <font color=blue>picture</font>: the picture you want to repaint<br>
+            Repaints the picture if it has been opened in a window from show(picture), otherwise a new window will be opened.
+          </td>
+        </tr>
+        <tr>
+          <td>setAllPixelsToAColor</td>
+          <td>
+          <b>setAllPixelsToAColor</b>(picture, color):<br>
+            <font color=blue>picture</font>: the picture to change the pixels of<br>
+            <font color=blue>color</font>: the color to set each pixel to<br>
+            Modifies the whole image so that every pixel in that image is the given color.
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">setRed</td>
+          <td bgcolor="#eeeeee">
+          <b>setRed</b>(pixel, redValue):<br>
+            <font color=blue>pixel</font>: the pixel you want to set the red value of<br>
+            <font color=blue>redValue</font>: a number (0 - 255) for the new red value of the pixel<br>
+            Takes in a Pixel object and a value (between 0 and 255) and sets the redness of that pixel to the given value.
+          </td>
+        </tr>
+        <tr>
+          <td>setGreen</td>
+          <td>
+          <b>setGreen</b>(pixel, greenValue):<br>
+            <font color=blue>pixel</font>: the pixel you want to set the green value of<br>
+            <font color=blue>greenValue</font>: a number (0 - 255) for the new green value of the pixel<br>
+            Takes in a Pixel object and a value (between 0 and 255) and sets the greenness of that pixel to the given value.
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">setBlue</td>
+          <td bgcolor="#eeeeee">
+          <b>setBlue</b>(pixel, blueValue):<br>
+            <font color=blue>pixel</font>: the pixel you want to set the blue value of<br>
+            <font color=blue>blueValue</font>: a number (0 - 255) for the new blue value of the pixel<br>
+            Takes in a Pixel object and a value (between 0 and 255) and sets the blueness of that pixel to the given value.
+          </td>
+        </tr>
+        <tr>
+          <td>setColorWrapAround</td>
+          <td>
+          <b>setColorWrapAround</b>(flag):<br>
+            <font color=blue>returns</font>: a boolean (1/true or 0/false) for the new ColorWrapAround value<br>
+            Takes a boolean as input. If flag is true, color values will wrap-around (356 mod 256 = 100); if false, color values lower than 0 will be forced to 0 and higher than 255 forced to 255. Default is false.<br>
+            <b>This only temporarily changes the value</b>. ColorWrapAround will be restored to its value defined in the JES options menu by: Running setColorWrapAround(bool) where bool is the default value, re-saving options, or by restarting JES.
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">getColorWrapAround</td>
+          <td bgcolor="#eeeeee">
+          <b>getColorWrapAround</b>():<br>
+            <font color=blue>returns</font>: a boolean (1/true or 0/false) for the current value of ColorWrapAround<br>
+            Takes no input, and returns the current value of ColorWrapAround. If it is true, color values will wrap-around (356 mod 256 = 100); if false, color values lower than 0 will be forced to 0 and higher than 255 forced to 255. Default is false.<br>
+            If setColorWrapAround has <b>not</b> been used since re-saving options or restarting JES, This will return the value in the JES options menu. Otherwise, it will return the last flag specified in setColorWrapAround(flag).
+          </td>
+        </tr>
+        <tr>
+          <td>show</td>
+          <td>
+          <b>show</b>(picture):<br>
+            <font color=blue>picture</font>: the picture you want to see<br>
+            Shows the picture provided as input.
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">writePictureTo</td>
+          <td bgcolor="#eeeeee">
+          <b>writePictureTo</b>(picture, path):<br>
+            <font color=blue>picture</font>: the picture you want to be written out to a file<br>
+            <font color=blue>path</font>: the path to the file you want the picture written to<br>
+            Takes a picture and a file name (string) as input, then writes the picture to the file as a JPEG, PNG, or BMP. (Be sure to end the filename in ".jpg" or ".png" or ".bmp" for the operating system to understand it well.)
+          </td>
+        </tr>
+      </table>
+      <p><br>
+        </p>
+      </td>
+  </tr>
+  <tr>
+    <td align="right"> <a href="#top"><img src="../auxHelp/images/arro.gif" width="13" height="10" border="0">jump
+      to top</a>
+      <hr size="1">
+       </td>
+  </tr>
+
+</table>
+<p>&nbsp;</p>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>JES Help</title>
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=iso-8859-1">
+</head>
+<body style="background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);">
+<a name="top"></a><a href="../JESHelp/0_Table_of_Contents.html">Table
+of Contents</a> &gt;&nbsp;<span style="text-decoration: underline;"><a
+ href="../JESHelp/11_Using_the_Debugger.html">Using the Debugger</a></span>
+&gt; An Example of Using the Debugger for Good<br>
+<hr size="1">
+<table width="80%" border="0" cellspacing="0" cellpadding="5">
+
+    <tr>
+      <td bgcolor="#dddddd" height="107"><span
+ style="font-weight: bold;">An Example of Using the Debugger for Good</span><br>
+      <br>
+This section walks you through an example of using the Debugger to find
+a bug in the code and intends to show how really useful it is.<br>
+      </td>
+    </tr>
+    <tr>
+      <td><br>
+      <b><a name="samples"></a>Gimme some code!</b><br>
+      <br>
+In order to use a debugger, the first thing you need is some code. So,
+here it is:<br>
+      <br>
+      <span style="font-family: monospace;">&nbsp; # this function
+performs a swap of</span><br style="font-family: monospace;">
+      <span style="font-family: monospace;">&nbsp; # two parameters</span><br
+ style="font-family: monospace;">
+      <span style="font-family: monospace;">&nbsp; def swap(a, b):</span><br
+ style="font-family: monospace;">
+      <span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; holder =
+b</span><br style="font-family: monospace;">
+      <span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; a = b</span><br
+ style="font-family: monospace;">
+      <span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; b =
+holder</span><br style="font-family: monospace;">
+      <span style="font-family: monospace;">&nbsp;&nbsp;&nbsp; return
+a, b</span><br>
+      <p>This program is supposed to swap the input parameters, load it
+into your JES editor. So, suppose you do this in the command window:</p>
+      <p><span style="font-family: monospace;">&nbsp; &gt;&gt;&gt; a = 1</span><br
+ style="font-family: monospace;">
+      <span style="font-family: monospace;">&nbsp; &gt;&gt;&gt; b = 2</span><br
+ style="font-family: monospace;">
+      <span style="font-family: monospace;">&nbsp; &gt;&gt;&gt; a, b =
+swap(a, b)</span><br>
+      </p>
+      <p>Variable a should be left with the original value of b - 2,
+and b with 1 - that of a. But of course, there is a bug in it.<br>
+&nbsp;<br>
+      </p>
+      </td>
+    </tr>
+    <tr>
+      <td align="right"> <a href="#top"><img src="images/arro.gif"
+ width="13" height="10" border="0">jump to top</a>
+      <hr size="1"> </td>
+    </tr>
+    <tr>
+      <td> <br>
+      <b><a name="arrays"></a>We have a Bug!!</b><span
+ style="font-family: monospace;"><br>
+      </span><code> </code>
+      <p>If you typed in the above code program and commands into JES
+you might see that the program is not behaving correctly. When you try
+to inspect the values of a and b:</p>
+      <p><span style="font-family: monospace;">&nbsp; &gt;&gt;&gt; a</span><br
+ style="font-family: monospace;">
+      <span style="font-family: monospace;">&nbsp; 2</span><br
+ style="font-family: monospace;">
+      <span style="font-family: monospace;">&nbsp; &gt;&gt;&gt; b</span><br
+ style="font-family: monospace;">
+      <span style="font-family: monospace;">&nbsp; 2</span><br>
+      </p>
+      <p>That's not right! a is supposed to be 1 and b is supposed to
+be 2! NOOOOOO! <br>
+      </p>
+      <p>So, now what do you do? You have a program that runs but
+doesn't work like it is supposed to. There is a bug in the program.</p>
+      </td>
+    </tr>
+    <tr>
+      <td align="right"> <a href="#top"><img src="images/arro.gif"
+ width="13" height="10" border="0">jump to top</a>
+      <hr size="1"> </td>
+    </tr>
+    <tr>
+      <td style="vertical-align: top;"><b><a name="arrays"></a>Doing
+Something About It<br>
+      </b>
+      <p>It would really help if you could see the result after each
+line of command executed, because then you can track the values and
+find out when the variables start having wrong values. One thing you
+could do is to use 'print' statements to print out the variables after
+each line of code. This is what a lot of programmer do, and is
+something that is valuable to learn. But since we have a debugger we
+can use and which does the same thing better, let's do it that way.
+Open up the debugger, and let's watch(monitor) all of the existing
+variables in the program - a, b, and holder. If you don't know how to
+do this, see section <a href="Debugger_Using.html">Using the Debugger</a>.<br>
+      </p>
+      <p>Now run the above code in the command window again.
+And...tada!!!<br>
+      <img src="images/debugger_example_output.jpg" title="" alt=""
+ style="width: 584px; height: 177px;"><br>
+      </p>
+      <p>Okay...let's see what's going on. Uh-huh...uh-huh...uh-Uh-Oh!
+On step 3 (line 5), all 3 variables contain the value 2. Where did the
+1 go? We need at least one 1. Something must have went wrong at this
+line or before it. So, line 5 puts the value of b (2) into a, which had
+the value 1 previously. This effectively erases the value 1 that a
+held. That's where the 1 went. So, line 5 is the location of the bug.<br>
+      </p>
+      <p>Now we need to fix the bug. The problem is that we should
+overwrite b because its value has already been duplicated onto the
+holder variable, and so won't lose the value by writing to b, and
+that's the whole point of swap. So we change line 5 to:<br>
+      <span style="font-family: monospace;">&nbsp; b = a</span><br>
+      </p>
+      <p>Now let's give it another try:<br>
+      <img src="images/debugger_example_output2.jpg" title="" alt=""
+ style="width: 582px; height: 176px;"><br>
+Typing the variable show:<br>
+      </p>
+      <p style="font-family: monospace;">&nbsp; &gt;&gt;&gt; a<br>
+&nbsp; 1<br>
+&nbsp; &gt;&gt;&gt; b<br>
+&nbsp; 2<br>
+      </p>
+      <p>Now the variables stayed the same. Dang it! But now look at
+step 3, b did get the value 1. At step 4 however, b took on the value 2
+again. That's not good. If you look at the code (line 6): b = holder,
+the value came from holder. But what we want to do is give variable a
+the value1 ! So let's assign holder to a instead. Change line 6 to:<br>
+      <span style="font-family: monospace;">&nbsp; a = holder</span><br>
+      </p>
+      <p>Now try again:</p>
+      <p><span style="font-family: monospace;">&nbsp; &gt;&gt;&gt; a</span><br
+ style="font-family: monospace;">
+      <span style="font-family: monospace;">&nbsp; 2</span><br
+ style="font-family: monospace;">
+      <span style="font-family: monospace;">&nbsp; &gt;&gt;&gt; b</span><br
+ style="font-family: monospace;">
+      <span style="font-family: monospace;">&nbsp; 1</span><br>
+      </p>
+      <p>It works!! You always want to try it with different values
+just to make sure though:<br>
+      </p>
+      <p><span style="font-family: monospace;">&nbsp; &gt;&gt;&gt; a =
+'Jenny'</span><br style="font-family: monospace;">
+      <span style="font-family: monospace;">&nbsp; &gt;&gt;&gt; b =
+'Ben'</span><br style="font-family: monospace;">
+      <span style="font-family: monospace;">&nbsp; &gt;&gt;&gt; a, b =
+swap(a, b)</span><br style="font-family: monospace;">
+      <span style="font-family: monospace;">&nbsp; &gt;&gt;&gt; a</span><br
+ style="font-family: monospace;">
+      <span style="font-family: monospace;">&nbsp; 'Ben'</span><br
+ style="font-family: monospace;">
+      <span style="font-family: monospace;">&nbsp; &gt;&gt;&gt; b</span><br
+ style="font-family: monospace;">
+      <span style="font-family: monospace;">&nbsp; 'Jenny'</span><br>
+      </p>
+      <p>It still works! Looks like our job here is done =) Good job.
+Young grasshopper.<br>
+      </p>
+      </td>
+    </tr>
+    <tr>
+      <td align="right"><a href="#top">jump to top</a>
+      <hr size="1"> </td>
+    </tr>
+
+</table>
+<p>&nbsp;</p>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<html>
+<head>
+  <title>JES Help</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+  <a name="top"></a>
+  <a href="../JESHelp/0_Table_of_Contents.html">Table of Contents</a> &gt;
+  <a href="../JESHelp/10_Using_MediaTools.html">MediaTools</a> &gt;
+  SoundTool
+  <hr size="1">
+  <table width="85%" border="0" cellspacing="0" cellpadding="5">
+    <tr>
+      <td bgcolor="#dddddd"> <b>SoundTool</b><br>
+	The SoundTool allows you to explore a sound by looking at
+	a visual representation of that sound.
+	<ul>
+          <li><a href="#1">Opening a Sound in the SoundTool</a></li>
+	  <li><a href="#2">Looking at the Sound</a></li>
+          <li><a href="#3">Zooming In and Out</a></li>
+	  <li><a href="#4">Chosing a Single Sample</a></li>
+	  <li><a href="#5">Selecting a Region of the Sound</a></li>
+	</ul>
+      </td>
+    </tr>
+    <tr>
+      <td>
+	<b><br><a name="1"></a>Opening a Sound in the SoundTool</b><br>
+	<ol>
+	  <li>In order to view a sound, you must have first created a sound
+	    in JES.  There are two ways to do this in the command area:
+	    <ul>
+              <li>mySound = makeSound(filename)</li>
+	      <li>mySound = makeEmptySound(numSeconds)</li>
+	    </ul>
+	  </li>
+	  <br>
+	  <li>Once you have a sound, there are two ways to view it in the
+	    SoundTool:
+	    <ul>
+	      <li>In the JES command window:
+		<ol>
+	    	  <li>
+		    type openSoundTool(mySound)<br>
+		    <img src="images/command_open.jpg">
+		  </li>
+	    	</ol>
+		<br>
+	      <li>From the JES menu bar:
+		<ol>
+	    	  <li>
+		    From the MediaTools menu, choose SoundTool. <br>
+		    <img src="images/menu_open.jpg"><br><br>
+		  </li>
+		  <li>
+	      	    You will then be prompted to choose the sound you want
+		    to view. <br>
+	      	    Select the sound from the list <br>
+		    <img src="images/menu_choose_sound.jpg"><br><br>
+		  </li>
+		  <li>
+	  	    and choose 'OK'.<br>
+		    <img src="images/push_ok.jpg"><br><br>
+		  </li>
+	  	</ol>
+	    </ul>
+	</ol>
+      </td>
+    </tr>
+    <tr>
+      <td align="right">
+	<a href="#top">
+	  <img src="images/arro.gif" width="13" height="10" border="0">
+	  jump to top
+	</a>
+	<hr size="1">
+      </td>
+    </tr>
+    <tr>
+      <td>
+	<b><br><a name="2"></a>Looking at the Sound</b><br>
+	When you open a sound, you will see a screen like this:<br>
+	<img src="images/upon_opening.jpg"><br><br>
+	<ul>
+	  <li>
+	    The window title is the filename from which the sound
+	    originated.  (Note: If you created the sound using
+	    <code>makeEmptySound(numSeconds)</code> and you haven't saved it
+	    to a file yet, then you will see "no file name" instead.)
+	  </li>
+	  <br><br>
+	  <li>
+	    At the top of sound viewer, there are lots of different
+	    buttons:
+	    <br><br>
+	    <ul>
+	      <li>
+		<b>Play Entire Sound</b> plays the entire sound from start
+		to finish.<br>
+	      </li>
+	      <br>
+	      <li>
+		<b>Play Selection</b> plays the selected region of the sound.
+		When you first open the SoundTool, there is no region selected,
+		and so this button is disabled. See <a href="#5">Selecting a
+		  Region of the Sound</a> for more information.
+	      </li>
+	      <br>
+	      <li>
+		<b>Play Before</b> plays the sound from the begning up to
+		the currently selected sample.  When you first open the
+		SoundTool, the very first sample will be selected by default.
+		Therefore, since there is no sound before the first sample,
+		the Play Before button is disabled until you choose a
+		different sample.  See <a href="#4">Choosing a
+		  Single Sample in the Sound</a> for more information.
+	      </li>
+	      <br>
+	      <li>
+		<b>Play After</b> is simmilar to Play Before, only it plays
+		from the currently selected sample to the end of the sound.
+		Again, see <a href="#4">Choosing a Single Sample in the
+		  Sound</a> for more information on using this.
+	      </li>
+	      <br>
+	      <li>
+		<b>Stop</b> is only enabled while a sound is playing.  You can
+		use it to interrupt any type of play.
+	      </li>
+
+      </td>
+    </tr>
+    <tr>
+      <td align="right"> <a href="#top"><img src="images/arro.gif" width="13" height="10" border="0">jump
+	  to top</a>
+	<hr size="1">
+      </td>
+    </tr>
+    <tr>
+      <td> <b><a name="3"></a>Zooming In and Out</b><br><br>
+	When you open the SoundTool, you first see the image zoomed out.
+	This means that the wave form has been compressed so that it will
+	fit inside the SoundTool window.
+	<br><br>
+	If you click the <b>Zoom In</b> button, you
+	will see one sample represented per pixel on your screen.  Since
+	sounds are very long, a scroll bar appears so that you can move
+	through the sound:
+	<br>
+	<img src="images/zoomed_in.jpg"><br>
+        You will notice that the button has changed
+	to read <b>Zoom Out</b>.  Clicking it will now return you to the
+	compressed format that you started with.<br><br>
+
+	<b>All functionality for selecting a sample, selecting a
+	  region, and playing the sound work exactly the same
+	  whether you're zoomed in or out.</b><br>
+      </td>
+    </tr>
+    <tr>
+      <td align="right"> <a href="#top"><img src="images/arro.gif" width="13" height="10" border="0">jump
+	  to top</a>
+	<hr size="1">
+      </td>
+    </tr>
+    <tr>
+      <td>
+	<b><a name="4"></a>Chosing a Single Sample</b><br><br>
+	If you want to edit or copy just a portion of a digital sound, it
+	can be useful to find the <i>index</i> of a specific point, or
+	<i>sample</i>, in that sound.  Other times, it may be useful to find
+	the <i>amplitude</i>, or <i>value</i>, of one of the samples in a
+	sound.
+	<br><br>
+	In order to find out information about a specific point, or
+	<i>sample</i>, in a sound, you just need to click on the wave form at
+	that point.  You will see a light blue bar appear on the wave form
+	designating the currently selected sample.  You can test where you
+	are using the <b>Play Before</b> and <b>Play After</b> buttons.
+	When you find the right place, simply note the <i>index</i> and/or
+	<i>value</i> of the current sample as displayed at the bottom of
+	the SoundTool.
+	<br><br>
+	<img src="images/choose_single.JPG">
+	<br><br>
+      </td>
+    </tr>
+    <tr>
+      <td align="right"> <a href="#top"><img src="images/arro.gif" width="13" height="10" border="0">jump
+	  to top</a>
+	<hr size="1">
+      </td>
+    </tr>
+    <tr>
+      <td> <b><a name="5"></a>Selecting a Region of the Sound</b><br><br>
+	If you want to pick out a portion of a sound (like a single word),
+	it can be useful to find the starting and ending points of a region
+	in that sound.
+	<br><br>
+	You can do this in SoundTools by selecting a region of the sound.
+	Simply click and drag the mouse across the region of the sound you
+	want to select.  You will see the background shade change to light
+	gray in the area you are selecting.  When you let go of the mouse,
+	you can use the <b>Play Selection</b> button to test what region
+	of the sound you have selected.  When you find the right portion
+	of the sound, you can note the starting and ending points by
+	reading the values displayed at the top of the SoundTool next to
+	<b>Start At Index</b> and <b>Stop At Index</b>.
+	Note that it doesn't matter if you drag from right-to-left, or
+	left-to-right, the SoundTool will always choose the left-most index
+	to start at, and the right-most index to stop at.
+	<br>
+	<img src="images/select_region.jpg">
+      </td>
+    </tr>
+    <tr>
+      <td align="right"> <a href="#top"><img src="images/arro.gif" width="13" height="10" border="0">jump
+	  to top</a>
+	<hr size="1">
+      </td>
+    </tr>
+  </table>
+ </body>
+</html>

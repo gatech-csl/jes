@@ -1,0 +1,1 @@
+The Linux version of JES is identical to the Windows-nojava version--that is, the version for windows that does not come packaged with a Java Runtime Environment.  To produce this build, see the instructions for Windows.

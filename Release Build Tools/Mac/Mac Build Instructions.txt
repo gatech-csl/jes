@@ -1,0 +1,41 @@
+To build a JES distribution for mac:
+
+Download the no-java zip file version of JES that you previously created for the Linux or Windows release.  Unzip this file to your desktop.  All instructions here assume that you are using the files inside of a new folder ~/Desktop/jes-4-3-nojava to create the Mac release.
+
+Start the "Jar Bundler" application (in /Developer/Applications/Java Tools)
+
+When the application opens, configure the settings for each tab as follows:
+
+Build Information:
+ * Select JESstartup.class from the Sources directory
+ * Choose JESi2.icns from the images directory for the Custom Icon
+ * Select 1.5+ for the JVM Version in the dropdown menu
+ * Check "Use Macintosh Menu Bar" and ensure Anti-aliased text and graphics are checked
+
+Classpath and Files:
+ * As additional files and resources, add
+   - all of the jars in the jars directory (8)
+   - all files in the Sources directory (shift-click to select multiple files)
+     NOTE: You will get an error about including the javadoc, javazoom, and Test directories.
+           This is to be expected and you can safely ignore these messages.
+   - all files in the jython-2.2.1 directory
+     NOTE: You will again see errors about subdirectories, and you can again ignore them
+
+Properties:
+ * Check Set Working Directory to Inside the Appliaction Package
+ * Enter "-Xmx512m" for VM options
+ * Ensure Allow Mixed Localizations is checked
+ * Set the version number appropriately
+
+Click Create Application and save the bundle to the desktop (e.g., ~/Desktop/jes-4-3.app)
+
+Now we need to add additional resources to the application bundle manually.  To do this open up a terminal window and do the following:
+
+cd jes-4-3.app/Contents/Resources/Java
+cp -r ~/Desktop/jes-4-3-nojava/JESHelp .
+cp ~/Desktop/jes-4-3-nojava/JES*.html .
+cp ~/Desktop/jes-4-3-nojava/JES*.txt .
+cp -r ~/Desktop/jes-4-3-nojava/images .
+
+This should complete the JES application.  Test it to make sure that it runs properly and upload it to the Google Code page.
+

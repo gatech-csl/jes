@@ -1,0 +1,267 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<!-- THIS PAGE IS AUTOMATICALLY GENERATED.  DO NOT EDIT. -->
+<!-- Sat Oct 13 12:06:50 2007 -->
+<!-- USING HT2HTML 2.0 -->
+<!-- SEE http://ht2html.sf.net -->
+<!-- User-specified headers:
+Title: Java Arrays in Jython
+
+-->
+
+<head>
+<title>Java Arrays in Jython</title>
+<meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
+<meta name="generator" content="HT2HTML/2.0">
+<style type="text/css">
+body { margin: 0px; }
+</style>
+</head>
+<body bgcolor="#ffffff" text="#000000"
+      marginwidth="0" marginheight="0"
+      link="#0000bb"  vlink="#00000"
+      alink="#ff0000">
+<!-- start of page table -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<!-- start of banner row -->
+<tr>
+<!-- start of corner cells -->
+<td width="150" valign="middle" bgcolor="#cccccc" class="corner">
+
+<center>
+    <a href="http://www.jython.org/">
+    <img border="0" src="./images/jpython-new-small.gif"></a></center> </td>
+<td width="15" bgcolor="#cccccc">&nbsp;&nbsp;</td><!--spacer-->
+<!-- end of corner cells -->
+<!-- start of banner -->
+<td width="90%" bgcolor="#cccccc" class="banner">
+<!-- start of site links table -->
+<table width="100%" border="0"
+cellspacing="0" cellpadding="2"
+       bgcolor="#ffffff">
+<tr>
+    <td bgcolor="#cccccc">
+<a href="http://www.jython.org/">Home</a>
+    </td>
+    <td bgcolor="#cccccc">
+<a href="http://www.python.org/">www.python.org</a>
+    </td>
+</tr><tr>
+    <td bgcolor="#cccccc">
+<a href="http://www.jython.org/download.html">Download</a>
+    </td>
+    <td bgcolor="#cccccc">
+<a href="./index.html">Documentation</a>
+    </td>
+</tr>
+</table><!-- end of site links table -->
+
+</td><!-- end of banner -->
+</tr><!-- end of banner row -->
+<tr><!-- start of sidebar/body row -->
+<!-- start of sidebar cells -->
+<td width="150" valign="top" bgcolor="#cccccc" class="sidebar">
+<!-- start of sidebar table -->
+<table width="100%" border="0" cellspacing="0" cellpadding="3"
+       bgcolor="#ffffff">
+<tr><td bgcolor="#666699"><b><font color="#ffffff">
+Documentation
+</font></b></td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="./index.html">Overview</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="whatis.html">Executive Summary</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="interpreter.html">Invoking Jython</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="registry.html">Jython Registry</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="embedding.html">Embedding</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="compile.html">Compiling Jython from source</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">&nbsp;
+<tr><td bgcolor="#666699"><b><font color="#ffffff">
+Working with Java
+</font></b></td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="usejava.html">The Basics</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="properties.html">JavaBean Properties</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="jarray.html">Java arrays</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="subclassing.html">Subclassing</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="jythonc.html">Building applets, servlets, beans...</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="jreload.html">Reloading java classes</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="zxjdbc.html">zxJDBC</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">&nbsp;
+<tr><td bgcolor="#666699"><b><font color="#ffffff">
+Python Docs (exits)
+</font></b></td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="http://www.python.org/doc/tut/tut.html">Python Tutorial</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="http://www.python.org/doc/lib/lib.html">Library Reference</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">&nbsp;
+<tr><td bgcolor="#666699"><b><font color="#ffffff">
+Other
+</font></b></td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="differences.html">Jython vs. CPython</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="http://www.jython.org/cgi-bin/faqw.py?req=index">Jython FAQ (exit)</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="http://www.geocrawler.com/archives/3/7017/2000/">List Archives</a> (exit)
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="http://www.python.org/workshops/1997-10/proceedings/hugunin.html">JPython paper</a> (exit)
+</td></tr>
+<tr><td bgcolor="#cccccc">&nbsp;
+<tr><td bgcolor="#666699"><b><font color="#ffffff">
+Contact
+</font></b></td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="http://lists.sourceforge.net/lists/listinfo/jython-users">Questions on Jython?<br>jython-users</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+&nbsp;
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="http://www.python.org/">
+<center>
+    <img border="0" src="./images/PythonPoweredSmall.gif"></center>
+</a>
+</td></tr>
+<tr><td bgcolor="#cccccc">
+&nbsp;
+</td></tr>
+<tr><td bgcolor="#cccccc">
+<a href="http://sourceforge.net/">
+<center>
+ <img src="http://sourceforge.net/sflogo.php?group_id=12867" width="88" height="31" border="0" alt="SourceForge Logo"></center>
+</a>
+</td></tr>
+</table><!-- end of sidebar table -->
+
+</td>
+<td width="15">&nbsp;&nbsp;</td><!--spacer-->
+<!-- end of sidebar cell -->
+<!-- start of body cell -->
+<td valign="top" width="90%" class="body"><br>
+<h3>Java Arrays in Jython - JArray</h3>
+
+Many Java methods require Java array objects as arguments.  The way
+that these arguments are used means that they must correspond to
+fixed-length, mutable sequences, sometimes of primitive data types.
+The PyArray class is added to support these Java arrays and instances
+of this class will be automatically returned from any Java method call
+that produces an array.  In addition, the "jarray" module is provided
+to allow users of Jython to create these arrays themselves, primarily
+for the purpose of passing them to a Java method.
+
+<P>The jarray module exports two functions:
+
+<blockquote><pre>
+array(sequence, type)
+zeros(length, type)
+</pre></blockquote>
+
+<P>array will create a new array of the same length as the input
+sequence and will populate it with the values in sequence.  zeros will
+create a new array of the given length filled with zeros (or null's if
+appropriate).
+
+<P>type can either be a single character typecode (using the same mappings
+as Python's array module) or it can be an instance of a JavaClass object.
+The valid typecodes are shown in the following table:
+
+<p><TABLE BORDER COLS=2 WIDTH="50%">
+<TR>
+    <TH ALIGN=CENTER>Character Typecode</TH>
+    <TH>Corresponding Java Type</TH>
+</TR>
+<TR>
+    <TD>z</TD>
+    <TD>boolean</TD>
+</TR>
+<TR>
+    <TD>c</TD>
+    <TD>char</TD>
+</TR>
+<TR>
+    <TD>b</TD>
+    <TD>byte</TD>
+</TR>
+<TR>
+    <TD>h</TD>
+    <TD>short</TD>
+</TR>
+<TR>
+    <TD>i</TD>
+    <TD>int</TD>
+</TR>
+<TR>
+    <TD>l</TD>
+    <TD>long</TD>
+</TR>
+<TR>
+    <TD>f</TD>
+    <TD>float</TD>
+</TR>
+<TR>
+    <TD>d</TD>
+    <TD>double</TD>
+</TR>
+</TABLE>
+
+
+</td><!-- end of body cell -->
+</tr><!-- end of sidebar/body row -->
+</table><!-- end of page table -->
+<div class="body">
+<div class="continuation">
+<!-- start of continued wide-body text -->
+
+<h3>Example</h3>
+
+<PRE>
+>>> from jarray import zeros, array
+>>> array([1,2,3], 'd')
+array([1.0, 2.0, 3.0], double)
+>>> zeros(3, 'f')
+array([0.0, 0.0, 0.0], float)
+>>> from java.util import Hashtable
+>>> array([Hashtable(), Hashtable()], Hashtable)
+array([&lt;java.util.Hashtable instance at 2045730>, &lt;java.util.Hashtable instance at 2045714>], java.util.Hashtable)
+>>> zeros(5, Hashtable)
+array([None, None, None, None, None], java.util.Hashtable)
+</PRE>
+
+This example show how to create an array of three specific doubles, a
+length-three array of floats, an array of two specific instance of
+java.util.Hashtable, and an empty array of java.util.Hashtable's.
+
+<!-- end of continued wide-body text -->
+</div>
+</div>
+</body></html>

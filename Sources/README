@@ -1,0 +1,31 @@
+to build java class files and javadocs:
+    # both of these commands should be run in the jes-<version>/Sources directory
+    > javac *.java
+    > javadoc *.java -d javadoc
+
+to build a distribution:
+    # these instructions will build a zipfile distribution suitable for release as either a stable or development package
+    # variables are in denoted as <var> and should be replaced with the appropriate value
+    # optional arguments are placed in brackets such as [-o opt]
+
+    # set the environment variable JES_SVNROOT to save some typing later
+    > export JES_SVNROOT=svn+ssh://triton.cc.gatech.edu/hm20/jes/jes-svnroot/jes
+    
+    # export the code for a particular revision (or HEAD) to your current working directory
+    > svn export [-r <revision>] $JES_SVNROOT/trunk jes-<version>
+    
+    # tag the revision (or HEAD) with a version number
+    > svn copy [-r <revision>] $JES_SVNROOT/trunk $JES_SVNROOT/tags/release-<version> -m "Tagging <revision> as <version>"
+    
+    # build the code and generate the javadocs
+    > cd jes-<version>/Sources
+    > javac *.java
+    > javadoc *.java -d javadoc
+    launch JES (both to test and to autobuild the class files)
+    move to the directory containing jes-<version>
+
+    # create the distribution zipfile
+    > zip -r jes-<version> jes-<version>
+    move zipfile into triton:/var/www/html/jes/dist/
+    update trac release page
+

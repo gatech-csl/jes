@@ -1,0 +1,22 @@
+Changes Since JES 4.2
+
+
+Changes Since JES 4.0
+pickAFile and other JFileChooser related calls now thread safe
+input and raw_input now accept input through command window
+MediaPath now saves on close.
+JES settings reworked internally
+removed turnin settings dialog an first launch
+Centered JES and dialog windows on startup
+Minor bugfixes
+
+Changes Since JES 3.1
+0-based indexing on sounds and pictures
+Oct 21 - Fixed SimpleSound, out of range error dialogs and moved some messages to media.py	
+Oct 21 - Fixed double ">>>" at startup.
+Oct 21 - Fixed 'None' title bug on Picture Frame
+Oct 18 - Moved to JRE 1.6.10
+Oct 16 - Changes to JES-config. Logging option now stored.
+Oct 16 - Fixed typo in drop(turtle)
+Oct 16 - new jes.bat (checks version) and jes2.bat (uses installed java version if exists). Original renamed to jes.bat.old (always bundled jre).
+Oct 01 - Fixed bug in getSamples

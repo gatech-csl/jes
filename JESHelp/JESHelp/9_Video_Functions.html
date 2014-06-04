@@ -1,0 +1,101 @@
+<html>
+<head>
+<title>JES Help</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<a name="top"></a><a href="0_Table_of_Contents.html">Table of Contents</a>
+&gt; <a href="8_Understanding_Video.html">Understanding Video in JES
+</a> &gt; Video Functions
+in JES
+<hr size="1">
+<table width="80%" border="0" cellspacing="0" cellpadding="5">
+  <tr>
+    <td bgcolor="#dddddd" height="107">
+      <b>Video Functions in JES</b><br>
+       <br>
+      JES has the ability to create quicktime movies and play back lots of different movies.  To get playback to work, make sure that you have installed Quicktime for Java.  Instructions are on the <a href="1_Setting_up_JES.html">JES Installation</a> page.
+      This is a list of functions that you may find useful when you are creating programs to manipulate or create videos in JES. Remember, these functions are part of a special library, and are not available in other Jython programming environments.
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <table width="100%" border="0" cellspacing="0" cellpadding="5">
+        <tr>
+          <td width="25%">makeMovie</td>
+          <td width="75%">
+          <b>makeMovie</b>():<br>
+            <font color=blue>returns</font>: an empty Movie object.<br>
+            Makes a new "empty" Movie object and returns it. Takes no input.
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">makeMovieFromInitialFile</td>
+          <td bgcolor="#eeeeee">
+          <b>makeMovieFromInitialFile</b>(filename):<br>
+            <font color=blue>filename</font>: string path to the first frame of the movie.<br>
+            <font color=blue>returns</font>: a Movie object using the given file as the first frame<br>
+            Takes a filename as input. Returns a Movie object using the given file as the first frame and using sequentially named files for subsequent frames (i.e. frame001, frame002, etc.)
+          </td>
+        </tr>
+        <tr>
+          <td>addFrameToMovie</td>
+          <td>
+          <b>addFrameToMovie</b>(frame, movie):<br>
+            <font color=blue>frame</font>: the filename of the frame to be added to the movie<br>
+            <font color=blue>movie</font>: the movie object for the frame to be added to<br>
+            Takes a filename and a Movie object as input. Adds the file as a frame to the end of the movie. addFrameToMovie(movie, frame) is also acceptable.
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">writeFramesToDirectory</td>
+          <td bgcolor="#eeeeee">
+          <b>writeFramesToDirectory</b>(movie[, directory]):<br>
+            <font color=blue>movie</font>: the movie object containing the frames to be written<br>
+            <font color=blue>directory</font>: a string path of the directory to write the frames (optional)<br>
+            Takes a Movie object and (optionally) a string path to a directory as input. Writes the frames of the movie to the given directory. Default directory is the user's home directory.
+          </td>
+        </tr>
+        <tr>
+          <td>playMovie</td>
+          <td>
+          <b>playMovie</b>(movie):<br>
+            <font color=blue>movie</font>: the movie object to be played<br>
+            Takes a Movie object as input and plays it.
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">writeAVI</td>
+          <td bgcolor="#eeeeee">
+          <b>writeAVI</b>(movie, path[, framesPerSec]):<br>
+            <font color=blue>movie</font>: the Movie object that you want to write out. The frames must either all be in the same directory, or the frames must have been written out to a directory since the last change was made.<br>
+			<font color=blue>path</font>: the path to the file you want the movie written to<br>
+			<font color=blue>framesPerSec</font>: the frame rate for the movie (optional)<br>
+			Writes a movie out in AVI format. Be sure to end the path with ".avi" so that the operating system will understand it properly. Default frame rate is 16.<br>
+          </td>
+        </tr>
+        <tr>
+          <td>writeQuicktime</td>
+          <td>
+          <b>writeQuicktime</b>(movie, path[, framesPerSec]):<br>
+            <font color=blue>movie</font>: the Movie object that you want to write out. The frames must either all be in the same directory, or the frames must have been written out to a directory since the last change was made.<br>
+			<font color=blue>path</font>: the path to the file you want the movie written to<br>
+			<font color=blue>framesPerSec</font>: the frame rate for the movie (optional)<br>
+			Writes a movie out in Quicktime format. Be sure to end the path with ".mov" so that the operating system will understand it properly. Default frame rate is 16.<br>
+          </td>
+        </tr>
+      </td>
+    </tr>
+    </table>
+    <tr>
+      <td align="right"> <a href="#top"><img src="../auxHelp/images/arro.gif" width="13" height="10" border="0">jump
+        to top</a>
+        <hr size="1">
+      </td>
+    </tr>
+</table>
+<p>&nbsp;</p>
+</body>
+</html>
