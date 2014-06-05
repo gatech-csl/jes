@@ -13,38 +13,62 @@ is the project leader, and the project has been worked on by many people
 over the years (as seen in the `JESCopyright.txt` file).
 
 
+Running JES
+-----------
+If you're on a system with a Java development environment and a set of GNU
+core utilities (including make) installed, just run:
+
+    make run
+
+If not...sorry, but you can't right now. I just finished reorganizing the
+entire source tree, and while the `Makefile` works with the new layout,
+the other launchers don't yet.
+
+
 What's in the repository
 ------------------------
-Matthew Frazier (<https://github.com/leafstorm>) is currently rebuilding
-and cleaning up the repository as part of a migration from Google Code to
-GitHub. The repository layout is likely to change significantly during this
-process, but he'll try to keep this up to date. (If he doesn't, email him to
-complain.)
+The `Makefile` is used by developers to launch JES and run all of its tests.
+You can run `make run` to build JES, `make test` to run all the tests, and
+`make clean` to erase everything you built.
 
-A few of the folders contain files that JES needs to run:
+The `JES.bat`, `JES.sh`, and `JES.exe` files launch JES on different
+platforms, but as I said earlier, they don't work right now.
 
-* `Sources`: The code for JES itself, which is a mix of Java and Jython.
+All the source files and resources for JES itself live in the `jes` folder:
 
-* `images`: Pictures that are part of JES (like the logo and buttons).
+* `jes/java`: The Java code that contains the core of JES, including the
+  code that directly handles pictures, sounds, and movies.
 
-* `jython-2.2.1`: A copy of Jython, which JES uses to run Python programs.
+* `jes/python`: The Python code that controls most of the user interface.
 
-* `jars`: All of JES's Java dependencies, as JAR files.
+* `jes/images`: The pictures that are used by JES itself, such as the
+  splash screen and the toolbar buttons.
 
-* `JESHelp`: Help files explaining how to use JES.
-  (The `JESIntro.txt` and `JESAPIHelp.html` files in the main folder
-  are also part of the help.)
+* `jes/help`: Web pages (and a few text files) about how to use JES.
 
-* The main folder contains a few different ways to launch JES:
-  `jes.bat`, `JES.exe`, `JES.sh`, `splash.bat`, and `Makefile`.
-  (`list-jars.sh` is used by `JES.sh` and `Makefile`.)
-  These may or may not work...
+* `jes/classes`: When the Java code is compiled, the class files are placed
+  here.
 
-The rest are just extra documentation:
+* `jes/javadoc`: API documentation for the Java parts of JES.
+  (This isn't actually accessible from inside JES anymore, but the code
+  for browsing it is still present.)
 
-* `demos`: Example programs for JES. (More are available from the Media
-  Computation Web site.)
+In addition, JES uses some code written by others, which we store alongside
+JES in the `dependencies` folder:
 
-* `Release Build Tools`: Instructions for building JES projects,
-  and some stuff used by the `JES.exe` Windows launcher.
+* `dependencies/jars`: JAR files for a bunch of libraries the JES Java code
+  uses to work with media files.
+
+* `dependencies/jython`: An installation of Jython, currently version 2.2.1.
+  We need to keep this around because the Jython JAR doesn't have the
+  standard library.
+
+The `tests` folder contains Python programs that test different parts of JES
+to make sure we wrote them according to the specifications.
+(You can't run these from inside JES.)
+
+The `demos` folder contains programs you can run to try out JES.
+
+The `working-on-jes` folder contains articles written by the JES developers
+about how JES works, and how you can even contribute to it!
 

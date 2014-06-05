@@ -1,15 +1,13 @@
 # Compiled Java files
 *.class
-Sources/javadoc/
+jes/javadoc/
 
 # Files created during testing
-Sources/Tests/test*.jpg
-Sources/Tests/testSound.wav
-Sources/Tests/*Out.*
-Sources/Tests/writeTest.*
+tests/test-output/*
+!tests/test-output/README
 
 # Jython cache
-cachedir/
+jython-cache/
 
 # JES-generated backup and log files
 *.pybak
