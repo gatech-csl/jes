@@ -52,11 +52,11 @@ class Html_Browser(swing.JPanel):#swing.JFrame):
         label = swing.JLabel("Go To:")
         self.field = swing.JTextField(preferredSize=(200,20),
                 text=startUrl, actionPerformed=self.goToUrl)
-        go = swing.JButton("Go", size=(40,100), 
+        go = swing.JButton("Go", size=(40,100),
                 actionPerformed=self.goToUrl)
-        self.back = swing.JButton("Back", size=(60,100), 
+        self.back = swing.JButton("Back", size=(60,100),
                 actionPerformed=self.goBack)
-        self.forward = swing.JButton("Forward", size=(60,100), 
+        self.forward = swing.JButton("Forward", size=(60,100),
                 actionPerformed=self.goForward)
         topPane = swing.JPanel()
         topPane.add(self.back)
@@ -70,7 +70,7 @@ class Html_Browser(swing.JPanel):#swing.JFrame):
 # Function name: goToUrl
 # Parameters:
 #     -event:
-# Description: 
+# Description:
 #        Sets the page displayed by the browser to the new page.
 ################################################################################
     def goToUrl(self, event):
@@ -84,7 +84,7 @@ class Html_Browser(swing.JPanel):#swing.JFrame):
 # Function name: goBack
 # Parameters:
 #     -event:
-# Description: 
+# Description:
 #        Sets the page displayed by the browser to the previous page.
 ################################################################################
     def goBack(self, event):
@@ -98,7 +98,7 @@ class Html_Browser(swing.JPanel):#swing.JFrame):
 # Function name: goForward
 # Parameters:
 #     -event:
-# Description: 
+# Description:
 #        Sets the page displayed by the browser to the new page.
 ################################################################################
     def goForward(self, event):
@@ -107,7 +107,7 @@ class Html_Browser(swing.JPanel):#swing.JFrame):
             self.htmlPane.setPage(self.urlList[self.curUrl])
             self.field.text=self.urlList[self.curUrl]
             self.enableButtons()
-            
+
 
 ################################################################################
 # Function name: followHyperlink

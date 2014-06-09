@@ -28,7 +28,7 @@ class NannyNag:
     def get_lineno(self):
         return self.lineno
     def get_msg(self):
-        return self.msg  
+        return self.msg
     def get_line(self):
         return self.line
 
@@ -328,5 +328,3 @@ else:
                                "unbalanced bracket '" + token + "'",
                                line)
             nesting_level = nesting_level - 1
-
-

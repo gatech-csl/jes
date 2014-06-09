@@ -31,7 +31,7 @@ class JESThread(Thread):
 #     Creates a new instance of the JESThread class
 ################################################################################
     def __init__(self, code, interpreter, mode):
-	self.mode = mode
+        self.mode = mode
         global debugFile
 
         if self.mode == 'run' or self.mode == 'debug':
@@ -44,7 +44,7 @@ class JESThread(Thread):
         self.errMsg = None
         self.excRecord = None
         self.debugger = interpreter.debugger
-	
+
 ################################################################################
 # Function name: run
 # Description:
@@ -65,18 +65,18 @@ class JESThread(Thread):
                 self.debugger.run(code, self.contextForExecution)
                 self.mode = 'run'  # this is so that the command window will reset back to
                                    # run mode
-                
+
             elif self.mode == 'load':
                 ## NO MAGIC. (alexr)
                 execfile(self.fileName, self.contextForExecution)
                 self.interpreter.program.loadSuccess()
-                
+
                 # the following block subtracts the added identifiers of the last load
                 # from the current context
                 # for key in self.contextForExecution.keys():
                 #     if key in self.interpreter.currentLoadedFileKeys:
                 #         del self.contextForExecution[key]
-                # 
+                #
                 # # now we load the file into an empty context, well, not empty, we need the stuff
                 # # in preprocessing
 
@@ -122,17 +122,17 @@ class JESThread(Thread):
                 #     else:
                 #         self.interpreter.currentLoadedFileKeys.insert(0, key)
                 #         self.contextForExecution[key] = tempContext[key]
-		
+
                 #Code has been successfully executed, notify the program:
 
             elif self.mode == 'preprocessing':
 
                 execfile(self.fileName,self.contextForExecution)
                 self.interpreter.contextAfterPreprocessing = self.contextForExecution.copy()
-		
-	    else:
-		execfile(self.fileName,self.contextForExecution)
-                
+
+            else:
+                execfile(self.fileName,self.contextForExecution)
+
             #Include these lines to actually exit on a sys.exit() call
             #except SystemExit, value:
             #   raise SystemExit, value
@@ -161,7 +161,7 @@ class JESThread(Thread):
                     traceback.print_exc()
 
 
-        
+
         self.threadCleanup()
 
 ################################################################################
@@ -181,7 +181,7 @@ class JESThread(Thread):
                                             self.mode)
 
         self.interpreter.program.gui.swing.SwingUtilities.invokeLater( runnable )
-       
+
         self.threadCleanup()
         self.finalize()
 
@@ -191,21 +191,21 @@ class JESThread(Thread):
 # Description:
 #  Initializes the stuff to be done at the beginning of a run, and now also at the
 #  beginning of any restarts, i.e. whenever the JESThread wakes up from a wait
-################################################################################        
+################################################################################
     def initialize(self):
         self.interpreter.program.gui.startWork()
         self.interpreter.program.gui.editor.editable = 0
         self.excRecord = None
         self.interpreter.interpreterLock.acquire()
         self.interpreter.program.gui.setRunning(1)
-	self.interpreter.program.gui.debuggerButton.enabled = 0;
+        self.interpreter.program.gui.debuggerButton.enabled = 0;
         self.errMsg = ''
-                
+
         self.outputBuffer = JESStdOutputBuffer.JESStdOutputBuffer(sys.stdout,
                                                                   sys.stderr,
                                                                   self.interpreter)
-        
-        
+
+
 ################################################################################
 # Function name: threadCleanup
 # Description:
@@ -215,31 +215,31 @@ class JESThread(Thread):
     def threadCleanup(self):
         self.outputBuffer.restoreOutput()
         outputText = self.outputBuffer.getText()
-	runnable = None
+        runnable = None
         runnable = JESRunnable.JESRunnable( self.interpreter,
                                             outputText ,
                                             self.excRecord,
                                             self.mode)
         self.interpreter.program.gui.swing.SwingUtilities.invokeLater( runnable )
-        
+
         # this if should be gotten rid of
         #if self.interpreter.interpreterCondition._is_owned():
         self.interpreter.interpreterCondition.notifyAll()
         self.interpreter.interpreterLock.release()
-	self.interpreter.program.gui.debuggerButton.enabled = 1
+        self.interpreter.program.gui.debuggerButton.enabled = 1
 
     def preprocessingFailed(self, type, value, traceback):
         import sys
         import exceptions
         import re
         import string
-        
+
         self.outputBuffer.restoreOutput()
         sys.stdout = sys.__stderr__
-        
+
         # want to use a function defined in that Object
         expRec = JESExceptionRecord.JESExceptionRecord(None,None)
-        
+
         txtStack = expRec.getExceptionInfo(traceback)
         del expRec # don't want to try and do anything with that :)
         # build incorrectly
@@ -248,7 +248,7 @@ class JESThread(Thread):
 
         print type
         print value
-        print txtStack 
+        print txtStack
         print "========================================"
         print "" # a blank line
         valueStr = value.__str__()
@@ -270,4 +270,3 @@ class JESThread(Thread):
             print "help, contact a TA."
 
         sys.exit()
- 

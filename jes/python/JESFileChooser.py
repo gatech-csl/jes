@@ -23,7 +23,7 @@ class JESFileChooser(JFileChooser):
 
     #####################################################################
     # Function name: approveSelection
-    # Description: 
+    # Description:
     #     Verifies to the user that they actually want to overwrite an
     #     existing file before returning from the dialog.
     #####################################################################
@@ -44,4 +44,3 @@ class JESFileChooser(JFileChooser):
         else:
             message = 'The file name contains illegal characters. Please rename.'
             JOptionPane.showMessageDialog(self, message, 'Error', JOptionPane.ERROR_MESSAGE)
-

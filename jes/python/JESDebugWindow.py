@@ -43,8 +43,8 @@ IMPROVED_TYPE_NAMES = {INTEGER:    'Integer',
                        MODULE: 'Module',
                        CLASS:      'Class'}
 
-         
-                  
+
+
 class JESDebugWindow(swing.JFrame, ActionListener):
 ################################################################################
 # Function name: __init__
@@ -88,7 +88,7 @@ class JESDebugWindow(swing.JFrame, ActionListener):
 
     def buildContentPane(self, localVars, globalVars):
 
-        
+
         # TODO
         # replace varVal.__class__.__name__ with something more meaningful
         # and scan for things without "__class__" or "__name__" fields
@@ -107,17 +107,17 @@ class JESDebugWindow(swing.JFrame, ActionListener):
         globalVarsDict = self.improveTypeNames(globalVarsDict)
 
 
-        
+
         #Create the TableModel and JTable components
         localTableModel = swing.table.DefaultTableModel(localVarsDict, [VAR_L_NAME_COL_CAPTION,
                                                                         VAR_TYPE_COL_CAPTION,
                                                                         VAR_VALUE_COL_CAPTION])
 
-        
+
         globalTableModel = swing.table.DefaultTableModel(globalVarsDict, [VAR_G_NAME_COL_CAPTION,
                                                                         VAR_TYPE_COL_CAPTION,
                                                                         VAR_VALUE_COL_CAPTION])
-        
+
         localVarTable = swing.JTable(localTableModel)
         localVarTable.getColumnModel().getColumn(0).setPreferredWidth(1);
 
@@ -145,12 +145,12 @@ class JESDebugWindow(swing.JFrame, ActionListener):
     def improveTypeNames(self, varsDict):
 
         for var in varsDict:
-            
+
             if IMPROVED_TYPE_NAMES.has_key(var[1]):
                 var[1] = IMPROVED_TYPE_NAMES[ var[1] ]
 
         return varsDict
-    
+
 
     ###############################################################################
     # filterVars
@@ -174,19 +174,19 @@ class JESDebugWindow(swing.JFrame, ActionListener):
                 pass
             else:
                 newVarsDict.append( varsDict[i])
-                
+
         return newVarsDict
 
     #############################################################################
     # sortVars
     #
     # sorts the variables list varsDict
-    # 
+    #
     #
     # param - varsDict - the array that will be displayed in the debug window
     # return- varsDict - now sorted
     #
-    ############################################################################## 
+    ##############################################################################
     def sortVars(self,varsDict):
         varsDict.sort( self.compareFun )
         return varsDict
@@ -201,13 +201,13 @@ class JESDebugWindow(swing.JFrame, ActionListener):
     # return- [-1,0,1]
     ###########################################################################
     def compareFun(self,x,y):
-        
+
         xTypeSortNum = self.getTypeSortNum(x[1])
         yTypeSortNum = self.getTypeSortNum(y[1])
 
         if   xTypeSortNum < yTypeSortNum:
             return -1
-        
+
         elif xTypeSortNum > yTypeSortNum:
             return 1
 
@@ -235,7 +235,7 @@ class JESDebugWindow(swing.JFrame, ActionListener):
            x == TUPLE   or \
            x == LIST    or \
            x == DICTIONARY:
-            
+
             return 1
 
         if x == FUNCTION:
@@ -251,7 +251,7 @@ class JESDebugWindow(swing.JFrame, ActionListener):
 # Parameters:
 #     -event: event object that represents action that occured
 # Description:
-#     This function closes the debug window when the close button is pressed.  
+#     This function closes the debug window when the close button is pressed.
 ################################################################################
     def actionPerformed(self, event):
         actionCommand = event.getActionCommand()
@@ -275,7 +275,7 @@ class JESDebugWindow(swing.JFrame, ActionListener):
     def __buildVarDict__(self, varsToDisplay ):
         varDict = []
         for varName, varVal in varsToDisplay.items():
-            
+
             try:
                 varDict += [[varName, varVal.__class__.__name__, varVal]]
 
@@ -283,8 +283,5 @@ class JESDebugWindow(swing.JFrame, ActionListener):
                 # some objects (swing objects, say) don't have the class field
                 # this is a crude way to avoid that generating errors
                 pass
-            
+
         return varDict
-
-
-

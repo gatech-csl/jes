@@ -31,11 +31,11 @@ class JESLogBuffer:
 ################################################################################
     def __init__(self, program):
         self.saveBoolean = (1 == 1);
-	self.CurrentBuffer=StringBuffer();
+        self.CurrentBuffer=StringBuffer();
         self.CurrentBuffer.append("<file_created time=\"");
         self.CurrentBuffer.append((Date(System.currentTimeMillis())).toString());
         self.CurrentBuffer.append("\">\n");
-        
+
 ################################################################################
 # Function name: resetBuffer
 # Parameters:
@@ -61,7 +61,7 @@ class JESLogBuffer:
         self.CurrentBuffer.append((Date(System.currentTimeMillis())).toString());
         self.CurrentBuffer.append("\">");
         self.CurrentBuffer.append(newString);
-	self.CurrentBuffer.setCharAt(self.CurrentBuffer.length()-1, '>');
+        self.CurrentBuffer.setCharAt(self.CurrentBuffer.length()-1, '>');
         self.CurrentBuffer.append("</command_run>\n");
 
 ################################################################################
@@ -88,23 +88,23 @@ class JESLogBuffer:
 ################################################################################
 
     def openLogFile(self, fileName):
-	self.CurrentBuffer= StringBuffer();
-	try:
-	    file=open(fileName+"log", "rt");
-	    self.CurrentBuffer.append(file.read());
+        self.CurrentBuffer= StringBuffer();
+        try:
+            file=open(fileName+"log", "rt");
+            self.CurrentBuffer.append(file.read());
             if self.CurrentBuffer.length()>16:
                 self.CurrentBuffer=StringBuffer(self.CurrentBuffer.substring(0,
                                                      self.CurrentBuffer.length()-16));
-	    self.CurrentBuffer.append("<file_opened time=\"");
+            self.CurrentBuffer.append("<file_opened time=\"");
             self.CurrentBuffer.append((Date(System.currentTimeMillis())).toString());
             self.CurrentBuffer.append("\">");
-	    self.CurrentBuffer.append(fileName);
-	    self.CurrentBuffer.append("</file_opened>");
-	    self.CurrentBuffer.append("\n");
-	except:
+            self.CurrentBuffer.append(fileName);
+            self.CurrentBuffer.append("</file_opened>");
+            self.CurrentBuffer.append("\n");
+        except:
             self.resetBuffer();
-	    self.CurrentBuffer.append("<Could not find "+fileName+ "log,");
-	    self.CurrentBuffer.append(" creating a new logfile>\n");
+            self.CurrentBuffer.append("<Could not find "+fileName+ "log,");
+            self.CurrentBuffer.append(" creating a new logfile>\n");
 
 ################################################################################
 # Function name: saveLogFile
@@ -117,16 +117,16 @@ class JESLogBuffer:
     def saveLogFile(self, fileName):
         if self.saveBoolean==(1==0):
             return;
-	logfile=open(fileName+"log", "wt");
-	self.CurrentBuffer.append("<file_saved time=\"");
-    	self.CurrentBuffer.append((Date(System.currentTimeMillis())).toString());
+        logfile=open(fileName+"log", "wt");
+        self.CurrentBuffer.append("<file_saved time=\"");
+        self.CurrentBuffer.append((Date(System.currentTimeMillis())).toString());
         self.CurrentBuffer.append("\">");
-	self.CurrentBuffer.append(fileName);
-	self.CurrentBuffer.append("</file_saved>");
-	self.CurrentBuffer.append("\n");
+        self.CurrentBuffer.append(fileName);
+        self.CurrentBuffer.append("</file_saved>");
+        self.CurrentBuffer.append("\n");
         self.CurrentBuffer.append("</file_created>\n");
-	logfile.write(self.CurrentBuffer.toString());
-	logfile.close();
+        logfile.write(self.CurrentBuffer.toString());
+        logfile.close();
 
 ################################################################################
 # Function name: dumpLogToTerm
@@ -139,5 +139,3 @@ class JESLogBuffer:
 
     def dumpLogToTerm(self):
         System.out.println(self.CurrentBuffer.toString());
-        
-

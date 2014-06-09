@@ -33,7 +33,7 @@ class FrameSequencerTool(swing.JFrame):
     FocusOwner = None
 
     def __init__(self, movie):
-        try:       
+        try:
             self.FocusOwner = None
             self.size = (600, 400)
             self.movie = movie
@@ -117,7 +117,7 @@ class FrameSequencerTool(swing.JFrame):
                     if fnmatch.fnmatch(file, pattern):
                         self.listModel.addElement(file)
 
- 
+
     ################################################################################
     # Function name: actionPerformed
     # Parameters:
@@ -174,5 +174,3 @@ class FrameSequencerTool(swing.JFrame):
 
         else:
             pass
-
-

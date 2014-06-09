@@ -26,7 +26,7 @@ class JESStdOutputBuffer:
 # Description: undoes the effect of JESStdOutputBuffer
 #              restores sys.stdout to the original value so that printing
 #              commands again send text to the screen
-#            
+#
 #
 ################################################################################
     def restoreOutput(self):
@@ -69,5 +69,3 @@ class JESStdOutputBuffer:
         runnable = JESUpdateRunnable.JESUpdateRunnable(self.interpreter, text)
         #self.interpreter.program.gui.swing.SwingUtilities.invokeLater( runnable )
         self.interpreter.program.gui.swing.SwingUtilities.invokeAndWait( runnable )
-
-

@@ -22,8 +22,8 @@ class JESDebugWindowWrapper:
 # Function name: show
 # Parameters:
 #     -varsToDisplay: A dictionary.  Presumably the variables to be displayed.                    .
-# Description: 
-#     To make a debug window visible   
+# Description:
+#     To make a debug window visible
 ################################################################################
     def show(self, localVars, globalVars):
         self.lock.acquire()
@@ -33,5 +33,3 @@ class JESDebugWindowWrapper:
 
         JESDebugWindow.JESDebugWindow( localVars, globalVars, count, self.varsToFilter)
         self.lock.release()
-
-

@@ -58,7 +58,7 @@ class JESProgram:
 
         self.logBuffer=JESLogBuffer.JESLogBuffer(self)
 #        self.logBuffer.saveBoolean = JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_LOGBUFFER);
-	
+
         # let's just read the config file once, and if
         # it's no there, we'll handle it right now.
         # self.preCheckForConfigFile()
@@ -78,13 +78,13 @@ class JESProgram:
         self.interpreter.debugger.watcher.setPreferredSize(awt.Dimension(600,400))
 
         self.gui.windowSetting(None)
-        
+
         self.varsToHighlight = self.interpreter.getVarsToHighlight()
 
         self.chooser = JESFileChooser.JESFileChooser()
         self.defaultPath = io.File( JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_MEDIAPATH) )
         self.setHelpArray()
-	#self.loadSuccess(), 5/15/09 Dorn: removed as unnecessary and breaks due to needed code in loadSuccess for input
+        #self.loadSuccess(), 5/15/09 Dorn: removed as unnecessary and breaks due to needed code in loadSuccess for input
 
         self.gui.changeSkin( JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_SKIN) )
         self.gui.show()
@@ -111,14 +111,14 @@ class JESProgram:
         if not JESConfig.getInstance().isConfigLoaded():
             self.openIntroductionWindow()
             #self.openSettingsGUI()
-            
+
         #self.gui.repaint()
 
         #JavaMusic.open()
     def getVarsToHighlight(self):
         return self.varsToHighlight
 
-        
+
 #main
     def main(self, args):
         "@sig public static void main(String args[])"
@@ -127,8 +127,8 @@ class JESProgram:
 
 ################################################################################
 # Function name: newFile
-# Description: 
-#     Blanks outthe fileName and the text in the editor window. 
+# Description:
+#     Blanks outthe fileName and the text in the editor window.
 ################################################################################
     def newFile(self):
         self.gui.editor.setText('')
@@ -138,10 +138,10 @@ class JESProgram:
 
 ################################################################################
 # Function name: openFile
-# Description: 
-#     This function will open a dialog window allowing the user to select a 
-#     file.  If the user selects a file, it is opened, and its contents are  
-#     place into the text editor. 
+# Description:
+#     This function will open a dialog window allowing the user to select a
+#     file.  If the user selects a file, it is opened, and its contents are
+#     place into the text editor.
 ################################################################################
     def openFile(self):
         self.chooser = swing.JFileChooser(self.defaultPath)
@@ -157,14 +157,14 @@ class JESProgram:
             file.close()
             self.defaultPath = self.chooser.getCurrentDirectory()
             self.logBuffer.openLogFile(file.name)
-      
+
 ################################################################################
 # Function name: saveFile
-# Description:  
-#     This function is called when the user selects the save file option from 
-#     the user menu.  If there is no file opened yet, the function will do          
-#     nothing.  If the file has no name, the function will call saveAs.  Else, 
-#     it will write the contents of the text editor to the file of the current 
+# Description:
+#     This function is called when the user selects the save file option from
+#     the user menu.  If there is no file opened yet, the function will do
+#     nothing.  If the file has no name, the function will call saveAs.  Else,
+#     it will write the contents of the text editor to the file of the current
 #     name.
 ################################################################################
     def saveFile(self):
@@ -180,19 +180,19 @@ class JESProgram:
                 #file.close()
                 #Commented out by AW: Trying to see if using java instead of jython
                 #gets rid of the newline errors
-                
+
                 filePath = self.chooser.getSelectedFile().getPath()
                 self.filename =  os.path.normpath(filePath)
 
                 fileWriter = io.FileWriter(filePath, 0)
                 fileWriter.write(text)
                 fileWriter.close()
-                
+
                 self.defaultPath = self.chooser.getCurrentDirectory()
                 self.logBuffer.saveLogFile(self.filename)
                 self.gui.editor.modified = 0
                 self.gui.setFileName(os.path.basename(self.filename))
-                
+
                 #Now write the backup
                 if JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_BACKUPSAVE):
                     backupPath = filePath+"bak"
@@ -208,7 +208,7 @@ class JESProgram:
 
 ################################################################################
 # Function name: saveAs
-# Description: 
+# Description:
 #     Opens a dialog and allows users to select or either type in a filename to
 #     save the file as.  If the user selects cancel, nothing happens.
 ################################################################################
@@ -217,7 +217,7 @@ class JESProgram:
             self.chooser.setCurrentDirectory(self.defaultPath)
             text = self.gui.editor.getText()
             self.chooser.setApproveButtonText("Save File")
-            
+
             returnVal = self.chooser.showSaveDialog(self.gui)
             if returnVal ==  0: #User has chosen a file, so now it can be saved
                 #DNR
@@ -250,7 +250,7 @@ class JESProgram:
                     fileWriter.close()
 
             return 1
-        
+
         except lang.Exception, e:
         #TODO - fix
             #Error handling for saveAs
@@ -286,7 +286,7 @@ class JESProgram:
         if self.filename == ' ':
             self.setErrorByHand(JESConstants.JESPROGRAM_NO_FILE, 0)
         else: # error 1. didn't occur
-          
+
             try:
                 file = open(self.filename, 'r')
                 fileText = file.read()
@@ -299,7 +299,7 @@ class JESProgram:
                 try:
                     lineWithError = JESTabnanny.check(self.filename)
 
-      
+
                 except:
 
                     import sys
@@ -322,20 +322,20 @@ class JESProgram:
 
                 # error 4. didn't occur,
                 # give the command area the focus
-		self.gui.commandWindow.showText("\n======= Loading Program =======\n")
-                self.interpreter.load( self.filename)   
+                self.gui.commandWindow.showText("\n======= Loading Program =======\n")
+                self.interpreter.load( self.filename)
                 self.gui.commandWindow.requestFocus()
                 self.gui.editor.getDocument().removeErrorHighlighting()
 
     def setErrorByHand(self,message,lineNumber):
         excRecord = JESExceptionRecord.JESExceptionRecord(self.filename,self)
         if message == JESConstants.JESPROGRAM_NO_FILE:
-                excRecord.setByHand(message)
+            excRecord.setByHand(message)
         else:
-                excRecord.setByHand(JESConstants.TAB_ERROR_MESSAGE + \
-                                   '%d\n' % lineNumber,
-                                    lineNumber
-                                   )    
+            excRecord.setByHand(JESConstants.TAB_ERROR_MESSAGE + \
+                               '%d\n' % lineNumber,
+                                lineNumber
+                               )
         runnable = JESRunnable.JESRunnable(self.interpreter,'',excRecord,'run')
         runnable.run()
 
@@ -348,13 +348,13 @@ class JESProgram:
                                            'run')
         runnable.run()
 
-        
-        
+
+
 ################################################################################
 # Function name: debugger_paused
 # Parameters:
 #     None
-# Description: 
+# Description:
 #     sets the Interpreter and the JES gui into debugger mode, the debugger
 #     made a stop
 ################################################################################
@@ -365,7 +365,7 @@ class JESProgram:
 # Function name: editorLoaded
 # Description:
 #     returns whether the text editor has been loaded
-#     
+#
 ################################################################################
 
     def editorLoaded(self):
@@ -380,7 +380,7 @@ class JESProgram:
     def loadSuccess(self):
         #self.gui.refreshDebugMenu()
         self.gui.loadCurrent()
-        
+
 
 ################################################################################
 # Function name: checkTabs
@@ -417,7 +417,7 @@ class JESProgram:
 
 ################################################################################
 # Function name: openAboutWindow
-# Description: 
+# Description:
 #     Opens up a JESAboutWindow.
 ################################################################################
     def openAboutWindow(self):
@@ -427,17 +427,17 @@ class JESProgram:
 
 ################################################################################
 # Function name: openIntroductionWindow
-# Description: 
+# Description:
 #     Opens up a JESIntroductionWindow.
 ################################################################################
     def openIntroductionWindow(self):
         if self.introWindow == None:
             introWindow = JESIntroduction.JESIntroduction()
         introWindow.show()
-   
+
 ################################################################################
 # Function name: openSettingsGUI
-# Description: 
+# Description:
 #     Opens up a settingd GUI Dialog.
 ################################################################################
     def openSettingsGUI(self):
@@ -445,9 +445,9 @@ class JESProgram:
 
 ################################################################################
 # Function Name: setHelpArray
-# Description: 
-#     This sets the array of help file names in self.gui.  If the folder 
-#     JESHelp cannot be located, the function will throw an exception which is 
+# Description:
+#     This sets the array of help file names in self.gui.  If the folder
+#     JESHelp cannot be located, the function will throw an exception which is
 #     caught by the function.
 ################################################################################
     def setHelpArray(self):
@@ -495,15 +495,15 @@ class JESProgram:
         self.gui.commandWindow.setKeymap(None)
         self.logBuffer.addCommand(text)
         self.interpreter.runCommand(text)
- 
+
 
 ################################################################################
 # Function name: sendTextToCommandWindow
-# Parameters: 
+# Parameters:
 #     -text:
 # Description:
-#     As the interpreter runs, it will generate text for the command window to 
-#     display.  That text is buffered in JESProgram until the command window 
+#     As the interpreter runs, it will generate text for the command window to
+#     display.  That text is buffered in JESProgram until the command window
 #     asks for it with the getTextForCommandWindow function
 ################################################################################
     def sendTextToCommandWindow(self, text):
@@ -511,7 +511,7 @@ class JESProgram:
 
 ################################################################################
 # Function name: getTextForCommandWindow
-# Description: 
+# Description:
 #     Returns the buffered text that was generated by JESInterpreter
 ################################################################################
     def getTextForCommandWindow(self):
@@ -545,9 +545,9 @@ class JESProgram:
 # Function name:  loadConfigFile
 # Parameters: self
 # Description: Checks to see if the config file already exists.  If it does exist,
-#      the function closes the file and exits so that JES can run normally.  If the 
-#      file does not exist, an introduction to JES is brought up explaining to the 
-#      user about the settings file for JES.  The settings menu option is also 
+#      the function closes the file and exits so that JES can run normally.  If the
+#      file does not exist, an introduction to JES is brought up explaining to the
+#      user about the settings file for JES.  The settings menu option is also
 #      brought up so that the user can create the settings file.
 #
 ################################################################################
@@ -579,7 +579,7 @@ class JESProgram:
 ################################################################################
 # Function name: makeNewConfigFile
 # Parameters: self, name, gt, mail
-# Description: Writes the passed in information to the config file.  If the file 
+# Description: Writes the passed in information to the config file.  If the file
 #        exists, it will be over written.  If it does not exist, it will be created.
 #        If an IO Error occurs, an error message is printed to the transcript.
 #
@@ -597,7 +597,7 @@ class JESProgram:
 #        except Exception, inst:
 #            print type(inst)     # the exception instance
 #            print inst.args      # arguments stored in .args
-#            print 'Warning.  An unexpected IO Error has occurred in writeToConfigFile in JESProgram' 
+#            print 'Warning.  An unexpected IO Error has occurred in writeToConfigFile in JESProgram'
 #
 ################################################################################
 # Function name: writeConfigListToFile
@@ -634,7 +634,7 @@ class JESProgram:
 #        except Exception, e:
 #            print type(e)     # the exception instance
 #            print e.args      # arguments stored in .args
-#            print 'Warning: An unexpecter IO Error has occurred in writeConfigListToFile in JESProgram' 
+#            print 'Warning: An unexpecter IO Error has occurred in writeConfigListToFile in JESProgram'
 ################################################################################
 
 #    def saveOptions(self):
@@ -696,7 +696,7 @@ class JESProgram:
 #            array=text.splitlines()
 #            return string.atoi(array[JESConstants.CONFIG_FONT])
 #        except:
-#            return JESConstants.FONT_SIZE       
+#            return JESConstants.FONT_SIZE
 
 ## locally useful util functions.
 def getdigits(str):
@@ -728,6 +728,6 @@ def helpfile_cmp(str1, str2):
         return cmp( int(numstr1), int(numstr2) )
 
     return cmp(str1, str2)
-            
-if __name__ == '__main__':   
+
+if __name__ == '__main__':
     mainJESProgram = JESProgram()

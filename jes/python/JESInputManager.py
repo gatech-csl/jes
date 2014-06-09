@@ -21,9 +21,9 @@ import time
 class Borg(object):
     _state = {}
     def __new__(cls, *args, **kw):
-	ob = super(Borg, cls).__new__(cls, *args, **kw)
-	ob.__dict__ = cls._state
-	return ob
+        ob = super(Borg, cls).__new__(cls, *args, **kw)
+        ob.__dict__ = cls._state
+        return ob
 
 # This class provides the interface for prompting for input on the
 # command window and waiting for a return value.
@@ -33,55 +33,54 @@ class JESInputManager(Borg):
     value = None
 
     def setCommandWindow(self, window):
-	self.commandWindow = window
+        self.commandWindow = window
 
     def setReturnValue(self, retValue):
-	self.value = retValue
+        self.value = retValue
 
     def setWaiting(self, bool):
-	self.waitingFlag = bool
+        self.waitingFlag = bool
 
     def isWaiting(self):
-	return self.waitingFlag;
+        return self.waitingFlag;
 
     def readInput(self, message):
-	#to be threadsafe on this call we need this to update the command window
-	class outputPromptRunner(Runnable):
-	    def __init__(self, cw, m):
-		self.commandWindow = cw
-		self.message = m
-		
-	    def run(self):
-		#display the message and reenable the window to editing
-		self.commandWindow.showText(self.message)
-		self.commandWindow.setCaretPosition(self.commandWindow.document.getLength() )
-		self.commandWindow.setKeymap(self.commandWindow.my_keymap)
+        #to be threadsafe on this call we need this to update the command window
+        class outputPromptRunner(Runnable):
+            def __init__(self, cw, m):
+                self.commandWindow = cw
+                self.message = m
+
+            def run(self):
+                #display the message and reenable the window to editing
+                self.commandWindow.showText(self.message)
+                self.commandWindow.setCaretPosition(self.commandWindow.document.getLength() )
+                self.commandWindow.setKeymap(self.commandWindow.my_keymap)
 
 
-	#--------------The Actual work goes here------------------
-	
-	if not message:
-	    message = ""
+        #--------------The Actual work goes here------------------
 
-	#first assign value to null
-	self.value = None
+        if not message:
+            message = ""
 
-	#note that the this interpreter thread needs to wait now
-	#until a result comes back from the command window
-	self.waitingFlag = True
-    
-	#update the command window with the ouput
-	SwingUtilities.invokeAndWait(outputPromptRunner(self.commandWindow, message))
+        #first assign value to null
+        self.value = None
 
-	#Now we wait for the user to input a value and press ENTER in the command window,
-	#pausing a 10th of a second between checks.
-	while self.waitingFlag:
-		time.sleep(0.1)
+        #note that the this interpreter thread needs to wait now
+        #until a result comes back from the command window
+        self.waitingFlag = True
 
-	#clean up the return value to remove the prompt since the command
-	#window will give us everything
-	self.value = self.value[len(message):]
+        #update the command window with the ouput
+        SwingUtilities.invokeAndWait(outputPromptRunner(self.commandWindow, message))
 
-	#return the value to media.py
-	return self.value
+        #Now we wait for the user to input a value and press ENTER in the command window,
+        #pausing a 10th of a second between checks.
+        while self.waitingFlag:
+            time.sleep(0.1)
 
+        #clean up the return value to remove the prompt since the command
+        #window will give us everything
+        self.value = self.value[len(message):]
+
+        #return the value to media.py
+        return self.value

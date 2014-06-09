@@ -111,4 +111,3 @@ class Test_Pixel(unittest.TestCase):
         self.pix2 = getPixel(self.pic2, self.consts['XVAL'], self.consts['YVAL'])
         os.remove(self.consts['TMPFILE'])
         self.assert_(getColor(self.pix1) == getColor(self.pix2), 'Pixel change did not properly save to file.  You may need to delete %s from the working directory.' % (self.consts['TMPFILE']))
-

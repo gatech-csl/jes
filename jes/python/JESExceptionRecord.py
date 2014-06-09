@@ -11,16 +11,16 @@ import java.lang as javaLang
 import os
 
 class JESExceptionRecord:
-    
+
 
     def __init__(self, programFileName, programObj):
- 
+
         self.programFileName = programFileName
         self.programObj = programObj
-        
+
     def getExceptionMsg(self):
         return self.exc_msg
-    
+
     def getLineNumber(self):
         return self.line_number
 
@@ -49,9 +49,9 @@ class JESExceptionRecord:
 
 
         if JESConstants.EXCEPTION_MESSAGES.has_key(className):
-	    if className == 'SyntaxError' and exception.lineno == None:
-		msg = 'Your code contains at least one syntax error, meaning it is not legal jython.'
-	    else:
+            if className == 'SyntaxError' and exception.lineno == None:
+                msg = 'Your code contains at least one syntax error, meaning it is not legal jython.'
+            else:
                 msg = JESConstants.EXCEPTION_MESSAGES[className]% exception.__dict__
         else:
             try:
@@ -60,7 +60,7 @@ class JESExceptionRecord:
                 # no __doc__ field
                 msg = JESConstants.GENERIC_EXCEPTION_MESSAGE + \
                       "The error " + exception.__name__ + " has occured"
-                
+
             try:
                 for eachArg in exception.args:
                     msg += '\n' + eachArg
@@ -69,12 +69,12 @@ class JESExceptionRecord:
                 # the try/except here is to handle the case where the exception
                 # does not have any arguments.  The exception is thrown, and
                 # an empty message is sent.
-                
-             
+
+
         msg += '\n'
         return msg
 
- 
+
 ################################################################################
 # Function name: setByHand
 #
@@ -113,19 +113,19 @@ class JESExceptionRecord:
     #         BUT
     # sets self.exc_msg, and self.line_number
     ###########################################################################
-    
+
     def setFromUserCode(self,exc_type,exc_value,exc_traceback):
 
 
         if hasattr(exc_type,'__name__') and \
                ( (exc_type.__name__ == 'SyntaxError') or \
                  (exc_type.__name__ == 'TokenError')):
-  
+
             self.setFromUserCodeSyntaxError(exc_type,exc_value,exc_traceback)
-            
+
         else:
             self.setFromUserCodeException(exc_type,exc_value,exc_traceback)
-    
+
 
 
     #############################################################################
@@ -139,16 +139,16 @@ class JESExceptionRecord:
     # The line_number is set from a value of exc_value, which here
     # is an array
     #############################################################################
-    
+
     def setFromUserCodeSyntaxError(self,exc_type,exc_value,exc_traceback):
         import traceback
 
         try:
             msg, (filename, lineno, offset, line) = exc_value
 
-            
-            
-        
+
+
+
         except:
             pass
 
@@ -163,15 +163,15 @@ class JESExceptionRecord:
         (lastFileName,lastNum) = self.getLastFileOnTxtStack(txtStack)
 
 
-            
+
 
         list = []
         try:
             msg, (filename, lineno, offset, line) = exc_value
-            
+
         except:
             pass
-        
+
         else:
             # if filename equals '<input>', then the message was typed from the command
             # line
@@ -185,7 +185,7 @@ class JESExceptionRecord:
                 if (filename == self.programObj.filename):
 
 
-                    
+
                     self.exc_msg += "The error is on line %d\n" % self.line_number
                 else:
                     (filename, lineno) = (lastFileName, lastNum)
@@ -193,13 +193,13 @@ class JESExceptionRecord:
                     self.exc_msg += "That line refers to the file '%s'.\n" % filename
                     self.exc_msg += "The file '%s' has a syntax error on line %d.\n" %\
                                     ( os.path.basename(filename), lineno)
-                    
+
             else:
-                
+
                 self.line_number == None
 
 
-            
+
     ###########################################################################
     # setFromUserCodeException
     #
@@ -219,11 +219,11 @@ class JESExceptionRecord:
     # lineNumMsg :  Mentions the line number in the *currently open* file
     #               where the error occured.
     #               not shown  if the error did not occur in a file that is
-    #               currently opened 
+    #               currently opened
     ###########################################################################
     def setFromUserCodeException(self,exc_type,exc_value,exc_traceback):
         import traceback
-        
+
 
 
 
@@ -252,8 +252,8 @@ class JESExceptionRecord:
         nameOfExcMsg = ''
         lineNumMsg = ''
         self.line_number = None
-        
-        exceptionDesc = self.GetExceptionDescription(exc_type)        
+
+        exceptionDesc = self.GetExceptionDescription(exc_type)
         try:
 
             nameOfExcMsg = self.getNameOfExcMsg(exc_type,exc_value)
@@ -267,7 +267,7 @@ class JESExceptionRecord:
             self.line_number = self.getLineNum( txtStack)
 
         if showStk:
-            stackMsg = self.getStackMsg( txtStack )   
+            stackMsg = self.getStackMsg( txtStack )
 
 
         self.exc_msg = exceptionDesc + stackMsg +\
@@ -293,7 +293,7 @@ class JESExceptionRecord:
                 return not None
 
         return None
-           
+
 
 ######################################################################
 # showStack
@@ -314,7 +314,7 @@ class JESExceptionRecord:
             return None
 
         return not None
-        
+
 ######################################################################
 # getNameOfExcMsg
 #
@@ -323,21 +323,21 @@ class JESExceptionRecord:
 ######################################################################
     def getNameOfExcMsg(self,exc_type,exc_value):
         if JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_MODE) == JESConstants.EXPERT_MODE:
-            
+
 
             return "%s: %s\n" % (exc_type.__name__, exc_value)
-	elif exc_type.__name__ == 'SoundException':
-	    return "%s\n" % (exc_value)
+        elif exc_type.__name__ == 'SoundException':
+            return "%s\n" % (exc_value)
         else:
 
             return ''
-        
+
     def getLineNum(self,txtStack):
         goodFrame = ( '',0,'' )
         for frame in txtStack:
             if frame[0] == self.programFileName:
 
-                
+
                 goodFrame = frame
 
         return goodFrame[1]
@@ -362,9 +362,9 @@ class JESExceptionRecord:
 
         msg = JESConstants.LINE_NUM_MSG % ( goodFrame[1], goodFrame[0] )
         return msg
-    
+
     def getStackMsg(self,txtStack):
-        
+
         if JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_MODE) == JESConstants.EXPERT_MODE:
             stackMsg = ''
 
@@ -373,7 +373,7 @@ class JESExceptionRecord:
                 if (count == 1 )and (frame[0] ==  JESConstants.COMMAND_FROM_CONSOLE):
                     pass
                 else:
-                
+
                     stackMsg = stackMsg + \
                                JESConstants.STACK_MSG % frame
                 count += 1
@@ -405,17 +405,17 @@ class JESExceptionRecord:
 
 
             f = tb.tb_frame
-         
+
             lineno = traceback.tb_lineno(tb)
             co = f.f_code
             filename = co.co_filename
             name = co.co_name
             tb = tb.tb_next
 
-           
 
-            txtStack.append( (filename,lineno,name) ) 
-            
+
+            txtStack.append( (filename,lineno,name) )
+
 
 
         return txtStack
@@ -428,6 +428,6 @@ class JESExceptionRecord:
                frame[0] != '<input>':
 
                 goodFrame = frame[:2]
-            
+
 
         return goodFrame

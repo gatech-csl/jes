@@ -1,5 +1,5 @@
 # JES- Jython Environment for Students
-# Copyright (C) 2002-2007 the JES team 
+# Copyright (C) 2002-2007 the JES team
 # See JESCopyright.txt for full licensing information
 # This class, Copyright 2007, Alex Rudnick
 # 5/13/09: Changes for redesigning configuration writing from python to java -Buck
@@ -33,15 +33,15 @@ class JESBugReporter(swing.JFrame):
     def __init__(self):
         self.contentPane.layout = swing.BoxLayout(self.contentPane,
             swing.BoxLayout.Y_AXIS)
-	
-	message = swing.JLabel(BUGREPORTMESSAGE)
-	message.setAlignmentX(awt.Component.CENTER_ALIGNMENT)
+
+        message = swing.JLabel(BUGREPORTMESSAGE)
+        message.setAlignmentX(awt.Component.CENTER_ALIGNMENT)
 
         self.add(message)
 
         self.add(swing.Box.createVerticalStrut(10))
 
-     
+
         buttonbox = swing.Box(swing.BoxLayout.X_AXIS)
         self.sendbutton = swing.JButton(COMMAND_SEND,
             actionPerformed=self.actionPerformed)
@@ -54,16 +54,16 @@ class JESBugReporter(swing.JFrame):
         self.add(buttonbox)
 
         buttonbox.setAlignmentX(awt.Component.CENTER_ALIGNMENT)
-        
+
         self.pack()
 
         self.size = (300, 175)
-	self.setLocationRelativeTo(None)
+        self.setLocationRelativeTo(None)
         self.show()
 
     def actionPerformed(self, event):
         import java.awt.Desktop as Desktop
-	import java.net.URI as URI
+        import java.net.URI as URI
 
         cmd = event.getActionCommand()
 
@@ -72,5 +72,3 @@ class JESBugReporter(swing.JFrame):
 
         self.setVisible(0)
         self.dispose()
-
-

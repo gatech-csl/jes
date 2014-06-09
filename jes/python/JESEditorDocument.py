@@ -3,9 +3,9 @@
 #See JESCopyright.txt for full licensing information
 #Revisions:
 # 5/14/03: added removeErrorHighlighting() to be called before any changes take
-#	   place in the text - AdamW
+#          place in the text - AdamW
 # 5/15/03: added call to removeErrorHighlighting before setting error highlighting
-#	   to prevent multiple highlightings which can't be undone. -AdamW
+#          to prevent multiple highlightings which can't be undone. -AdamW
 # 5/15/03: added comment and string highlighting. - AdamW
 # 5/29/08: added support for "redo" - Buck Scharfnorth
 # 5/13/09: Changes for redesigning configuration writing from python to java -Buck
@@ -120,11 +120,11 @@ class JESEditorDocument(HighlightingStyledDocument):
 
 ################################################################################
 # Function name: changeFontSize
-# 		-fontSize: the font size we want our document to use
+#               -fontSize: the font size we want our document to use
 # Description:
 #
-#			This function changes the text in the current editor document to reflect
-#			the user's font selection. In theory.
+#                       This function changes the text in the current editor document to reflect
+#                       the user's font selection. In theory.
 ################################################################################
     def changeFontSize(self, fontSize):
         newFontSize = int(fontSize)
@@ -157,21 +157,21 @@ class JESEditorDocument(HighlightingStyledDocument):
             HighlightingStyledDocument.setKeywords(self, keyword.kwlist)
             self.needToSetEnvironment = 0
         if self.errorLineStart >= 0:
-	    self.removeErrorHighlighting()
+            self.removeErrorHighlighting()
         if self.highlightLineStart >= 0:
             self.removeLineHighlighting()
         if str == '\t':
             str = JESConstants.TAB
-	#Added to make auto indent work
-	if str == '\n':
-	    defaultElement = self.getDefaultRootElement()
-	    rowIndex = defaultElement.getElementIndex(offset)
-	    rowStart = defaultElement.getElement(rowIndex).getStartOffset()
-	    rowEnd = defaultElement.getElement(rowIndex).getEndOffset() - 1
-	    rowText = self.getText(rowStart, rowEnd - rowStart)#.expandtabs()
-	    newRowText = rowText.lstrip()
-	    numSpaces = (len(rowText) - len(newRowText))
-	    str = "\n" + (" " * numSpaces)
+        #Added to make auto indent work
+        if str == '\n':
+            defaultElement = self.getDefaultRootElement()
+            rowIndex = defaultElement.getElementIndex(offset)
+            rowStart = defaultElement.getElement(rowIndex).getStartOffset()
+            rowEnd = defaultElement.getElement(rowIndex).getEndOffset() - 1
+            rowText = self.getText(rowStart, rowEnd - rowStart)#.expandtabs()
+            newRowText = rowText.lstrip()
+            numSpaces = (len(rowText) - len(newRowText))
+            str = "\n" + (" " * numSpaces)
         self.editor.modified = 1
         self.editor.gui.loadButton.enabled = 1
         if addUndoEvent:
@@ -192,10 +192,10 @@ class JESEditorDocument(HighlightingStyledDocument):
 #     keywords.
 ################################################################################
     def remove(self, offset, len, addUndoEvent=1):
-	if self.errorLineStart >= 0:
-	    self.removeErrorHighlighting()
+        if self.errorLineStart >= 0:
+            self.removeErrorHighlighting()
         if self.highlightLineStart >= 0:
-	    self.removeLineHighlighting()
+            self.removeLineHighlighting()
         self.editor.modified = 1
         self.editor.gui.loadButton.enabled = 1
         if addUndoEvent:
@@ -212,7 +212,7 @@ class JESEditorDocument(HighlightingStyledDocument):
 #     errorLineStart and errorLineLen.
 ################################################################################
     def removeErrorHighlighting(self):
-	#Unhighlight a line if showErrorLine was called earlier
+        #Unhighlight a line if showErrorLine was called earlier
         if self.errorLineStart >= 0:
             HighlightingStyledDocument.updateHighlightingInRange(self, self.errorLineStart,
                                                self.errorLineLen)
@@ -220,7 +220,7 @@ class JESEditorDocument(HighlightingStyledDocument):
             self.errorLineLen   = -1
 
     def removeLineHighlighting(self):
-	#Unhighlight a line if showHighlightLine was called earlier
+        #Unhighlight a line if showHighlightLine was called earlier
         self.editor.gui.gutter.removeLineMark()
         self.editor.gui.gutter.repaint()
         #if self.highlightLineStart >= 0:
@@ -260,8 +260,8 @@ class JESEditorDocument(HighlightingStyledDocument):
 #     making "redo" possible. - 29 May 2008 Buck Scharfnorth
 ################################################################################
     def addUndoEvent(self, eventType, offset, str):
-	self.editor.gui.editorChanged()
-	self.undoManager.addEdit( JESUndoableEdit.JESUndoableEdit(self, 1, eventType, offset, str) )
+        self.editor.gui.editorChanged()
+        self.undoManager.addEdit( JESUndoableEdit.JESUndoableEdit(self, 1, eventType, offset, str) )
         #if len(self.undoEvents) > MAX_UNDO_EVENTS_TO_RETAIN:
         #    del self.undoEvents[0]
 
@@ -311,11 +311,11 @@ class JESEditorDocument(HighlightingStyledDocument):
 ################################################################################
     def showErrorLine(self, lineNumber):
 
-	#remove any old error highlighting, because we only want to show one error
-	# at a time.  Plus, the system only keeps track of one error, so we need to
-	# unhighlight the old error before setting the new one (AW 5/15/03)
-	if self.errorLineStart >= 0:
-	    self.removeErrorHighlighting()
+        #remove any old error highlighting, because we only want to show one error
+        # at a time.  Plus, the system only keeps track of one error, so we need to
+        # unhighlight the old error before setting the new one (AW 5/15/03)
+        if self.errorLineStart >= 0:
+            self.removeErrorHighlighting()
 
         #Search for the start offset of the error line
         docText = self.getText(0, self.getLength())
@@ -356,7 +356,7 @@ class JESEditorDocument(HighlightingStyledDocument):
 #     that the user can tell which line is currently running
 ################################################################################
     def highlightLine(self, lineNumber):
-	#self.removeLineHighlighting()
+        #self.removeLineHighlighting()
         defaultElement = self.getDefaultRootElement()
         element = defaultElement.getElement(lineNumber)
 

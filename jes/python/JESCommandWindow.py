@@ -59,10 +59,10 @@ class JESCommandWindow(swing.JTextPane,
         self.program = gui.program
         self.gui = gui
 
-	# 5/14/09 Dorn:  added these lines to allow the input manager to 
-	# communicated with the command window to read for input and raw_input
-	self.inputManager = JESInputManager()
-	self.inputManager.setCommandWindow(self)
+        # 5/14/09 Dorn:  added these lines to allow the input manager to
+        # communicated with the command window to read for input and raw_input
+        self.inputManager = JESInputManager()
+        self.inputManager.setCommandWindow(self)
 
         self.inMultiLineCommand = None
         self.setDocument(JESCommandWindowDocument.JESCommandWindowDocument(self))
@@ -288,18 +288,18 @@ class JESCommandWindow(swing.JTextPane,
 
         #line = string.join(string.split(line,'\n'),'')
 
-	#5/14/09 Dorn: Before doing anything check to see if this is input
-	#needed for raw_input or input.  If so, we'll send the value to the
-	#inputManager and return early.  This must also be threadsafe
-	if self.inputManager.isWaiting():
-		#remove the \n from the end of the string
-		line = string.join(string.split(line,'\n'),'')
+        #5/14/09 Dorn: Before doing anything check to see if this is input
+        #needed for raw_input or input.  If so, we'll send the value to the
+        #inputManager and return early.  This must also be threadsafe
+        if self.inputManager.isWaiting():
+                #remove the \n from the end of the string
+            line = string.join(string.split(line,'\n'),'')
 
-		#disable keyboard again and send the value back
-		self.setKeymap(None);
-		self.inputManager.setReturnValue(line)
-		self.inputManager.setWaiting(False)
-		return
+            #disable keyboard again and send the value back
+            self.setKeymap(None);
+            self.inputManager.setReturnValue(line)
+            self.inputManager.setWaiting(False)
+            return
 
 
         # DNR - boolean, does the line end in a colon
@@ -427,7 +427,7 @@ class JESCommandWindow(swing.JTextPane,
 ################################################################################
 # Function name: restoreConsole
 # Description:
-#	Gathers the output of the interpreter and redraws the command window.
+#       Gathers the output of the interpreter and redraws the command window.
 #
 ################################################################################
     def restoreConsole(self,mode):
@@ -448,10 +448,10 @@ class JESCommandWindow(swing.JTextPane,
                 self.showText(">>> ")
 
             self.oldPos = self.document.getLength()
-	#5/14/09 Dorn: added in a condition for LOAD since we added a notice of load on the console
-	elif mode == "load":     
-	    self.showText(">>> ")
-	    self.oldPos = self.document.getLength()
+        #5/14/09 Dorn: added in a condition for LOAD since we added a notice of load on the console
+        elif mode == "load":
+            self.showText(">>> ")
+            self.oldPos = self.document.getLength()
         else:
             pass
         self.currentPos = self.document.getLength()
@@ -470,7 +470,7 @@ class JESCommandWindow(swing.JTextPane,
 ################################################################################
 # Function name: pasteHelper
 # Description:
-#	Extracts the first line of a multiline command from the string of text
+#       Extracts the first line of a multiline command from the string of text
 #       on the clipboard.
 #
 ################################################################################
@@ -517,24 +517,24 @@ class JESCommandWindow(swing.JTextPane,
 
         if selection == None:
 
-           insertPoint = self.getCaretPosition()
+            insertPoint = self.getCaretPosition()
 
-           #check if cursor is after the last prompt
-           if insertPoint >= self.oldPos:
-               self.pasteHelper()
-               #paste
-               self.document.insertString(insertPoint,
-                                          self.textToPaste,
-                                          self.document.getTextAttrib())
+            #check if cursor is after the last prompt
+            if insertPoint >= self.oldPos:
+                self.pasteHelper()
+                #paste
+                self.document.insertString(insertPoint,
+                                           self.textToPaste,
+                                           self.document.getTextAttrib())
 
-           #if not, append text to the end of the text pane
-           else:
-               self.setCaretPosition(self.document.getLength())
-               self.pasteHelper()
-               #paste
-               self.document.insertString(self.document.getLength(),
-                                          self.textToPaste,
-                                          self.document.getTextAttrib())
+            #if not, append text to the end of the text pane
+            else:
+                self.setCaretPosition(self.document.getLength())
+                self.pasteHelper()
+                #paste
+                self.document.insertString(self.document.getLength(),
+                                           self.textToPaste,
+                                           self.document.getTextAttrib())
 
         else:
             start = self.getSelectionStart()
@@ -640,5 +640,5 @@ class JESCommandWindow(swing.JTextPane,
 #     casts it as anJESAction if necessary.
 ################################################################################
 def makeAction(obj):
-        if isinstance(obj,JESAction): return obj
-        if callable(obj): return JESAction(obj)
+    if isinstance(obj,JESAction): return obj
+    if callable(obj): return JESAction(obj)

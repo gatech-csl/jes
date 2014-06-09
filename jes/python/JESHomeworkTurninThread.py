@@ -17,12 +17,12 @@ class JESHomeworkTurninThread( java.lang.Thread):
         # j.start()
         # Java will create a seperate thread.  That thread will
         # call this method's run method
-        
+
         # do stuff here
         try:
 
             update = JESHomeworkTurninRunnable.JESHomeworkTurninRunnable('Submitting Assignment ....',self.gui)
-            self.gui.swing.SwingUtilities.invokeLater( update )            
+            self.gui.swing.SwingUtilities.invokeLater( update )
             self.homeworkSub.turnin()
             update = JESHomeworkTurninRunnable.JESHomeworkTurninRunnable('Done',self.gui)
             self.gui.swing.SwingUtilities.invokeLater( update )
@@ -33,12 +33,12 @@ class JESHomeworkTurninThread( java.lang.Thread):
             else:
                 DIRECTORY = os.getcwd()
 
-            MESSAGE="""The assignment has been submitted. A file named 
+            MESSAGE="""The assignment has been submitted. A file named
 %s was created in the submission.
-This file is an archive containing all of the files that 
-you just submitted.  JES can delete the file for you, 
+This file is an archive containing all of the files that
+you just submitted.  JES can delete the file for you,
 or JES can leave the file alone. If you choose to keep
-the file, it will be located at %s. 
+the file, it will be located at %s.
 Would you like JES to delete %s for you? """%(self.zipName,DIRECTORY,self.zipName)
 
             options = ["Delete the File","Leave the File"]
@@ -51,7 +51,7 @@ Would you like JES to delete %s for you? """%(self.zipName,DIRECTORY,self.zipNam
                      options,  #the titles of buttons
                      options[0]) #default button title
             if n == 0:
-                try:                
+                try:
                     os.remove(self.zipName)
                 except:
                     import sys

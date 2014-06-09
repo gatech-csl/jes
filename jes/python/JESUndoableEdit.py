@@ -45,10 +45,10 @@ class JESUndoableEdit( swing.undo.AbstractUndoableEdit ):
         try:
             swing.undo.AbstractUndoableEdit.undo(self)
             lastEvent = self.getUndoEvent()
-	    if lastEvent[0] == INSERT_EVENT:
-	        self.document.remove(lastEvent[1],len(lastEvent[2]),0)
-	    else:
-	        self.document.insertString(lastEvent[1],lastEvent[2],self.document.textAttrib,0)
+            if lastEvent[0] == INSERT_EVENT:
+                self.document.remove(lastEvent[1],len(lastEvent[2]),0)
+            else:
+                self.document.insertString(lastEvent[1],lastEvent[2],self.document.textAttrib,0)
         except Exception, e:
             print "Exception thrown in undo"
 
@@ -61,10 +61,10 @@ class JESUndoableEdit( swing.undo.AbstractUndoableEdit ):
         try:
             swing.undo.AbstractUndoableEdit.redo(self)
             lastEvent = self.getUndoEvent()
-	    if lastEvent[0] == REMOVE_EVENT:
-	        self.document.remove(lastEvent[1],len(lastEvent[2]),0)
-	    else:
-	        self.document.insertString(lastEvent[1],lastEvent[2],self.document.textAttrib,0)
+            if lastEvent[0] == REMOVE_EVENT:
+                self.document.remove(lastEvent[1],len(lastEvent[2]),0)
+            else:
+                self.document.insertString(lastEvent[1],lastEvent[2],self.document.textAttrib,0)
         except Exception, e:
             print "Exception thrown in redo"
 

@@ -32,8 +32,8 @@ import java.lang.System as system
 #     -fileName: The name of the .py file the homework is in
 #     -zipFile: The local path to the zip archive of the homework
 # Description:
-#     Holds and provides functionality for homeworks.  Holds & sends  
-#     a zip file with all the submission materials.  Lets the user 
+#     Holds and provides functionality for homeworks.  Holds & sends
+#     a zip file with all the submission materials.  Lets the user
 #     turnin the submission via the preferred method (email or coweb
 #     posting).
 ####################################################################
@@ -55,8 +55,8 @@ class JESHomeworkSubmission:
 # Method: turnin
 # Description
 #     Decides which method(s) to use to turnin the homework.  Looks
-#     At the constants file EMAIL_TURNIN sends the hw as an email to 
-#     The TA's email address.  COWEB_TURNIN posts the hw zip file to 
+#     At the constants file EMAIL_TURNIN sends the hw as an email to
+#     The TA's email address.  COWEB_TURNIN posts the hw zip file to
 #     a coweb page.  The turnin information and definitions should
 #     be on a web page defined in JESConstants.
 ####################################################################
@@ -67,7 +67,7 @@ class JESHomeworkSubmission:
         doCoWeb = 0
         turninType = ''
 
-        
+
         #USE Turnin Type Table check
         if(JESConstants.TURNIN_TYPE_TABLE):
             try:
@@ -77,7 +77,7 @@ class JESHomeworkSubmission:
                 import sys
                 a,b,c=sys.exc_info()
                 print a,b,c
-                
+
             if( turninType == 'EMAIL' or turninType == 'BOTH'):
                 doEmail = 1
             if( turninType == 'COWEB' or turninType == 'BOTH'):
@@ -87,7 +87,7 @@ class JESHomeworkSubmission:
                 doEmail = 1
             if JESConstants.COWEB_TURNIN:
                 doCoWeb = 1
-        
+
         try:
             if doEmail:
                 self.emailTurnin()
@@ -124,13 +124,13 @@ class JESHomeworkSubmission:
             taEmail = addr.getTargetAddress(self.gtNumber, self.hwTitle)
             if(taEmail == None):
                 raise StandardError, "Could not find an e-mail to send assignment."
-                return            
-            
+                return
+
             filehandle = open(self.zipFile,"rb")
            #CONSTRUCT EMAIL
            #Build the email from all the parts of information:
             subject = "%s : %s : %s : %s" % \
-                      (self.hwTitle, self.studentName, self.gtNumber, self.fileName)  
+                      (self.hwTitle, self.studentName, self.gtNumber, self.fileName)
             msgBody = 'From: %s\n' % self.studentEmail
             msgBody += 'Subject: %s\n' % subject
             file = StringIO.StringIO()
@@ -145,7 +145,7 @@ class JESHomeworkSubmission:
             #quopri.encode(StringIO.StringIO(notes),file,0)
             part = mime.nextpart()
             part.addheader("Content-Transfer-Encoding","base64")
-            part.startbody('application/x-zip-compressed; name='+self.zipFile) 
+            part.startbody('application/x-zip-compressed; name='+self.zipFile)
             base64.encode(filehandle, file)
             mime.lastpart()
             msgBody += file.getvalue()
@@ -180,8 +180,8 @@ class JESHomeworkSubmission:
             finder = JESURLFinder.JESURLFinder()
             turninURL = finder.getTargetURL(self.gtNumber, string.strip(self.hwTitle))
             if(turninURL == -1): # check if url is not found - RJC
-                raise StandardError, "Unable to find a valid upload url for assignment."           
-            
+                raise StandardError, "Unable to find a valid upload url for assignment."
+
             selector = string.strip(turninURL[turninURL.find("/"):]) + JESConstants.HW_COWEB_ATTACH_SUFFIX
             fields = [['specific', 'true'], ['reference', 'true']]
             files = [['filestuff', os.path.basename(self.zipFile), filehandle.read()]]
@@ -201,9 +201,9 @@ class JESHomeworkSubmission:
 # Parameters: self
 # Description: Attempts to open the Configfile.  If it exists, it is opened and
 #       read into an array.  Each line of the file will get its spot in the array
-#       and newline characters will be removed.  The array is returned.  The 
-#       configfile should exist before this function is called.  If an IO Error 
-#       occurs, a message will be printed to the transcript. 
+#       and newline characters will be removed.  The array is returned.  The
+#       configfile should exist before this function is called.  If an IO Error
+#       occurs, a message will be printed to the transcript.
 #
 ################################################################################
     def readFromConfigFile(self):
@@ -263,5 +263,3 @@ class JESHomeworkSubmission:
 
     def get_content_type(self, filename):
         return mimetypes.guess_type(filename)[0] or 'application/octet-stream'
-
-      

@@ -58,7 +58,7 @@ def main():
     unittest.defaultTestLoader.testMethodPrefix = "test"
     unittest.defaultTestLoader.sortTestMethodsUsing = None
     master_test_suite = unittest.defaultTestLoader.loadTestsFromNames(test_cases)
-    
+
     suite_runner = unittest.TextTestRunner(verbosity=2)
     suite_runner.run(master_test_suite)
     print 'Done';

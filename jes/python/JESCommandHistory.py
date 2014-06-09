@@ -18,7 +18,7 @@ class JESCommandHistory:
 #                  returned with the position falls to -1
 #
 # the moveUp and moveDown functions are called by the command window
-# when the user hits up or down on the keyboard.  
+# when the user hits up or down on the keyboard.
 ######################################################################
     def __init__(self):
         self.commandStack = ['' ]
@@ -54,7 +54,7 @@ class JESCommandHistory:
 
         return self.commandStack[self.position]
 
-    
+
 
 ######################################################################
 # moveDown

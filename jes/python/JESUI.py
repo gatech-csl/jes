@@ -292,11 +292,11 @@ ERROR_OP_CANCEL = 'Operation Cancelled.'
 FocusOwner = None
 
 def getMethodList(klass):
-  ret = []
-  for (name, val) in klass.__dict__.items():
-    if type(val).__name__.endswith('Function'):
-      ret.append(name)
-  return ret
+    ret = []
+    for (name, val) in klass.__dict__.items():
+        if type(val).__name__.endswith('Function'):
+            ret.append(name)
+    return ret
 
 class JESUI(swing.JFrame):
 
@@ -319,7 +319,7 @@ class JESUI(swing.JFrame):
             self.size = JESConstants.INITIAL_WINDOW_SIZE
             self.windowClosing = self.exit
 
-	    self.setLocationRelativeTo(None)
+            self.setLocationRelativeTo(None)
 
             #line added to allow saving changes before exit. - 29 May 2008 by Buck Scharfnorth
             self.setDefaultCloseOperation(swing.WindowConstants.DO_NOTHING_ON_CLOSE)
@@ -740,7 +740,7 @@ class JESUI(swing.JFrame):
                 # for some reason this is needed or the commandWindow will go dead
 #                self.program.interpreter.runCommand("printNow('')")
 #                self.commandWindow.restoreConsole('run')
-		self.commandWindow.setKeymap(self.commandWindow.my_keymap)
+                self.commandWindow.setKeymap(self.commandWindow.my_keymap)
                 return None
 
     ################################################################################
@@ -762,7 +762,7 @@ class JESUI(swing.JFrame):
         if actionCommand == COMMAND_NEW:
             # MODIFIED by Adam Poncz
             if self.editor.modified:
-				#modified for promptSave cancel button - Buck Scharfnorth 29 May 2008
+                                #modified for promptSave cancel button - Buck Scharfnorth 29 May 2008
                 isSaved = self.promptSave(PROMPT_NEW_MESSAGE)
                 if isSaved > -1:
                     self.editor.document.removeErrorHighlighting()
@@ -774,7 +774,7 @@ class JESUI(swing.JFrame):
         elif actionCommand == COMMAND_OPEN:
             # MODIFIED by Patrick Carnahan
             if self.editor.modified:
-				#modified for promptSave cancel button - Buck Scharfnorth 29 May 2008
+                                #modified for promptSave cancel button - Buck Scharfnorth 29 May 2008
                 isSaved = self.promptSave(PROMPT_OPEN_MESSAGE)
                 if isSaved > -1:
                     self.editor.document.removeErrorHighlighting()
@@ -1053,7 +1053,7 @@ class JESUI(swing.JFrame):
             self.htmlBrowserWithHide.htmlBrowser.field.setText(target)
             self.htmlBrowserWithHide.htmlBrowser.goToUrl(None)
         except:
-           print "ERROR opening broswer with file:",target
+            print "ERROR opening broswer with file:",target
 
 ################################################################################
 # Function name: setRunning
@@ -1360,7 +1360,7 @@ class JESUI(swing.JFrame):
             self.settingsWindow.contentPane.add(cancelbutton)
             self.settingsWindow.contentPane.add(savebutton)
             self.settingsWindow.pack()
-	    self.settingsWindow.setLocationRelativeTo(None)
+            self.settingsWindow.setLocationRelativeTo(None)
             self.settingsWindow.show()
         else:
             self.settingsWindow.show()
@@ -1377,7 +1377,7 @@ class JESUI(swing.JFrame):
 
 #    def openDirectoryChooser(self):
 #        #print "In openDirectoryChooser"
-#	if self.directoryWindow == None:
+#       if self.directoryWindow == None:
 #            #print "No directory window yet"
 #            self.directoryWindow=swing.JFrame("JES Directory Chooser")
 #            self.directoryWindow.contentPane.layout = awt.GridLayout(0,3)
@@ -1390,7 +1390,7 @@ class JESUI(swing.JFrame):
 #                    actionPerformed=self.directoryButtonPressed)
 #            self.dirfield = swing.JTextField(self.program.defaultPath,preferredSize=(200,20))
 #            self.dirfield.setEditable(0)
-#	     dirlabel=swing.JLabel("Directory:")
+#            dirlabel=swing.JLabel("Directory:")
 #            self.directoryWindow.contentPane.add(dirlabel)
 #            self.directoryWindow.contentPane.add(self.dirfield)
 #            self.directoryWindow.contentPane.add(changedirbutton)
@@ -1441,22 +1441,22 @@ class JESUI(swing.JFrame):
 
 #    def directoryButtonPressed(self,event):
 #        if event.source.text=='Cancel':
-#	    pass
+#           pass
 #            self.directoryWindow.hide()
-#	elif event.source.text=='Change Directory':
-#	    self.dirChooser = swing.JFileChooser(self.program.defaultPath)
-#	    self.dirChooser.setFileSelectionMode(swing.JFileChooser.DIRECTORIES_ONLY)
-#	    self.dirChooser.setApproveButtonText("Use this Directory")
-#	    returnval = self.dirChooser.showOpenDialog(self.program.gui)
-#	    if returnval == swing.JFileChooser.APPROVE_OPTION:
-#	        self.dirfield.setText(self.dirChooser.getSelectedFile().getAbsolutePath())
-#	    self.directoryWindow.toFront()
-#	    #print 'ChangeDir'
-#	else:
+#       elif event.source.text=='Change Directory':
+#           self.dirChooser = swing.JFileChooser(self.program.defaultPath)
+#           self.dirChooser.setFileSelectionMode(swing.JFileChooser.DIRECTORIES_ONLY)
+#           self.dirChooser.setApproveButtonText("Use this Directory")
+#           returnval = self.dirChooser.showOpenDialog(self.program.gui)
+#           if returnval == swing.JFileChooser.APPROVE_OPTION:
+#               self.dirfield.setText(self.dirChooser.getSelectedFile().getAbsolutePath())
+#           self.directoryWindow.toFront()
+#           #print 'ChangeDir'
+#       else:
 #           self.program.defaultPath = self.dirfield.getText()
-#	    self.program.saveOptions()
-#	    self.directoryWindow.hide()
-#	    #print 'save'
+#           self.program.saveOptions()
+#           self.directoryWindow.hide()
+#           #print 'save'
 
     ################################################################################
     # Function name: openTurnin
@@ -1465,99 +1465,99 @@ class JESUI(swing.JFrame):
     ################################################################################
     def openTurnin(self,toTurnin):
             #decides what you are turning in.
-            self.turninWindow=swing.JFrame('Assignment Submission')
-            self.turninWindow.contentPane.layout = awt.GridLayout(3,1)
-            self.turninWindow.size = (300,400)
-            self.notesToTA.setText('')
-            self.notesToTA.setLineWrap(1)
-            self.notesToTA.setWrapStyleWord(1)
-            notesLabel=swing.JLabel("Notes to TA:")
-            self.notesScrollPane.size = (240, 200)
-            toSubmitLabel=swing.JLabel("Submitting file:")
-            fileNameLabel=swing.JLabel(os.path.basename(self.program.filename))
-            titlelabel = swing.JLabel('Assignment to submit:   ')
-            turninbutton = swing.JButton("Turnin",preferredSize=(100,20), actionPerformed=self.turninButtonPressed)
-            cancelbutton= swing.JButton("Cancel",preferredSize=(100,20), actionPerformed=self.turninButtonPressed)
-            addbutton = swing.JButton("Add File",preferredSize=(120,20), actionPerformed=self.turninButtonPressed)
-            removebutton= swing.JButton("Remove File",preferredSize=(120,20), actionPerformed=self.turninButtonPressed)
-            assignmentStrings=self.grabAssignmentList()
-            self.titlefield=swing.JComboBox(assignmentStrings)
-            self.attachmentlist=util.Vector()
-            self.list=swing.JList(self.attachmentlist)
-            self.listPane=swing.JScrollPane(self.list)
-            self.listPane.preferredSize=(100,100)
-            try:
+        self.turninWindow=swing.JFrame('Assignment Submission')
+        self.turninWindow.contentPane.layout = awt.GridLayout(3,1)
+        self.turninWindow.size = (300,400)
+        self.notesToTA.setText('')
+        self.notesToTA.setLineWrap(1)
+        self.notesToTA.setWrapStyleWord(1)
+        notesLabel=swing.JLabel("Notes to TA:")
+        self.notesScrollPane.size = (240, 200)
+        toSubmitLabel=swing.JLabel("Submitting file:")
+        fileNameLabel=swing.JLabel(os.path.basename(self.program.filename))
+        titlelabel = swing.JLabel('Assignment to submit:   ')
+        turninbutton = swing.JButton("Turnin",preferredSize=(100,20), actionPerformed=self.turninButtonPressed)
+        cancelbutton= swing.JButton("Cancel",preferredSize=(100,20), actionPerformed=self.turninButtonPressed)
+        addbutton = swing.JButton("Add File",preferredSize=(120,20), actionPerformed=self.turninButtonPressed)
+        removebutton= swing.JButton("Remove File",preferredSize=(120,20), actionPerformed=self.turninButtonPressed)
+        assignmentStrings=self.grabAssignmentList()
+        self.titlefield=swing.JComboBox(assignmentStrings)
+        self.attachmentlist=util.Vector()
+        self.list=swing.JList(self.attachmentlist)
+        self.listPane=swing.JScrollPane(self.list)
+        self.listPane.preferredSize=(100,100)
+        try:
 #                array=self.program.readFromConfigFile()
 #                name=array[JESConstants.CONFIG_NAME]
 #                gt=array[JESConstants.CONFIG_GT]
 #                mail=array[JESConstants.CONFIG_MAIL]
-                namelabel=swing.JLabel("Name: "+JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_NAME))
-                maillabel=swing.JLabel("Media Files Attached: ")
-                gtlabel=swing.JLabel("Student ID#: "+JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_GT))
-                blanklabel=swing.JLabel("")
+            namelabel=swing.JLabel("Name: "+JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_NAME))
+            maillabel=swing.JLabel("Media Files Attached: ")
+            gtlabel=swing.JLabel("Student ID#: "+JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_GT))
+            blanklabel=swing.JLabel("")
 
-                #Layout the components
-                turninProperties = swing.JPanel()
-                turninProperties.size = (150,50)
-                turninProperties.layout = awt.GridLayout(4, 2)
-                turninProperties.add(namelabel)
-                turninProperties.add(gtlabel)
-                turninProperties.add(toSubmitLabel)
-                turninProperties.add(fileNameLabel)
-                turninProperties.add(titlelabel)
-                turninProperties.add(self.titlefield)
-                turninProperties.add(blanklabel)
-                self.turninWindow.contentPane.add(turninProperties, awt.BorderLayout.NORTH)
+            #Layout the components
+            turninProperties = swing.JPanel()
+            turninProperties.size = (150,50)
+            turninProperties.layout = awt.GridLayout(4, 2)
+            turninProperties.add(namelabel)
+            turninProperties.add(gtlabel)
+            turninProperties.add(toSubmitLabel)
+            turninProperties.add(fileNameLabel)
+            turninProperties.add(titlelabel)
+            turninProperties.add(self.titlefield)
+            turninProperties.add(blanklabel)
+            self.turninWindow.contentPane.add(turninProperties, awt.BorderLayout.NORTH)
 
-                attachPane = swing.JPanel()
-                attachPane.layout = awt.BorderLayout()
-                attachPane.add(maillabel, awt.BorderLayout.NORTH)
-                attachPane.add(self.listPane, awt.BorderLayout.CENTER)
-                buttonPane = swing.JPanel()
-                buttonPane.layout = awt.GridLayout(1,2)
-                buttonPane.add(removebutton)
-                buttonPane.add(addbutton)
-                attachPane.add(buttonPane, awt.BorderLayout.SOUTH)
-                self.turninWindow.contentPane.add(attachPane, awt.BorderLayout.CENTER)
+            attachPane = swing.JPanel()
+            attachPane.layout = awt.BorderLayout()
+            attachPane.add(maillabel, awt.BorderLayout.NORTH)
+            attachPane.add(self.listPane, awt.BorderLayout.CENTER)
+            buttonPane = swing.JPanel()
+            buttonPane.layout = awt.GridLayout(1,2)
+            buttonPane.add(removebutton)
+            buttonPane.add(addbutton)
+            attachPane.add(buttonPane, awt.BorderLayout.SOUTH)
+            self.turninWindow.contentPane.add(attachPane, awt.BorderLayout.CENTER)
 
-                notesPane = swing.JPanel()
-                notesPane.layout = awt.BorderLayout()
-                notesPane.add(notesLabel, awt.BorderLayout.NORTH)
-                notesPane.add(self.notesScrollPane, awt.BorderLayout.CENTER)
-                sendPane = swing.JPanel()
-                sendPane.layout = awt.GridLayout(1,2)
-                sendPane.add(cancelbutton)
-                sendPane.add(turninbutton)
-                notesPane.add(sendPane, awt.BorderLayout.SOUTH)
-                notesPane.size = (200, 300)
-                self.turninWindow.contentPane.add(notesPane, awt.BorderLayout.SOUTH)
+            notesPane = swing.JPanel()
+            notesPane.layout = awt.BorderLayout()
+            notesPane.add(notesLabel, awt.BorderLayout.NORTH)
+            notesPane.add(self.notesScrollPane, awt.BorderLayout.CENTER)
+            sendPane = swing.JPanel()
+            sendPane.layout = awt.GridLayout(1,2)
+            sendPane.add(cancelbutton)
+            sendPane.add(turninbutton)
+            notesPane.add(sendPane, awt.BorderLayout.SOUTH)
+            notesPane.size = (200, 300)
+            self.turninWindow.contentPane.add(notesPane, awt.BorderLayout.SOUTH)
 
-                #self.turninWindow.contentPane.add(toSubmitLabel)
-                #self.turninWindow.contentPane.add(fileNameLabel)
-                #self.turninWindow.contentPane.add(titlelabel)
-                #self.turninWindow.contentPane.add(self.titlefield)
-                #self.turninWindow.contentPane.add(namelabel)
-                #self.turninWindow.contentPane.add(gtlabel)
-                #self.turninWindow.contentPane.add(maillabel)
-                #self.turninWindow.contentPane.add(self.listPane)
-                #self.turninWindow.contentPane.add(removebutton)
-                #self.turninWindow.contentPane.add(addbutton)
-                #self.turninWindow.contentPane.add(notesLabel)
-                #self.turninWindow.contentPane.add(self.notesScrollPane)
-                #self.turninWindow.contentPane.add(cancelbutton)
-                #self.turninWindow.contentPane.add(turninbutton)
-                self.turninWindow.pack()
-		self.turninWindow.setLocationRelativeTo(None)
-                self.turninWindow.show()
-            except:
-                a="JES needs to know who you are to turn in something.  \n"
-                b="Please choose Register from the Turnin menu to set JES's\n preferences.  "
-                c="When you are done you can try to turn this \nassignment in again."
-                self.errorWindow=swing.JFrame()
-                swing.JOptionPane.showMessageDialog(self.errorWindow,
-                      a+b+c,
-                    "Error - JES properties have not been set",
-                    swing.JOptionPane.WARNING_MESSAGE)
+            #self.turninWindow.contentPane.add(toSubmitLabel)
+            #self.turninWindow.contentPane.add(fileNameLabel)
+            #self.turninWindow.contentPane.add(titlelabel)
+            #self.turninWindow.contentPane.add(self.titlefield)
+            #self.turninWindow.contentPane.add(namelabel)
+            #self.turninWindow.contentPane.add(gtlabel)
+            #self.turninWindow.contentPane.add(maillabel)
+            #self.turninWindow.contentPane.add(self.listPane)
+            #self.turninWindow.contentPane.add(removebutton)
+            #self.turninWindow.contentPane.add(addbutton)
+            #self.turninWindow.contentPane.add(notesLabel)
+            #self.turninWindow.contentPane.add(self.notesScrollPane)
+            #self.turninWindow.contentPane.add(cancelbutton)
+            #self.turninWindow.contentPane.add(turninbutton)
+            self.turninWindow.pack()
+            self.turninWindow.setLocationRelativeTo(None)
+            self.turninWindow.show()
+        except:
+            a="JES needs to know who you are to turn in something.  \n"
+            b="Please choose Register from the Turnin menu to set JES's\n preferences.  "
+            c="When you are done you can try to turn this \nassignment in again."
+            self.errorWindow=swing.JFrame()
+            swing.JOptionPane.showMessageDialog(self.errorWindow,
+                  a+b+c,
+                "Error - JES properties have not been set",
+                swing.JOptionPane.WARNING_MESSAGE)
 
     ################################################################################
     # Function name: turninButtonPressed
@@ -1658,8 +1658,8 @@ class JESUI(swing.JFrame):
                 self.attachmentlist.add(chooser.getSelectedFile().getPath())
                 self.list.setListData(self.attachmentlist)
         elif event.source.text == "Remove File":
-             self.attachmentlist.remove(self.list.getSelectedValue())
-             self.list.setListData(self.attachmentlist)
+            self.attachmentlist.remove(self.list.getSelectedValue())
+            self.list.setListData(self.attachmentlist)
 
         else:
             self.turninWindow.dispose()
@@ -1690,7 +1690,7 @@ class JESUI(swing.JFrame):
         file = zipfile.ZipFile(writename, "w")
         for name in filenames:
             if name.strip() != fileToSend.strip():
-               file.write(name,os.path.basename(name),zipfile.ZIP_DEFLATED)
+                file.write(name,os.path.basename(name),zipfile.ZIP_DEFLATED)
         file.write(fileToSend,os.path.basename(fileToSend),zipfile.ZIP_DEFLATED)
         if JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_LOGBUFFER):
             file.write(fileToSend+'log',os.path.basename(fileToSend+'log'),zipfile.ZIP_DEFLATED)
@@ -1739,7 +1739,7 @@ class JESUI(swing.JFrame):
     ################################################################################
     def openOptions(self):
         self.optionsWindow=swing.JFrame('JES Options')
-	
+
         self.optionsWindow.contentPane.layout = awt.GridLayout(11,2)
         #self.optionsWindow.size = (350,550)
 
@@ -1788,7 +1788,7 @@ class JESUI(swing.JFrame):
         else:
             self.userFontField.insertItemAt( userFont, 0 )
             self.userFontField.setSelectedItem( userFont )
-        
+
         self.skinField = swing.JComboBox( listskins(), actionListener=skinActionListener(self) )
 
         cur = currentskin()
@@ -1844,8 +1844,8 @@ class JESUI(swing.JFrame):
             chosenFontSize = self.userFontField.getSelectedItem()
             if ( not str(chosenFontSize).isdigit() or chosenFontSize < 1 or chosenFontSize > JESConstants.HIGH_FONT ):
                 chosenFontSize = JESConfig.getInstance().getIntegerProperty(JESConfig.CONFIG_FONT);
-		swing.JOptionPane.showMessageDialog(self, "Invalid Font Size.  Please try again using a number between 1 and " + str(JESConstants.HIGH_FONT), "Invalid Font Size", swing.JOptionPane.ERROR_MESSAGE)
-                
+                swing.JOptionPane.showMessageDialog(self, "Invalid Font Size.  Please try again using a number between 1 and " + str(JESConstants.HIGH_FONT), "Invalid Font Size", swing.JOptionPane.ERROR_MESSAGE)
+
             JESConfig.getInstance().setIntegerProperty( JESConfig.CONFIG_FONT, chosenFontSize )
             JESConfig.getInstance().setBooleanProperty( JESConfig.CONFIG_BLOCK, not self.blockBox.isSelected() )
             JESConfig.getInstance().setBooleanProperty( JESConfig.CONFIG_GUTTER, self.gutterBox.isSelected() )

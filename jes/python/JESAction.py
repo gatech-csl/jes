@@ -27,5 +27,4 @@ class JESAction(swing.AbstractAction):
 #     This function is called when an event occurs.
 ################################################################################
     def actionPerformed(self, event):
-        self.action()			
-
+        self.action()

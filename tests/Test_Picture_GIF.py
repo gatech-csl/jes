@@ -154,7 +154,7 @@ class Test_Picture_GIF(unittest.TestCase):
         '''Test Picture(copyPicture) constructor (gif) [7] - toString'''
         self.pict = Picture(WHITE_GIF)
         self.pict2 = Picture(self.pict)
-        self.assertEqual(self.pict.toString(), 'Picture, filename %s height 50 width 50' % WHITE_GIF, 
+        self.assertEqual(self.pict.toString(), 'Picture, filename %s height 50 width 50' % WHITE_GIF,
             'toString %s != Picture, filename %s height 50 width 50' % (self.pict.toString(), WHITE_GIF))
 
     def testPictureCopyB8(self):

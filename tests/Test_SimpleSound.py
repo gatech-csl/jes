@@ -16,14 +16,14 @@ OUTPUT = TEST_DIRECTORY + "test-output/"
 #   UTILITY FUNCTIONS
 ########################################################################################################
 
-''' lengthInBytes = sampleRate * numOfChannels * numSeconds * bytesPerSample 
+''' lengthInBytes = sampleRate * numOfChannels * numSeconds * bytesPerSample
     samples = lengthInBytes / bytesPerSample (formula gotten from SimpleSound.java)
                          or simply
     samples = sampleRate * numOfChannels * numSeconds'''
 
 def getSamples(numSeconds, numChannels):
     return numSeconds*numChannels*22050
-    
+
 def createTestSound():
     simple = SimpleSound()
     audioFormat = AudioFormat(AudioFormat.Encoding.ALAW, 22050, 16, 1, 2, 22050, 0)
@@ -47,16 +47,16 @@ class Test_SimpleSound(unittest.TestCase):
     def setUp(self):
         '''Test SimpleSound(), Create a SimpleSound of 3 seconds long\n'''
         self.simple = SimpleSound()
-        
-#   def testSamples(self):      
+
+#   def testSamples(self):
 #       '''Verify a sound of 3 seconds long will have 66150 Samples'''
 #       self.assertEquals(self.simple.getLength(),66150,
 #           'Length (in Samples) is %s != %s' % (self.simple.getLength(), 66150))
-            
+
     def testAudioFileFormat(self):
         '''Verify sound created is WAVE AudioFileFormat'''
         AFF = self.simple.getAudioFileFormat()
-        self.assertEquals(AFF.getType(),  AudioFileFormat.Type.WAVE, 
+        self.assertEquals(AFF.getType(),  AudioFileFormat.Type.WAVE,
             'AudioFileFormat is %s != WAVE' % AFF.getType())
 
     def testSamplingRate(self):
@@ -70,11 +70,11 @@ class Test_SimpleSound(unittest.TestCase):
         self.assertEquals(AF.getSampleSizeInBits(), 16,
             'Sample bit size is %s != 16' % AF.getSampleSizeInBits())
 
-    def testChannels(self):     
+    def testChannels(self):
         '''Verify sound created has one Channel'''
         self.assertEquals(self.simple.getChannels(), 1,
             'Num of Channels is %s != 1' % self.simple.getChannels())
-        
+
     def testIsStereo(self):
         '''Verify sound created is not in Stereo'''
         self.assertEquals(self.simple.isStereo(), 0,
@@ -91,7 +91,7 @@ class Test_SimpleSound(unittest.TestCase):
         AF = self.simple.getAudioFileFormat().getFormat()
         self.assertEquals(AF.isBigEndian(), 0,
             'Sound is Big-Endian Byte Order')
-        
+
 #suite = unittest.makeSuite(Test_SimpleSound)
 #results = unittest.TextTestRunner(verbosity=2).run(suite)
 
@@ -104,16 +104,16 @@ class Test_SimpleSound_3Secs(unittest.TestCase):
         '''Test SimpleSound(3), Create a SimpleSound of 3 seconds long\n'''
         self.NUM_SECS = 3
         self.simple = SimpleSound(self.NUM_SECS)
-        
-#   def testSamples(self):      
+
+#   def testSamples(self):
 #       '''Verify a sound of 3 seconds long will have 66150 Samples'''
 #       self.assertEquals(self.simple.getLength(),getSamples(self.NUM_SECS,1),
 #           'Length (in Samples) is %s != %s' % (self.simple.getLength(), getSamples(self.NUM_SECS,1)))
-            
+
     def testAudioFileFormat(self):
         '''Verify sound created is WAVE AudioFileFormat'''
         AFF = self.simple.getAudioFileFormat()
-        self.assertEquals(AFF.getType(),  AudioFileFormat.Type.WAVE, 
+        self.assertEquals(AFF.getType(),  AudioFileFormat.Type.WAVE,
             'AudioFileFormat is %s != WAVE' % AFF.getType())
 
     def testSamplingRate(self):
@@ -127,11 +127,11 @@ class Test_SimpleSound_3Secs(unittest.TestCase):
         self.assertEquals(AF.getSampleSizeInBits(), 16,
             'Sample bit size is %s != 16' % AF.getSampleSizeInBits())
 
-    def testChannels(self):     
+    def testChannels(self):
         '''Verify sound created has one Channel'''
         self.assertEquals(self.simple.getChannels(), 1,
             'Num of Channels is %s != 1' % self.simple.getChannels())
-        
+
     def testIsStereo(self):
         '''Verify sound created is not in Stereo'''
         self.assertEquals(self.simple.isStereo(), 0,
@@ -147,7 +147,7 @@ class Test_SimpleSound_3Secs(unittest.TestCase):
         '''Verify sound created is Small-Endian Byte Order'''
         AF = self.simple.getAudioFileFormat().getFormat()
         self.assertEquals(AF.isBigEndian(), 0,
-            'Sound is Big-Endian Byte Order')   
+            'Sound is Big-Endian Byte Order')
 
 #suite = unittest.makeSuite(Test_SimpleSound_3Secs)
 #results = unittest.TextTestRunner(verbosity=2).run(suite)
@@ -161,16 +161,16 @@ class Test_SimpleSound_8Secs(unittest.TestCase):
         '''Test SimpleSound(8), Create a SimpleSound of 8 seconds long\n'''
         self.NUM_SECS = 8
         self.simple = SimpleSound(self.NUM_SECS)
-        
-#   def testSamples(self):      
+
+#   def testSamples(self):
 #       '''Verify number of Samples in SimpleSound of length 8 seconds'''
 #       self.assertEquals(self.simple.getLength(),getSamples(self.NUM_SECS,1),
 #           'Length (in Samples) is %s != %s' % (self.simple.getLength(), getSamples(self.NUM_SECS,1)))
-            
+
     def testAudioFileFormat(self):
         '''Verify sound created is WAVE AudioFileFormat'''
         AFF = self.simple.getAudioFileFormat()
-        self.assertEquals(AFF.getType(),  AudioFileFormat.Type.WAVE, 
+        self.assertEquals(AFF.getType(),  AudioFileFormat.Type.WAVE,
             'AudioFileFormat is %s != WAVE' % AFF.getType())
 
     def testSamplingRate(self):
@@ -184,11 +184,11 @@ class Test_SimpleSound_8Secs(unittest.TestCase):
         self.assertEquals(AF.getSampleSizeInBits(), 16,
             'Sample bit size is %s != 16' % AF.getSampleSizeInBits())
 
-    def testChannels(self):     
+    def testChannels(self):
         '''Verify sound created has one Channel'''
         self.assertEquals(self.simple.getChannels(), 1,
             'Num of Channels is %s != 1' % self.simple.getChannels())
-        
+
     def testIsStereo(self):
         '''Verify sound created is not in Stereo'''
         self.assertEquals(self.simple.isStereo(), 0,
@@ -204,7 +204,7 @@ class Test_SimpleSound_8Secs(unittest.TestCase):
         '''Verify sound created is Small-Endian Byte Order'''
         AF = self.simple.getAudioFileFormat().getFormat()
         self.assertEquals(AF.isBigEndian(), 0,
-            'Sound is Big-Endian Byte Order')   
+            'Sound is Big-Endian Byte Order')
 
 #suite = unittest.makeSuite(Test_SimpleSound_8Secs)
 #results = unittest.TextTestRunner(verbosity=2).run(suite)
@@ -218,16 +218,16 @@ class Test_SimpleSound_0Secs(unittest.TestCase):
         '''Test SimpleSound(0), Create a SimpleSound of 0 seconds long\n'''
         self.NUM_SECS = 0
         self.simple = SimpleSound(self.NUM_SECS)
-        
-#   def testSamples(self):      
+
+#   def testSamples(self):
 #       '''Verify number of Samples in SimpleSound of length 0 seconds'''
 #       self.assertEquals(self.simple.getLength(),getSamples(self.NUM_SECS,1),
 #           'Length (in Samples) is %s != %s' % (self.simple.getLength(), getSamples(self.NUM_SECS,1)))
-            
+
     def testAudioFileFormat(self):
         '''Verify sound created is WAVE AudioFileFormat'''
         AFF = self.simple.getAudioFileFormat()
-        self.assertEquals(AFF.getType(),  AudioFileFormat.Type.WAVE, 
+        self.assertEquals(AFF.getType(),  AudioFileFormat.Type.WAVE,
             'AudioFileFormat is %s != WAVE' % AFF.getType())
 
     def testSamplingRate(self):
@@ -241,11 +241,11 @@ class Test_SimpleSound_0Secs(unittest.TestCase):
         self.assertEquals(AF.getSampleSizeInBits(), 16,
             'Sample bit size is %s != 16' % AF.getSampleSizeInBits())
 
-    def testChannels(self):     
+    def testChannels(self):
         '''Verify sound created has one Channel'''
         self.assertEquals(self.simple.getChannels(), 1,
             'Num of Channels is %s != 1' % self.simple.getChannels())
-        
+
     def testIsStereo(self):
         '''Verify sound created is not in Stereo'''
         self.assertEquals(self.simple.isStereo(), 0,
@@ -261,7 +261,7 @@ class Test_SimpleSound_0Secs(unittest.TestCase):
         '''Verify sound created is Small-Endian Byte Order'''
         AF = self.simple.getAudioFileFormat().getFormat()
         self.assertEquals(AF.isBigEndian(), 0,
-            'Sound is Big-Endian Byte Order')   
+            'Sound is Big-Endian Byte Order')
 
 #suite = unittest.makeSuite(Test_SimpleSound_0Secs)
 #results = unittest.TextTestRunner(verbosity=2).run(suite)
@@ -280,7 +280,7 @@ class Test_SimpleSound_n1Secs(unittest.TestCase):
             '''WORKS'''
         except:
             self.fail('Failed to raise NegativeArrayException')
-        
+
 #suite = unittest.makeSuite(Test_SimpleSound_n1Secs)
 #results = unittest.TextTestRunner(verbosity=2).run(suite)
 
@@ -294,16 +294,16 @@ class Test_SimpleSound_100Secs(unittest.TestCase):
         self.NUM_SECS = 100
         self.simple = SimpleSound(self.NUM_SECS)
 
-        
-#   def testSamples(self):      
+
+#   def testSamples(self):
 #       '''Verify number of Samples in SimpleSound of length 100 seconds'''
 #       self.assertEquals(self.simple.getLength(),getSamples(self.NUM_SECS,1),
 #           'Length (in Samples) is %s != %s' % (self.simple.getLength(), getSamples(self.NUM_SECS,1)))
-            
+
     def testAudioFileFormat(self):
         '''Verify sound created is WAVE AudioFileFormat'''
         AFF = self.simple.getAudioFileFormat()
-        self.assertEquals(AFF.getType(),  AudioFileFormat.Type.WAVE, 
+        self.assertEquals(AFF.getType(),  AudioFileFormat.Type.WAVE,
             'AudioFileFormat is %s != WAVE' % AFF.getType())
 
     def testSamplingRate(self):
@@ -317,11 +317,11 @@ class Test_SimpleSound_100Secs(unittest.TestCase):
         self.assertEquals(AF.getSampleSizeInBits(), 16,
             'Sample bit size is %s != 16' % AF.getSampleSizeInBits())
 
-    def testChannels(self):     
+    def testChannels(self):
         '''Verify sound created has one Channel'''
         self.assertEquals(self.simple.getChannels(), 1,
             'Num of Channels is %s != 1' % self.simple.getChannels())
-        
+
     def testIsStereo(self):
         '''Verify sound created is not in Stereo'''
         self.assertEquals(self.simple.isStereo(), 0,
@@ -337,7 +337,7 @@ class Test_SimpleSound_100Secs(unittest.TestCase):
         '''Verify sound created is Small-Endian Byte Order'''
         AF = self.simple.getAudioFileFormat().getFormat()
         self.assertEquals(AF.isBigEndian(), 0,
-            'Sound is Big-Endian Byte Order')   
+            'Sound is Big-Endian Byte Order')
 
 #suite = unittest.makeSuite(Test_SimpleSound_100Secs)
 #results = unittest.TextTestRunner(verbosity=2).run(suite)
@@ -351,16 +351,16 @@ class Test_SimpleSound_100Secs(unittest.TestCase):
 #        '''Test SimpleSound(16 Bits, SmallEndian)\n'''
 #        self.NUM_SECS = 3
 #        self.simple = SimpleSound(16,0)
-        
-#   def testSamples(self):      
+
+#   def testSamples(self):
 #       '''Verify number of Samples in SimpleSound of length 16 Bits'''
 #       self.assertEquals(self.simple.getLength(), getSamples(self.NUM_SECS,1),
 #           'Length (in Samples) is %s != %s' % (self.simple.getLength(), getSamples(self.NUM_SECS,1)))
-            
+
 #    def testAudioFileFormat(self):
 #        '''Verify sound created is WAVE AudioFileFormat'''
 #        AFF = self.simple.getAudioFileFormat()
-#        self.assertEquals(AFF.getType(),  AudioFileFormat.Type.WAVE, 
+#        self.assertEquals(AFF.getType(),  AudioFileFormat.Type.WAVE,
 #            'AudioFileFormat is %s != WAVE' % AFF.getType())
 
 #    def testSamplingRate(self):
@@ -374,11 +374,11 @@ class Test_SimpleSound_100Secs(unittest.TestCase):
 #        self.assertEquals(AF.getSampleSizeInBits(), 16,
 #            'Sample bit size is %s != 16' % AF.getSampleSizeInBits())
 
-#    def testChannels(self):     
+#    def testChannels(self):
 #        '''Verify sound created has one Channel'''
 #        self.assertEquals(self.simple.getChannels(), 1,
 #            'Num of Channels is %s != 1' % self.simple.getChannels())
-        
+
 #    def testIsStereo(self):
 #        '''Verify sound created is not in Stereo'''
 #        self.assertEquals(self.simple.isStereo(), 0,
@@ -408,16 +408,16 @@ class Test_SimpleSound_100Secs(unittest.TestCase):
 #        '''Test SimpleSound(8 Bits, SmallEndian)\n'''
 #        self.NUM_SECS = 3
 #        self.simple = SimpleSound(8,0)
-        
-#   def testSamples(self):      
+
+#   def testSamples(self):
 #       '''Verify number of Samples in SimpleSound of length 16 Bits'''
 #       self.assertEquals(self.simple.getLength(), getSamples(self.NUM_SECS,1),
 #           'Length (in Samples) is %s != %s' % (self.simple.getLength(), getSamples(self.NUM_SECS,1)))
-            
+
 #    def testAudioFileFormat(self):
 #        '''Verify sound created is WAVE AudioFileFormat'''
 #        AFF = self.simple.getAudioFileFormat()
-#        self.assertEquals(AFF.getType(),  AudioFileFormat.Type.WAVE, 
+#        self.assertEquals(AFF.getType(),  AudioFileFormat.Type.WAVE,
 #            'AudioFileFormat is %s != WAVE' % AFF.getType())
 
 #    def testSamplingRate(self):
@@ -431,11 +431,11 @@ class Test_SimpleSound_100Secs(unittest.TestCase):
 #        self.assertEquals(AF.getSampleSizeInBits(), 16,
 #            'Sample bit size is %s != 16' % AF.getSampleSizeInBits())
 
-#    def testChannels(self):     
+#    def testChannels(self):
 #        '''Verify sound created has one Channel'''
 #        self.assertEquals(self.simple.getChannels(), 1,
 #            'Num of Channels is %s != 1' % self.simple.getChannels())
-        
+
 #    def testIsStereo(self):
 #        '''Verify sound created is not in Stereo'''
 #        self.assertEquals(self.simple.isStereo(), 0,
@@ -465,16 +465,16 @@ class Test_SimpleSound_100Secs(unittest.TestCase):
 #        '''Test SimpleSound(8 Bits, SmallEndian)\n'''
 #        self.NUM_SECS = 3
 #        self.simple = SimpleSound(16,1)
-        
-#   def testSamples(self):      
+
+#   def testSamples(self):
 #       '''Verify number of Samples in SimpleSound of length 16 Bits'''
 #       self.assertEquals(self.simple.getLength(), getSamples(self.NUM_SECS,1),
 #           'Length (in Samples) is %s != %s' % (self.simple.getLength(), getSamples(self.NUM_SECS,1)))
-            
+
 #    def testAudioFileFormat(self):
 #        '''Verify sound created is WAVE AudioFileFormat'''
 #        AFF = self.simple.getAudioFileFormat()
-#        self.assertEquals(AFF.getType(),  AudioFileFormat.Type.WAVE, 
+#        self.assertEquals(AFF.getType(),  AudioFileFormat.Type.WAVE,
 #            'AudioFileFormat is %s != WAVE' % AFF.getType())
 
 #    def testSamplingRate(self):
@@ -488,11 +488,11 @@ class Test_SimpleSound_100Secs(unittest.TestCase):
 #        self.assertEquals(AF.getSampleSizeInBits(), 16,
 #            'Sample bit size is %s != 16' % AF.getSampleSizeInBits())
 
-#    def testChannels(self):     
+#    def testChannels(self):
 #        '''Verify sound created has one Channel'''
 #        self.assertEquals(self.simple.getChannels(), 1,
 #            'Num of Channels is %s != 1' % self.simple.getChannels())
-        
+
 #    def testIsStereo(self):
 #        '''Verify sound created is not in Stereo'''
 #        self.assertEquals(self.simple.isStereo(), 0,
@@ -522,16 +522,16 @@ class Test_SimpleSound_100Secs(unittest.TestCase):
 #        '''Test SimpleSound(8 Bits, SmallEndian)\n'''
 #        self.NUM_SECS = 3
 #        self.simple = SimpleSound(8,1)
-        
-#   def testSamples(self):      
+
+#   def testSamples(self):
 #       '''Verify number of Samples in SimpleSound of length 16 Bits'''
 #       self.assertEquals(self.simple.getLength(), getSamples(self.NUM_SECS,1),
 #           'Length (in Samples) is %s != %s' % (self.simple.getLength(), getSamples(self.NUM_SECS,1)))
-            
+
 #    def testAudioFileFormat(self):
 #        '''Verify sound created is WAVE AudioFileFormat'''
 #        AFF = self.simple.getAudioFileFormat()
-#        self.assertEquals(AFF.getType(),  AudioFileFormat.Type.WAVE, 
+#        self.assertEquals(AFF.getType(),  AudioFileFormat.Type.WAVE,
 #            'AudioFileFormat is %s != WAVE' % AFF.getType())
 
 #    def testSamplingRate(self):
@@ -545,11 +545,11 @@ class Test_SimpleSound_100Secs(unittest.TestCase):
 #        self.assertEquals(AF.getSampleSizeInBits(), 8,
 #            'Sample bit size is %s != 16' % AF.getSampleSizeInBits())
 
-#    def testChannels(self):     
+#    def testChannels(self):
 #        '''Verify sound created has one Channel'''
 #        self.assertEquals(self.simple.getChannels(), 1,
 #            'Num of Channels is %s != 1' % self.simple.getChannels())
-        
+
 #    def testIsStereo(self):
 #        '''Verify sound created is not in Stereo'''
 #        self.assertEquals(self.simple.isStereo(), 0,
@@ -579,16 +579,16 @@ class Test_SimpleSound_s3(unittest.TestCase):
         self.original = SimpleSound()
         self.simple = SimpleSound(self.original)
 
-    def testSamples(self):      
+    def testSamples(self):
         '''Verify number of Samples in Copy = Original'''
         self.assertEquals(self.simple.getLength(), self.original.getLength(),
             'Length (in Samples) is %s != %s' % (self.simple.getLength(), self.original.getLength()))
-            
+
     def testAudioFileFormat(self):
         '''Verify AudioFileFormat in Copy = Original'''
         AFF = self.simple.getAudioFileFormat()
         OAFF = self.original.getAudioFileFormat()
-        self.assertEquals(AFF.getType(),  OAFF.getType(), 
+        self.assertEquals(AFF.getType(),  OAFF.getType(),
             'AudioFileFormat is %s != %s' % (AFF.getType(), OAFF.getType()))
 
     def testSamplingRate(self):
@@ -603,11 +603,11 @@ class Test_SimpleSound_s3(unittest.TestCase):
         self.assertEquals(AF.getSampleSizeInBits(), OAF.getSampleSizeInBits(),
             'Sample bit size is %s != %s' % (AF.getSampleSizeInBits(), OAF.getSampleSizeInBits()))
 
-    def testChannels(self):     
+    def testChannels(self):
         '''Verify Channel(s) in Copy = Original'''
         self.assertEquals(self.simple.getChannels(), self.original.getChannels(),
             'Num of Channels is %s != %s' % (self.simple.getChannels(), self.original.getChannels()))
-        
+
     def testIsStereo(self):
         '''Verify Stereo in Copy = Original'''
         self.assertEquals(self.simple.isStereo(), self.original.isStereo(),
@@ -638,16 +638,16 @@ class Test_SimpleSound_s5(unittest.TestCase):
         self.original = SimpleSound(5)
         self.simple = SimpleSound(self.original)
 
-    def testSamples(self):      
+    def testSamples(self):
         '''Verify number of Samples in Copy = Original'''
         self.assertEquals(self.simple.getLength(), self.original.getLength(),
             'Length (in Samples) is %s != %s' % (self.simple.getLength(), self.original.getLength()))
-            
+
     def testAudioFileFormat(self):
         '''Verify AudioFileFormat in Copy = Original'''
         AFF = self.simple.getAudioFileFormat()
         OAFF = self.original.getAudioFileFormat()
-        self.assertEquals(AFF.getType(),  OAFF.getType(), 
+        self.assertEquals(AFF.getType(),  OAFF.getType(),
             'AudioFileFormat is %s != %s' % (AFF.getType(), OAFF.getType()))
 
     def testSamplingRate(self):
@@ -662,11 +662,11 @@ class Test_SimpleSound_s5(unittest.TestCase):
         self.assertEquals(AF.getSampleSizeInBits(), OAF.getSampleSizeInBits(),
             'Sample bit size is %s != %s' % (AF.getSampleSizeInBits(), OAF.getSampleSizeInBits()))
 
-    def testChannels(self):     
+    def testChannels(self):
         '''Verify Channel(s) in Copy = Original'''
         self.assertEquals(self.simple.getChannels(), self.original.getChannels(),
             'Num of Channels is %s != %s' % (self.simple.getChannels(), self.original.getChannels()))
-        
+
     def testIsStereo(self):
         '''Verify Stereo in Copy = Original'''
         self.assertEquals(self.simple.isStereo(), self.original.isStereo(),
@@ -699,12 +699,12 @@ class Test_SimpleSound_AIFC(unittest.TestCase):
         AFF = AudioFileFormat(AudioFileFormat.Type.WAVE, audioFormat, 6615)
         self.original.setAudioFileFormat(AFF)
         self.simple = SimpleSound(self.original)
-        
+
     def testAudioFormatEncoding(self):
         '''Verify Encoding is ALAW'''
         AF = self.simple.getAudioFileFormat().getFormat()
         self.assertEquals(AF.getEncoding(), AudioFormat.Encoding.ALAW,
-            'Encoding is %s != ALAW' % (AF.getEncoding()))      
+            'Encoding is %s != ALAW' % (AF.getEncoding()))
 
     def testAudioFormatEncoding(self):
         '''Verify Encoding in Copy = Original'''
@@ -727,12 +727,12 @@ class Test_SimpleSound_PCMSIGNED(unittest.TestCase):
         AFF = AudioFileFormat(AudioFileFormat.Type.WAVE, audioFormat, 6615)
         self.original.setAudioFileFormat(AFF)
         self.simple = SimpleSound(self.original)
-        
+
     def testAudioFormatEncoding(self):
         '''Verify Encoding is PCM_SIGNED'''
         AF = self.simple.getAudioFileFormat().getFormat()
         self.assertEquals(AF.getEncoding(), AudioFormat.Encoding.PCM_SIGNED,
-            'Encoding is %s != PCM_SIGNED' % (AF.getEncoding()))        
+            'Encoding is %s != PCM_SIGNED' % (AF.getEncoding()))
 
     def testAudioFormatEncoding(self):
         '''Verify Encoding in Copy = Original'''
@@ -755,12 +755,12 @@ class Test_SimpleSound_PCMUNSIGNED(unittest.TestCase):
         AFF = AudioFileFormat(AudioFileFormat.Type.WAVE, audioFormat, 6615)
         self.original.setAudioFileFormat(AFF)
         self.simple = SimpleSound(self.original)
-        
+
     def testAudioFormatEncoding(self):
         '''Verify Encoding is PCM_UNSIGNED'''
         AF = self.simple.getAudioFileFormat().getFormat()
         self.assertEquals(AF.getEncoding(), AudioFormat.Encoding.UNPCM_SIGNED,
-            'Encoding is %s != PCM_SIGNED' % (AF.getEncoding()))        
+            'Encoding is %s != PCM_SIGNED' % (AF.getEncoding()))
 
     def testAudioFormatEncoding(self):
         '''Verify Encoding in Copy = Original'''
@@ -783,12 +783,12 @@ class Test_SimpleSound_ULAW(unittest.TestCase):
         AFF = AudioFileFormat(AudioFileFormat.Type.WAVE, audioFormat, 6615)
         self.original.setAudioFileFormat(AFF)
         self.simple = SimpleSound(self.original)
-        
+
     def testAudioFormatEncoding(self):
         '''Verify Encoding is PCM_SIGNED'''
         AF = self.simple.getAudioFileFormat().getFormat()
         self.assertEquals(AF.getEncoding(), AudioFormat.Encoding.ULAW,
-            'Encoding is %s != PCM_SIGNED' % (AF.getEncoding()))        
+            'Encoding is %s != PCM_SIGNED' % (AF.getEncoding()))
 
     def testAudioFormatEncoding(self):
         '''Verify Encoding in Copy = Original'''
@@ -812,7 +812,7 @@ class Test_SimpleSound_22KSR(unittest.TestCase):
         AFF = AudioFileFormat(AudioFileFormat.Type.WAVE, audioFormat, 6615)
         self.original.setAudioFileFormat(AFF)
         self.simple = SimpleSound(self.original)
-        
+
     def testSamplingRate(self):
         '''Verify SamplingRate is 22050'''
         self.assertEquals(self.simple.getSamplingRate(), self.samplingRate,
@@ -838,7 +838,7 @@ class Test_SimpleSound_5KSR(unittest.TestCase):
         AFF = AudioFileFormat(AudioFileFormat.Type.WAVE, audioFormat, 6615)
         self.original.setAudioFileFormat(AFF)
         self.simple = SimpleSound(self.original)
-        
+
     def testSamplingRate(self):
         '''Verify SamplingRate is 5000'''
         self.assertEquals(self.simple.getSamplingRate(), self.samplingRate,
@@ -864,7 +864,7 @@ class Test_SimpleSound_16sample(unittest.TestCase):
         AFF = AudioFileFormat(AudioFileFormat.Type.WAVE, audioFormat, 6615)
         self.original.setAudioFileFormat(AFF)
         self.simple = SimpleSound(self.original)
-        
+
     def testSampleSize(self):
         '''Verify SampleSize is 16'''
         AFF = self.simple.getAudioFileFormat()
@@ -896,7 +896,7 @@ class Test_SimpleSound_8sample(unittest.TestCase):
         AFF = AudioFileFormat(AudioFileFormat.Type.WAVE, audioFormat, 6615)
         self.original.setAudioFileFormat(AFF)
         self.simple = SimpleSound(self.original)
-        
+
     def testSampleSize(self):
         '''Verify SampleSize is 8'''
         AFF = self.simple.getAudioFileFormat()
@@ -928,7 +928,7 @@ class Test_SimpleSound_1c(unittest.TestCase):
         AFF = AudioFileFormat(AudioFileFormat.Type.WAVE, audioFormat, 6615)
         self.original.setAudioFileFormat(AFF)
         self.simple = SimpleSound(self.original)
-        
+
     def testChannels(self):
         '''Verify Channels is 1'''
         self.assertEquals(self.simple.getChannels(), self.channels,
@@ -954,7 +954,7 @@ class Test_SimpleSound_2c(unittest.TestCase):
         AFF = AudioFileFormat(AudioFileFormat.Type.WAVE, audioFormat, 6615)
         self.original.setAudioFileFormat(AFF)
         self.simple = SimpleSound(self.original)
-        
+
     def testChannels(self):
         '''Verify Channels is 2'''
         self.assertEquals(self.simple.getChannels(), self.channels,
@@ -980,7 +980,7 @@ class Test_SimpleSound_2frame(unittest.TestCase):
         AFF = AudioFileFormat(AudioFileFormat.Type.WAVE, audioFormat, 6615)
         self.original.setAudioFileFormat(AFF)
         self.simple = SimpleSound(self.original)
-        
+
     def testFrameSize(self):
         '''Verify FrameSize is 2'''
         AFF = self.simple.getAudioFileFormat()
@@ -1012,7 +1012,7 @@ class Test_SimpleSound_1frame(unittest.TestCase):
         AFF = AudioFileFormat(AudioFileFormat.Type.WAVE, audioFormat, 6615)
         self.original.setAudioFileFormat(AFF)
         self.simple = SimpleSound(self.original)
-        
+
     def testFrameSize(self):
         '''Verify FrameSize is 1'''
         AFF = self.simple.getAudioFileFormat()
@@ -1044,7 +1044,7 @@ class Test_SimpleSound_22KFR(unittest.TestCase):
         AFF = AudioFileFormat(AudioFileFormat.Type.WAVE, audioFormat, 6615)
         self.original.setAudioFileFormat(AFF)
         self.simple = SimpleSound(self.original)
-        
+
     def testFrameRate(self):
         '''Verify FrameRate is 22k'''
         AFF = self.simple.getAudioFileFormat()
@@ -1076,7 +1076,7 @@ class Test_SimpleSound_5KFR(unittest.TestCase):
         AFF = AudioFileFormat(AudioFileFormat.Type.WAVE, audioFormat, 6615)
         self.original.setAudioFileFormat(AFF)
         self.simple = SimpleSound(self.original)
-        
+
     def testFrameRate(self):
         '''Verify FrameRate is 5k'''
         AFF = self.simple.getAudioFileFormat()
@@ -1108,7 +1108,7 @@ class Test_SimpleSound_se(unittest.TestCase):
         AFF = AudioFileFormat(AudioFileFormat.Type.WAVE, audioFormat, 6615)
         self.original.setAudioFileFormat(AFF)
         self.simple = SimpleSound(self.original)
-        
+
     def testIsBigEndian(self):
         '''Verify isBigEndian is false'''
         AFF = self.simple.getAudioFileFormat()
@@ -1140,7 +1140,7 @@ class Test_SimpleSound_be(unittest.TestCase):
         AFF = AudioFileFormat(AudioFileFormat.Type.WAVE, audioFormat, 6615)
         self.original.setAudioFileFormat(AFF)
         self.simple = SimpleSound(self.original)
-        
+
     def testIsBigEndian(self):
         '''Verify isBigEndian is true'''
         AFF = self.simple.getAudioFileFormat()
@@ -1172,7 +1172,7 @@ class Test_SimpleSound_fl(unittest.TestCase):
         AFF = AudioFileFormat(AudioFileFormat.Type.WAVE, audioFormat, self.frameLength)
         self.original.setAudioFileFormat(AFF)
         self.simple = SimpleSound(self.original)
-        
+
     def testFrameLength(self):
         '''Verify FrameLength is 6615'''
         AFF = self.simple.getAudioFileFormat()
@@ -1201,7 +1201,7 @@ class Test_SimpleSound_fl2(unittest.TestCase):
         AFF = AudioFileFormat(AudioFileFormat.Type.WAVE, audioFormat, self.frameLength)
         self.original.setAudioFileFormat(AFF)
         self.simple = SimpleSound(self.original)
-        
+
     def testFrameLength(self):
         '''Verify FrameLength is 13230'''
         AFF = self.simple.getAudioFileFormat()
@@ -1227,8 +1227,8 @@ class Test_SimpleSound_blip(unittest.TestCase):
         self.original = SimpleSound(SOUNDS + "Blip.wav")
         self.simple = SimpleSound(self.original)
 
-    def testSamples(self):      
-        '''Verify number of Samples in Copy = Original'''               
+    def testSamples(self):
+        '''Verify number of Samples in Copy = Original'''
         self.assertEquals(self.simple.getLength(), self.original.getLength(),
             'Length (in Samples) is %s != %s' % (self.simple.getLength(), self.original.getLength()))
 
@@ -1236,12 +1236,12 @@ class Test_SimpleSound_blip(unittest.TestCase):
         '''Verify AudioFileFormat in Copy = Original'''
         AFF = self.simple.getAudioFileFormat()
         oAFF = self.original.getAudioFileFormat()
-        self.assertEquals(AFF.getType(),  oAFF.getType(), 
+        self.assertEquals(AFF.getType(),  oAFF.getType(),
             'AudioFileFormat is %s != %s' % (AFF.getType(), oAFF.getType()))
 
     def testSamplingRate(self):
-        '''Verify Sampling Rate in Copy = Original'''           
-        self.assertEquals(self.simple.getSamplingRate(), self.original.getSamplingRate(), 
+        '''Verify Sampling Rate in Copy = Original'''
+        self.assertEquals(self.simple.getSamplingRate(), self.original.getSamplingRate(),
             'Sampling rate is %s != %s' % (self.simple.getSamplingRate(), self.original.getSamplingRate()))
 
     def testBitSample(self):
@@ -1250,17 +1250,17 @@ class Test_SimpleSound_blip(unittest.TestCase):
         oAFF = self.original.getAudioFileFormat()
         AF = AFF.getFormat()
         OF = oAFF.getFormat()
-        self.assertEquals(AF.getSampleSizeInBits(), OF.getSampleSizeInBits(), 
+        self.assertEquals(AF.getSampleSizeInBits(), OF.getSampleSizeInBits(),
             'Sample bit size is %s != %s' % (AF.getSampleSizeInBits(), OF.getSampleSizeInBits()))
 
-    def testChannels(self):     
+    def testChannels(self):
         '''Verify Channel(s) in Copy = Original'''
-        self.assertEquals(self.simple.getChannels(), self.original.getChannels(), 
+        self.assertEquals(self.simple.getChannels(), self.original.getChannels(),
             'Num of Channels is %s != %s' % (self.simple.getChannels(),self.original.getChannels()))
 
     def testIsStereo(self):
-        '''Verify Stereo in Copy = Original'''      
-        self.assertEquals(self.simple.isStereo(), self.original.isStereo(), 
+        '''Verify Stereo in Copy = Original'''
+        self.assertEquals(self.simple.isStereo(), self.original.isStereo(),
             'SimpleSound stereo not the same')
 
     def testAudioFormatEncoding(self):
@@ -1269,7 +1269,7 @@ class Test_SimpleSound_blip(unittest.TestCase):
         oAFF = self.original.getAudioFileFormat()
         AF = AFF.getFormat()
         OF = oAFF.getFormat()
-        self.assertEquals(AF.getEncoding(), OF.getEncoding(), 
+        self.assertEquals(AF.getEncoding(), OF.getEncoding(),
             'Encoding is %s != %s' % (AF.getEncoding(),OF.getEncoding()))
 
     def testAudioFormatIsBigEndian(self):
@@ -1278,16 +1278,16 @@ class Test_SimpleSound_blip(unittest.TestCase):
         oAFF = self.original.getAudioFileFormat()
         AF = AFF.getFormat()
         OF = oAFF.getFormat()
-        self.assertEquals(AF.isBigEndian(), OF.isBigEndian(), 
+        self.assertEquals(AF.isBigEndian(), OF.isBigEndian(),
             'Byte Order is %s != %s' % (AF.isBigEndian(),OF.isBigEndian()))
 
     def testFileName(self):
-        '''Verify FileName in Copy = Original'''                        
-        self.assertEquals(self.simple.getFileName(), self.original.getFileName(), 
+        '''Verify FileName in Copy = Original'''
+        self.assertEquals(self.simple.getFileName(), self.original.getFileName(),
             'FileName is %s != %s' % (self.simple.getFileName(), self.original.getFileName()))
 
     def testByteOrder(self):
-        '''Verify Byte Order in Copy = Original'''          
+        '''Verify Byte Order in Copy = Original'''
         simpleBuffer = self.simple.getBuffer()
         originalBuffer = self.original.getBuffer()
         if(len(simpleBuffer) == len(originalBuffer)):
@@ -1295,7 +1295,7 @@ class Test_SimpleSound_blip(unittest.TestCase):
                 self.assertEquals(simpleBuffer[byte], originalBuffer[byte], 'ByteBuffer is different at byte %s' % byte)
         else:
             self.fail('ByteBuffers are different length')
-            
+
 #suite = unittest.makeSuite(Test_SimpleSound_blip)
 #results = unittest.TextTestRunner(verbosity=2).run(suite)
 
@@ -1307,7 +1307,7 @@ class Test_SimpleSound_testSound(unittest.TestCase):
     def setUp(self):
         createTestSound()
         self.simple = SimpleSound(OUTPUT + "testSound.wav")
-        
+
     def testAudioFormatEncoding(self):
         '''Verify Encoding is ALAW'''
         AF = self.simple.getAudioFileFormat().getFormat()
@@ -1355,7 +1355,7 @@ class Test_SimpleSound_testSound(unittest.TestCase):
     def testAudioFileFormat(self):
         '''Verify sound created is WAVE AudioFileFormat'''
         AFF = self.simple.getAudioFileFormat()
-        self.assertEquals(AFF.getType(),  AudioFileFormat.Type.WAVE, 
+        self.assertEquals(AFF.getType(),  AudioFileFormat.Type.WAVE,
             'AudioFileFormat is %s != WAVE' % AFF.getType())
 
     def testFrameLength(self):
@@ -1363,7 +1363,7 @@ class Test_SimpleSound_testSound(unittest.TestCase):
         AFF = self.simple.getAudioFileFormat()
         self.assertEquals(AFF.getFrameLength(), 6615,
             'FrameLength is %s != %s' % (AFF.getFrameLength(), 6615))
-        
+
 #suite = unittest.makeSuite(Test_SimpleSound_testSound)
 #results = unittest.TextTestRunner(verbosity=2).run(suite)
 
@@ -1378,13 +1378,13 @@ class Test_AsArray(unittest.TestCase):
         simple = SimpleSound()
         simple.setBuffer(bytes)
         simpleArray = simple.asArray()
-        
-        self.assertEquals(len(bytes), len(simpleArray), 
+
+        self.assertEquals(len(bytes), len(simpleArray),
             'Length of array is %s != %s' % (len(bytes), len(simpleArray)))
 
         if(len(bytes) == len(simpleArray)):
             for index in range(len(bytes)):
-                self.assertEquals(simpleArray[index], bytes[index], 
+                self.assertEquals(simpleArray[index], bytes[index],
                     'Array is different at index %s' % index)
 
 #suite = unittest.makeSuite(Test_AsArray)
@@ -1401,13 +1401,13 @@ class Test_Buffer(unittest.TestCase):
         simple = SimpleSound()
         simple.setBuffer(bytes)
         simpleBuffer = simple.getBuffer()
-        
-        self.assertEquals(len(bytes), len(simpleBuffer), 
+
+        self.assertEquals(len(bytes), len(simpleBuffer),
             'Length of buffer is %s != %s' % (len(bytes), len(simpleBuffer)))
 
         if(len(bytes) == len(simpleBuffer)):
             for index in range(len(bytes)):
-                self.assertEquals(simpleBuffer[index], bytes[index], 
+                self.assertEquals(simpleBuffer[index], bytes[index],
                     'Buffer is different at index %s' % index)
 
 #suite = unittest.makeSuite(Test_Buffer)
@@ -1417,7 +1417,7 @@ class Test_Buffer(unittest.TestCase):
 
 print '''Run Tests on from Book'''
 class Test_Book(unittest.TestCase):
-    
+
     def setUp(self):
         self.simple = SimpleSound(SOUNDS + "preamble.wav")
 
@@ -1430,11 +1430,11 @@ class Test_Book(unittest.TestCase):
     def testGetSampleValueAt(self):
         self.assertEquals(self.simple.getSampleValueAt(1),29,
             'Value At Sample is %s != 36' % self.simple.getSampleValueAt(1))
-            
+
         self.assertEquals(self.simple.getSampleValueAt(2),22,
             'Value At Sample is %s != 36' % self.simple.getSampleValueAt(2))
 
 #suite = unittest.makeSuite(Test_Book)
 #results = unittest.TextTestRunner(verbosity=2).run(suite)
 
-########################################################################################################        
+########################################################################################################

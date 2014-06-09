@@ -21,7 +21,7 @@ def write(msg):
         else:
             file.write(msg)
         file.close()
-        
+
 def clear():
     try:
         os.unlink(FILE_NAME)

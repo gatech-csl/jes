@@ -15,7 +15,7 @@ class JESAddressFinder:
         self.targetHw=None
         self.targetMail=None
         self.data=self.grabFile()
-    
+
     def getTargetAddress(self,gt,hw):
         self.targetGt=string.strip(gt)
         self.targetHw=string.strip(hw)
@@ -46,7 +46,7 @@ class JESAddressFinder:
             return None
 
     def parseDataFile(self,text):
-        #Get the TA assignments:        
+        #Get the TA assignments:
         beg = text.find("#BEGIN")
         end = text.find("#END")
         if (beg == -1) or (end == -1):
@@ -57,7 +57,7 @@ class JESAddressFinder:
         for x in array:
             self.splitarray.append(x.split("|"))
 
-  
+
     def findAddress(self):
         try:
             for x in self.splitarray:

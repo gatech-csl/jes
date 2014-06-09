@@ -32,10 +32,10 @@ class JESRunnable( Runnable ):
             self.errMsg = errRec.getExceptionMsg()
             self.errLine = errRec.getLineNumber()
         else:
-            
+
             self.errMsg = ''
             self.errLine = None
-        
+
 ######################################################################
 # run
 #
@@ -45,7 +45,7 @@ class JESRunnable( Runnable ):
 ######################################################################
 
     def run(self):
-        
+
         if self.output != '' and self.output != None:
             self.interpreter.sendOutput( self.output )
         if self.errMsg != '' and self.errMsg != None:
@@ -60,9 +60,9 @@ class JESRunnable( Runnable ):
         self.interpreter.program.gui.stopWork()
         self.interpreter.program.gui.editor.document.removeLineHighlighting()
         self.interpreter.program.gui.editor.editable = 1
-	
-	# needed for midi note playing
-	import JavaMusic
+
+        # needed for midi note playing
+        import JavaMusic
 
         try:
             JavaMusic.cleanUp()
@@ -83,6 +83,6 @@ class JESRunnable( Runnable ):
                     msg += 'JES.'
                     JOptionPane.showMessageDialog(self.interpreter.program.gui,
                                                   msg, 'Sound Error', JOptionPane.ERROR_MESSAGE)
-            
-	if self.interpreter.debug_mode:
-	    self.interpreter.debugger.endExecution()
+
+        if self.interpreter.debug_mode:
+            self.interpreter.debugger.endExecution()

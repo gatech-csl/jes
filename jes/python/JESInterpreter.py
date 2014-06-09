@@ -20,7 +20,7 @@ class JESInterpreter:
 # Function name: __init__
 # Parameters:
 #     -program - the running instance of JESProgram
-# Description: 
+# Description:
 #     Creates an instance of JESInterpreter
 ################################################################################
     def __init__(self, program):
@@ -33,7 +33,7 @@ class JESInterpreter:
         self.currentLoadedFileKeys = []
         self.debug_mode = 0
         self.debugger = JESDebugger.JESDebugger(self)
-        
+
         # self.preprocessing must run before buildVarsToHighlight to avoid a
         # deadlock
         self.preProcessingWorked = self.preprocessing()
@@ -42,18 +42,18 @@ class JESInterpreter:
 
     def getVarsToHighlight(self):
         return self.varsToHighlight
-    
+
     def buildVarsToHighlight(self):
-        
+
         varsToHighlight = {}
-        
+
         self.interpreterLock.acquire()
 
         # this will wait until JESPreprocessing has been executed
 
         while not self.contextForExecution:
             self.interpreterCondition.wait()
-            
+
 
         for key in self.contextForExecution.keys():
             varsToHighlight[key] = 1
@@ -61,11 +61,11 @@ class JESInterpreter:
         self.interpreterLock.release()
         return varsToHighlight
 
-        
+
 
 ################################################################################
 # Function name: preprocessing
-# Description: 
+# Description:
 #     Loads the preprocessing file into the user's interpreter
 ################################################################################
     def preprocessing(self):
@@ -80,10 +80,10 @@ class JESInterpreter:
             import traceback
             traceback.print_exception(a,b,c)
             return None
-            
-            
-            
-            
+
+
+
+
 ################################################################################
 # Function name: runCommand
 # Parameters:
@@ -103,8 +103,8 @@ class JESInterpreter:
                 self.run(text, 'debug')
         else:
             self.run(text, 'run')
-            
-            
+
+
     def run(self, text, mode):
         jesThread = JESThread.JESThread(text, self, mode)
         self.jesThread = jesThread
@@ -112,16 +112,16 @@ class JESInterpreter:
 
     def debugCommand(self, text):
         self.debugger.runCommand(text)
-        
+
     def runFile(self,fileName, mode='load'):
         self.run(fileName, mode)
-        
-        
+
+
 ################################################################################
 # Function name: load
 # Parameters:
 #     -fileText - the text to be loaded
-# Description: 
+# Description:
 #     Loads the user's code into the context of the command window's
 #     interpreter.  reloads the preprocessing code, and if that succeds, loads
 #     the user's code.  uses loadHelper to perform the loading.
@@ -137,13 +137,13 @@ class JESInterpreter:
 
         #self.runCommand(fileText,'load')
         self.runFile(fileName,'load')
-        
-        
+
+
 ################################################################################
 # Function name: sendOutput
-# Parameters: 
+# Parameters:
 #     responseText: the text to be sent
-# Description: 
+# Description:
 #     Sends text to the UI where the user can see it
 ################################################################################
     def sendOutput(self, responseText):
@@ -162,11 +162,11 @@ class JESInterpreter:
 
 ################################################################################
 # Function name: stopThread
-# Description: 
+# Description:
 #     Stops a running thread of user code
 ################################################################################
     def stopThread(self):
-        
+
         self.jesThread.stop()
 
 

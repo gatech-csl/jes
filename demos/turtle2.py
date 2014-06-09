@@ -8,4 +8,3 @@ for i in range(0, 20):
     turn(t, 3)
     forward(t, 3)
     addFrameToMovie(w, movie)
-

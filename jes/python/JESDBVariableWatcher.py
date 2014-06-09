@@ -92,7 +92,7 @@ class DBControlPanel(swing.JPanel):
         #self.add(self.runButton)
         self.add(self.fullspeedButton)
         self.add(self.stopButton)
-	self.initialButtonState()
+        self.initialButtonState()
 
     def stateChanged(self, e):
         value = self.slider.getValue()
@@ -108,25 +108,25 @@ class DBControlPanel(swing.JPanel):
     def actionPerformed(self, e):
         source = e.getSource()
         if source == self.runButton:
-	    if source.icon == self.runIcon:
-		self.run()
-	    else:
+            if source.icon == self.runIcon:
+                self.run()
+            else:
                 self.pause()
         elif source == self.fullspeedButton:
-	    self.fullspeed()
+            self.fullspeed()
         elif source == self.stopButton:
-	    self.debugger.stopThread()
-	    self.stop()
-	elif source == self.stepButton:
-	    self.step()
-	elif source == self.addButton:
+            self.debugger.stopThread()
+            self.stop()
+        elif source == self.stepButton:
+            self.step()
+        elif source == self.addButton:
             self.debugger.watcher.watchVariable()
         elif source == self.deleteButton:
             self.debugger.watcher.unwatchVariable()
 
     def refreshSlider(self):
         self.slider.value = self.debugger.speed
-            
+
     def run(self):
         self.runButton.icon = self.pauseIcon
         self.runButton.toolTipText = 'pause'
@@ -146,14 +146,14 @@ class DBControlPanel(swing.JPanel):
         self.pauseState()
 
     def stop(self):
-	self.initialButtonState()
+        self.initialButtonState()
 
     def fullspeed(self):
         # kinda like run, but full speed
         self.runButton.icon = self.pauseIcon
         self.runButton.toolTipText = 'pause'
         self.debugger.setSpeed(self.debugger.MAX_SPEED)
-        self.fullspeedButton.enabled = 1 
+        self.fullspeedButton.enabled = 1
         self.runButton.enabled = 1
         self.stepButton.enabled = 0
         self.stopButton.enabled = 1
@@ -182,20 +182,20 @@ class DBControlPanel(swing.JPanel):
 #-------------------------------------------------------------------------------
 class JESDBVariableWatcher(swing.JPanel):
     def __init__(self, debugger):
-	self.debugger = debugger
-	self.controlPanel = DBControlPanel(self.debugger)
-	self.history = JESExecHistoryModel.JESExecHistoryModel()
-	self.table = WatcherTable(self.history)
-	self.rendererComponent = swing.JLabel(opaque=1)
-	self.table.setDefaultRenderer(Object, MyRenderer())
-	self.history.setColumnWidths(self.table)
-	self.scrollPane = swing.JScrollPane(self.table) 
+        self.debugger = debugger
+        self.controlPanel = DBControlPanel(self.debugger)
+        self.history = JESExecHistoryModel.JESExecHistoryModel()
+        self.table = WatcherTable(self.history)
+        self.rendererComponent = swing.JLabel(opaque=1)
+        self.table.setDefaultRenderer(Object, MyRenderer())
+        self.history.setColumnWidths(self.table)
+        self.scrollPane = swing.JScrollPane(self.table)
         self.scrollPane.verticalScrollBar.model.stateChanged = self.stateChanged
         self.setLayout(awt.BorderLayout())
         self.add(self.scrollPane, awt.BorderLayout.CENTER)
         self.add(self.controlPanel, awt.BorderLayout.NORTH)
         self.lastScrollMaximum = None
-        
+
     def stateChanged(self, event):
         brmodel = event.source
         if brmodel.maximum <> self.lastScrollMaximum:
@@ -213,13 +213,13 @@ class JESDBVariableWatcher(swing.JPanel):
             self.history.removeVariable(var)
 
     def endExecution(self):
-	self.history.endExecution()
+        self.history.endExecution()
 
 #-------------------------------------------------------------------------------
 class MyRenderer(swing.JLabel, swing.table.TableCellRenderer):
     def __init__(self):
         self.opaque = 1
-        
+
     def getTableCellRendererComponent(self, table, value, isSelected, hasFocus, row, col):
         self.text = str(value)
         if row <> table.rowCount - 1:
@@ -231,16 +231,15 @@ class MyRenderer(swing.JLabel, swing.table.TableCellRenderer):
 #-------------------------------------------------------------------------------
 class WatcherTable(swing.JTable):
     def __init__(self, model):
-    	    #self.times = 0;
-	    swing.JTable.__init__(self, model)
+            #self.times = 0;
+        swing.JTable.__init__(self, model)
 
 
     def tableChanged(self, event):
         #print "WatcherTable, tableChanged: " + Thread.currentThread().getName()
-	#self.times = self.times + 1
-	#print "Count ", self.times
-	swing.JTable.tableChanged(self, event)
+        #self.times = self.times + 1
+        #print "Count ", self.times
+        swing.JTable.tableChanged(self, event)
         if event.getFirstRow() == swing.event.TableModelEvent.HEADER_ROW:
             self.model.setColumnWidths(self)
 #-------------------------------------------------------------------------------
-

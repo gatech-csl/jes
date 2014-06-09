@@ -14,7 +14,7 @@ import JESConstants
 # Class: JESURLFinder
 # Description:
 #     A Class for JES which connects to a Web server to find out
-#     turnin information.  Supplies student's GT number and 
+#     turnin information.  Supplies student's GT number and
 #     assignment name to find the appropraiate turnin URL and turnin type.
 ##################################################################
 class JESTurninTypeFinder:
@@ -34,28 +34,28 @@ class JESTurninTypeFinder:
 #     various definitions sections.  It puts the gt number ta
 #     information for assignments into an array called self.turninData.
 # pre:
-#     Valid file must be downloaded 
+#     Valid file must be downloaded
 ##################################################################
     def parseDataFile(self):
-	try:
+        try:
             #Get the assignment turnin information
-	    beg = self.text.find("#BEGIN_TURNIN_TYPE_TABLE")
-	    end = self.text.find("#END_TURNIN_TYPE_TABLE")
-	    if (beg == -1) or (end == -1):
-	    	return 0
-	    talist = self.text[beg:end]
-	    talist = talist.split("\n")
+            beg = self.text.find("#BEGIN_TURNIN_TYPE_TABLE")
+            end = self.text.find("#END_TURNIN_TYPE_TABLE")
+            if (beg == -1) or (end == -1):
+                return 0
+            talist = self.text[beg:end]
+            talist = talist.split("\n")
             self.turninTypeData = []
-	    for entry in talist:
-	        self.turninTypeData.append(entry.split("|")) # add a 2 element list to array
+            for entry in talist:
+                self.turninTypeData.append(entry.split("|")) # add a 2 element list to array
             return 1
-        
-	except:
+
+        except:
             import sys
             a,b,c=sys.exc_info()
             print a,b,c
-	    raise StandardError, "Error parsing data file. Most likely an invalid parse "
-        
+            raise StandardError, "Error parsing data file. Most likely an invalid parse "
+
 ##################################################################
 # Method: getTurninType
 # Description:
@@ -70,17 +70,17 @@ class JESTurninTypeFinder:
 ##################################################################
     def getTurninType(self):
         if(self.parseDataFile() == 0):
-            return -1        
-	try:
+            return -1
+        try:
             for element in self.turninTypeData:
                 if string.strip(element[0]) == string.strip(self.hw):
-                    return string.strip(element[1]) # return the type            
-	    raise StandardError, "Could not find valid turnin type."
-	except:
+                    return string.strip(element[1]) # return the type
+            raise StandardError, "Could not find valid turnin type."
+        except:
             import sys
             a,b,c=sys.exc_info()
             print a,b,c
-	    raise StandardError, "Error parsing turnin URL list"
+            raise StandardError, "Error parsing turnin URL list"
 
 ##################################################################
 #

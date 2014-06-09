@@ -15,7 +15,7 @@ MID_FONT = 32
 HIGH_FONT = 72
 
 
-# AUTOOPENDOC is an option that's been removed, but for compatability for 
+# AUTOOPENDOC is an option that's been removed, but for compatability for
 # folks who may be using earlier beta versions, it retains a slot.
 CONFIG_NAME = 0
 CONFIG_GT = 1
@@ -65,7 +65,7 @@ HW_TABLE_LINK = 'http://coweb.cc.gatech.edu/mediaComp-plan/109'
 # studentGT#|HW#|TARGET_MAIL_ADDRESS
 # #END
 # Anything here or after will also be thrown away by the parser
-# Important, HW# must exactly match a HW# from the ASSIGNMENT_URL or the 
+# Important, HW# must exactly match a HW# from the ASSIGNMENT_URL or the
 # program will not know where to turn the file in to.  Also, the target email
 # must be complete and exact.
 #HW_ADDRESS_URL = 'http://coweb.cc.gatech.edu/mediaComp-plan/33'
@@ -141,7 +141,7 @@ EXCEPTION_MESSAGES = {
     'AttributeError'       : 'You are trying to access a part of the object that doesn\'t exist.',
     'EOFError'             : 'The build-in read function failed because the end  of the file has been reached. This happens when you leave a statement or function unfinished or do not match up all of your parentheses.',
     'FloatingPointError'   : 'A floating point operation has failed.',
-    'IOError'              : 'I tried to read a file, and couldn\'t.  Are you sure that file exists? If it does exist, did you specify the correct directory/folder?',     
+    'IOError'              : 'I tried to read a file, and couldn\'t.  Are you sure that file exists? If it does exist, did you specify the correct directory/folder?',
     'ImportError'          : 'An import statement failed to find the module that was defined. You need to find the correct name of the module you want to use.',
     'IndexError'           : 'The index you\'re using goes beyond the size of that data (too low or high). For instance, maybe you tried to access OurArray[10] and OurArray only has 5 elements in it.',
     'IndentationError'     : 'A line of code contains bad indentation. Make sure all of your lines match up inside your functions.',
@@ -153,10 +153,10 @@ EXCEPTION_MESSAGES = {
     'OverflowError'        : 'An arithmetic result is outside the range of acceptable values. This means that the answer is either too large or too small to be represented.',
     'RuntimeError'         : 'I wasn\'t able to do what you wanted on line %(lineno)s',
     'StackOverflowError'   : 'You have overrun the stack. This means that way too many functions were called before they ever had a chance to return.',
-    'SyntaxError'          : 'Your code contains at least one syntax error, meaning it is not legal jython. This error is located on %(lineno)s. Please correct it.',     
+    'SyntaxError'          : 'Your code contains at least one syntax error, meaning it is not legal jython. This error is located on %(lineno)s. Please correct it.',
     'SystemError'          : 'An internal system error has occurred.  Please tell a TA what you were doing when this happened so that we may correct it. ',
     'SystemExit'           : 'A call of the sys.exit() function has been made. Normally this would exit JES entirely, but we don\'t want you doing this. If you want to exit JES, use the exit option in the file menu.',
-    'TypeError'            : 'An attempt was made to call a function with a parameter of an invalid type. This means that you did something such as trying to pass a string to a method that is expecting an integer.', 
+    'TypeError'            : 'An attempt was made to call a function with a parameter of an invalid type. This means that you did something such as trying to pass a string to a method that is expecting an integer.',
     'UnboundLocalError'    : 'A local name was used before it was created. You need to define the method or variable before you try to use it.',
     'UnicodeError'         : 'An error occurred while encoding or decoding Unicode characters.',
     'ValueError'           : 'An error occurred attempting to pass an argument to a function.',
@@ -171,5 +171,3 @@ EXCEPTION_MESSAGES = {
 
 GENERIC_EXCEPTION_MESSAGE = 'I wasn\'t able to do what you wanted.\n'
 TAB_ERROR_MESSAGE = "There was a spacing error in the program.\nIt might be from a previous line, but I think the error is in line "
-
-

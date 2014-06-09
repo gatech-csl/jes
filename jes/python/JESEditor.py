@@ -184,61 +184,61 @@ class JESEditor(swing.JTextPane,
 #     sets the width to that.
 ################################################################################
     def updateBox(self, offset):
-      try:
-        defaultElement = self.document.getDefaultRootElement()
-        rowIndex = defaultElement.getElementIndex(offset)
-        rowStart = defaultElement.getElement(rowIndex).getStartOffset()
-        rowEnd = defaultElement.getElement(rowIndex).getEndOffset() - 1
-        indentLevel = self.getNumSpaces(rowStart)
-        width = self.modelToView(rowEnd).x
-        if ( indentLevel == 0):
-            self.boxX = 0
-            self.boxY = 0
-            self.boxWidth = 0
-            self.boxHeight = 0
-        else:
-            #Get the top row in the same block
-            topIndex = rowIndex
-            while topIndex > 1:
-                if self.getNumSpaces(defaultElement.getElement(topIndex - 1).getStartOffset()) >= indentLevel \
-                                     or self.isBlank(defaultElement.getElement(topIndex - 1).getStartOffset()):
-                    topIndex = topIndex - 1
-                    end = self.modelToView(defaultElement.getElement(topIndex).getEndOffset() - 1).x
-                    if end > width:
-                        width = end
-                else:
-                    break
-            topStart = defaultElement.getElement(topIndex).getStartOffset()
+        try:
+            defaultElement = self.document.getDefaultRootElement()
+            rowIndex = defaultElement.getElementIndex(offset)
             rowStart = defaultElement.getElement(rowIndex).getStartOffset()
-            topStartWidth = self.modelToView(rowStart + indentLevel)
-            topStartCoord = self.modelToView(topStart + indentLevel)
+            rowEnd = defaultElement.getElement(rowIndex).getEndOffset() - 1
+            indentLevel = self.getNumSpaces(rowStart)
+            width = self.modelToView(rowEnd).x
+            if ( indentLevel == 0):
+                self.boxX = 0
+                self.boxY = 0
+                self.boxWidth = 0
+                self.boxHeight = 0
+            else:
+                #Get the top row in the same block
+                topIndex = rowIndex
+                while topIndex > 1:
+                    if self.getNumSpaces(defaultElement.getElement(topIndex - 1).getStartOffset()) >= indentLevel \
+                                         or self.isBlank(defaultElement.getElement(topIndex - 1).getStartOffset()):
+                        topIndex = topIndex - 1
+                        end = self.modelToView(defaultElement.getElement(topIndex).getEndOffset() - 1).x
+                        if end > width:
+                            width = end
+                    else:
+                        break
+                topStart = defaultElement.getElement(topIndex).getStartOffset()
+                rowStart = defaultElement.getElement(rowIndex).getStartOffset()
+                topStartWidth = self.modelToView(rowStart + indentLevel)
+                topStartCoord = self.modelToView(topStart + indentLevel)
 
-            #Get the bottom row in the same block
-            bottomSpaced = 0
-            bottomIndex = rowIndex
-            bottomLast = bottomIndex
-            while bottomIndex < defaultElement.getElementCount() - 1:
-                bottomSpaced = self.isBlank(defaultElement.getElement(bottomIndex + 1).getStartOffset())
-                if self.getNumSpaces(defaultElement.getElement(bottomIndex + 1).getStartOffset()) >= indentLevel or bottomSpaced:
-                    bottomIndex = bottomIndex + 1
-                    end = self.modelToView(defaultElement.getElement(bottomIndex).getEndOffset() - 1).x
-                    if bottomSpaced == 0:
-                        bottomLast = bottomIndex
-                    if end > width:
-                        width = end
-                else:
-                    break
-            bottomStart = defaultElement.getElement(bottomLast).getStartOffset()
-            bottomStartCoord = self.modelToView(bottomStart + indentLevel)
+                #Get the bottom row in the same block
+                bottomSpaced = 0
+                bottomIndex = rowIndex
+                bottomLast = bottomIndex
+                while bottomIndex < defaultElement.getElementCount() - 1:
+                    bottomSpaced = self.isBlank(defaultElement.getElement(bottomIndex + 1).getStartOffset())
+                    if self.getNumSpaces(defaultElement.getElement(bottomIndex + 1).getStartOffset()) >= indentLevel or bottomSpaced:
+                        bottomIndex = bottomIndex + 1
+                        end = self.modelToView(defaultElement.getElement(bottomIndex).getEndOffset() - 1).x
+                        if bottomSpaced == 0:
+                            bottomLast = bottomIndex
+                        if end > width:
+                            width = end
+                    else:
+                        break
+                bottomStart = defaultElement.getElement(bottomLast).getStartOffset()
+                bottomStartCoord = self.modelToView(bottomStart + indentLevel)
 
-            #Set Coordinates
-            self.boxX = topStartWidth.x - 1
-            self.boxY = topStartCoord.y
-            self.boxHeight = bottomStartCoord.y + bottomStartCoord.height - topStartCoord.y
-            self.boxWidth = width - topStartCoord.x + 15
+                #Set Coordinates
+                self.boxX = topStartWidth.x - 1
+                self.boxY = topStartCoord.y
+                self.boxHeight = bottomStartCoord.y + bottomStartCoord.height - topStartCoord.y
+                self.boxWidth = width - topStartCoord.x + 15
 
-      except Exception, e:
-          pass
+        except Exception, e:
+            pass
 
 ################################################################################
 # Function name: getNumSpaces
@@ -308,6 +308,3 @@ class JESEditor(swing.JTextPane,
         if self.boxX != 0:
             g.setColor(awt.Color(200, 200, 250))
             g.drawRect(self.boxX, self.boxY, self.boxWidth, self.boxHeight)
-
-
-

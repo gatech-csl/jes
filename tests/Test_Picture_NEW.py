@@ -51,7 +51,7 @@ class Test_Picture(unittest.TestCase):
 #   def testPictureNull6(self):
 #       '''Test Picture() constructor [6] - toString'''
 #       self.pict = Picture()
-#       self.assertEqual(self.pict.toString(), 'Picture, filename null height 0 width 0', 
+#       self.assertEqual(self.pict.toString(), 'Picture, filename null height 0 width 0',
 #                   'toString %s != Picture, filename null height 0 width 0' % self.pict.toString())
 
 #   def testPictureNull(self):
@@ -65,7 +65,7 @@ class Test_Picture(unittest.TestCase):
 #       self.assertEqual(self.pict.getWidth(), 0, 'Width %s != 0' % self.pict.getWidth())
 #       self.assertEqual(self.pict.getHeight(), 0, 'Height %s != 0' % self.pict.getHeight())
 #       self.assertNotEqual(self.pict.getWidth(), 1, 'Width is 1?')
-#       self.assertEqual(self.pict.toString(), 'Picture, filename None height 0 width 0', 
+#       self.assertEqual(self.pict.toString(), 'Picture, filename None height 0 width 0',
 #                   'toString %s != Picture, filename None height 0 width 0' % self.pict.toString())
 
     def testPictureWdtHgt(self):
@@ -79,7 +79,7 @@ class Test_Picture(unittest.TestCase):
         self.assertEqual(media.getWidth(self.pict), 500, 'Width %s != 500' % self.pict.getWidth())
         self.assertEqual(media.getHeight(self.pict), 500, 'Height %s != 500' % self.pict.getHeight())
 #       self.assertNotEqual(self.pict.getWidth(), 499, 'Width is 499?')
-#       self.assertEqual(self.pict.toString(), 'Picture, filename null height 500 width 500', 
+#       self.assertEqual(self.pict.toString(), 'Picture, filename null height 500 width 500',
 #                   'toString %s != Picture, filename null height 500 width 500' % self.pict.toString())
 
     def testTitleP(self):
@@ -100,7 +100,7 @@ class Test_Picture(unittest.TestCase):
 
     def testAddMessage(self):
         '''Test Picture.addMessage'''
-        self.pict = Picture(150,50) 
+        self.pict = Picture(150,50)
         self.pict.addMessage("This is a test",25,25)
         self.pict.addText(media.red, 10, 10, "test")
         self.pict.addText(media.red, 10, 10, "test")

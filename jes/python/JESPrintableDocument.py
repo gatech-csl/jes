@@ -58,21 +58,18 @@ class JESPrintableDocument(Printable):
             # Generate as many lines as will fit in imageable area
             y += 36
             while (y + 12< pform.getImageableY() + pform.getImageableHeight()):
-               line = self.raf.readLine()
-               if (line == None):
-                   self.rememberedEOF = 1
-                   break
-               try:
-                   g.drawString(line, x, y)
-               except:
-                   g.drawString(' ',x,y)
-               y =y + 12
+                line = self.raf.readLine()
+                if (line == None):
+                    self.rememberedEOF = 1
+                    break
+                try:
+                    g.drawString(line, x, y)
+                except:
+                    g.drawString(' ',x,y)
+                y =y + 12
             return Printable.PAGE_EXISTS
         except:
             import sys
             a,b,c=sys.exc_info()
             print a,b,c
             return Printable.NO_SUCH_PAGE
-
-
-

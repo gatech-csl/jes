@@ -22,7 +22,7 @@
 #             fixed the off-by-one error in makeEmptyPicture
 # 14 June 2007: (Pam Cutter, Kalamazoo College)
 #              Fixed off-by-one error in copyInto.  Now allows copying
-#		of same-sized picture, starting at top-left corner
+#               of same-sized picture, starting at top-left corner
 #
 # 6 July 2007: (Pam Cutter/Alyce Brady, Kalamazoo College)
 #              Added flexibility to make an empty picture of a specified color.  Added
@@ -52,18 +52,18 @@
 #              Modified the SoundExplorer class to be consistent with sounds in JES
 #                  starting at sample index 1.
 #              Modified the PictueExplorer class to initially show color values from
-#			 pixel 1,1, instead of 0,0.
+#                        pixel 1,1, instead of 0,0.
 #
 # 1 Nov 2007: Added __add__ and __sub__ to Color class (BrianO)
 # 29 Apr 2008: Changed makeEmptySound to take an integer number of samples
-#	       Added optional second argument to makeEmptySound for sampleRate
+#              Added optional second argument to makeEmptySound for sampleRate
 # 6 June 2008: Added a check for forward slash in a directory path in makeMovieFromInitialFile
-#		This check should work with os.altsep, but it does not work with Jython 2.2.
-#		This should be fixed again at a later date.
+#               This check should work with os.altsep, but it does not work with Jython 2.2.
+#               This should be fixed again at a later date.
 # 27 June 2008: Added optional input to setMediaFolder and setMediaPath.
-#		Added showMediaFolder and showMediaPath methods.
+#               Added showMediaFolder and showMediaPath methods.
 # 11 July 2007: Removed showMediaFolder and showMediaPath for no-arg version of getMediaPath/getMediaFolder.
-#		Added generic explore method. 
+#               Added generic explore method.
 # 15 July 2007: Added no-arg option for setLibPath
 
 # TODO:
@@ -109,7 +109,7 @@ import org.python.core.PyString as String
 #mediaFolder = JESConfig.getMediaPath()
 #if ( mediaFolder == "" ):
 mediaFolder = os.getcwd() + os.sep
-    
+
 # Store last pickAFile() opening
 
 _lastFilePath = ""
@@ -121,7 +121,7 @@ def setMediaPath(file=None):
     global mediaFolder
     if(file == None):
         FileChooser.pickMediaPath()
-    else:	
+    else:
         FileChooser.setMediaPath( file )
     mediaFolder = getMediaPath()
     return mediaFolder
@@ -156,12 +156,12 @@ def setLibPath(directory=None):
     if(directory == None):
         directory = pickAFolder()
     if(os.path.isdir(directory)):
-    	sys.path.append(directory)
+        sys.path.append(directory)
     else:
         print "Note: There is no directory at ",directory
         raise ValueError
     return directory
-    
+
 ##
 ## Global sound functions
 ##
@@ -201,10 +201,10 @@ def makeEmptySoundBySeconds(seconds, samplingRate = Sound.SAMPLE_RATE):
 
 # PamC: Added this function to duplicate a sound
 def duplicateSound(sound):
-  if not isinstance(sound, Sound):
+    if not isinstance(sound, Sound):
         print "duplicateSound(sound): Input is not a sound"
         raise ValueError
-  return Sound(sound)
+    return Sound(sound)
 
 def getSamples(sound):
     if not isinstance(sound, Sound):
@@ -247,33 +247,33 @@ def playAtRateDur(sound,rate,dur):
 
 #20June03 new functionality in JavaSound (ellie)
 def playInRange(sound,start,stop):
-        if not isinstance(sound, Sound):
-                print "playInRange(sound,start,stop): First input is not a sound"
-                raise ValueError
-        # sound.playInRange(start,stop)
-        sound.playAtRateInRange(1,start-Sound._SoundIndexOffset,stop-Sound._SoundIndexOffset)
+    if not isinstance(sound, Sound):
+        print "playInRange(sound,start,stop): First input is not a sound"
+        raise ValueError
+    # sound.playInRange(start,stop)
+    sound.playAtRateInRange(1,start-Sound._SoundIndexOffset,stop-Sound._SoundIndexOffset)
 
 #20June03 new functionality in JavaSound (ellie)
 def blockingPlayInRange(sound,start,stop):
-        if not isinstance(sound, Sound):
-                print "blockingPlayInRange(sound,start,stop): First input is not a sound"
-                raise ValueError
-        # sound.blockingPlayInRange(start,stop)
-        sound.blockingPlayAtRateInRange(1,start-Sound._SoundIndexOffset,stop-Sound._SoundIndexOffset)
+    if not isinstance(sound, Sound):
+        print "blockingPlayInRange(sound,start,stop): First input is not a sound"
+        raise ValueError
+    # sound.blockingPlayInRange(start,stop)
+    sound.blockingPlayAtRateInRange(1,start-Sound._SoundIndexOffset,stop-Sound._SoundIndexOffset)
 
 #20June03 new functionality in JavaSound (ellie)
 def playAtRateInRange(sound,rate,start,stop):
-        if not isinstance(sound,Sound):
-                print "playAtRateInRAnge(sound,rate,start,stop): First input is not a sound"
-                raise ValueError
-        sound.playAtRateInRange(rate,start - Sound._SoundIndexOffset,stop - Sound._SoundIndexOffset)
+    if not isinstance(sound,Sound):
+        print "playAtRateInRAnge(sound,rate,start,stop): First input is not a sound"
+        raise ValueError
+    sound.playAtRateInRange(rate,start - Sound._SoundIndexOffset,stop - Sound._SoundIndexOffset)
 
 #20June03 new functionality in JavaSound (ellie)
 def blockingPlayAtRateInRange(sound,rate,start,stop):
-        if not isinstance(sound, Sound):
-                print "blockingPlayAtRateInRange(sound,rate,start,stop): First input is not a sound"
-                raise ValueError
-        sound.blockingPlayAtRateInRange(rate, start - Sound._SoundIndexOffset,stop - Sound._SoundIndexOffset)
+    if not isinstance(sound, Sound):
+        print "blockingPlayAtRateInRange(sound,rate,start,stop): First input is not a sound"
+        raise ValueError
+    sound.blockingPlayAtRateInRange(rate, start - Sound._SoundIndexOffset,stop - Sound._SoundIndexOffset)
 
 def getSamplingRate(sound):
     if not isinstance(sound, Sound):
@@ -331,7 +331,7 @@ def setSample(sample,value):
 
 # PamC: Added this function to be a better name than setSample
 def setSampleValue(sample, value):
-  setSample(sample, value)
+    setSample(sample, value)
 
 def getSample(sample):
     if not isinstance(sample, Sample):
@@ -341,7 +341,7 @@ def getSample(sample):
 
 # PamC: Added this to be a better name for getSample
 def getSampleValue(sample):
-  return getSample(sample)
+    return getSample(sample)
 
 def getSound(sample):
     if not isinstance(sample,Sample):
@@ -362,10 +362,10 @@ def getNumSamples(sound):
 # PamC: Added this function to return the number of seconds
 # in a sound
 def getDuration(sound):
-  if not isinstance(sound, Sound):
-    print "getDuration(sound): Input is not a sound"
-    raise ValueError
-  return sound.getLength()/sound.getSamplingRate()
+    if not isinstance(sound, Sound):
+        print "getDuration(sound): Input is not a sound"
+        raise ValueError
+    return sound.getLength()/sound.getSamplingRate()
 
 def writeSoundTo(sound,filename):
     global mediaFolder
@@ -394,8 +394,8 @@ plain = awt.Font.PLAIN
 ##
 
 # Buck Scharfnorth (28 May 2008): if bool == 1 colors will be (value % 256)
-# 				  if bool == 0 colors will be truncated to 0 or 255
-# updated (13 May 2009): 
+#                                 if bool == 0 colors will be truncated to 0 or 255
+# updated (13 May 2009):
 # THIS GLOBAL FUNCTION CHANGES JES SETTINGS - this value overwrites
 # the value in the JES options menu.
 def setColorWrapAround(bool):
@@ -461,12 +461,12 @@ class Color:
         g = self.getGreen() + other.getGreen()
         b = self.getBlue() + other.getBlue()
 
-	# if(wrapAroundPixelValues):
-	#    r = r % 256
-	#    g = g % 256
-	#    b = b % 256
+        # if(wrapAroundPixelValues):
+        #    r = r % 256
+        #    g = g % 256
+        #    b = b % 256
 
-	# return Color(r,g,b)
+        # return Color(r,g,b)
         return Color( _checkPixel(r), _checkPixel(g), _checkPixel(b) )
 
     #Added by BrianO
@@ -475,12 +475,12 @@ class Color:
         g = self.getGreen() - other.getGreen()
         b = self.getBlue() - other.getBlue()
 
-	# if(wrapAroundPixelValues):
-	#    r = r % 256
-	#    g = g % 256
-	#    b = b % 256
+        # if(wrapAroundPixelValues):
+        #    r = r % 256
+        #    g = g % 256
+        #    b = b % 256
 
-	# return Color(r,g,b)
+        # return Color(r,g,b)
         return Color( _checkPixel(r), _checkPixel(g), _checkPixel(b) )
 
     def setRGB(self, r, g, b):
@@ -503,27 +503,27 @@ class Color:
         return math.sqrt(r+g+b)
 
     def makeDarker(self):
-      return self.color.darker()
+        return self.color.darker()
 
     def makeLighter(self):
-      return self.color.brighter()
+        return self.color.brighter()
 
 def pickAColor():
     ## Dorn 5/8/2009:  Edited to be thread safe since this code is executed from an
-    ## interpreter JESThread and will result in an update to the main JES GUI due to 
+    ## interpreter JESThread and will result in an update to the main JES GUI due to
     ## it being a modal dialog.
     from java.lang import Runnable
 
     class pickAColorRunner(Runnable):
-	color = Color(0,0,0)
-	def run(self):
-	    retValue = swing.JColorChooser().showDialog(swing.JFrame(),"Choose a color", awt.Color(0,0,0))
-	    if retValue != None:
-	        self.color = Color(retValue.getRed(),retValue.getGreen(),retValue.getBlue())
+        color = Color(0,0,0)
+        def run(self):
+            retValue = swing.JColorChooser().showDialog(swing.JFrame(),"Choose a color", awt.Color(0,0,0))
+            if retValue != None:
+                self.color = Color(retValue.getRed(),retValue.getGreen(),retValue.getBlue())
 
     runner = pickAColorRunner()
     swing.SwingUtilities.invokeAndWait(runner)
-    
+
     return runner.color
 
 
@@ -833,26 +833,26 @@ def _setColorTo(color, other):
     #return _setColorTo(color, color.darker())
 
 def makeDarker(color):
-  if not isinstance(color,Color):
-      print "makeDarker(color): Input is not a color"
-      raise ValueError
-  return Color( color.makeDarker() )
+    if not isinstance(color,Color):
+        print "makeDarker(color): Input is not a color"
+        raise ValueError
+    return Color( color.makeDarker() )
 
 #def makeLighter(color):
-  #"""This function has side effects on purpose, see p49"""
-  #return _setColorTo(color,color.brighter())
+    #"""This function has side effects on purpose, see p49"""
+    #return _setColorTo(color,color.brighter())
 
 def makeLighter(color):
-  if not isinstance(color,Color):
-      print "makeLighter(color): Input is not a color"
-      raise ValueError
-  return Color( color.makeLighter() )
+    if not isinstance(color,Color):
+        print "makeLighter(color): Input is not a color"
+        raise ValueError
+    return Color( color.makeLighter() )
 
 def makeBrighter(color): #This is the same as makeLighter(color)
-  if not isinstance(color,Color):
-      print "makeBrighter(color): Input is not a color"
-      raise ValueError
-  return Color( color.makeLighter() )
+    if not isinstance(color,Color):
+        print "makeBrighter(color): Input is not a color"
+        raise ValueError
+    return Color( color.makeLighter() )
 
 def makeColor(red,green=None,blue=None):
     return Color( red, green, blue)
@@ -969,7 +969,7 @@ def input(message=None):
 def raw_input(message=None):
     im = JESInputManager()
     return im.readInput(message)
-    
+
 
 def showWarning(message):
     return SimpleOutput.showWarning(message)
@@ -1035,14 +1035,14 @@ def openSoundTool(sound):
 
 def explore(someMedia):
     if isinstance(someMedia, Picture):
-	openPictureTool(someMedia)
+        openPictureTool(someMedia)
     elif isinstance(someMedia, Sound):
-	openSoundTool(someMedia)
+        openSoundTool(someMedia)
     elif isinstance(someMedia, Movie):
-	openFrameSequencerTool(someMedia)
+        openFrameSequencerTool(someMedia)
     else:
-	print "explore(someMedia): Input is not a Picture, Sound, or Movie"
-	raise ValueError
+        print "explore(someMedia): Input is not a Picture, Sound, or Movie"
+        raise ValueError
 
 # let's try the turtles...
 import Turtle
@@ -1226,7 +1226,7 @@ class Movie:
         elif self.dir == None and len(self.frames) == 1: #Is movie only 1 frame but never written out
             frame = self.frames[0]
             self.dir = frame[:(frame.rfind(os.sep))]
-        elif self.dir == None and len(self.frames) > 1: #Are movie frames all in the same directory? 
+        elif self.dir == None and len(self.frames) > 1: #Are movie frames all in the same directory?
             sameDir = 1
             frame = self.frames[0]
             frame = frame.replace('/', os.sep)
@@ -1247,7 +1247,7 @@ class Movie:
                 raise ValueError
         writer = MovieWriter(self.dir, framesPerSec, destPath)
         writer.writeQuicktime()
-        
+
     def writeAVI(self, destPath, framesPerSec = 16):
         global mediaFolder
         if not os.path.isabs(destPath):
@@ -1262,7 +1262,7 @@ class Movie:
         elif self.dir == None and len(self.frames) == 1: #Is movie only 1 frame but never written out
             frame = self.frames[0]
             self.dir = frame[:(frame.rfind(os.sep))]
-        elif self.dir == None and len(self.frames) > 1: #Are movie frames all in the same directory? 
+        elif self.dir == None and len(self.frames) > 1: #Are movie frames all in the same directory?
             sameDir = 1
             frame = self.frames[0]
             frame = frame.replace('/', os.sep)

@@ -6,4 +6,3 @@ penDown(t)
 for i in range(0, 360):
     turn(t, 1)
     forward(t, 3)
-

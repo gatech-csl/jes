@@ -13,7 +13,7 @@ from media import *
 
 from math import acos
 from math import asin
-from math import atan 
+from math import atan
 from math import ceil
 from math import cos
 from math import exp
@@ -35,9 +35,9 @@ __varsToFilter__ = {}
 
 
 
- 
+
 # this stuff has to be done last
-# HACK ALERT 
+# HACK ALERT
 # I need a list of all of the variables that are
 # defined.  I use that list, __varsToFilter__, to
 # hide the variables defined in this file
@@ -58,8 +58,8 @@ class __JESNum__:
         return self.num
 ################################################################################
 # Function name: showVars
-# Description: 
-#     The function provided to our users, available through the command window,     
+# Description:
+#     The function provided to our users, available through the command window,
 #     that will open a popup window containing all global and local variable.
 #
 ################################################################################
@@ -86,9 +86,3 @@ def showVars(count = __JESNum__(1) ,varsToFilter = __varsToFilter__):
 
 del __JESNum__
 del __varsToFilter__
-
-
-
-
-
-

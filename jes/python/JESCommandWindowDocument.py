@@ -57,18 +57,18 @@ class JESCommandWindowDocument(DefaultStyledDocument):
 
         if str == '\t':
             str = JESConstants.TAB
-            
+
         if self.command.getIsSystem() != FALSE:
             DefaultStyledDocument.insertString(self,
                                                offset,
                                                str,
                                                self.textAttrib)
-            
+
         else:
             #When insertString is called by Jython, check to make sure the
             #string is to be inserted after the most recent prompt
 
-            
+
             if self.command.getCaretPosition() >= self.command.getOldPos():
 
                 DefaultStyledDocument.insertString(self,
@@ -95,7 +95,7 @@ class JESCommandWindowDocument(DefaultStyledDocument):
                                                    offset,
                                                    ' ',
                                                    self.textAttrib)
-                
+
                 DefaultStyledDocument.insertString(self,
                                                    offset + 1,
                                                    str,
@@ -113,9 +113,9 @@ class JESCommandWindowDocument(DefaultStyledDocument):
         #When insertString is called by methods in JES, there is no need to
         #check the position
 
-    
 
-        
+
+
         self.addString(offset,str)
         self.command.commandHistory.setPartialCommand( self.command.getCurrentCommandLine() )
 ################################################################################
@@ -124,7 +124,7 @@ class JESCommandWindowDocument(DefaultStyledDocument):
 #     -offset: offset of the text that is being removed
 #     -len: length of the text that is being removed
 # Description:
-#     This function overrides the inherited remove function.  
+#     This function overrides the inherited remove function.
 ################################################################################
     def remove(self, offset, len):
         #When remove is called by methods in JES, there is no need to check the
@@ -146,4 +146,3 @@ class JESCommandWindowDocument(DefaultStyledDocument):
 ################################################################################
     def getTextAttrib(self):
         return self.textAttrib
-       
