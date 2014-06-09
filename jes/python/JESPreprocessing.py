@@ -26,6 +26,21 @@ from math import tan
 from math import pi
 from os import sep as pathSep
 
+# Override Python's normal exit instructions.
+# This makes exit and exit() both print instructions for exiting.
+
+class NotExiter():
+    message = 'Press Ctrl + Q or select "Exit" from the "File" menu to exit JES'
+
+    def __repr__(self):
+        return self.message
+
+    def __call__(self):
+        return self
+
+
+quit = exit = NotExiter()
+
 
 global __debugSystem__
 
