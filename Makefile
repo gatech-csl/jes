@@ -66,11 +66,10 @@ JES_JAVA_FLAGS      := $(JAVA_MEMORY) $(JES_PROPERTIES) -classpath $(CLASSPATH)
 
 ### TARGETS
 
-.PHONY: all javahome classes javadoc clean test run
+.PHONY: all classes javadoc clean test run
 
 all: classes javadoc
 
-javahome:
 ifndef JAVA_HOME
 	$(error The JAVA_HOME variable must be set, in the environment or with -D)
 endif
@@ -89,7 +88,7 @@ $(JES_BUILD_STAMP): $(JES_JAVA_FILES)
 
 javadoc: $(JES_JAVADOC)/index-all.html
 
-$(JES_JAVADOC)/index-all.html: $(JES_JAVA_FILES) javahome
+$(JES_JAVADOC)/index-all.html: $(JES_JAVA_FILES)
 	$(JAVADOC) $(JAVADOC_FLAGS) -classpath $(CLASSPATH) -d $(JES_JAVADOC) $(JES_JAVA_SRC)/*
 
 
