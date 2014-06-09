@@ -25,89 +25,81 @@ import java.text.*;
  * Kalamazoo additional methods and improved comments merged by Buck Scharfnorth 22 May 2008
  */
 
-public class Picture extends SimplePicture
-{
-  ///////////////////// constructors //////////////////////////////////
+public class Picture extends SimplePicture {
+    ///////////////////// constructors //////////////////////////////////
 
-  /**
-   * Constructor that takes no arguments
-   */
-  public Picture ()
-  {
-    /* not needed but use it to show students the implicit call to super()
-     * child constructors always call a parent constructor
+    /**
+     * Constructor that takes no arguments
      */
-    super();
-  }
+    public Picture() {
+        /* not needed but use it to show students the implicit call to super()
+         * child constructors always call a parent constructor
+         */
+        super();
+    }
 
-  /**
-   * Constructor that takes a file name and creates the picture
-   * @param fileName the name of the file to create the picture from
-   */
-  public Picture(String fileName)
-  {
-    // let the parent class handle this fileName
-    super(fileName);
-  }
+    /**
+     * Constructor that takes a file name and creates the picture
+     * @param fileName the name of the file to create the picture from
+     */
+    public Picture(String fileName) {
+        // let the parent class handle this fileName
+        super(fileName);
+    }
 
-  /**
-   * Constructor that takes the width and height
-   * @param width the width of the desired picture
-   * @param height the height of the desired picture
-   */
-  public Picture(int width, int height)
-  {
-    // let the parent class handle this width and height
-    super(width,height);
-  }
+    /**
+     * Constructor that takes the width and height
+     * @param width the width of the desired picture
+     * @param height the height of the desired picture
+     */
+    public Picture(int width, int height) {
+        // let the parent class handle this width and height
+        super(width, height);
+    }
 
-/**
-   * Constructor that takes the width and height, and a color
-   * @param width the width of the desired picture
-   * @param height the height of the desired picture
-   * @param color the color of the desired picture
-   */
-  public Picture(int width, int height, Color color)
-  {
-    // let the parent class handle this width and height
-    super(width,height,color);
-  }
+    /**
+       * Constructor that takes the width and height, and a color
+       * @param width the width of the desired picture
+       * @param height the height of the desired picture
+       * @param color the color of the desired picture
+       */
+    public Picture(int width, int height, Color color) {
+        // let the parent class handle this width and height
+        super(width, height, color);
+    }
 
-  /**
-   * Constructor that takes a picture and creates a
-   * copy of that picture.
-   * @param copyPicture the picture to be copied
-   */
-  public Picture(Picture copyPicture)
-  {
-    // let the parent class do the copy
-    super(copyPicture);
-  }
+    /**
+     * Constructor that takes a picture and creates a
+     * copy of that picture.
+     * @param copyPicture the picture to be copied
+     */
+    public Picture(Picture copyPicture) {
+        // let the parent class do the copy
+        super(copyPicture);
+    }
 
-  /**
-   * Constructor that takes a buffered image
-   * @param image the buffered image to use
-   */
-  public Picture(BufferedImage image)
-  {
-    super(image);
-  }
-  ////////////////////// methods ///////////////////////////////////////
+    /**
+     * Constructor that takes a buffered image
+     * @param image the buffered image to use
+     */
+    public Picture(BufferedImage image) {
+        super(image);
+    }
+    ////////////////////// methods ///////////////////////////////////////
 
-  /**
-   * Method to return a string with information about this picture.
-   * @return a string with information about the picture such as fileName,
-   * height and width.
-   */
-  public String toString()
-  {
-    String output = "Picture, filename " + getFileName() +
-      " height " + getHeight()
-      + " width " + getWidth();
-    return output;
-  }
+    /**
+     * Method to return a string with information about this picture.
+     * @return a string with information about the picture such as fileName,
+     * height and width.
+     */
+    public String toString() {
+        String output = "Picture, filename " + getFileName() +
+                        " height " + getHeight()
+                        + " width " + getWidth();
+        return output;
+    }
 
-/* adding graphics to pictures, for use in JES. (added by alexr, Oct 2006) */
+    /* adding graphics to pictures, for use in JES. (added by alexr, Oct 2006) */
 
     /**
      * Method to draw a line between two points on a picture
@@ -120,7 +112,7 @@ public class Picture extends SimplePicture
     public void addLine(Color acolor, int x1, int y1, int x2, int y2) {
         Graphics g = this.getBufferedImage().getGraphics();
         g.setColor(acolor);
-        g.drawLine(x1 - SimplePicture._PictureIndexOffset,y1 - SimplePicture._PictureIndexOffset,x2 - SimplePicture._PictureIndexOffset,y2 - SimplePicture._PictureIndexOffset);
+        g.drawLine(x1 - SimplePicture._PictureIndexOffset, y1 - SimplePicture._PictureIndexOffset, x2 - SimplePicture._PictureIndexOffset, y2 - SimplePicture._PictureIndexOffset);
     }
 
     /**
@@ -162,7 +154,7 @@ public class Picture extends SimplePicture
     public void addRect(Color acolor, int x, int y, int w, int h) {
         Graphics g = this.getBufferedImage().getGraphics();
         g.setColor(acolor);
-        g.drawRect(x - SimplePicture._PictureIndexOffset,y - SimplePicture._PictureIndexOffset,w,h);
+        g.drawRect(x - SimplePicture._PictureIndexOffset, y - SimplePicture._PictureIndexOffset, w, h);
     }
 
     /**
@@ -176,7 +168,7 @@ public class Picture extends SimplePicture
     public void addRectFilled(Color acolor, int x, int y, int w, int h) {
         Graphics g = this.getBufferedImage().getGraphics();
         g.setColor(acolor);
-        g.fillRect(x - SimplePicture._PictureIndexOffset,y - SimplePicture._PictureIndexOffset,w,h);
+        g.fillRect(x - SimplePicture._PictureIndexOffset, y - SimplePicture._PictureIndexOffset, w, h);
     }
 
     /**
@@ -190,7 +182,7 @@ public class Picture extends SimplePicture
     public void addOvalFilled(Color acolor, int x, int y, int w, int h) {
         Graphics g = this.getBufferedImage().getGraphics();
         g.setColor(acolor);
-        g.fillOval(x - SimplePicture._PictureIndexOffset,y - SimplePicture._PictureIndexOffset,w,h);
+        g.fillOval(x - SimplePicture._PictureIndexOffset, y - SimplePicture._PictureIndexOffset, w, h);
     }
 
     /**
@@ -204,7 +196,7 @@ public class Picture extends SimplePicture
     public void addOval(Color acolor, int x, int y, int w, int h) {
         Graphics g = this.getBufferedImage().getGraphics();
         g.setColor(acolor);
-        g.drawOval(x - SimplePicture._PictureIndexOffset,y - SimplePicture._PictureIndexOffset,w,h);
+        g.drawOval(x - SimplePicture._PictureIndexOffset, y - SimplePicture._PictureIndexOffset, w, h);
     }
 
     /**
@@ -218,11 +210,11 @@ public class Picture extends SimplePicture
      *    @param angle the angle of the arc, relative to the start angle
      */
     public void addArcFilled(Color acolor, int x, int y,
-    int w, int h, int start, int angle) {
+                             int w, int h, int start, int angle) {
 
         Graphics g = this.getBufferedImage().getGraphics();
         g.setColor(acolor);
-        g.fillArc(x - SimplePicture._PictureIndexOffset,y - SimplePicture._PictureIndexOffset,w,h,start,angle);
+        g.fillArc(x - SimplePicture._PictureIndexOffset, y - SimplePicture._PictureIndexOffset, w, h, start, angle);
     }
 
     /**
@@ -235,10 +227,10 @@ public class Picture extends SimplePicture
      *    @param start the starting angle at which to draw the arc
      *    @param angle the angle of the arc, relative to the start angle
      */
-    public void addArc(Color acolor,int x, int y, int w, int h, int start, int angle) {
+    public void addArc(Color acolor, int x, int y, int w, int h, int start, int angle) {
         Graphics g = this.getBufferedImage().getGraphics();
         g.setColor(acolor);
-        g.drawArc(x - SimplePicture._PictureIndexOffset,y - SimplePicture._PictureIndexOffset,w,h,start,angle);
+        g.drawArc(x - SimplePicture._PictureIndexOffset, y - SimplePicture._PictureIndexOffset, w, h, start, angle);
     }
 
     /**
@@ -252,26 +244,28 @@ public class Picture extends SimplePicture
      * @param upperLeftX the x-coord for the upper-left corner
      * @param upperLeftY the y-coord for the upper-left corner
      */
-    public void copyInto(Picture dest, int upperLeftX, int upperLeftY)
-    {
-    	// Determine the actual dimensions to copy; might be less than
-    	// dimensions of this picture if there is not enough space in the
-    	// destination picture.
-    	int width = this.getWidth();
-    	int widthAvailable = dest.getWidth()-upperLeftX;
-    	if (widthAvailable < width)
-    		width = widthAvailable;
-    	int height = this.getHeight();
-    	int heightAvailable = dest.getHeight()-upperLeftY;
-    	if (heightAvailable < height)
-    		height = heightAvailable;
+    public void copyInto(Picture dest, int upperLeftX, int upperLeftY) {
+        // Determine the actual dimensions to copy; might be less than
+        // dimensions of this picture if there is not enough space in the
+        // destination picture.
+        int width = this.getWidth();
+        int widthAvailable = dest.getWidth() - upperLeftX;
+        if (widthAvailable < width) {
+            width = widthAvailable;
+        }
+        int height = this.getHeight();
+        int heightAvailable = dest.getHeight() - upperLeftY;
+        if (heightAvailable < height) {
+            height = heightAvailable;
+        }
 
-    	// Copy pixel values from this picture to the destination
-    	//  (Should have been implemented with the 7-parameter
-    	//   getRGB/setRGB methods from BufferedImage?)
-    	for (int x = 0; x < width; x++)
-    		for (int y = 0; y < height; y++)
-    			dest.setBasicPixel(upperLeftX + x, upperLeftY + y, this.getBasicPixel(x, y));
+        // Copy pixel values from this picture to the destination
+        //  (Should have been implemented with the 7-parameter
+        //   getRGB/setRGB methods from BufferedImage?)
+        for (int x = 0; x < width; x++)
+            for (int y = 0; y < height; y++) {
+                dest.setBasicPixel(upperLeftX + x, upperLeftY + y, this.getBasicPixel(x, y));
+            }
 
     }
 
@@ -290,20 +284,22 @@ public class Picture extends SimplePicture
      * @param height the desired height of the cropped area
      * @return the new cropped picture
      */
-    public Picture crop(int upperLeftX, int upperLeftY, int width, int height)
-    {
-    	int widthAvailable = getWidth()-upperLeftX;
-   		if (widthAvailable < width)
-   			width = widthAvailable;
-   		int heightAvailable = getHeight()-upperLeftY;
-   		if (heightAvailable < height)
-   			height = heightAvailable;
+    public Picture crop(int upperLeftX, int upperLeftY, int width, int height) {
+        int widthAvailable = getWidth() - upperLeftX;
+        if (widthAvailable < width) {
+            width = widthAvailable;
+        }
+        int heightAvailable = getHeight() - upperLeftY;
+        if (heightAvailable < height) {
+            height = heightAvailable;
+        }
 
-   		Picture newPic = new Picture(width, height);
-   		for (int sourceX = upperLeftX, destX = 0; destX < width; sourceX++, destX++)
-   			for (int sourceY = upperLeftY, destY = 0; destY < height; sourceY++, destY++)
-   				newPic.setBasicPixel(destX, destY, this.getBasicPixel(sourceX, sourceY));
-   		return newPic;
+        Picture newPic = new Picture(width, height);
+        for (int sourceX = upperLeftX, destX = 0; destX < width; sourceX++, destX++)
+            for (int sourceY = upperLeftY, destY = 0; destY < height; sourceY++, destY++) {
+                newPic.setBasicPixel(destX, destY, this.getBasicPixel(sourceX, sourceY));
+            }
+        return newPic;
 
     }
 } // end of class Picture, put all new methods before this

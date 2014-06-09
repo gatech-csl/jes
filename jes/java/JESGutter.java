@@ -15,8 +15,7 @@ import java.util.regex.*;
  * about the document being currently edited.  It shows line numbers, block
  * marking, and demarcates def statements.
  */
-public class JESGutter extends JComponent implements DocumentListener
-{
+public class JESGutter extends JComponent implements DocumentListener {
     /* Line indention levels */
     private Vector indents = new Vector();
 
@@ -54,8 +53,7 @@ public class JESGutter extends JComponent implements DocumentListener
      * @param tc the TextComponent
      * @param f the Font
      */
-    public JESGutter(JEditorPane tc, Font f)
-    {
+    public JESGutter(JEditorPane tc, Font f) {
         text = tc;
         text.getDocument().addDocumentListener(this);
         editorFont = f;
@@ -69,8 +67,7 @@ public class JESGutter extends JComponent implements DocumentListener
      * @param indent the indentation level of the line
      * @param height the Y location information of the bottom of the line
      */
-    public void setLine(int line, int indent, int height)
-    {
+    public void setLine(int line, int indent, int height) {
     }
 
     /**
@@ -78,8 +75,7 @@ public class JESGutter extends JComponent implements DocumentListener
      * occurs check to see if a newline was added or removed.
      * @param doc the document to listen to
      */
-    public void setDocument(Document doc)
-    {
+    public void setDocument(Document doc) {
         doc.addDocumentListener(this);
     }
 
@@ -87,8 +83,7 @@ public class JESGutter extends JComponent implements DocumentListener
      * Sets the TextComponent the gutter models itself after
      * @param tc the TextComponent
      */
-    public void setTextComponent(JEditorPane tc)
-    {
+    public void setTextComponent(JEditorPane tc) {
         text = tc;
     }
 
@@ -96,24 +91,21 @@ public class JESGutter extends JComponent implements DocumentListener
      * Sets the line do demarcate on the gutter
      * @param line the line to mark
      */
-    public void setLineMark(int line)
-    {
+    public void setLineMark(int line) {
         lineMark = line;
     }
 
     /**
      * Removes the line demarcation from the gutter
      */
-    public void removeLineMark()
-    {
+    public void removeLineMark() {
         lineMark = -1;
     }
 
     /**
      * Paints gutter information to the graphics object
      */
-    public void paint(Graphics g)
-    {
+    public void paint(Graphics g) {
         Element root = text.getDocument().getDefaultRootElement();
         int count = root.getElementCount();
         Rectangle clip = g.getClipBounds();
@@ -122,31 +114,31 @@ public class JESGutter extends JComponent implements DocumentListener
         g.setFont(gutterFont);
         int start;
         int bottom;
-        try{
+        try {
             start = text.viewToModel(topClip);
             start =  root.getElementIndex(start - 1);
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             start = 0;
         }
-        try{
+        try {
             bottom = text.viewToModel(bottomClip);
             bottom = root.getElementIndex(bottom + 1);
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             bottom = count;
         }
-        for (int i = start; i <= bottom; i++)
-        {
-            try
-            {
+        for (int i = start; i <= bottom; i++) {
+            try {
                 int startChar = root.getElement(i).getStartOffset();
-                if ((i + 1) == lineMark)
+                if ((i + 1) == lineMark) {
                     g.setColor(Color.green);
+                }
                 g.drawString((new Integer(i + 1)).toString(), 3, text.modelToView(startChar).y + 10);
-                if ((i + 1) == lineMark)
+                if ((i + 1) == lineMark) {
                     g.setColor(Color.black);
-            }catch (Exception e){/*This is inelegant, oh well, it's the behavior I want.*/}
+                }
+            } catch (Exception e) {
+                /*This is inelegant, oh well, it's the behavior I want.*/
+            }
         }
         super.paint(g);
     }
@@ -156,8 +148,7 @@ public class JESGutter extends JComponent implements DocumentListener
      * Recounts the number of lines in the Document, and updates the lines
      * list to have the new last few lines.
      */
-    public void updateLines()
-    {
+    public void updateLines() {
         numLines = text.getDocument().getDefaultRootElement().getElementCount();
         repaint();
     }
@@ -166,42 +157,39 @@ public class JESGutter extends JComponent implements DocumentListener
      * Gives notification that an attribute or set of attributes changed.
      * @param e The DocumentEvent describing the change
      */
-    public void changedUpdate(DocumentEvent e)
-    {
+    public void changedUpdate(DocumentEvent e) {
     }
 
     /**
      * Gives notification that there was text inserted into the document.
      * @param e the DocumentEvent describing the insert
      */
-    public void insertUpdate(DocumentEvent e)
-    {
-        try
-        {
+    public void insertUpdate(DocumentEvent e) {
+        try {
             Document doc = e.getDocument();
             int offset = e.getOffset();
             int length = e.getLength();
             Matcher m = newlineReg.matcher(doc.getText(offset, length));
-            if (m.find())
+            if (m.find()) {
                 updateLines();
-        }catch (Exception ex){}
+            }
+        } catch (Exception ex) {}
     }
 
     /**
      * Gives notifications that text was removed from the document.
      * @param e the DocumentEvent describing the removal
      */
-    public void removeUpdate(DocumentEvent e)
-    {
-        try
-        {
+    public void removeUpdate(DocumentEvent e) {
+        try {
             Document doc = e.getDocument();
             int offset = e.getOffset();
             int length = e.getLength();
             Matcher m = newlineReg.matcher(doc.getText(offset, length));
-            if (m.find())
+            if (m.find()) {
                 updateLines();
-        }catch (Exception ex){}
+            }
+        } catch (Exception ex) {}
     }
 
-  }
+}

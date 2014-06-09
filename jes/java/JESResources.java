@@ -24,7 +24,7 @@ class JESResources {
      * @return  The path to the home directory, or null if one is
      *          not configured in the jes.home property.
      */
-    public static String getHomePath () {
+    public static String getHomePath() {
         return homePath;
     }
 
@@ -40,7 +40,7 @@ class JESResources {
      * @throws IllegalStateException    If the JES home is not configured,
      *                                  or the file is not installed.
      */
-    public static File getFileFor (String path) {
+    public static File getFileFor(String path) {
         if (homeFile == null) {
             throw new IllegalStateException("The jes.home property is not set");
         }
@@ -65,7 +65,7 @@ class JESResources {
      * @throws IllegalStateException    If the JES home is not configured,
      *                                  or the file is not installed.
      */
-    public static String getPathTo (String path) {
+    public static String getPathTo(String path) {
         return getFileFor(path).getAbsolutePath();
     }
 
@@ -80,7 +80,7 @@ class JESResources {
      * @throws IllegalStateException    If the JES home is not configured,
      *                                  or the file is not installed.
      */
-    public static ImageIcon makeIcon (String path) {
+    public static ImageIcon makeIcon(String path) {
         String fullPath = getPathTo(path);
         return new ImageIcon(fullPath);
     }
@@ -97,7 +97,7 @@ class JESResources {
      * @throws IllegalStateException    If the JES home is not configured,
      *                                  or the file is not installed.
      */
-    public static ImageIcon makeIcon (String path, String description) {
+    public static ImageIcon makeIcon(String path, String description) {
         String fullPath = getPathTo(path);
         return new ImageIcon(fullPath, description);
     }

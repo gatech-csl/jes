@@ -5,14 +5,12 @@
  * @author Unknown Undergraduate
  * @author Barb Ericson ericson@cc.gatech.edu
  */
-public class SoundException extends Exception
-{
+public class SoundException extends Exception {
 
-  private static final long serialVersionUID = 7526471155622776147L;
+    private static final long serialVersionUID = 7526471155622776147L;
 
- /** Constructor that takes String as the message for the SoundException */
-  public SoundException(String message)
-  {
-    super(message);
-  }
+    /** Constructor that takes String as the message for the SoundException */
+    public SoundException(String message) {
+        super(message);
+    }
 } // end of SoundException class

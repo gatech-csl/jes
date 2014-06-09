@@ -17,8 +17,7 @@ import java.util.regex.*;
  * May 28 2009: Removed unused getLineStart, getLineEnd, addKeyword, addEnvironmentWord,and
  *				isEnvWord methods. -Buck
  */
- public class HighlightingStyledDocument extends DefaultStyledDocument
-{
+public class HighlightingStyledDocument extends DefaultStyledDocument {
     /* Keyword text style */
     private SimpleAttributeSet keywordStyle = new SimpleAttributeSet();
 
@@ -80,7 +79,7 @@ import java.util.regex.*;
     /* Regular Expression to match triple qoutes */
     private Pattern triQuote = Pattern.compile("\"\"\"");
 
-	/** The system specific line separator String. */
+    /** The system specific line separator String. */
     public static String newline = System.getProperty("line.separator");
 
     private static final long serialVersionUID = 7526471155622776147L;
@@ -92,8 +91,7 @@ import java.util.regex.*;
      * @param str the string to insert; does nothing with null/empty strings
      * @param a the attributes for the inserted content
      */
-    public void insertString(int offs, String str, AttributeSet a) throws BadLocationException
-    {
+    public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
         super.insertString(offs, str, a);
         updateHighlightingInRange(offs, str.length());
     }
@@ -103,8 +101,7 @@ import java.util.regex.*;
      * syntax highlighting code and then class super.
      * @param e the DocumentEvent
      */
-    protected void fireRemoveUpdate(DocumentEvent e)
-    {
+    protected void fireRemoveUpdate(DocumentEvent e) {
         int offset = e.getOffset();
         int length = e.getLength();
         updateHighlightingInRange(offset - 1, 0);
@@ -118,10 +115,8 @@ import java.util.regex.*;
      * @param offset where in the document the change started
      * @param length the length of change measured from the offset
      */
-    public void updateHighlightingInRange(int offset, int length)
-    {
-        try
-        {
+    public void updateHighlightingInRange(int offset, int length) {
+        try {
             //int start = getLineStart(textAll, offset);
             //int end = getLineEnd(textAll, offset + length);
 
@@ -133,7 +128,7 @@ import java.util.regex.*;
             int endPoint = getLength();
 
 
-	    String fullText = getText(0, endPoint);
+            String fullText = getText(0, endPoint);
             String text = getText(start, end - start);
             setCharacterAttributes(start, end - start, defaultStyle, true);
 
@@ -141,58 +136,60 @@ import java.util.regex.*;
 
             //Find and highlight keywords:
             Matcher m = keyReg.matcher(text);
-            while (m.find())
+            while (m.find()) {
                 setCharacterAttributes(start + m.start(), m.end() - m.start(), keywordStyle, true);
+            }
 
             //Find and highlight keywords:
             m = envReg.matcher(text);
-            while (m.find())
+            while (m.find()) {
                 setCharacterAttributes(start + m.start(), m.end() - m.start(), environmentWordStyle, true);
+            }
 
             //Find and highlight Comments and strings:
             m = stringComments.matcher(text);
-            while (m.find())
-            {
+            while (m.find()) {
                 //System.out.println("Matched: " + getText(start + m.start(), m.end() - m.start()));
-                if (text.charAt(m.start()) == '#')
+                if (text.charAt(m.start()) == '#') {
                     setCharacterAttributes(start + m.start(), m.end() - m.start(), commentStyle, true);
-                if (text.charAt(m.start()) == '\'' || text.charAt(m.start()) == '"')
+                }
+                if (text.charAt(m.start()) == '\'' || text.charAt(m.start()) == '"') {
                     setCharacterAttributes(start + m.start(), m.end() - m.start(), stringStyle, true);
+                }
             }
 
-	    //Matches Multi-line strings starting with triple quotes:
+            //Matches Multi-line strings starting with triple quotes:
             /*m = mlString.matcher(textAll);
-	      while(m.find())
+            while(m.find())
                 setCharacterAttributes(m.start(), m.end() - m.start(), stringStyle, true);*/
 
-	    // Build lParen Vector and find and highlight missing or extra parentheses
-	    // make sure we check ENIRE document for it
+            // Build lParen Vector and find and highlight missing or extra parentheses
+            // make sure we check ENIRE document for it
 
-	    for(int x = start; x < end; x++){
-		char c = text.charAt(x-start);
-		Integer indexVal = new Integer(x);
+            for (int x = start; x < end; x++) {
+                char c = text.charAt(x - start);
+                Integer indexVal = new Integer(x);
 
-		if(c == '(' && !(isString(x) || isComment(x))) {
-		    lParens.add(indexVal);
-		} else if(c == ')' && !(isString(x) || isComment(x))) {
-		    if(lParens.isEmpty()) {
-			setCharacterAttributes(x, 1, rParenStyle, true); // color right paren
-		    } else {
-			lParens.remove(lParens.size() - 1); // remove the vector from the lparen vector
-		    }
-		}
-	    }
-	    for(Enumeration e = lParens.elements(); e.hasMoreElements();) {
-		int index = ((Integer)e.nextElement()).intValue();
-		setCharacterAttributes(index, 1, lParenStyle, true); // color left paren
+                if (c == '(' && !(isString(x) || isComment(x))) {
+                    lParens.add(indexVal);
+                } else if (c == ')' && !(isString(x) || isComment(x))) {
+                    if (lParens.isEmpty()) {
+                        setCharacterAttributes(x, 1, rParenStyle, true); // color right paren
+                    } else {
+                        lParens.remove(lParens.size() - 1); // remove the vector from the lparen vector
+                    }
+                }
+            }
+            for (Enumeration e = lParens.elements(); e.hasMoreElements();) {
+                int index = ((Integer)e.nextElement()).intValue();
+                setCharacterAttributes(index, 1, lParenStyle, true); // color left paren
 
-	    }
-	    lParens.clear();
+            }
+            lParens.clear();
 
 
 
-        }
-        catch( Exception e){}
+        } catch (Exception e) {}
     }
 
     /**
@@ -203,9 +200,8 @@ import java.util.regex.*;
      * @param offset The location to check for string-ness
      * @return True for is a string, false for is not a string
      */
-    private boolean isString(int offset)
-    {
-	return getCharacterElement(offset).getAttributes().isEqual(stringStyle);
+    private boolean isString(int offset) {
+        return getCharacterElement(offset).getAttributes().isEqual(stringStyle);
     }
 
     /**
@@ -215,20 +211,17 @@ import java.util.regex.*;
      * @param offset the location to check for comment-ness
      * @return true for is a comment, false for is not a comment
      */
-    private boolean isComment(int offset)
-    {
-	return getCharacterElement(offset).getAttributes().isEqual(commentStyle);
+    private boolean isComment(int offset) {
+        return getCharacterElement(offset).getAttributes().isEqual(commentStyle);
     }
 
     /**
      * Sets a collection of keywords to highlight.
      * @param words an array of all the words
      */
-    public void setKeywords(String[] words)
-    {
+    public void setKeywords(String[] words) {
         keywords.clear();
-        for(int i = 0; i < words.length; i++)
-        {
+        for (int i = 0; i < words.length; i++) {
             keywords.add(words[i]);
         }
         compileKeywords();
@@ -238,11 +231,9 @@ import java.util.regex.*;
      * Sets a collection of environment words to highlight.
      * @param words an array of all the words
      */
-    public void setEnvironmentWords(String[] words)
-    {
+    public void setEnvironmentWords(String[] words) {
         environmentWords.clear();
-        for(int i = 0; i < words.length; i++)
-        {
+        for (int i = 0; i < words.length; i++) {
             environmentWords.add(words[i]);
         }
         compileEnvironmentWords();
@@ -252,8 +243,7 @@ import java.util.regex.*;
      * Sets the style of text to use for keywords
      * @param style the new text style
      */
-    public void setKeywordStyle(SimpleAttributeSet style)
-    {
+    public void setKeywordStyle(SimpleAttributeSet style) {
         keywordStyle = style;
     }
 
@@ -261,8 +251,7 @@ import java.util.regex.*;
      * Sets the style of text to use for environment words
      * @param style the new text style
      */
-    public void setEnvironmentWordStyle(SimpleAttributeSet style)
-    {
+    public void setEnvironmentWordStyle(SimpleAttributeSet style) {
         environmentWordStyle = style;
     }
 
@@ -270,8 +259,7 @@ import java.util.regex.*;
      * Sets the style of text to use for comments
      * @param style the new text style
      */
-    public void setCommentStyle(SimpleAttributeSet style)
-    {
+    public void setCommentStyle(SimpleAttributeSet style) {
         commentStyle = style;
     }
 
@@ -279,8 +267,7 @@ import java.util.regex.*;
      * Sets the style of text to use for strings
      * @param style the new text style
      */
-    public void setStringStyle(SimpleAttributeSet style)
-    {
+    public void setStringStyle(SimpleAttributeSet style) {
         stringStyle = style;
     }
 
@@ -288,8 +275,7 @@ import java.util.regex.*;
      * Sets the style of text to use for invalid Left Parens
      * @param style the new text style
      */
-    public void setLParenStyle(SimpleAttributeSet style)
-    {
+    public void setLParenStyle(SimpleAttributeSet style) {
         lParenStyle = style;
     }
 
@@ -297,8 +283,7 @@ import java.util.regex.*;
      * Sets the style of text to use for invalid Right Parens
      * @param style the new text style
      */
-    public void setRParenStyle(SimpleAttributeSet style)
-    {
+    public void setRParenStyle(SimpleAttributeSet style) {
         rParenStyle = style;
     }
 
@@ -306,8 +291,7 @@ import java.util.regex.*;
      * Sets the default style of text to use
      * @param style the new text style
      */
-    public void setDefaultStyle(SimpleAttributeSet style)
-    {
+    public void setDefaultStyle(SimpleAttributeSet style) {
         defaultStyle = style;
     }
 
@@ -320,15 +304,14 @@ import java.util.regex.*;
      * would be: "\W(if|for)\W".  The \W isolate the keywords by non-word
      * characters.
      */
-    private void compileKeywords()
-    {
+    private void compileKeywords() {
         String exp = new String();
         exp = "\\b("; 	//Start the expression to match non-word characters,
-                        //i.e. [^a-zA-Z0-9], and then start the OR block.
-        for (int i = 0; i < keywords.size(); i++)
-        {
-            if (i == 0)
+        //i.e. [^a-zA-Z0-9], and then start the OR block.
+        for (int i = 0; i < keywords.size(); i++) {
+            if (i == 0) {
                 exp = exp + ((String)keywords.elementAt(i)).trim();
+            }
             exp = exp + "|" + ((String)keywords.elementAt(i)).trim();
         }
         exp = exp + ")\\b";
@@ -344,15 +327,14 @@ import java.util.regex.*;
      * would be: "\W(if|for)\W".  The \W isolate the envwords by non-word
      * characters.
      */
-    private void compileEnvironmentWords()
-    {
+    private void compileEnvironmentWords() {
         String exp = new String();
         exp = "\\b("; 	//Start the expression to match non-word characters,
-                        //i.e. [^a-zA-Z0-9], and then start the OR block.
-        for (int i = 0; i < environmentWords.size(); i++)
-        {
-            if (i == 0)
+        //i.e. [^a-zA-Z0-9], and then start the OR block.
+        for (int i = 0; i < environmentWords.size(); i++) {
+            if (i == 0) {
                 exp = exp + ((String)environmentWords.elementAt(i)).trim();
+            }
             exp = exp + "|" + ((String)environmentWords.elementAt(i)).trim();
         }
         exp = exp + ")\\b";
