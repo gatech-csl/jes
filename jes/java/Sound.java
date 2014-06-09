@@ -7,8 +7,8 @@
  * @author Barbara Ericson ericson@cc.gatech.edu
  *
  * Modified 17 July 2007 Pam Cutter Kalamazoo College
- * 	  Added a copySoundInto method which allows copying as much of
- * 	   this sound as will fit into a destination sound
+ *    Added a copySoundInto method which allows copying as much of
+ *     this sound as will fit into a destination sound
  *    Added a cropSound method which returns a new sound which is a
  *     specified portion of this sound
  *

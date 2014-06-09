@@ -15,12 +15,12 @@ import java.text.*;
  * @author Barbara Ericson ericson@cc.gatech.edu
  *
  * Modified 6 July 2007 Pam Cutter Kalamazoo College
- * 	  Added a 3-param constructor to allow the construction of
- * 		pictures of different colors
- * 	  Added a copyInto method which allows copying as much of
- * 		this picture as will fit into a destination picture
+ *    Added a 3-param constructor to allow the construction of
+ *      pictures of different colors
+ *    Added a copyInto method which allows copying as much of
+ *      this picture as will fit into a destination picture
  *    Added a crop method which returns a new picture which is a
- * 		specified portion of this picture
+ *      specified portion of this picture
  *
  * Kalamazoo additional methods and improved comments merged by Buck Scharfnorth 22 May 2008
  */

@@ -15,7 +15,7 @@ import java.util.regex.*;
  * @author Adam Wilson, awilson@cc.gatech.edu
  *
  * May 28 2009: Removed unused getLineStart, getLineEnd, addKeyword, addEnvironmentWord,and
- *				isEnvWord methods. -Buck
+ *          isEnvWord methods. -Buck
  */
 public class HighlightingStyledDocument extends DefaultStyledDocument {
     /* Keyword text style */
@@ -306,7 +306,7 @@ public class HighlightingStyledDocument extends DefaultStyledDocument {
      */
     private void compileKeywords() {
         String exp = new String();
-        exp = "\\b("; 	//Start the expression to match non-word characters,
+        exp = "\\b(";   //Start the expression to match non-word characters,
         //i.e. [^a-zA-Z0-9], and then start the OR block.
         for (int i = 0; i < keywords.size(); i++) {
             if (i == 0) {
@@ -329,7 +329,7 @@ public class HighlightingStyledDocument extends DefaultStyledDocument {
      */
     private void compileEnvironmentWords() {
         String exp = new String();
-        exp = "\\b("; 	//Start the expression to match non-word characters,
+        exp = "\\b(";   //Start the expression to match non-word characters,
         //i.e. [^a-zA-Z0-9], and then start the OR block.
         for (int i = 0; i < environmentWords.size(); i++) {
             if (i == 0) {

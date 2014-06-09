@@ -185,7 +185,7 @@ public class MovieWriter {
             List<String> frameNames = getFrameNames();
             Picture p = new Picture((String) frameNames.get(0));
             if(!outputURL.endsWith(".avi"))
-        	outputURL = outputURL + ".avi";
+            outputURL = outputURL + ".avi";
             imageToMovie.doItAVI(p.getWidth(),p.getHeight(),
                                  frameRate,frameNames,outputURL);
         */

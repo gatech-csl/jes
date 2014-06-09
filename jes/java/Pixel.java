@@ -265,7 +265,7 @@ public class Pixel {
      * Sets the color of this pixel from the color value of
      * <code>otherPixel</code>.
      * @param otherPixel a pixel that may be in the same picture
-     * 				   or a different picture.
+     *              or a different picture.
      * <br>
      * Added by Alyce Brady/Pam Cutter
      */
