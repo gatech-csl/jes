@@ -759,7 +759,7 @@ class JESUI(swing.JFrame):
                 #self.program.skin = str(skin.getName())
                 # for some reason this is needed or the commandWindow will go dead
 #                self.program.interpreter.runCommand("printNow('')")
-#                self.commandWindow.restoreConsole('run')
+                self.commandWindow.restoreConsole('run')
                 self.commandWindow.setKeymap(self.commandWindow.my_keymap)
                 return None
 

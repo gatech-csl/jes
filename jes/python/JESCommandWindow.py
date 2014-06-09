@@ -108,8 +108,6 @@ class JESCommandWindow(swing.JTextPane,
         self.heldText = ""
 
         self.commandHistory = JESCommandHistory.JESCommandHistory()
-        self.isSystem = TRUE
-        self.setText(">>> ")
         self.isSystem = FALSE
         self.currentPos = self.document.getLength()
         self.oldPos = self.currentPos
