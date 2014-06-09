@@ -100,6 +100,12 @@ $(JYTHON_CACHE):
 run: classes javadoc $(JYTHON_CACHE)
 	$(JAVA) $(JES_JAVA_FLAGS) JESstartup
 
+props: classes javadoc $(JYTHON_CACHE)
+	$(JAVA) $(JES_JAVA_FLAGS) JESstartup --properties
+
+shell: classes javadoc $(JYTHON_CACHE)
+	$(JAVA) $(JES_JAVA_FLAGS) JESstartup --shell
+
 
 ### RUNNING THE TESTS
 

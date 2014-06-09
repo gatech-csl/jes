@@ -1,6 +1,7 @@
 import java.awt.Frame;
 import java.awt.Toolkit;
 import java.net.URL;
+import java.util.Properties;
 import org.python.util.jython;
 import java.io.File;
 
@@ -21,9 +22,22 @@ public class JESstartup {
             System.exit(1);
         }
 
-        Frame frame = SplashWindow.splash(JESResources.getPathTo("images/JESsplash-v43.png"));
+        if (strings.length > 0) {
+            if (strings[0].equals("--properties")) {
+                Properties props = System.getProperties();
+                for (String name : props.stringPropertyNames()) {
+                    System.out.printf("%s = %s\n", name, props.getProperty(name));
+                }
+                System.exit(0);
+            } else if (strings[0].equals("--shell")) {
+                String[] args = new String[] {};
+                jython.main(args);
+                System.exit(0);
+            }
+        }
 
-        String [] args = {"-c", "import JESProgram; mainJESProgram = JESProgram.JESProgram()"};
+        String[] args = {"-c", "import JESProgram; mainJESProgram = JESProgram.JESProgram()"};
+        Frame frame = SplashWindow.splash(JESResources.getPathTo("images/JESsplash-v43.png"));
 
         try {
             jython.main(args);
