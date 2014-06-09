@@ -13,12 +13,14 @@ import javax.swing as swing
 
 
 SPEED_FACTOR = 20.0
+
+
 class JESDebugger(pdb.Pdb):
 
     def __init__(self, interpreter):
         pdb.Pdb.__init__(self)
         self.running = 0
-        self.speed = int(2*SPEED_FACTOR)
+        self.speed = int(2 * SPEED_FACTOR)
         self.speed_factor = SPEED_FACTOR
         self.MAX_SPEED = int(3 * SPEED_FACTOR)
         self.text_mode = 0
@@ -31,7 +33,6 @@ class JESDebugger(pdb.Pdb):
         self.watcher = JESDBVariableWatcher.JESDBVariableWatcher(self)
         self.history = self.watcher.history
 
-
         self.controlPanel = self.watcher.controlPanel
         self.interpreter = interpreter
         self.cmd = None
@@ -43,7 +44,7 @@ class JESDebugger(pdb.Pdb):
 
     def endExecution(self):
         self.watcher.endExecution()
-        self.controlPanel.stop() # this sets the button states
+        self.controlPanel.stop()  # this sets the button states
 
     def runCommand(self, cmd):
         self.cmd = cmd
@@ -51,9 +52,9 @@ class JESDebugger(pdb.Pdb):
         self.cond.notifyAll()
         self.lock.release()
 
-    #Overrides pdb.interaction
+    # Overrides pdb.interaction
     def interaction(self, frame, traceback):
-        #print "JESDebugger, interaction: " + Thread.currentThread().getName()
+        # print "JESDebugger, interaction: " + Thread.currentThread().getName()
         if self.text_mode:
             cmd = ''
             stop = 0
@@ -71,7 +72,8 @@ class JESDebugger(pdb.Pdb):
             # unique to JESDB...the running debug mode!!
 
             # get line and frame number
-            import linecache, time
+            import linecache
+            import time
             self.setup(frame, traceback)
             lineno = frame.f_lineno
             filename = self.interpreter.program.filename
@@ -80,18 +82,19 @@ class JESDebugger(pdb.Pdb):
             values = []
             for var in self.history.getVars():
                 try:
-                    value = eval(var, self.curframe.f_locals,  self.curframe.f_globals)
+                    value = eval(
+                        var, self.curframe.f_locals,  self.curframe.f_globals)
                     values.append(value)
                 except:
-                    values.append('-') # add dummy
-
+                    values.append('-')  # add dummy
 
             runnableSnapshot = snapShotRunner()
             runnableSnapshot.history = self.history
             runnableSnapshot.lineno = lineno
             runnableSnapshot.line = line
             runnableSnapshot.values = values
-            swing.SwingUtilities.invokeLater(runnableSnapshot)   #append row to table
+            swing.SwingUtilities.invokeLater(
+                runnableSnapshot)  # append row to table
 
             if self.speed < self.MAX_SPEED:
                 if self.speed == 0:
@@ -102,31 +105,31 @@ class JESDebugger(pdb.Pdb):
                 else:
                     t = time.time()
                     period = SPEED_FACTOR / self.speed
-                    time.sleep(period)  #Dorn, no complicated stuff here, but this does
-                                        #hang up the AWT thread for unknown reasons
-                    #if self.last_time == -1:
+                    # Dorn, no complicated stuff here, but this does
+                    time.sleep(period)
+                    # hang up the AWT thread for unknown reasons
+                    # if self.last_time == -1:
                     #    pause = period
-                    #else:
+                    # else:
                     #    pause = period - (t - self.last_time)
                     #self.last_time = t
-                    #if pause > 0:
+                    # if pause > 0:
                     #    time.sleep(pause)
             if not self.running:
-                self.interpreter.jesThread.stop() # stop myself
+                self.interpreter.jesThread.stop()  # stop myself
 
-    #Overrides pdb.user_line
+    # Overrides pdb.user_line
     def user_line(self, frame):
         """This function is called when we stop or break at this line."""
         if frame.f_code.co_filename == self.interpreter.program.filename:
             self.running = 1
             self.interaction(frame, None)
 
-
-    #Overrides pdb.user_return
+    # Overrides pdb.user_return
     def user_return(self, frame, return_value):
         pass
 
-    #Overrides pdb.user_return
+    # Overrides pdb.user_return
     def user_exception(self, frame, (exc_type, exc_value, exc_traceback)):
         pass
 
@@ -135,7 +138,7 @@ class JESDebugger(pdb.Pdb):
         self.clearHistory()
         self.controlPanel.run()
         self.last_time = time.time()
-        #print "debug run: " +  Thread.currentThread().getName()
+        # print "debug run: " +  Thread.currentThread().getName()
         pdb.Pdb.run(self, cmd, globals, locals)
         self.running = 0
 
@@ -149,7 +152,7 @@ class JESDebugger(pdb.Pdb):
 
     def stopThread(self):
         self.running = 0
-        #self.step()
+        # self.step()
         self.interpreter.jesThread.stop()
 
     def step(self):
@@ -162,15 +165,19 @@ class JESDebugger(pdb.Pdb):
         clearHist.history = self.history
         swing.SwingUtilities.invokeLater(clearHist)
 
+
 class snapShotRunner(Runnable):
     history = None
     lineno = 0
     line = None
     values = None
+
     def run(self):
         self.history.addLine(self.lineno, self.line, self.values)
 
+
 class clearRunner(Runnable):
     history = None
+
     def run(self):
         self.history.clear()

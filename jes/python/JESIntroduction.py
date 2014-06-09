@@ -1,6 +1,6 @@
-#JES- Jython Environment for Students
-#Copyright (C) 2002  Jason Ergle, Claire Bailey, David Raines, Joshua Sklare
-#See JESCopyright.txt for full licensing information
+# JES- Jython Environment for Students
+# Copyright (C) 2002  Jason Ergle, Claire Bailey, David Raines, Joshua Sklare
+# See JESCopyright.txt for full licensing information
 
 import JESConstants
 import JESResources
@@ -10,16 +10,18 @@ import javax.swing as swing
 
 ABOUT_TITLE = 'Welcome to JES!'
 OK_BUTTON_CAPTION = 'OK'
-ABOUT_WINDOW_SIZE = (300,300)
+ABOUT_WINDOW_SIZE = (300, 300)
+
 
 class JESIntroduction(swing.JFrame, awt.event.ActionListener):
-################################################################################
-# Function name: __init__
-# Returns:
-#     An instance of the JESIntroduction class.
-# Description:
-#     Creates an instance of the JES introduction window class.
-################################################################################
+    ##########################################################################
+    # Function name: __init__
+    # Returns:
+    #     An instance of the JESIntroduction class.
+    # Description:
+    #     Creates an instance of the JES introduction window class.
+    ##########################################################################
+
     def __init__(self):
         self.size = ABOUT_WINDOW_SIZE
         self.title = ABOUT_TITLE
@@ -30,8 +32,9 @@ class JESIntroduction(swing.JFrame, awt.event.ActionListener):
         introductionInfoArea = swing.JTextPane()
         introductionInfoArea.setEditable(0)
 
-        #Load information from the JES introduction file
-        introductionFile = open(JESResources.getPathTo('help/JESIntroduction.txt'), 'r')
+        # Load information from the JES introduction file
+        introductionFile = open(
+            JESResources.getPathTo('help/JESIntroduction.txt'), 'r')
         introductionInfoArea.text = introductionFile.read()
         introductionFile.close()
 
@@ -45,14 +48,14 @@ class JESIntroduction(swing.JFrame, awt.event.ActionListener):
         self.contentPane.add(topPane)
         self.contentPane.add(bottomPanel)
 
-################################################################################
+##########################################################################
 # Function name: actionPerformed
 # Parameters:
 #      -event: event that was performed.
 # Description:
 #      Catches events that occur in a JESAbout window.  If the OK button was
 #      pressed, then the window is closed (just hidden, but not destroyed).
-################################################################################
+##########################################################################
     def actionPerformed(self, event):
         actionCommand = event.getActionCommand()
         if actionCommand == OK_BUTTON_CAPTION:

@@ -1,7 +1,8 @@
-#JES- Jython Environment for Students
-#Copyright (C) 2002  Jason Ergle, Claire Bailey, David Raines
-#See JESCopyright.txt for full licensing information
-#This class, Copyright 2003  Adam Wilson, Yu Cheung Ho, Larry Olson, Eric Mickley
+# JES- Jython Environment for Students
+# Copyright (C) 2002  Jason Ergle, Claire Bailey, David Raines
+# See JESCopyright.txt for full licensing information
+# This class, Copyright 2003  Adam Wilson, Yu Cheung Ho, Larry Olson, Eric
+# Mickley
 
 import java.io as io
 import string
@@ -16,7 +17,10 @@ import JESConstants
 #     turnin information.  Supplies student's GT number and
 #     assignment name to find the appropraiate turnin URL.
 ##################################################################
+
+
 class JESURLFinder:
+
     def __init__(self):
         self.splitarray = []
         self.studentGT = ''
@@ -38,7 +42,7 @@ class JESURLFinder:
 ##################################################################
     def getTargetURL(self, gt, hw):
         self.studentGT = string.strip(gt)
-        self.hw =  string.strip(hw)
+        self.hw = string.strip(hw)
         if self.parseDataFile() == 0:
             raise StandardError, "Error parsing Turnin Definitions"
         self.taGT = self.getTaGT()
@@ -101,13 +105,13 @@ class JESURLFinder:
             h.endheaders()
             errcode, errmsg, headers = h.getreply()
             f = h.getfile()
-            data = f.read() # Get the raw HTML
+            data = f.read()  # Get the raw HTML
             f.close()
             h.close()
             return data
         except:
-            raise StandardError,("Error: Could not get target web address for submission\n" + \
-                                 "Make sure you are connected to the internet.")
+            raise StandardError, ("Error: Could not get target web address for submission\n" +
+                                  "Make sure you are connected to the internet.")
 
 ##################################################################
 # Method: parseDataFile
@@ -119,18 +123,18 @@ class JESURLFinder:
 ##################################################################
     def parseDataFile(self):
         try:
-            #Get the TA assignments:
+            # Get the TA assignments:
             beg = self.text.find("#BEGIN_TA_ASSIGNMENTS")
             end = self.text.find("#END_TA_ASSIGNMENTS")
             if (beg == -1) or (end == -1):
                 return 0
             talist = self.text[beg:end]
             talist = talist.split("\n")
-            self.gtData =  []
+            self.gtData = []
             for entry in talist:
                 self.gtData.append(entry.split("|"))
 
-            #Get the Turnin Locations
+            # Get the Turnin Locations
             beg = self.text.find("#BEGIN_TURNIN_LOCATIONS")
             end = self.text.find("#END_TURNIN_LOCATIONS")
             if (beg == -1) or (end == -1):
@@ -144,6 +148,6 @@ class JESURLFinder:
             return 1
         except:
             import sys
-            a,b,c=sys.exc_info()
-            print a,b,c
+            a, b, c = sys.exc_info()
+            print a, b, c
             raise StandardError, "Error parsing data file."

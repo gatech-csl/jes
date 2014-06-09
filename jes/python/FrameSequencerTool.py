@@ -39,19 +39,28 @@ class FrameSequencerTool(swing.JFrame):
             self.movie = movie
             self.fps = 30
 
-            ## The buttons on the right side
+            # The buttons on the right side
 
-            self.clearButton    = swing.JButton(COMMAND_CLEAR_IMG, actionPerformed=self.actionPerformed)
-            self.addButton    = swing.JButton(COMMAND_ADD_IMG, actionPerformed=self.actionPerformed)
-            self.addDirectoryButton    = swing.JButton(COMMAND_ADD_DIR, actionPerformed=self.actionPerformed)
-            self.deleteButton    = swing.JButton(COMMAND_DELETE_IMG, actionPerformed=self.actionPerformed)
-            self.playButton    = swing.JButton(COMMAND_PLAY_MOVIE, actionPerformed=self.actionPerformed)
-            self.moveUpButton    = swing.JButton(COMMAND_MOVE_UP, actionPerformed=self.actionPerformed)
-            self.moveDownButton    = swing.JButton(COMMAND_MOVE_DOWN, actionPerformed=self.actionPerformed)
-            self.changeFPSButton    = swing.JButton(COMMAND_CHANGE_FPS, actionPerformed=self.actionPerformed)
+            self.clearButton = swing.JButton(
+                COMMAND_CLEAR_IMG, actionPerformed=self.actionPerformed)
+            self.addButton = swing.JButton(
+                COMMAND_ADD_IMG, actionPerformed=self.actionPerformed)
+            self.addDirectoryButton = swing.JButton(
+                COMMAND_ADD_DIR, actionPerformed=self.actionPerformed)
+            self.deleteButton = swing.JButton(
+                COMMAND_DELETE_IMG, actionPerformed=self.actionPerformed)
+            self.playButton = swing.JButton(
+                COMMAND_PLAY_MOVIE, actionPerformed=self.actionPerformed)
+            self.moveUpButton = swing.JButton(
+                COMMAND_MOVE_UP, actionPerformed=self.actionPerformed)
+            self.moveDownButton = swing.JButton(
+                COMMAND_MOVE_DOWN, actionPerformed=self.actionPerformed)
+            self.changeFPSButton = swing.JButton(
+                COMMAND_CHANGE_FPS, actionPerformed=self.actionPerformed)
 
             self.buttonpane = swing.JPanel()
-            self.buttonpane.setLayout(swing.BoxLayout(self.buttonpane, swing.BoxLayout.Y_AXIS))
+            self.buttonpane.setLayout(
+                swing.BoxLayout(self.buttonpane, swing.BoxLayout.Y_AXIS))
 
             self.buttonpane.add(self.clearButton)
             self.buttonpane.add(self.deleteButton)
@@ -62,18 +71,16 @@ class FrameSequencerTool(swing.JFrame):
             self.buttonpane.add(self.moveDownButton)
             self.buttonpane.add(self.changeFPSButton)
 
-
-            ## The images on the left side
+            # The images on the left side
 
             self.listModel = swing.DefaultListModel()
             self.list = swing.JList(self.listModel)
 
-
             self.listpane = swing.JScrollPane(self.list)
             #self.listpane.setLayout(swing.BoxLayout(self.listpane, swing.BoxLayout.X_AXIS))
-            #self.listpane.add(self.list)
+            # self.listpane.add(self.list)
 
-            ## The splitter pane
+            # The splitter pane
 
             splitterPane = swing.JSplitPane()
             splitterPane.orientation = swing.JSplitPane.HORIZONTAL_SPLIT
@@ -90,35 +97,30 @@ class FrameSequencerTool(swing.JFrame):
         except:
             import traceback
             import sys
-            a,b,c = sys.exc_info()
+            a, b, c = sys.exc_info()
             print "FrameSequencerTool exception:"
-            traceback.print_exception(a,b,c)
-
-
+            traceback.print_exception(a, b, c)
 
     def addFramesIntoListModel(self, movie):
         for file in movie:
             self.listModel.addElement(file)
 
     def updateMovie(self):
-        #update the movie object from the listbox
+        # update the movie object from the listbox
         self.movie.frames = []
         for item in self.listModel.toArray():
             self.movie.addFrame(item)
 
-
-
     def addImagesFromDirectoryIntoListModel(self, directory):
         patterns = ["*.gif", "*.jpg", "*.png"]
         for f in os.listdir(directory):
-            file = directory+os.sep+f
+            file = directory + os.sep + f
             if os.path.isfile(file):
                 for pattern in patterns:
                     if fnmatch.fnmatch(file, pattern):
                         self.listModel.addElement(file)
 
-
-    ################################################################################
+    ##########################################################################
     # Function name: actionPerformed
     # Parameters:
     #     -event: event object that represents action that occured
@@ -126,7 +128,7 @@ class FrameSequencerTool(swing.JFrame):
     #     This function is called when a menu option is selected or a button is
     #     pressed.  It calls the correct function in order to perform the action
     #     that the user wants.
-    ################################################################################
+    ##########################################################################
     def actionPerformed(self, event):
         actionCommand = event.getActionCommand()
         selection = self.list.getSelectedIndex()
@@ -153,24 +155,25 @@ class FrameSequencerTool(swing.JFrame):
 
         elif actionCommand == COMMAND_MOVE_UP:
             if selection > 0:
-                itemAbove = self.listModel.get(selection-1)
+                itemAbove = self.listModel.get(selection - 1)
                 itemBelow = self.listModel.get(selection)
-                self.listModel.set(selection-1, itemBelow)
+                self.listModel.set(selection - 1, itemBelow)
                 self.listModel.set(selection, itemAbove)
-                self.list.setSelectedIndex(selection-1)
+                self.list.setSelectedIndex(selection - 1)
                 self.updateMovie()
 
         elif actionCommand == COMMAND_MOVE_DOWN:
-            if selection >= 0 and selection < self.listModel.size()-1:
+            if selection >= 0 and selection < self.listModel.size() - 1:
                 itemAbove = self.listModel.get(selection)
-                itemBelow = self.listModel.get(selection+1)
+                itemBelow = self.listModel.get(selection + 1)
                 self.listModel.set(selection, itemBelow)
-                self.listModel.set(selection+1, itemAbove)
-                self.list.setSelectedIndex(selection+1)
+                self.listModel.set(selection + 1, itemAbove)
+                self.list.setSelectedIndex(selection + 1)
                 self.updateMovie()
 
         elif actionCommand == COMMAND_CHANGE_FPS:
-            self.fps = SimpleInput.getIntNumber("Enter the number of frames per second")
+            self.fps = SimpleInput.getIntNumber(
+                "Enter the number of frames per second")
 
         else:
             pass

@@ -5,6 +5,7 @@ import sys
 import os
 import fnmatch
 
+
 def find(search_root, patterns=None, recurse=0, return_dirs=1):
     """
     Finds files/dirs rooted in a given directory that match a pattern.
@@ -34,12 +35,13 @@ def find(search_root, patterns=None, recurse=0, return_dirs=1):
 
     return matches
 
+
 def main():
     root_path = os.path.dirname(__file__)
 
     print root_path
 
-    test_case_paths = find(root_path, ["Test_*.py","test_*.py"],0,1)
+    test_case_paths = find(root_path, ["Test_*.py", "test_*.py"], 0, 1)
 
     print test_case_paths
 
@@ -57,11 +59,12 @@ def main():
 
     unittest.defaultTestLoader.testMethodPrefix = "test"
     unittest.defaultTestLoader.sortTestMethodsUsing = None
-    master_test_suite = unittest.defaultTestLoader.loadTestsFromNames(test_cases)
+    master_test_suite = unittest.defaultTestLoader.loadTestsFromNames(
+        test_cases)
 
     suite_runner = unittest.TextTestRunner(verbosity=2)
     suite_runner.run(master_test_suite)
-    print 'Done';
+    print 'Done'
 
     return 0
 

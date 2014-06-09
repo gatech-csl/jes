@@ -11,6 +11,7 @@ from java.lang import String
 from javax.swing import JFileChooser
 from javax.swing import JOptionPane
 
+
 class JESFileChooser(JFileChooser):
 
     #####################################################################
@@ -18,6 +19,7 @@ class JESFileChooser(JFileChooser):
     # Return:
     # Description:
     #####################################################################
+
     def __init__(self):
         JFileChooser.__init__(self)
 
@@ -43,4 +45,5 @@ class JESFileChooser(JFileChooser):
                 JFileChooser.approveSelection(self)
         else:
             message = 'The file name contains illegal characters. Please rename.'
-            JOptionPane.showMessageDialog(self, message, 'Error', JOptionPane.ERROR_MESSAGE)
+            JOptionPane.showMessageDialog(
+                self, message, 'Error', JOptionPane.ERROR_MESSAGE)

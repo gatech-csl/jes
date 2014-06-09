@@ -27,9 +27,18 @@ Here are some of the useful functions provided by this module:
 __author__ = 'Ka-Ping Yee <ping@lfw.org>'
 __date__ = '1 Jan 2001'
 
-import sys, os, types, string, re, dis, imp, tokenize
+import sys
+import os
+import types
+import string
+import re
+import dis
+import imp
+import tokenize
 
 # ----------------------------------------------------------- type-checking
+
+
 def ismodule(object):
     """Return true if the object is a module.
 
@@ -38,6 +47,7 @@ def ismodule(object):
         __file__        filename (missing for built-in modules)"""
     return type(object) is types.ModuleType
 
+
 def isclass(object):
     """Return true if the object is a class.
 
@@ -45,6 +55,7 @@ def isclass(object):
         __doc__         documentation string
         __module__      name of module in which this class was defined"""
     return type(object) is types.ClassType or hasattr(object, '__bases__')
+
 
 def ismethod(object):
     """Return true if the object is an instance method.
@@ -56,6 +67,7 @@ def ismethod(object):
         im_func         function object containing implementation of method
         im_self         instance to which this method is bound, or None"""
     return type(object) is types.MethodType
+
 
 def isfunction(object):
     """Return true if the object is a user-defined function.
@@ -70,6 +82,7 @@ def isfunction(object):
         func_name       (same as __name__)"""
     return type(object) in [types.FunctionType, types.LambdaType]
 
+
 def istraceback(object):
     """Return true if the object is a traceback.
 
@@ -79,6 +92,7 @@ def istraceback(object):
         tb_lineno       current line number in Python source code
         tb_next         next inner traceback object (called by this level)"""
     return type(object) is types.TracebackType
+
 
 def isframe(object):
     """Return true if the object is a frame object.
@@ -98,6 +112,7 @@ def isframe(object):
         f_trace         tracing function for this frame, or None"""
     return type(object) is types.FrameType
 
+
 def iscode(object):
     """Return true if the object is a code object.
 
@@ -116,6 +131,7 @@ def iscode(object):
         co_varnames     tuple of names of arguments and local variables"""
     return type(object) is types.CodeType
 
+
 def isbuiltin(object):
     """Return true if the object is a built-in function or method.
 
@@ -125,9 +141,11 @@ def isbuiltin(object):
         __self__        instance to which a method is bound, or None"""
     return type(object) is types.BuiltinFunctionType
 
+
 def isroutine(object):
     """Return true if the object is any kind of function or method."""
     return isbuiltin(object) or isfunction(object) or ismethod(object)
+
 
 def getmembers(object, predicate=None):
     """Return all members of an object as (name, value) pairs sorted by name.
@@ -141,10 +159,13 @@ def getmembers(object, predicate=None):
     return results
 
 # -------------------------------------------------- source code extraction
+
+
 def indentsize(line):
     """Return the indent size, in spaces, at the start of a line of text."""
     expline = string.expandtabs(line)
     return len(expline) - len(string.lstrip(expline))
+
 
 def getdoc(object):
     """Get the documentation string for an object.
@@ -157,13 +178,18 @@ def getdoc(object):
         margin = None
         for line in lines[1:]:
             content = len(string.lstrip(line))
-            if not content: continue
+            if not content:
+                continue
             indent = len(line) - content
-            if margin is None: margin = indent
-            else: margin = min(margin, indent)
+            if margin is None:
+                margin = indent
+            else:
+                margin = min(margin, indent)
         if margin is not None:
-            for i in range(1, len(lines)): lines[i] = lines[i][margin:]
+            for i in range(1, len(lines)):
+                lines[i] = lines[i][margin:]
         return string.join(lines, '\n')
+
 
 def getfile(object):
     """Work out which source or compiled file an object was defined in."""
@@ -189,20 +215,24 @@ def getfile(object):
     raise TypeError, 'arg is not a module, class, method, ' \
                      'function, traceback, frame, or code object'
 
+
 def getmoduleinfo(path):
     """Get the module name, suffix, mode, and module type for a given file."""
     filename = os.path.basename(path)
     suffixes = map(lambda (suffix, mode, mtype):
                    (-len(suffix), suffix, mode, mtype), imp.get_suffixes())
-    suffixes.sort() # try longest suffixes first, in case they overlap
+    suffixes.sort()  # try longest suffixes first, in case they overlap
     for neglen, suffix, mode, mtype in suffixes:
         if filename[neglen:] == suffix:
             return filename[:neglen], suffix, mode, mtype
 
+
 def getmodulename(path):
     """Return the module name for a given file, or None."""
     info = getmoduleinfo(path)
-    if info: return info[0]
+    if info:
+        return info[0]
+
 
 def getsourcefile(object):
     """Return the Python source file an object was defined in, if it exists."""
@@ -216,6 +246,7 @@ def getsourcefile(object):
     if os.path.exists(filename):
         return filename
 
+
 def getabsfile(object):
     """Return an absolute path to the source or compiled file for an object.
 
@@ -225,6 +256,7 @@ def getabsfile(object):
         os.path.abspath(getsourcefile(object) or getfile(object)))
 
 modulesbyfile = {}
+
 
 def getmodule(object):
     """Return the module an object was defined in, or None if not found."""
@@ -254,6 +286,7 @@ def getmodule(object):
         if builtinobject is object:
             return builtin
 
+
 def findsource(object):
     """Return the entire source file and starting line number for an object.
 
@@ -275,8 +308,10 @@ def findsource(object):
         name = object.__name__
         pat = re.compile(r'^\s*class\s*' + name + r'\b')
         for i in range(len(lines)):
-            if pat.match(lines[i]): return lines, i
-        else: raise IOError, 'could not find class definition'
+            if pat.match(lines[i]):
+                return lines, i
+        else:
+            raise IOError, 'could not find class definition'
 
     if ismethod(object):
         object = object.im_func
@@ -292,19 +327,24 @@ def findsource(object):
         lnum = object.co_firstlineno - 1
         pat = re.compile(r'^\s*def\s')
         while lnum > 0:
-            if pat.match(lines[lnum]): break
+            if pat.match(lines[lnum]):
+                break
             lnum = lnum - 1
         return lines, lnum
 
+
 def getcomments(object):
     """Get lines of comments immediately preceding an object's source code."""
-    try: lines, lnum = findsource(object)
-    except IOError: return None
+    try:
+        lines, lnum = findsource(object)
+    except IOError:
+        return None
 
     if ismodule(object):
         # Look for a comment block at the top of the file.
         start = 0
-        if lines and lines[0][:2] == '#!': start = 1
+        if lines and lines[0][:2] == '#!':
+            start = 1
         while start < len(lines) and string.strip(lines[start]) in ['', '#']:
             start = start + 1
         if start < len(lines) and lines[start][:1] == '#':
@@ -320,7 +360,7 @@ def getcomments(object):
         indent = indentsize(lines[lnum])
         end = lnum - 1
         if end >= 0 and string.lstrip(lines[end])[:1] == '#' and \
-            indentsize(lines[end]) == indent:
+                indentsize(lines[end]) == indent:
             comments = [string.lstrip(string.expandtabs(lines[end]))]
             if end > 0:
                 end = end - 1
@@ -328,7 +368,8 @@ def getcomments(object):
                 while comment[:1] == '#' and indentsize(lines[end]) == indent:
                     comments[:0] = [comment]
                     end = end - 1
-                    if end < 0: break
+                    if end < 0:
+                        break
                     comment = string.lstrip(string.expandtabs(lines[end]))
             while comments and string.strip(comments[0]) == '#':
                 comments[:1] = []
@@ -336,8 +377,11 @@ def getcomments(object):
                 comments[-1:] = []
             return string.join(comments, '')
 
+
 class ListReader:
+
     """Provide a readline() method to return lines from a list of strings."""
+
     def __init__(self, lines):
         self.lines = lines
         self.index = 0
@@ -347,12 +391,18 @@ class ListReader:
         if i < len(self.lines):
             self.index = i + 1
             return self.lines[i]
-        else: return ''
+        else:
+            return ''
 
-class EndOfBlock(Exception): pass
+
+class EndOfBlock(Exception):
+    pass
+
 
 class BlockFinder:
+
     """Provide a tokeneater() method to detect the end of a code block."""
+
     def __init__(self):
         self.indent = 0
         self.started = 0
@@ -360,14 +410,17 @@ class BlockFinder:
 
     def tokeneater(self, type, token, (srow, scol), (erow, ecol), line):
         if not self.started:
-            if type == tokenize.NAME: self.started = 1
+            if type == tokenize.NAME:
+                self.started = 1
         elif type == tokenize.NEWLINE:
             self.last = srow
         elif type == tokenize.INDENT:
             self.indent = self.indent + 1
         elif type == tokenize.DEDENT:
             self.indent = self.indent - 1
-            if self.indent == 0: raise EndOfBlock, self.last
+            if self.indent == 0:
+                raise EndOfBlock, self.last
+
 
 def getblock(lines):
     """Extract the block of code at the top of the given list of lines."""
@@ -375,6 +428,7 @@ def getblock(lines):
         tokenize.tokenize(ListReader(lines).readline, BlockFinder().tokeneater)
     except EndOfBlock, eob:
         return lines[:eob.args[0]]
+
 
 def getsourcelines(object):
     """Return a list of source lines and starting line number for an object.
@@ -386,8 +440,11 @@ def getsourcelines(object):
     raised if the source code cannot be retrieved."""
     lines, lnum = findsource(object)
 
-    if ismodule(object): return lines, 0
-    else: return getblock(lines[lnum:]), lnum + 1
+    if ismodule(object):
+        return lines, 0
+    else:
+        return getblock(lines[lnum:]), lnum + 1
+
 
 def getsource(object):
     """Return the text of the source code for an object.
@@ -399,6 +456,8 @@ def getsource(object):
     return string.join(lines, '')
 
 # --------------------------------------------------- class tree extraction
+
+
 def walktree(classes, children, parent):
     """Recursive helper function for getclasstree()."""
     results = []
@@ -408,6 +467,7 @@ def walktree(classes, children, parent):
         if children.has_key(c):
             results.append(walktree(children[c], children, c))
     return results
+
 
 def getclasstree(classes, unique=0):
     """Arrange the given list of classes into a hierarchy of nested lists.
@@ -426,7 +486,8 @@ def getclasstree(classes, unique=0):
                 if not children.has_key(parent):
                     children[parent] = []
                 children[parent].append(c)
-                if unique and parent in classes: break
+                if unique and parent in classes:
+                    break
         elif c not in roots:
             roots.append(c)
     for parent in children.keys():
@@ -438,13 +499,15 @@ def getclasstree(classes, unique=0):
 # These constants are from Python's compile.h.
 CO_OPTIMIZED, CO_NEWLOCALS, CO_VARARGS, CO_VARKEYWORDS = 1, 2, 4, 8
 
+
 def getargs(co):
     """Get information about the arguments accepted by a code object.
 
     Three things are returned: (args, varargs, varkw), where 'args' is
     a list of argument names (possibly containing nested lists), and
     'varargs' and 'varkw' are the names of the * and ** arguments or None."""
-    if not iscode(co): raise TypeError, 'arg is not a code object'
+    if not iscode(co):
+        raise TypeError, 'arg is not a code object'
 
     code = co.co_code
     nargs = co.co_argcount
@@ -461,7 +524,7 @@ def getargs(co):
                 step = step + 1
                 if op >= dis.HAVE_ARGUMENT:
                     opname = dis.opname[op]
-                    value = ord(code[step]) + ord(code[step+1])*256
+                    value = ord(code[step]) + ord(code[step + 1]) * 256
                     step = step + 2
                     if opname in ['UNPACK_TUPLE', 'UNPACK_SEQUENCE']:
                         remain.append(value)
@@ -473,9 +536,11 @@ def getargs(co):
                             remain.pop()
                             size = count.pop()
                             stack[-size:] = [stack[-size:]]
-                            if not remain: break
+                            if not remain:
+                                break
                             remain[-1] = remain[-1] - 1
-                        if not remain: break
+                        if not remain:
+                            break
             args[i] = stack[0]
 
     varargs = None
@@ -487,6 +552,7 @@ def getargs(co):
         varkw = co.co_varnames[nargs]
     return args, varargs, varkw
 
+
 def getargspec(func):
     """Get the names and default values of a function's arguments.
 
@@ -494,9 +560,11 @@ def getargspec(func):
     'args' is a list of the argument names (it may contain nested lists).
     'varargs' and 'varkw' are the names of the * and ** arguments or None.
     'defaults' is an n-tuple of the default values of the last n arguments."""
-    if not isfunction(func): raise TypeError, 'arg is not a Python function'
+    if not isfunction(func):
+        raise TypeError, 'arg is not a Python function'
     args, varargs, varkw = getargs(func.func_code)
     return args, varargs, varkw, func.func_defaults
+
 
 def getargvalues(frame):
     """Get information about arguments passed into a particular frame.
@@ -508,11 +576,13 @@ def getargvalues(frame):
     args, varargs, varkw = getargs(frame.f_code)
     return args, varargs, varkw, frame.f_locals
 
+
 def joinseq(seq):
     if len(seq) == 1:
         return '(' + seq[0] + ',)'
     else:
         return '(' + string.join(seq, ', ') + ')'
+
 
 def strseq(object, convert, join=joinseq):
     """Recursively walk a sequence, stringifying each element."""
@@ -520,6 +590,7 @@ def strseq(object, convert, join=joinseq):
         return join(map(lambda o, c=convert, j=join: strseq(o, c, j), object))
     else:
         return convert(object)
+
 
 def formatargspec(args, varargs=None, varkw=None, defaults=None,
                   formatarg=str,
@@ -547,6 +618,7 @@ def formatargspec(args, varargs=None, varkw=None, defaults=None,
         specs.append(formatvarkw(varkw))
     return '(' + string.join(specs, ', ') + ')'
 
+
 def formatargvalues(args, varargs, varkw, locals,
                     formatarg=str,
                     formatvarargs=lambda name: '*' + name,
@@ -572,6 +644,8 @@ def formatargvalues(args, varargs, varkw, locals,
     return '(' + string.join(specs, ', ') + ')'
 
 # -------------------------------------------------- stack frame extraction
+
+
 def getframeinfo(frame, context=1):
     """Get information about a frame or traceback object.
 
@@ -588,7 +662,7 @@ def getframeinfo(frame, context=1):
     filename = getsourcefile(frame)
     lineno = getlineno(frame)
     if context > 0:
-        start = lineno - 1 - context/2
+        start = lineno - 1 - context / 2
         try:
             lines, lnum = findsource(frame)
         except IOError:
@@ -596,12 +670,13 @@ def getframeinfo(frame, context=1):
         else:
             start = max(start, 1)
             start = min(start, len(lines) - context)
-            lines = lines[start:start+context]
+            lines = lines[start:start + context]
             index = lineno - 1 - start
     else:
         lines = index = None
 
     return (filename, lineno, frame.f_code.co_name, lines, index)
+
 
 def getlineno(frame):
     """Get the line number from a frame object, allowing for optimization."""
@@ -614,9 +689,11 @@ def getlineno(frame):
         addr = 0
         for i in range(0, len(table), 2):
             addr = addr + ord(table[i])
-            if addr > frame.f_lasti: break
-            lineno = lineno + ord(table[i+1])
+            if addr > frame.f_lasti:
+                break
+            lineno = lineno + ord(table[i + 1])
     return lineno
+
 
 def getouterframes(frame, context=1):
     """Get a list of records for a frame and all higher (calling) frames.
@@ -629,6 +706,7 @@ def getouterframes(frame, context=1):
         frame = frame.f_back
     return framelist
 
+
 def getinnerframes(tb, context=1):
     """Get a list of records for a traceback's frame and all lower frames.
 
@@ -640,6 +718,7 @@ def getinnerframes(tb, context=1):
         tb = tb.tb_next
     return framelist
 
+
 def currentframe():
     """Return the frame object for the caller's stack frame."""
     try:
@@ -647,11 +726,14 @@ def currentframe():
     except:
         return sys.exc_traceback.tb_frame.f_back
 
-if hasattr(sys, '_getframe'): currentframe = sys._getframe
+if hasattr(sys, '_getframe'):
+    currentframe = sys._getframe
+
 
 def stack(context=1):
     """Return a list of records for the stack above the caller's frame."""
     return getouterframes(currentframe().f_back, context)
+
 
 def trace(context=1):
     """Return a list of records for the stack below the current exception."""

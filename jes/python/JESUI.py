@@ -1,6 +1,6 @@
-#JES- Jython Environment for Students
-#Copyright (C) 2002  Jason Ergle, Claire Bailey, David Raines, Joshua Sklare
-#See JESCopyright.txt for full licensing information
+# JES- Jython Environment for Students
+# Copyright (C) 2002  Jason Ergle, Claire Bailey, David Raines, Joshua Sklare
+# See JESCopyright.txt for full licensing information
 # 5/16/03: Added coloring to the load button to indicate concurrency with the
 #          editor document -AdamW
 # 5/29/08: Added hideRight class to give the htmlBrowser and watcher
@@ -8,7 +8,8 @@
 #          Prompt for saving changes on exit, and cancel option for
 #          users at promptSave. Support for "redo" - Buck Scharfnorth
 #          (hideRight for help fixed as of 7/04/08)
-# 5/13/09: Changes for redesigning configuration writing from python to java -Buck
+# 5/13/09: Changes for redesigning configuration writing from python to
+# java -Buck
 
 import JESConfig
 import JESHomeworkTurninThread
@@ -51,27 +52,27 @@ from java.lang import Thread
 
 MENU_SEPARATOR = '-'
 EXPLAIN_PREFIX = 'Explain '
-COMMAND_NEW    = 'New Program'
-COMMAND_OPEN   = 'Open Program'
-COMMAND_SAVE   = 'Save Program'
+COMMAND_NEW = 'New Program'
+COMMAND_OPEN = 'Open Program'
+COMMAND_SAVE = 'Save Program'
 COMMAND_SAVEAS = 'Save Program As...'
-COMMAND_EXIT   = 'Exit'
-COMMAND_CUT    = 'Cut'
-COMMAND_COPY   = 'Copy'
-COMMAND_PASTE  = 'Paste'
-COMMAND_UNDO   = 'Undo'
-COMMAND_REDO   = 'Redo'
-COMMAND_GOTO   = 'Goto Line ...'
+COMMAND_EXIT = 'Exit'
+COMMAND_CUT = 'Cut'
+COMMAND_COPY = 'Copy'
+COMMAND_PASTE = 'Paste'
+COMMAND_UNDO = 'Undo'
+COMMAND_REDO = 'Redo'
+COMMAND_GOTO = 'Goto Line ...'
 COMMAND_OPTIONS = 'Options'
 #COMMAND_DIRECTORY = 'Change Default Directory...'
-COMMAND_HELP   = 'Help'
-COMMAND_ABOUT  = 'About JES'
+COMMAND_HELP = 'Help'
+COMMAND_ABOUT = 'About JES'
 COMMAND_BUGREPORT = 'Report a problem in JES!'
 COMMAND_SEARCH = 'Search'
-COMMAND_LOAD   = 'Load Program'
+COMMAND_LOAD = 'Load Program'
 COMMAND_EDITOR = 'Editor'
-COMMAND_COMMAND= 'Command'
-COMMAND_EXPLORE= 'Explain'
+COMMAND_COMMAND = 'Command'
+COMMAND_EXPLORE = 'Explain'
 COMMAND_EXPLORE_HELP = 'Explain <click>'
 COMMAND_SOUND_TOOL = 'Sound Tool...'
 COMMAND_PICTURE_TOOL = 'Picture Tool...'
@@ -82,7 +83,7 @@ DEBUG_SHOW_DEBUGGER = 'Watcher'
 DEBUG_HIDE_DEBUGGER = 'Watcher'
 DEBUG_WATCH_VAR = 'add Variable...'
 DEBUG_UNWATCH_VAR = 'remove Variable...'
-PRINT= 'Print'
+PRINT = 'Print'
 AUTOSAVE = 'Auto save code file when loading'
 COMMAND_WINDOW_2 = 'Program Area + Interactions Area'
 COMMAND_WINDOW_3HELP = 'Program Area + Interactions Area + Help'
@@ -137,129 +138,130 @@ import SoundTest
 import Turtle
 import World
 
-## make sure all these are imported
+# make sure all these are imported
 
 API_SECTIONS = [AnimationPanel,
-ColorChooser,
-DigitalPicture,
-FileChooser,
-FrameSequencer,
-ImageDisplay,
-JavaMusic,
-MidiPlayer,
-ModelDisplay,
-MoviePlayer,
-PathSegment,
-Pen,
-PictureExplorer,
-PictureFrame,
-Picture,
-Pixel,
-Playback,
-SimpleInput,
-SimpleOutput,
-SimplePicture,
-SimpleSound,
-SimpleTurtle,
-SlideShow,
-SoundExplorer,
-Sound,
-SoundSample,
-SoundTest,
-Turtle,
-World]
+                ColorChooser,
+                DigitalPicture,
+                FileChooser,
+                FrameSequencer,
+                ImageDisplay,
+                JavaMusic,
+                MidiPlayer,
+                ModelDisplay,
+                MoviePlayer,
+                PathSegment,
+                Pen,
+                PictureExplorer,
+                PictureFrame,
+                Picture,
+                Pixel,
+                Playback,
+                SimpleInput,
+                SimpleOutput,
+                SimplePicture,
+                SimpleSound,
+                SimpleTurtle,
+                SlideShow,
+                SoundExplorer,
+                Sound,
+                SoundSample,
+                SoundTest,
+                Turtle,
+                World]
 
 
-JES_API_SECTIONS = [ \
-('Colors', ['distance', 'makeColor', 'makeDarker', 'makeLighter', 'pickAColor', 'getColorWrapAround', 'setColorWrapAround']),
-('Files', ['pickAFile', 'pickAFolder', 'setMediaPath', 'setMediaFolder',
-            'getMediaPath', 'getMediaFolder', 'getShortPath', 'setLibPath']),
-('Input/Output', ['requestNumber', 'requestInteger', 'requestIntegerInRange', 'requestString', \
-                  'showWarning', 'showInformation', 'showError', 'printNow']),
-('Turtles', ['turn', 'turnLeft', 'turnRight', 'forward', 'backward', 'moveTo', 'turnToFace', \
-                'makeTurtle', 'penUp', 'penDown', 'makeWorld',
-                'getTurtleList', 'drop', 'getHeading', 'getXPos', 'getYPos']),
-('Movies', ['playMovie', 'makeMovie', 'makeMovieFromInitialFile', \
-            'writeFramesToDirectory', 'addFrameToMovie', 'writeQuicktime', 'writeAVI', \
-            'openFrameSequencerTool', 'explore']),
-('Pixels', ['getColor', 'setColor', 'getRed', 'getGreen', 'getBlue', \
-            'setRed', 'setGreen', 'setBlue', 'getX', 'getY']),
-('Pictures', ['addArc', 'addArcFilled', 'addLine', 'addOval', 'addOvalFilled', 'addRect', \
-            'addRectFilled', 'addText', 'addTextWithStyle', 'copyInto', 'duplicatePicture', 'getHeight', 'getWidth', \
-              'getPixel', 'getPixels', 'getPixelAt', 'makePicture', 'makeEmptyPicture', 'makeStyle', 'show', 'repaint', \
-              'writePictureTo', 'openPictureTool', 'setAllPixelsToAColor', 'explore']),
-('Sound', ['blockingPlay', 'duplicateSound', 'getDuration', 'getLength', 'getNumSamples', 'getSampleObjectAt', 'getSamples', 'getSampleValue', 'getSampleValueAt', \
-           'getSamplingRate', 'getSound', 'makeEmptySound', 'makeEmptySoundBySeconds', 'makeSound', 'play', 'playNote', \
-#           'playInRange', 'blockingPlayInRange', 'playAtRateInRange', 'blockingPlayAtRateInRange', \
-           'setSampleValue', 'setSampleValueAt', 'stopPlaying', 'writeSoundTo', 'openSoundTool', 'explore'])]
+JES_API_SECTIONS = [
+    ('Colors', ['distance', 'makeColor', 'makeDarker', 'makeLighter',
+                'pickAColor', 'getColorWrapAround', 'setColorWrapAround']),
+    ('Files', ['pickAFile', 'pickAFolder', 'setMediaPath', 'setMediaFolder',
+               'getMediaPath', 'getMediaFolder', 'getShortPath', 'setLibPath']),
+    ('Input/Output', ['requestNumber', 'requestInteger', 'requestIntegerInRange', 'requestString',
+                      'showWarning', 'showInformation', 'showError', 'printNow']),
+    ('Turtles', ['turn', 'turnLeft', 'turnRight', 'forward', 'backward', 'moveTo', 'turnToFace',
+                 'makeTurtle', 'penUp', 'penDown', 'makeWorld',
+                 'getTurtleList', 'drop', 'getHeading', 'getXPos', 'getYPos']),
+    ('Movies', ['playMovie', 'makeMovie', 'makeMovieFromInitialFile',
+                'writeFramesToDirectory', 'addFrameToMovie', 'writeQuicktime', 'writeAVI',
+                'openFrameSequencerTool', 'explore']),
+    ('Pixels', ['getColor', 'setColor', 'getRed', 'getGreen', 'getBlue',
+                'setRed', 'setGreen', 'setBlue', 'getX', 'getY']),
+    ('Pictures', ['addArc', 'addArcFilled', 'addLine', 'addOval', 'addOvalFilled', 'addRect',
+                  'addRectFilled', 'addText', 'addTextWithStyle', 'copyInto', 'duplicatePicture', 'getHeight', 'getWidth',
+                  'getPixel', 'getPixels', 'getPixelAt', 'makePicture', 'makeEmptyPicture', 'makeStyle', 'show', 'repaint',
+                  'writePictureTo', 'openPictureTool', 'setAllPixelsToAColor', 'explore']),
+    ('Sound', ['blockingPlay', 'duplicateSound', 'getDuration', 'getLength', 'getNumSamples', 'getSampleObjectAt', 'getSamples', 'getSampleValue', 'getSampleValueAt',
+               'getSamplingRate', 'getSound', 'makeEmptySound', 'makeEmptySoundBySeconds', 'makeSound', 'play', 'playNote',
+               #           'playInRange', 'blockingPlayInRange', 'playAtRateInRange', 'blockingPlayAtRateInRange',
+               'setSampleValue', 'setSampleValueAt', 'stopPlaying', 'writeSoundTo', 'openSoundTool', 'explore'])]
 
 if System.getProperty('os.name').find('Mac') <> -1:  # if we are on a Mac
     CONTROL_KEY = Event.META_MASK
 else:
     CONTROL_KEY = Event.CTRL_MASK
 
-#The following is an array that is used to build the main menu bar.  The
-#information stored in here is the high level menu item names, the menu bar
-#option names, and the accelerator keys for those menu options.
+# The following is an array that is used to build the main menu bar.  The
+# information stored in here is the high level menu item names, the menu bar
+# option names, and the accelerator keys for those menu options.
 MENU_OPTIONS = [
     [FILE_TITLE,
-      [[COMMAND_NEW,    KeyEvent.VK_N,  CONTROL_KEY],
-       [COMMAND_OPEN,   KeyEvent.VK_O,  CONTROL_KEY],
-       [COMMAND_SAVE,   KeyEvent.VK_S,  CONTROL_KEY],
-       [COMMAND_SAVEAS, KeyEvent.VK_S,  CONTROL_KEY + Event.SHIFT_MASK],
-       [COMMAND_LOAD,   KeyEvent.VK_L,  CONTROL_KEY],
-       [PRINT, KeyEvent.VK_P,  CONTROL_KEY],
-       [MENU_SEPARATOR, 0,              0],
-       [COMMAND_EXIT,   KeyEvent.VK_Q,  CONTROL_KEY]]],
+     [[COMMAND_NEW,    KeyEvent.VK_N,  CONTROL_KEY],
+      [COMMAND_OPEN,   KeyEvent.VK_O,  CONTROL_KEY],
+      [COMMAND_SAVE,   KeyEvent.VK_S,  CONTROL_KEY],
+      [COMMAND_SAVEAS, KeyEvent.VK_S,  CONTROL_KEY + Event.SHIFT_MASK],
+      [COMMAND_LOAD,   KeyEvent.VK_L,  CONTROL_KEY],
+      [PRINT, KeyEvent.VK_P,  CONTROL_KEY],
+      [MENU_SEPARATOR, 0,              0],
+      [COMMAND_EXIT,   KeyEvent.VK_Q,  CONTROL_KEY]]],
     [EDIT_TITLE,
-      [[COMMAND_EDITOR, KeyEvent.VK_UP, CONTROL_KEY],
-       [COMMAND_COMMAND,KeyEvent.VK_DOWN,CONTROL_KEY],
-       [MENU_SEPARATOR, 0,              0],
-       [COMMAND_UNDO,  KeyEvent.VK_Z,  CONTROL_KEY],
-       [COMMAND_REDO,  KeyEvent.VK_Y,  CONTROL_KEY],
-       [COMMAND_CUT,    KeyEvent.VK_X,  CONTROL_KEY],
-       [COMMAND_COPY,   KeyEvent.VK_C,  CONTROL_KEY],
-       [COMMAND_PASTE,  KeyEvent.VK_V,  CONTROL_KEY],
-       [MENU_SEPARATOR, 0,              0],
-       [COMMAND_GOTO,  KeyEvent.VK_G,  CONTROL_KEY],
-       [COMMAND_SEARCH,  KeyEvent.VK_F,  CONTROL_KEY],
-       [MENU_SEPARATOR, 0,              0],
-       [COMMAND_OPTIONS,   0,  0]]],
+     [[COMMAND_EDITOR, KeyEvent.VK_UP, CONTROL_KEY],
+      [COMMAND_COMMAND, KeyEvent.VK_DOWN, CONTROL_KEY],
+      [MENU_SEPARATOR, 0,              0],
+      [COMMAND_UNDO,  KeyEvent.VK_Z,  CONTROL_KEY],
+      [COMMAND_REDO,  KeyEvent.VK_Y,  CONTROL_KEY],
+      [COMMAND_CUT,    KeyEvent.VK_X,  CONTROL_KEY],
+      [COMMAND_COPY,   KeyEvent.VK_C,  CONTROL_KEY],
+      [COMMAND_PASTE,  KeyEvent.VK_V,  CONTROL_KEY],
+      [MENU_SEPARATOR, 0,              0],
+      [COMMAND_GOTO,  KeyEvent.VK_G,  CONTROL_KEY],
+      [COMMAND_SEARCH,  KeyEvent.VK_F,  CONTROL_KEY],
+      [MENU_SEPARATOR, 0,              0],
+      [COMMAND_OPTIONS,   0,  0]]],
     [TURNIN_TITLE,
-      [[TURNIN_HW,0,0],
-       [TURNIN_OPTIONS,0,0]]],
+     [[TURNIN_HW, 0, 0],
+      [TURNIN_OPTIONS, 0, 0]]],
     [DEBUG_TITLE,
-      [[DEBUG_SHOW_DEBUGGER,0,0,1], # this is a checkBoxMenuItem
-       #[DEBUG_BREAK,0,0],
-       [DEBUG_WATCH_VAR,0,0],
-       [DEBUG_UNWATCH_VAR,0,0]]],
+     [[DEBUG_SHOW_DEBUGGER, 0, 0, 1],  # this is a checkBoxMenuItem
+      #[DEBUG_BREAK,0,0],
+      [DEBUG_WATCH_VAR, 0, 0],
+      [DEBUG_UNWATCH_VAR, 0, 0]]],
 
     [MEDIA_TOOLS_TITLE,
-      [[COMMAND_SOUND_TOOL, 0, 0],
-       [COMMAND_PICTURE_TOOL, 0, 0],
-       [COMMAND_FRAMESEQUENCER_TOOL, 0, 0]]],
+     [[COMMAND_SOUND_TOOL, 0, 0],
+      [COMMAND_PICTURE_TOOL, 0, 0],
+      [COMMAND_FRAMESEQUENCER_TOOL, 0, 0]]],
     [JES_API_TITLE, []
-      ],
-# uncomment the following two to put the Java api menu in
-#    [API_TITLE, []
-#      ],
+     ],
+    # uncomment the following two to put the Java api menu in
+    #    [API_TITLE, []
+    #      ],
     [WINDOW_TITLE,
-      [[COMMAND_WINDOW_2, KeyEvent.VK_R,  CONTROL_KEY],
-       [COMMAND_WINDOW_3HELP, KeyEvent.VK_H,  CONTROL_KEY],
-       [COMMAND_WINDOW_3DEBUG, 0, 0]
-]],
+     [[COMMAND_WINDOW_2, KeyEvent.VK_R,  CONTROL_KEY],
+      [COMMAND_WINDOW_3HELP, KeyEvent.VK_H,  CONTROL_KEY],
+      [COMMAND_WINDOW_3DEBUG, 0, 0]
+      ]],
     # [SKINS_TITLE, [] ],
 
     [HELP_TITLE,
-      [[COMMAND_ABOUT,  0,              0],
-       [COMMAND_BUGREPORT, 0, 0],
-       [COMMAND_EXPLORE,KeyEvent.VK_E,  CONTROL_KEY]]]]
+     [[COMMAND_ABOUT,  0,              0],
+      [COMMAND_BUGREPORT, 0, 0],
+      [COMMAND_EXPLORE, KeyEvent.VK_E,  CONTROL_KEY]]]]
 
 LOAD_BUTTON_CAPTION = 'Load Program'
 STOP_BUTTON_CAPTION = 'Stop'
 SHOW_DEBUGGER_CAPTION = 'Watcher'
 HIDE_DEBUGGER_CAPTION = 'Watcher'
-UNTITLED_FILE_NAME  = 'Untitled'
+UNTITLED_FILE_NAME = 'Untitled'
 HELP_URL = ''
 LOAD_STATUS_CURRENT = ''
 LOAD_STATUS_DIFF = ' UNLOADED '
@@ -279,10 +281,11 @@ STATUS_BAR_HEIGHT = 30
 PROMPT_NEW_MESSAGE = 'You are about to open a new program area\n-Would you like to save your old program area?'
 PROMPT_OPEN_MESSAGE = 'You are about to open a file.\n-Would you like to save the existing program area?'
 PROMPT_LOAD_MESSAGE = 'You must save the file that you are working\non before loading it.\n-Would you like to save now?'
-#end add
+# end add
 
 PROMPT_SAVE_CAPTION = 'Save File?'
-#5 lines added to allow saving changes before exit. - 29 May 2008 by Buck Scharfnorth
+# 5 lines added to allow saving changes before exit. - 29 May 2008 by Buck
+# Scharfnorth
 PROMPT_EXIT_MESSAGE = 'Program area has been modified.\n-Would you like to save changes?'
 PROMPT_PRINT_MESSAGE = 'You should save the file that you are working\non before printing it.\n-Would you like to save now?'
 PROMPT_TURNIN_MESSAGE = 'You should save the file that you are working\non before submitting it.\n-Would you like to save now?'
@@ -291,6 +294,7 @@ ERROR_OP_CANCEL = 'Operation Cancelled.'
 
 FocusOwner = None
 
+
 def getMethodList(klass):
     ret = []
     for (name, val) in klass.__dict__.items():
@@ -298,20 +302,21 @@ def getMethodList(klass):
             ret.append(name)
     return ret
 
+
 class JESUI(swing.JFrame):
 
     FocusOwner = None
-################################################################################
+##########################################################################
 # Function name: __init__
 # Return:
 #     An instance of the JESUI class.
 # Description:
 #     Creates a new instance of the JESUI.
-################################################################################
+##########################################################################
 
     def __init__(self, program):
         try:
-#            media.setColorWrapAround( program.wrapPixelValues )
+            #            media.setColorWrapAround( program.wrapPixelValues )
             self.soundErrorShown = 0
             self.FocusOwner = None
             self.swing = swing
@@ -321,85 +326,89 @@ class JESUI(swing.JFrame):
 
             self.setLocationRelativeTo(None)
 
-            #line added to allow saving changes before exit. - 29 May 2008 by Buck Scharfnorth
-            self.setDefaultCloseOperation(swing.WindowConstants.DO_NOTHING_ON_CLOSE)
+            # line added to allow saving changes before exit. - 29 May 2008 by
+            # Buck Scharfnorth
+            self.setDefaultCloseOperation(
+                swing.WindowConstants.DO_NOTHING_ON_CLOSE)
 
             self.contentPane.setLayout(swing.BoxLayout(self.contentPane,
                                                        swing.BoxLayout.Y_AXIS))
-            self.setIconImage(JESResources.makeIcon("images/jesicon.gif").getImage())
-            #Create the visual components that will be placed in the UI
+            self.setIconImage(
+                JESResources.makeIcon("images/jesicon.gif").getImage())
+            # Create the visual components that will be placed in the UI
             self.runningBar = swing.JProgressBar(0, 5, string='',
                                                  preferredSize=(50, 30))
 
-            self.editor        = JESEditor.JESEditor(self)
+            self.editor = JESEditor.JESEditor(self)
             self.commandWindow = JESCommandWindow.JESCommandWindow(self)
-            self.loadButton    = swing.JButton(LOAD_BUTTON_CAPTION,
-                                               actionPerformed=self.actionPerformed)
+            self.loadButton = swing.JButton(LOAD_BUTTON_CAPTION,
+                                            actionPerformed=self.actionPerformed)
             self.loadButton.enabled = 0
-            self.loadStatus    = swing.JLabel()
-            self.stopButton    = swing.JButton(STOP_BUTTON_CAPTION,
-                                               actionPerformed=self.actionPerformed)
+            self.loadStatus = swing.JLabel()
+            self.stopButton = swing.JButton(STOP_BUTTON_CAPTION,
+                                            actionPerformed=self.actionPerformed)
             self.debuggerButton = swing.JButton(SHOW_DEBUGGER_CAPTION,
                                                 actionPerformed=self.actionPerformed)
             self.cursorStatusLabel = swing.JLabel()
             self.cursorStatusLabel.setBorder(swing.BorderFactory.createEmptyBorder
-                                                    (0,
-                                                     VISUAL_CONTROL_MARGIN_SIZE,
-                                                     0,
-                                                     VISUAL_CONTROL_MARGIN_SIZE))
+                                             (0,
+                                              VISUAL_CONTROL_MARGIN_SIZE,
+                                              0,
+                                              VISUAL_CONTROL_MARGIN_SIZE))
             self.nameStatusLabel = swing.JLabel()
             self.nameStatusLabel.setBorder(swing.BorderFactory.createEmptyBorder
-                                                    (0,
-                                                     VISUAL_CONTROL_MARGIN_SIZE,
-                                                     0,
-                                                     VISUAL_CONTROL_MARGIN_SIZE))
+                                           (0,
+                                            VISUAL_CONTROL_MARGIN_SIZE,
+                                            0,
+                                            VISUAL_CONTROL_MARGIN_SIZE))
             self.docpane = swing.JPanel()
-            self.docpane.setLayout(swing.BoxLayout(self.docpane, swing.BoxLayout.X_AXIS))
+            self.docpane.setLayout(
+                swing.BoxLayout(self.docpane, swing.BoxLayout.X_AXIS))
             self.gutter = JESGutter(self.editor, self.editor.getFont())
-            self.gutter.setPreferredSize(awt.Dimension(25,300))
+            self.gutter.setPreferredSize(awt.Dimension(25, 300))
             self.gutter.setBorder(swing.BorderFactory.createEtchedBorder())
             if JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_GUTTER):
                 self.docpane.add(self.gutter)
             self.docpane.add(self.editor)
 
-            #Create and set up the panes that all visual components reside on
-            helpDivider  = swing.JSplitPane()
+            # Create and set up the panes that all visual components reside on
+            helpDivider = swing.JSplitPane()
             helpDivider.setOneTouchExpandable(1)
-            watcherDivider  = swing.JSplitPane()
+            watcherDivider = swing.JSplitPane()
             watcherDivider.setOneTouchExpandable(1)
             splitterPane = swing.JSplitPane()
-            editorPane   = swing.JScrollPane(self.docpane)
-            buttonPane   = swing.JPanel()
-            commandPane  = swing.JScrollPane(self.commandWindow)
-            bottomPane   = swing.JPanel()
-            statusbar    = swing.JPanel()
-            minSize =      awt.Dimension(100, 100)
+            editorPane = swing.JScrollPane(self.docpane)
+            buttonPane = swing.JPanel()
+            commandPane = swing.JScrollPane(self.commandWindow)
+            bottomPane = swing.JPanel()
+            statusbar = swing.JPanel()
+            minSize = awt.Dimension(100, 100)
 
-
-            splitterPane.setPreferredSize(awt.Dimension(400,400))
+            splitterPane.setPreferredSize(awt.Dimension(400, 400))
 
             # self.program.wrapPixelValues = 1
-            self.settingsWindow= None
-            self.directoryWindow= None
-            self.errorWindow= None
-            self.turninWindow=None
+            self.settingsWindow = None
+            self.directoryWindow = None
+            self.errorWindow = None
+            self.turninWindow = None
             self.namefield = None
-            self.mailfield=None
-            self.gtfield=None
-            self.optionsWindow=None
-            self.listPane=None
-            self.titlefield=swing.JTextField()
-            self.gotoFrame=None
-            self.linefield=swing.JTextField()
-            self.searchFrame=None
-            self.searchfield=swing.JTextField()
-            self.up=swing.JRadioButton("Search Up")
-            self.down = swing.JRadioButton("Search Down",1)
-            self.attachmentlist=None
+            self.mailfield = None
+            self.gtfield = None
+            self.optionsWindow = None
+            self.listPane = None
+            self.titlefield = swing.JTextField()
+            self.gotoFrame = None
+            self.linefield = swing.JTextField()
+            self.searchFrame = None
+            self.searchfield = swing.JTextField()
+            self.up = swing.JRadioButton("Search Up")
+            self.down = swing.JRadioButton("Search Down", 1)
+            self.attachmentlist = None
             self.list = None
-            self.notesToTA=swing.JTextArea()
+            self.notesToTA = swing.JTextArea()
             self.notesScrollPane = swing.JScrollPane(self.notesToTA)
-            self.notesScrollPane.setVerticalScrollBarPolicy(swing.JScrollPane.VERTICAL_SCROLLBAR_ALWAYS)
+            self.notesScrollPane.setVerticalScrollBarPolicy(
+                swing.JScrollPane.VERTICAL_SCROLLBAR_ALWAYS)
 
             splitterPane.orientation = swing.JSplitPane.VERTICAL_SPLIT
             splitterPane.setDividerSize(SPLITTER_SIZE)
@@ -409,19 +418,23 @@ class JESUI(swing.JFrame):
             splitterPane.setRightComponent(bottomPane)
 
             helpDivider.orientation = swing.JSplitPane.HORIZONTAL_SPLIT
-            self.htmlBrowser = Html_Browser.Html_Browser(JESConstants.HELP_START_PAGE)
+            self.htmlBrowser = Html_Browser.Html_Browser(
+                JESConstants.HELP_START_PAGE)
             self.htmlBrowser.setMinimumSize(minSize)
             helpDivider.setDividerSize(SPLITTER_SIZE)
             helpDivider.setDividerLocation(HELP_HSPLITTER_LOCATION)
             helpDivider.setResizeWeight(1.0)
             helpDivider.setLeftComponent(splitterPane)
 
-            #4 lines added to add a close button to help - 29 May 2008 by Buck Scharfnorth
+            # 4 lines added to add a close button to help - 29 May 2008 by Buck
+            # Scharfnorth
             self.htmlBrowserWithHide = Html_Browser_With_Hide(self.htmlBrowser)
-            self.htmlBrowserWithHide.setLayout(swing.BoxLayout(self.htmlBrowserWithHide, swing.BoxLayout.Y_AXIS))
+            self.htmlBrowserWithHide.setLayout(
+                swing.BoxLayout(self.htmlBrowserWithHide, swing.BoxLayout.Y_AXIS))
             self.htmlBrowserWithHide.add(hideRight(self.actionPerformed))
             self.htmlBrowserWithHide.add(self.htmlBrowserWithHide.htmlBrowser)
-            #line modified to add a close button to help - 29 May 2008 by Buck Scharfnorth
+            # line modified to add a close button to help - 29 May 2008 by Buck
+            # Scharfnorth
             helpDivider.setRightComponent(self.htmlBrowserWithHide)
 
             watcherDivider.orientation = swing.JSplitPane.HORIZONTAL_SPLIT
@@ -435,9 +448,11 @@ class JESUI(swing.JFrame):
             watcherDivider.setResizeWeight(1.0)
             watcherDivider.setLeftComponent(splitterPane)
 
-            #3 lines added to add a close button to debugger - 29 May 2008 by Buck Scharfnorth
+            # 3 lines added to add a close button to debugger - 29 May 2008 by
+            # Buck Scharfnorth
             self.watcherWithHide = swing.JPanel()
-            self.watcherWithHide.setLayout(swing.BoxLayout(self.watcherWithHide, swing.BoxLayout.Y_AXIS))
+            self.watcherWithHide.setLayout(
+                swing.BoxLayout(self.watcherWithHide, swing.BoxLayout.Y_AXIS))
             self.watcherWithHide.add(hideRight(self.actionPerformed))
 
             editorPane.setPreferredSize(awt.Dimension(lang.Short.MAX_VALUE,
@@ -445,15 +460,16 @@ class JESUI(swing.JFrame):
             editorPane.getVerticalScrollBar().setUnitIncrement(14)
 
             buttonPane.setLayout(awt.BorderLayout())
-            #buttonPane.setBorder(swing.BorderFactory.createEmptyBorder
-             #                                        (VISUAL_CONTROL_MARGIN_SIZE,
-              #                                        VISUAL_CONTROL_MARGIN_SIZE,
-               #                                       VISUAL_CONTROL_MARGIN_SIZE,
-                #                                      VISUAL_CONTROL_MARGIN_SIZE))
+            # buttonPane.setBorder(swing.BorderFactory.createEmptyBorder
+            #                                        (VISUAL_CONTROL_MARGIN_SIZE,
+            #                                        VISUAL_CONTROL_MARGIN_SIZE,
+            #                                       VISUAL_CONTROL_MARGIN_SIZE,
+            #                                      VISUAL_CONTROL_MARGIN_SIZE))
             buttonPane.setMaximumSize(awt.Dimension(lang.Short.MAX_VALUE,
                                                     BUTTON_PANE_HEIGHT))
 
-            commandPane.setMinimumSize(awt.Dimension(0, MIN_COMMAND_WINDOW_SIZE))
+            commandPane.setMinimumSize(
+                awt.Dimension(0, MIN_COMMAND_WINDOW_SIZE))
 
             bottomPane.setLayout(swing.BoxLayout(bottomPane,
                                                  swing.BoxLayout.Y_AXIS))
@@ -464,9 +480,9 @@ class JESUI(swing.JFrame):
             statusbar.setLayout(awt.BorderLayout())
             statusbar.setBorder(swing.BorderFactory.createLoweredBevelBorder())
 
-            #Add all of the components to the main frame
-            #self.contentPane.add(helpDivider)
-            #self.contentPane.add(statusbar)
+            # Add all of the components to the main frame
+            # self.contentPane.add(helpDivider)
+            # self.contentPane.add(statusbar)
 
             # export the following for window layouts
             self.statusbar = statusbar
@@ -477,7 +493,7 @@ class JESUI(swing.JFrame):
             self.bottomPane = bottomPane
 
             eastBar = swing.JPanel()
-            #eastBar.setMaximumSize(awt.Dimension(lang.Short.MAX_VALUE,
+            # eastBar.setMaximumSize(awt.Dimension(lang.Short.MAX_VALUE,
             #                                    BUTTON_PANE_HEIGHT))
             eastBar.add(self.debuggerButton)
             eastBar.add(self.stopButton)
@@ -492,27 +508,25 @@ class JESUI(swing.JFrame):
             #buttonPane.add(self.loadStatus, awt.BorderLayout.CENTER)
             buttonPane.add(eastBar, awt.BorderLayout.EAST)
 
-            self.docLabel=swing.JLabel(EXPLAIN_DEFAULT_STATUS)
+            self.docLabel = swing.JLabel(EXPLAIN_DEFAULT_STATUS)
 
-            self.explainButton    = swing.JButton(COMMAND_EXPLORE_HELP,
-                                                  actionPerformed=self.actionPerformed)
+            self.explainButton = swing.JButton(COMMAND_EXPLORE_HELP,
+                                               actionPerformed=self.actionPerformed)
 
             cursorAndName = swing.JPanel()
             cursorAndName.add(self.explainButton)
             cursorAndName.add(self.cursorStatusLabel)
-            #cursorAndName.add(self.nameStatusLabel)
+            # cursorAndName.add(self.nameStatusLabel)
 
 #            statusbar.add(self.cursorStatusLabel, awt.BorderLayout.CENTER)
 #            statusbar.add(self.nameStatusLabel, awt.BorderLayout.EAST)
             statusbar.add(cursorAndName, awt.BorderLayout.EAST)
             statusbar.add(self.docLabel, awt.BorderLayout.WEST)
 
+            self.turninstatuslabel = swing.JLabel("Creating Mail...")
+            self.turninstatuswindow = swing.JFrame("Turnin Status")
 
-
-            self.turninstatuslabel=swing.JLabel("Creating Mail...")
-            self.turninstatuswindow=swing.JFrame("Turnin Status")
-
-            #Create the menu bar and menu items
+            # Create the menu bar and menu items
             self.addmenu()
 
             # self.menu = swing.JMenuBar()
@@ -521,7 +535,7 @@ class JESUI(swing.JFrame):
             # for eachMenu in MENU_OPTIONS:
             #     newMenu = swing.JMenu(eachMenu[0], actionPerformed=self.actionPerformed)
             #     self.menu.add(newMenu)
-            #     #Create each menu option under the menu
+            # Create each menu option under the menu
             #     for eachMenuItem in eachMenu[1]:
             #         if eachMenuItem[0] == MENU_SEPARATOR:
             #             newMenu.addSeparator()
@@ -539,17 +553,17 @@ class JESUI(swing.JFrame):
             #                                                     eachMenuItem[2],
             #                                                     0))
             #             newMenu.add(newMenuItem)
-            #     #If this is the help menu, store it in the self.helpMenu variable.
+            # If this is the help menu, store it in the self.helpMenu variable.
             #     if eachMenu[0] == HELP_TITLE:
             #         self.helpMenu = newMenu
             #     if eachMenu[0] == DEBUG_TITLE:
             #         self.debugMenu = newMenu
-            #         #print 'length:',len(self.debugMenu.subElements)
-            #         #print self.debugMenu.subElements[0].subElements
+            # print 'length:',len(self.debugMenu.subElements)
+            # print self.debugMenu.subElements[0].subElements
             #         self.debugMenu.subElements[0].subElements[1].setEnabled(0)
             #         self.debugMenu.subElements[0].subElements[2].setEnabled(0)
             #     if eachMenu[0] == API_TITLE:
-            #         #BUILD API HELP
+            # BUILD API HELP
             #         for section in API_SECTIONS:
             #             newMenuSection = swing.JMenu(str(section),
             #                                          actionPerformed = self.apiHelp)
@@ -561,7 +575,7 @@ class JESUI(swing.JFrame):
             #                 newMenuSection.add(newMenuItem)
             #             newMenu.add(newMenuSection)
             #     if eachMenu[0] == JES_API_TITLE:
-            #         #BUILD JES API HELP
+            # BUILD JES API HELP
             #         for (section, api_functions) in JES_API_SECTIONS:
             #             newMenuSection = swing.JMenu(str(section),
             #                                          actionPerformed = self.apiHelp)
@@ -572,14 +586,14 @@ class JESUI(swing.JFrame):
             #                 newMenuSection.add(newMenuItem)
             #             newMenu.add(newMenuSection)
 
-            #     # if eachMenu[0] == SKINS_TITLE:
-            #     #     #BUILD SKINS LIST
-            #     #     for skin in UIManager.getInstalledLookAndFeels():
-            #     #         newMenuSection = swing.JMenuItem(str(skin.getName()),
-            #     #                                      actionPerformed = self.changeSkin)
-            #     #         newMenu.add(newMenuSection)
+            # if eachMenu[0] == SKINS_TITLE:
+            # BUILD SKINS LIST
+            # for skin in UIManager.getInstalledLookAndFeels():
+            # newMenuSection = swing.JMenuItem(str(skin.getName()),
+            # actionPerformed = self.changeSkin)
+            # newMenu.add(newMenuSection)
 
-            #Set remaining object variables
+            # Set remaining object variables
             self.heldText = ''
             self.setRunning(0)
             self.setFileName('')
@@ -589,16 +603,18 @@ class JESUI(swing.JFrame):
             self.helplist = []
 
             editorDocument = self.editor.getDocument()
-            editorDocument.changeFontSize(JESConfig.getInstance().getIntegerProperty(JESConfig.CONFIG_FONT))
+            editorDocument.changeFontSize(
+                JESConfig.getInstance().getIntegerProperty(JESConfig.CONFIG_FONT))
             commandDocument = self.commandWindow.getDocument()
-            commandDocument.changeFontSize(JESConfig.getInstance().getIntegerProperty(JESConfig.CONFIG_FONT))
+            commandDocument.changeFontSize(
+                JESConfig.getInstance().getIntegerProperty(JESConfig.CONFIG_FONT))
 
         except:
             import traceback
             import sys
-            a,b,c = sys.exc_info()
+            a, b, c = sys.exc_info()
             print "JESUI: WEIRD EXCEPT:"
-            traceback.print_exception(a,b,c)
+            traceback.print_exception(a, b, c)
 
     def addmenu(self):
         """Regenerates then installs the menu, based on the current state of
@@ -618,62 +634,63 @@ class JESUI(swing.JFrame):
             if eachMenu[0] == TURNIN_TITLE and not JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_SHOWTURNIN):
                 continue
 
-            newMenu = swing.JMenu(eachMenu[0], actionPerformed=self.actionPerformed)
+            newMenu = swing.JMenu(
+                eachMenu[0], actionPerformed=self.actionPerformed)
             output.add(newMenu)
-            #Create each menu option under the menu
+            # Create each menu option under the menu
             for eachMenuItem in eachMenu[1]:
                 if eachMenuItem[0] == MENU_SEPARATOR:
                     newMenu.addSeparator()
                 else:
                     if len(eachMenuItem) > 3 and eachMenuItem[3] == 1:
                         newMenuItem = swing.JCheckBoxMenuItem(eachMenuItem[0],
-                                                  actionPerformed = self.actionPerformed)
+                                                              actionPerformed=self.actionPerformed)
                     else:
                         newMenuItem = swing.JMenuItem(eachMenuItem[0],
-                                                  actionPerformed = self.actionPerformed)
+                                                      actionPerformed=self.actionPerformed)
 
                     if eachMenuItem[1] <> 0:
                         newMenuItem.setAccelerator(swing.KeyStroke.getKeyStroke
-                                                           (eachMenuItem[1],
-                                                            eachMenuItem[2],
-                                                            0))
+                                                   (eachMenuItem[1],
+                                                    eachMenuItem[2],
+                                                    0))
                     newMenu.add(newMenuItem)
-            #If this is the help menu, store it in the self.helpMenu variable.
+            # If this is the help menu, store it in the self.helpMenu variable.
             if eachMenu[0] == HELP_TITLE:
                 self.helpMenu = newMenu
             if eachMenu[0] == DEBUG_TITLE:
                 self.debugMenu = newMenu
-                #print 'length:',len(self.debugMenu.subElements)
-                #print self.debugMenu.subElements[0].subElements
+                # print 'length:',len(self.debugMenu.subElements)
+                # print self.debugMenu.subElements[0].subElements
                 self.debugMenu.subElements[0].subElements[1].setEnabled(0)
                 self.debugMenu.subElements[0].subElements[2].setEnabled(0)
             if eachMenu[0] == API_TITLE:
-                #BUILD API HELP
+                # BUILD API HELP
                 for section in API_SECTIONS:
                     newMenuSection = swing.JMenu(str(section),
-                                                 actionPerformed = self.apiHelp)
+                                                 actionPerformed=self.apiHelp)
 
                     for api_function in getMethodList(section):
-                        func_name = str(section)+'.'+api_function
+                        func_name = str(section) + '.' + api_function
                         newMenuItem = swing.JMenuItem(func_name,
-                                                      actionPerformed = self.apiHelp)
+                                                      actionPerformed=self.apiHelp)
                         newMenuSection.add(newMenuItem)
                     newMenu.add(newMenuSection)
             if eachMenu[0] == JES_API_TITLE:
-                #BUILD JES API HELP
+                # BUILD JES API HELP
                 for (section, api_functions) in JES_API_SECTIONS:
                     newMenuSection = swing.JMenu(str(section),
-                                                 actionPerformed = self.apiHelp)
+                                                 actionPerformed=self.apiHelp)
 
                     for api_function in api_functions:
                         newMenuItem = swing.JMenuItem(api_function,
-                                                      actionPerformed = self.apiHelp)
+                                                      actionPerformed=self.apiHelp)
                         newMenuSection.add(newMenuItem)
                     newMenu.add(newMenuSection)
 
         return output
 
-    ################################################################################
+    ##########################################################################
     # Function name: apiHelp
     # Parameters:
     #     -event: event object that represents action that occured
@@ -681,7 +698,7 @@ class JESUI(swing.JFrame):
     #     This function is called when a menu option is selected or a button is
     #     pressed.  It calls the correct function in order to perform the action
     #     that the user wants.
-    ################################################################################
+    ##########################################################################
     def apiHelp(self, event):
         actionCommand = event.getActionCommand()
 
@@ -691,28 +708,30 @@ class JESUI(swing.JFrame):
         section = ''
         api_function = ''
         try:
-            section,api_function = actionCommand.split('.', 2)
+            section, api_function = actionCommand.split('.', 2)
         except:
             pass
 
-
         if actionCommand.find('.') == -1:
-            #JES SECTION HELP
+            # JES SECTION HELP
 
             focusedComponent = self.FocusOwner
             if isinstance(focusedComponent, swing.JTextPane):
-                focusedComponent.replaceSelection(actionCommand+'(')
+                focusedComponent.replaceSelection(actionCommand + '(')
 
             self.openExploreWindow(actionCommand)
 
         else:
-            #JAVA SECTION HELP
-            #FIXME : jump directly to the function...difficult because javadoc puts the types in the html A NAME field
-            html_page = 'file://' + JESResources.getPathTo('javadoc') + '/' + section + '.html#method_summary'
+            # JAVA SECTION HELP
+            # FIXME : jump directly to the function...difficult because javadoc
+            # puts the types in the html A NAME field
+            html_page = 'file://' + \
+                JESResources.getPathTo(
+                    'javadoc') + '/' + section + '.html#method_summary'
 
             focusedComponent = self.FocusOwner
             if isinstance(focusedComponent, swing.JTextPane):
-                focusedComponent.replaceSelection('my'+actionCommand+'(')
+                focusedComponent.replaceSelection('my' + actionCommand + '(')
 
     def changeSkin(self, event):
         try:
@@ -728,14 +747,15 @@ class JESUI(swing.JFrame):
             if str(skin.getName()) == actionCommand:
 
                 UIManager.setLookAndFeel(skin.getClassName())
-                SwingUtilities.updateComponentTreeUI(self);
+                SwingUtilities.updateComponentTreeUI(self)
                 # self.pack()
 
                 if(self.optionsWindow):
-                    SwingUtilities.updateComponentTreeUI(self.optionsWindow);
+                    SwingUtilities.updateComponentTreeUI(self.optionsWindow)
                     self.optionsWindow.pack()
 
-                JESConfig.getInstance().setStringProperty( JESConfig.CONFIG_SKIN, skin.getName() )
+                JESConfig.getInstance().setStringProperty(
+                    JESConfig.CONFIG_SKIN, skin.getName())
                 #self.program.skin = str(skin.getName())
                 # for some reason this is needed or the commandWindow will go dead
 #                self.program.interpreter.runCommand("printNow('')")
@@ -743,7 +763,7 @@ class JESUI(swing.JFrame):
                 self.commandWindow.setKeymap(self.commandWindow.my_keymap)
                 return None
 
-    ################################################################################
+    ##########################################################################
     # Function name: actionPerformed
     # Parameters:
     #     -event: event object that represents action that occured
@@ -751,7 +771,7 @@ class JESUI(swing.JFrame):
     #     This function is called when a menu option is selected or a button is
     #     pressed.  It calls the correct function in order to perform the action
     #     that the user wants.
-    ################################################################################
+    ##########################################################################
     def actionPerformed(self, event):
         actionCommand = event.getActionCommand()
 
@@ -762,24 +782,28 @@ class JESUI(swing.JFrame):
         if actionCommand == COMMAND_NEW:
             # MODIFIED by Adam Poncz
             if self.editor.modified:
-                                #modified for promptSave cancel button - Buck Scharfnorth 29 May 2008
+                                # modified for promptSave cancel button - Buck
+                                # Scharfnorth 29 May 2008
                 isSaved = self.promptSave(PROMPT_NEW_MESSAGE)
                 if isSaved > -1:
                     self.editor.document.removeErrorHighlighting()
                     self.program.newFile()
-           #inserted for promptSave cancel button - Buck Scharfnorth 29 May 2008
+           # inserted for promptSave cancel button - Buck Scharfnorth 29 May
+           # 2008
             else:
                 self.program.newFile()
             # END MOD
         elif actionCommand == COMMAND_OPEN:
             # MODIFIED by Patrick Carnahan
             if self.editor.modified:
-                                #modified for promptSave cancel button - Buck Scharfnorth 29 May 2008
+                                # modified for promptSave cancel button - Buck
+                                # Scharfnorth 29 May 2008
                 isSaved = self.promptSave(PROMPT_OPEN_MESSAGE)
                 if isSaved > -1:
                     self.editor.document.removeErrorHighlighting()
                     self.program.openFile()
-            #inserted for promptSave cancel button - Buck Scharfnorth 29 May 2008
+            # inserted for promptSave cancel button - Buck Scharfnorth 29 May
+            # 2008
             else:
                 self.program.openFile()
             # END MOD
@@ -788,7 +812,8 @@ class JESUI(swing.JFrame):
         elif actionCommand == COMMAND_SAVEAS:
             self.program.saveAs()
         elif actionCommand == COMMAND_EXIT:
-            #line modified to allow saving changes before exit. - Buck Scharfnorth 29 May 2008
+            # line modified to allow saving changes before exit. - Buck
+            # Scharfnorth 29 May 2008
             self.exit(actionCommand)
         elif actionCommand == COMMAND_CUT:
             self.cut()
@@ -808,7 +833,7 @@ class JESUI(swing.JFrame):
             self.search()
         elif actionCommand == COMMAND_OPTIONS:
             self.openOptions()
-        #elif actionCommand == COMMAND_DIRECTORY:
+        # elif actionCommand == COMMAND_DIRECTORY:
         #    self.openDirectoryChooser()
         elif actionCommand == COMMAND_HELP:
             self.openBrowser(self, HELP_URL)
@@ -833,7 +858,8 @@ class JESUI(swing.JFrame):
                 if JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_AUTOSAVEONRUN):
                     self.program.saveFile()
                     self.program.loadFile()
-                #modified for promptSave cancel button - Buck Scharfnorth 29 May 2008
+                # modified for promptSave cancel button - Buck Scharfnorth 29
+                # May 2008
                 elif self.promptSave(PROMPT_LOAD_MESSAGE) > 0:
                     self.editor.document.removeErrorHighlighting()
                     self.program.loadFile()
@@ -863,7 +889,8 @@ class JESUI(swing.JFrame):
             self.program.interpreter.toggle_debug_mode()
 
         elif actionCommand == AUTOSAVE:
-            JESConfig.getInstance().setBooleanProperty(JESConfig.CONFIG_AUTOSAVEONRUN, not JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_AUTOSAVEONRUN) )
+            JESConfig.getInstance().setBooleanProperty(JESConfig.CONFIG_AUTOSAVEONRUN,
+                                                       not JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_AUTOSAVEONRUN))
             #self.program.autoSaveOnRun = not self.program.autoSaveOnRun
 
         elif actionCommand == COMMAND_PICTURE_TOOL:
@@ -881,11 +908,11 @@ class JESUI(swing.JFrame):
 #     helplist.  Then it pops up a help window with an API description.
 ###############################################################################
     def openExploreWindow(self, search_text):
-        #Find The word under the cursor
+        # Find The word under the cursor
         try:
             str = string.strip(search_text)
             msg = "No entry found for '" + str + "'"
-            #Search the API help for the word (method)
+            # Search the API help for the word (method)
             for entry in self.helplist:
                 if string.strip(entry[0]) == str:
                     msg = entry[1]
@@ -893,9 +920,9 @@ class JESUI(swing.JFrame):
         except:
             msg = "No text selected.<br>To use Explore, highlight a function name or keyword you want help with."
             str = ""
-            #Pop up the help window:
+            # Pop up the help window:
 
-        #self.htmlBrowser.htmlPane.setText(msg)
+        # self.htmlBrowser.htmlPane.setText(msg)
         self.htmlBrowserWithHide.htmlBrowser.htmlPane.setText(msg)
 
         self.windowSetting(COMMAND_WINDOW_3HELP)
@@ -903,11 +930,11 @@ class JESUI(swing.JFrame):
         #frame = swing.JFrame()
         #text = swing.JEditorPane("text/html", msg)
         #scrollpane = swing.JScrollPane(text)
-        #text.setEditable(0)
+        # text.setEditable(0)
         #frame.setTitle("Explain: " + str)
         #frame.setSize(450, 400)
-        #frame.setContentPane(scrollpane)
-        #frame.show()
+        # frame.setContentPane(scrollpane)
+        # frame.show()
 
 
 ###############################################################################
@@ -928,7 +955,6 @@ class JESUI(swing.JFrame):
         if self.program.interpreter.debug_mode:
             self.program.interpreter.toggle_debug_mode()
 
-
     def windowSetting(self, setting):
 
         self.contentPane.removeAll()
@@ -937,7 +963,8 @@ class JESUI(swing.JFrame):
         if setting == COMMAND_WINDOW_3HELP:
             self.disableDebugger()
             self.helpDivider.setLeftComponent(self.splitterPane)
-            #line modified to add a close button to help - 29 May 2008 by Buck Scharfnorth
+            # line modified to add a close button to help - 29 May 2008 by Buck
+            # Scharfnorth
             self.helpDivider.setRightComponent(self.htmlBrowserWithHide)
             self.contentPane.add(self.helpDivider)
             self.contentPane.add(self.statusbar)
@@ -947,10 +974,12 @@ class JESUI(swing.JFrame):
 
         # do not call this one explicitly!!
         elif setting == COMMAND_WINDOW_3DEBUG:
-            #line added to add a close button to debugger - 29 May 2008 by Buck Scharfnorth
+            # line added to add a close button to debugger - 29 May 2008 by
+            # Buck Scharfnorth
             self.watcherWithHide.add(self.program.interpreter.debugger.watcher)
             self.watcherDivider.setLeftComponent(self.splitterPane)
-            #line modified to add a close button to debugger - 29 May 2008 by Buck Scharfnorth
+            # line modified to add a close button to debugger - 29 May 2008 by
+            # Buck Scharfnorth
             self.watcherDivider.setRightComponent(self.watcherWithHide)
             self.contentPane.add(self.watcherDivider)
             self.contentPane.add(self.statusbar)
@@ -958,7 +987,7 @@ class JESUI(swing.JFrame):
             self.watcherDivider.resetToPreferredSizes()
             self.watcherDivider.setDividerLocation(WATCHER_HSPLITTER_LOCATION)
 
-        else: #setting == COMMAND_WINDOW_2:
+        else:  # setting == COMMAND_WINDOW_2:
             self.disableDebugger()
             self.splitterPane.setLeftComponent(self.editorPane)
             self.splitterPane.setRightComponent(self.bottomPane)
@@ -969,7 +998,6 @@ class JESUI(swing.JFrame):
         self.setJMenuBar(self.menu)
         self.contentPane.validate()
 #?        self.contentPane.revalidate()
-
 
 
 ###############################################################################
@@ -989,7 +1017,7 @@ class JESUI(swing.JFrame):
 #     the JES program with the 'X' on the main window.
 # Revisions:
 #     Modified to prompt for save on exit - 29 May 2008 by Buck Scharfnorth
-################################################################################
+##########################################################################
     def exit(self, event):
         if self.editor.modified:
             isSaved = self.promptSave(PROMPT_EXIT_MESSAGE)
@@ -1000,7 +1028,7 @@ class JESUI(swing.JFrame):
             JESConfig.getInstance().writeConfig()
             self.program.closeProgram()
 
-################################################################################
+##########################################################################
 # Function name: promptSave
 # Return:
 #     TRUE if the file was saved successfully, FALSE if the save failed or the
@@ -1014,21 +1042,22 @@ class JESUI(swing.JFrame):
 #     0 if user chooses not to save and the operation will continue using
 #     the previous saved version of the file (when available & necessary).
 #     -1 if user cancels or if save fails (such as on a read only drive).
-################################################################################
+##########################################################################
     def promptSave(self, prompt):
         promptResult = swing.JOptionPane.showConfirmDialog(
-                                           self,
-                                           prompt,
-                                           PROMPT_SAVE_CAPTION,
-                                           swing.JOptionPane.YES_NO_CANCEL_OPTION)
+            self,
+            prompt,
+            PROMPT_SAVE_CAPTION,
+            swing.JOptionPane.YES_NO_CANCEL_OPTION)
 
         if promptResult == swing.JOptionPane.YES_OPTION:
             isSaved = self.program.saveFile()
             if isSaved != 1:
                 swing.JOptionPane.showMessageDialog(self,
-                                  ERROR_SAVE_FAIL+'\n-'+ERROR_OP_CANCEL,
-                                  ERROR_OP_CANCEL,
-                                  swing.JOptionPane.WARNING_MESSAGE)
+                                                    ERROR_SAVE_FAIL + '\n-' +
+                                                    ERROR_OP_CANCEL,
+                                                    ERROR_OP_CANCEL,
+                                                    swing.JOptionPane.WARNING_MESSAGE)
                 return -1
             else:
                 return 1
@@ -1037,7 +1066,7 @@ class JESUI(swing.JFrame):
         else:
             return -1
 
-################################################################################
+##########################################################################
 # Function name: openBrowser
 # Parameters:
 #     -url: Target URL or file name for the browser.  If a file name is given,
@@ -1045,17 +1074,17 @@ class JESUI(swing.JFrame):
 # Description:
 #     Opens a browser window to the specified location.  This is used when
 #     displaying the HTML help.
-################################################################################
+##########################################################################
     def openBrowser(self, target):
         try:
-           #j=Html_Browser.Html_Browser(target)
+           # j=Html_Browser.Html_Browser(target)
            # self.htmlBrowser.field.setText(target)
             self.htmlBrowserWithHide.htmlBrowser.field.setText(target)
             self.htmlBrowserWithHide.htmlBrowser.goToUrl(None)
         except:
-            print "ERROR opening broswer with file:",target
+            print "ERROR opening broswer with file:", target
 
-################################################################################
+##########################################################################
 # Function name: setRunning
 # Parameters:
 #     -runBool: Boolean identifying whether the program is running.
@@ -1063,7 +1092,7 @@ class JESUI(swing.JFrame):
 #     This function is called to tell the GUI whether the Jython interpreter is
 #     running any code.  When running, the GUI will enable the stop button,
 #     disable the load button, and change the cursor to an hourglass.
-################################################################################
+##########################################################################
     def setRunning(self, runBool):
         self.running = runBool
         self.loadButton.enabled = not runBool
@@ -1080,7 +1109,7 @@ class JESUI(swing.JFrame):
         self.editor.setCursor(textCursor)
         self.commandWindow.setCursor(textCursor)
 
-################################################################################
+##########################################################################
 # Function name: setFileName
 # Parameters:
 #     -filename: name of the currenly open file
@@ -1088,32 +1117,32 @@ class JESUI(swing.JFrame):
 #     Sets the file name that is displayed in the program caption.  If the
 #     filename parameter is set to '', then the file name will be shown as
 #     'Untitled'.
-################################################################################
+##########################################################################
     def setFileName(self, filename):
         if filename == '':
             filename = UNTITLED_FILE_NAME
 
         self.title = JESConstants.APPLICATION_TITLE % filename
 
-################################################################################
+##########################################################################
 # Function name: callTextEditFunction
 # Description:
 #     Performs the cut operation on the either the editor or command window,
 #     depending on which one has the focus.
-################################################################################
+##########################################################################
     def callTextEditFunction(self, function):
         #global FocusOwner
-        focusedComponent = self.FocusOwner #self.getFocusOwner()
+        focusedComponent = self.FocusOwner  # self.getFocusOwner()
 
         if isinstance(focusedComponent, swing.JTextPane):
             focusedComponent.function()
 
-################################################################################
+##########################################################################
 # Function name: cut
 # Description:
 #     Performs the cut operation on the either the editor or command window,
 #     depending on which one has the focus.
-################################################################################
+##########################################################################
     def cut(self):
         #global FocusOwner
         #focusedComponent = self.getFocusOwner()
@@ -1121,78 +1150,80 @@ class JESUI(swing.JFrame):
         if isinstance(focusedComponent, swing.JTextPane):
             focusedComponent.cut()
 
-################################################################################
+##########################################################################
 # Function name: copy
 # Description:
 #     Performs the copy operation on the either the editor or command window,
 #     depending on which one has the focus.
-################################################################################
+##########################################################################
     def copy(self):
         #global FocusOwner
-        focusedComponent = self.FocusOwner #self.getFocusOwner()
+        focusedComponent = self.FocusOwner  # self.getFocusOwner()
 
         if isinstance(focusedComponent, swing.JTextPane):
             focusedComponent.copy()
 
-################################################################################
+##########################################################################
 # Function name: paste
 # Description:
 #     Performs the paste operation on the either the editor or command window,
 #     depending on which one has the focus.
-################################################################################
+##########################################################################
     def paste(self):
         #global FocusOwner
-        focusedComponent = self.FocusOwner #self.getFocusOwner()
+        focusedComponent = self.FocusOwner  # self.getFocusOwner()
         if isinstance(focusedComponent, swing.JTextPane):
             focusedComponent.paste()
 
-################################################################################
+##########################################################################
 # Function name: undo
 # Description:
 #     Performs the undo operation on the either the editor or command window,
 #     depending on which one has the focus.
-################################################################################
+##########################################################################
     def undo(self):
         #global FocusOwner
-        focusedComponent = self.FocusOwner #self.getFocusOwner()
+        focusedComponent = self.FocusOwner  # self.getFocusOwner()
 
         if isinstance(focusedComponent, swing.JTextPane):
             focusedComponent.undo()
 
-################################################################################
+##########################################################################
 # Function name: redo
 # Description:
 #     Performs the redo operation on the either the editor or command window,
 #     depending on which one has the focus.
-################################################################################
+##########################################################################
     def redo(self):
         #global FocusOwner
-        focusedComponent = self.FocusOwner #self.getFocusOwner()
+        focusedComponent = self.FocusOwner  # self.getFocusOwner()
 
         if isinstance(focusedComponent, swing.JTextPane):
             focusedComponent.redo()
 
-################################################################################
+##########################################################################
 # Function name: print
 # Description:
 #     Prints the current Document contained in JES
-################################################################################
+##########################################################################
     def printCommand(self):
         name = JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_NAME)
 #        try:
-#            #Sets up local variables according to an existing config file.
+# Sets up local variables according to an existing config file.
 #            array=self.program.readFromConfigFile()
 #            name=array[JESConstants.CONFIG_NAME]
 #        except:
-#            #If we have a problem, just set them all to the empty string
+# If we have a problem, just set them all to the empty string
 #            name='Unknown'
-        isSaved=1
+        isSaved = 1
         if self.editor.modified:
-            #modified for promptSave cancel button - Buck Scharfnorth 29 May 2008
-            isSaved=self.promptSave(PROMPT_PRINT_MESSAGE)
+            # modified for promptSave cancel button - Buck Scharfnorth 29 May
+            # 2008
+            isSaved = self.promptSave(PROMPT_PRINT_MESSAGE)
         if isSaved > -1:
             printerJob = printer.PrinterJob.getPrinterJob()
-            printerJob.setPrintable( JESPrintableDocument.JESPrintableDocument(self.program.filename,name) )
+            printerJob.setPrintable(
+                JESPrintableDocument.JESPrintableDocument(self.program.filename, name))
             doPrint = printerJob.printDialog()
             if (doPrint):
                 try:
@@ -1200,16 +1231,17 @@ class JESUI(swing.JFrame):
                 except:
                     print "Printing error"
 
-################################################################################
+##########################################################################
 # Function name: UpdateRowCol
 # Parameters:
 #     -row: current row that the cursor is on
 #     -col: current column that the cursor is on
 # Description:
 #     Updates the status bar with the given row and column.
-################################################################################
+##########################################################################
     def UpdateRowCol(self, row, col):
-        self.cursorStatusLabel.text ='Line Number:' + str(col) + ' Position: ' + str(row)
+        self.cursorStatusLabel.text = 'Line Number:' + \
+            str(col) + ' Position: ' + str(row)
         self.cursorStatusLabel.setForeground(awt.Color.black)
 
     def UpdateToolbarHelp(self, keyword):
@@ -1234,10 +1266,9 @@ class JESUI(swing.JFrame):
             self.cursorStatusLabel.setForeground(awt.Color.black)
             self.explainButton.text = COMMAND_EXPLORE_HELP
 
-
-
     def UpdateName(self):
-        self.nameStatusLabel.text = 'Current User: ' + JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_NAME)
+        self.nameStatusLabel.text = 'Current User: ' + \
+            JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_NAME)
         self.nameStatusLabel.setForeground(awt.Color.black)
 #        try:
 #            array=self.program.readFromConfigFile()
@@ -1248,14 +1279,14 @@ class JESUI(swing.JFrame):
 #        except:
 #            self.nameStatusLabel.text ='Not Registered   '
 
-################################################################################
+##########################################################################
 # Function name: SetHelpFiles
 # Parameters:
 #     -helpFiles: array of file names (including entire path) for all help files
 #                 that will be added to help menu.
 # Description:
 #     Adds the help files specified in the helpFiles parameter to the help menu.
-################################################################################
+##########################################################################
     def SetHelpFiles(self, helpFiles):
         self.helpFiles = {}
         self.helpMenu.addSeparator()
@@ -1265,9 +1296,9 @@ class JESUI(swing.JFrame):
             fileName = fileName.replace('_', ' ')
             self.helpFiles[fileName] = eachHelpFilePath
             newMenuItem = swing.JMenuItem(fileName,
-                                          actionPerformed = self.actionPerformed)
+                                          actionPerformed=self.actionPerformed)
             self.helpMenu.add(newMenuItem)
-        #Set up contextual help list
+        # Set up contextual help list
         helpfile = open(JESResources.getPathTo("help/JESAPIHelp.html"), 'r')
         helpcontents = helpfile.read()
         helpl = helpcontents.split("_")
@@ -1275,7 +1306,7 @@ class JESUI(swing.JFrame):
             self.helplist.append(entry.split("|"))
         helpfile.close()
 
-################################################################################
+##########################################################################
 # Function name: CheckIfHelpTopic
 # Parameters:
 #     -helpTopic: string containing the name of the menu option to be checked
@@ -1286,7 +1317,7 @@ class JESUI(swing.JFrame):
 #     Checks to see if the given string (specified in the helpTopic parameter)
 #     is the name of a help topic.  If it is, the openBrowser function is called
 #     to open up that help file.
-################################################################################
+##########################################################################
     def CheckIfHelpTopic(self, helpTopic):
         if self.helpFiles.has_key(helpTopic):
             self.openBrowser(self.helpFiles[helpTopic])
@@ -1295,59 +1326,64 @@ class JESUI(swing.JFrame):
         else:
             return 0
 
-################################################################################
+##########################################################################
 # Function name: openSettings
 # Description:
 #     Opens up a JES settings dialog.  If the window has not been created, it is
 #     created.  If the config file does not exist, the string in it are set to
 #     empty strings.  Once everything is created, it is made visible.  If the
 #     window already exists, but it is hidden, it is just made visible.
-################################################################################
+##########################################################################
     def openSettings(self):
-        if self.settingsWindow== None:
-#            try:
-#                #Sets up local variables according to an existing config file.
-#                array=self.program.readFromConfigFile()
-#                name=array[JESConstants.CONFIG_NAME]
-#                gt=array[JESConstants.CONFIG_GT]
-#
-#                if(array[JESConstants.CONFIG_MAIL] == ''):
-#                    mail=JESConstants.MAIL_SERVER #default to mail.gatech.edu
-#                else:
-#                    mail=array[JESConstants.CONFIG_MAIL]
-#
-#                mailaddr = array[JESConstants.CONFIG_EMAIL_ADDR]
-#                webDefs = array[JESConstants.CONFIG_WEB_TURNIN]
-#            except:
-#                #If we have a problem, just set them all to the empty string
-#                name=''
-#                gt=''
-#                mailaddr = ''
-#                mail = JESConstants.MAIL_SERVER
-#                webDefs = JESConstants.WEB_DEFINITIONS
-            #Creating the window
-            self.settingsWindow=swing.JFrame("JES Settings")
-            self.settingsWindow.contentPane.layout = awt.GridLayout(0,2)
-            self.settingsWindow.size = (250,150)
-            savebutton = swing.JButton("Save Changes",preferredSize=(100,20),
-                    actionPerformed=self.settingsButtonPressed)
-            cancelbutton= swing.JButton("Cancel",preferredSize=(100,20),
-                    actionPerformed=self.settingsButtonPressed)
-            self.namefield= swing.JTextField(JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_NAME),preferredSize=(200,20))
-            namelabel=swing.JLabel("Name:")
-            self.gtfield= swing.JTextField(JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_GT),preferredSize=(200,20))
-            gtlabel=swing.JLabel("Student #:")
-            self.mailaddrfield= swing.JTextField(JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_EMAIL_ADDR),preferredSize=(200,20))
-            mailaddrlabel=swing.JLabel("Email Address:")
-            self.mailfield= swing.JTextField(JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_MAIL),preferredSize=(200,20))
-            maillabel=swing.JLabel("Mail Server:")
-            self.webDefsField = swing.JTextField(JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_WEB_TURNIN), preferredSize=(200,20))
+        if self.settingsWindow == None:
+            #            try:
+            # Sets up local variables according to an existing config file.
+            #                array=self.program.readFromConfigFile()
+            #                name=array[JESConstants.CONFIG_NAME]
+            #                gt=array[JESConstants.CONFIG_GT]
+            #
+            #                if(array[JESConstants.CONFIG_MAIL] == ''):
+            # mail=JESConstants.MAIL_SERVER #default to mail.gatech.edu
+            #                else:
+            #                    mail=array[JESConstants.CONFIG_MAIL]
+            #
+            #                mailaddr = array[JESConstants.CONFIG_EMAIL_ADDR]
+            #                webDefs = array[JESConstants.CONFIG_WEB_TURNIN]
+            #            except:
+            # If we have a problem, just set them all to the empty string
+            #                name=''
+            #                gt=''
+            #                mailaddr = ''
+            #                mail = JESConstants.MAIL_SERVER
+            #                webDefs = JESConstants.WEB_DEFINITIONS
+            # Creating the window
+            self.settingsWindow = swing.JFrame("JES Settings")
+            self.settingsWindow.contentPane.layout = awt.GridLayout(0, 2)
+            self.settingsWindow.size = (250, 150)
+            savebutton = swing.JButton("Save Changes", preferredSize=(100, 20),
+                                       actionPerformed=self.settingsButtonPressed)
+            cancelbutton = swing.JButton("Cancel", preferredSize=(100, 20),
+                                         actionPerformed=self.settingsButtonPressed)
+            self.namefield = swing.JTextField(JESConfig.getInstance().getStringProperty(
+                JESConfig.CONFIG_NAME), preferredSize=(200, 20))
+            namelabel = swing.JLabel("Name:")
+            self.gtfield = swing.JTextField(JESConfig.getInstance().getStringProperty(
+                JESConfig.CONFIG_GT), preferredSize=(200, 20))
+            gtlabel = swing.JLabel("Student #:")
+            self.mailaddrfield = swing.JTextField(JESConfig.getInstance().getStringProperty(
+                JESConfig.CONFIG_EMAIL_ADDR), preferredSize=(200, 20))
+            mailaddrlabel = swing.JLabel("Email Address:")
+            self.mailfield = swing.JTextField(JESConfig.getInstance().getStringProperty(
+                JESConfig.CONFIG_MAIL), preferredSize=(200, 20))
+            maillabel = swing.JLabel("Mail Server:")
+            self.webDefsField = swing.JTextField(JESConfig.getInstance().getStringProperty(
+                JESConfig.CONFIG_WEB_TURNIN), preferredSize=(200, 20))
             webDefslabel = swing.JLabel("Turnin Definitions:")
             self.settingsWindow.contentPane.add(namelabel)
             self.settingsWindow.contentPane.add(self.namefield)
             self.settingsWindow.contentPane.add(gtlabel)
             self.settingsWindow.contentPane.add(self.gtfield)
-            #RJC - always display if using coweb dynamic turnin type table
+            # RJC - always display if using coweb dynamic turnin type table
             if JESConstants.EMAIL_TURNIN or JESConstants.TURNIN_TYPE_TABLE:
                 self.settingsWindow.contentPane.add(mailaddrlabel)
                 self.settingsWindow.contentPane.add(self.mailaddrfield)
@@ -1355,8 +1391,8 @@ class JESUI(swing.JFrame):
                 self.settingsWindow.contentPane.add(self.mailfield)
             if JESConstants.COWEB_TURNIN:
                 pass
-                #self.settingsWindow.contentPane.add(webDefslabel)
-                #self.settingsWindow.contentPane.add(self.webDefsField)
+                # self.settingsWindow.contentPane.add(webDefslabel)
+                # self.settingsWindow.contentPane.add(self.webDefsField)
             self.settingsWindow.contentPane.add(cancelbutton)
             self.settingsWindow.contentPane.add(savebutton)
             self.settingsWindow.pack()
@@ -1366,19 +1402,19 @@ class JESUI(swing.JFrame):
             self.settingsWindow.show()
 
 
-################################################################################
+##########################################################################
 # Function name: openDirectoryChooser
 # Description:
 #     Opens up a JES directory dialog.  If the window has not been created, it is
 #     created.  If the config file does not exist, the string in it are set to
 #     empty strings.  Once everything is created, it is made visible.  If the
 #     window already exists, but it is hidden, it is just made visible.
-################################################################################
+##########################################################################
 
 #    def openDirectoryChooser(self):
-#        #print "In openDirectoryChooser"
+# print "In openDirectoryChooser"
 #       if self.directoryWindow == None:
-#            #print "No directory window yet"
+# print "No directory window yet"
 #            self.directoryWindow=swing.JFrame("JES Directory Chooser")
 #            self.directoryWindow.contentPane.layout = awt.GridLayout(0,3)
 #            self.directoryWindow.size = (350,150)
@@ -1396,22 +1432,21 @@ class JESUI(swing.JFrame):
 #            self.directoryWindow.contentPane.add(changedirbutton)
 #            self.directoryWindow.contentPane.add(cancelbutton)
 #            self.directoryWindow.contentPane.add(savebutton)
-#            #print "Everything added"
+# print "Everything added"
 #            self.directoryWindow.pack()
 #            self.directoryWindow.show()
 #        else:
 #            self.directoryWindow.show()
 
-
-    ################################################################################
+    ##########################################################################
     # Function name: settingsButtonPressed
     # Parameters: event
     # Description:
     #     Handles events thrown from the settings dialog window.
-    ################################################################################
+    ##########################################################################
 
-    def settingsButtonPressed(self,event):
-        if event.source.text=='Cancel':
+    def settingsButtonPressed(self, event):
+        if event.source.text == 'Cancel':
             pass
             self.settingsWindow.hide()
         else:
@@ -1431,13 +1466,12 @@ class JESUI(swing.JFrame):
             self.UpdateName()
             self.settingsWindow.hide()
 
-
-    ################################################################################
+    ##########################################################################
     # Function name: directoryButtonPressed
     # Parameters: event
     # Description:
     #     Handles events thrown from the directory dialog window.
-    ################################################################################
+    ##########################################################################
 
 #    def directoryButtonPressed(self,event):
 #        if event.source.text=='Cancel':
@@ -1451,54 +1485,60 @@ class JESUI(swing.JFrame):
 #           if returnval == swing.JFileChooser.APPROVE_OPTION:
 #               self.dirfield.setText(self.dirChooser.getSelectedFile().getAbsolutePath())
 #           self.directoryWindow.toFront()
-#           #print 'ChangeDir'
+# print 'ChangeDir'
 #       else:
 #           self.program.defaultPath = self.dirfield.getText()
 #           self.program.saveOptions()
 #           self.directoryWindow.hide()
-#           #print 'save'
+# print 'save'
 
-    ################################################################################
+    ##########################################################################
     # Function name: openTurnin
     # Description:
     #     Opens up a JES Turnin dialog.
-    ################################################################################
-    def openTurnin(self,toTurnin):
-            #decides what you are turning in.
-        self.turninWindow=swing.JFrame('Assignment Submission')
-        self.turninWindow.contentPane.layout = awt.GridLayout(3,1)
-        self.turninWindow.size = (300,400)
+    ##########################################################################
+    def openTurnin(self, toTurnin):
+            # decides what you are turning in.
+        self.turninWindow = swing.JFrame('Assignment Submission')
+        self.turninWindow.contentPane.layout = awt.GridLayout(3, 1)
+        self.turninWindow.size = (300, 400)
         self.notesToTA.setText('')
         self.notesToTA.setLineWrap(1)
         self.notesToTA.setWrapStyleWord(1)
-        notesLabel=swing.JLabel("Notes to TA:")
+        notesLabel = swing.JLabel("Notes to TA:")
         self.notesScrollPane.size = (240, 200)
-        toSubmitLabel=swing.JLabel("Submitting file:")
-        fileNameLabel=swing.JLabel(os.path.basename(self.program.filename))
+        toSubmitLabel = swing.JLabel("Submitting file:")
+        fileNameLabel = swing.JLabel(os.path.basename(self.program.filename))
         titlelabel = swing.JLabel('Assignment to submit:   ')
-        turninbutton = swing.JButton("Turnin",preferredSize=(100,20), actionPerformed=self.turninButtonPressed)
-        cancelbutton= swing.JButton("Cancel",preferredSize=(100,20), actionPerformed=self.turninButtonPressed)
-        addbutton = swing.JButton("Add File",preferredSize=(120,20), actionPerformed=self.turninButtonPressed)
-        removebutton= swing.JButton("Remove File",preferredSize=(120,20), actionPerformed=self.turninButtonPressed)
-        assignmentStrings=self.grabAssignmentList()
-        self.titlefield=swing.JComboBox(assignmentStrings)
-        self.attachmentlist=util.Vector()
-        self.list=swing.JList(self.attachmentlist)
-        self.listPane=swing.JScrollPane(self.list)
-        self.listPane.preferredSize=(100,100)
+        turninbutton = swing.JButton(
+            "Turnin", preferredSize=(100, 20), actionPerformed=self.turninButtonPressed)
+        cancelbutton = swing.JButton(
+            "Cancel", preferredSize=(100, 20), actionPerformed=self.turninButtonPressed)
+        addbutton = swing.JButton(
+            "Add File", preferredSize=(120, 20), actionPerformed=self.turninButtonPressed)
+        removebutton = swing.JButton("Remove File", preferredSize=(
+            120, 20), actionPerformed=self.turninButtonPressed)
+        assignmentStrings = self.grabAssignmentList()
+        self.titlefield = swing.JComboBox(assignmentStrings)
+        self.attachmentlist = util.Vector()
+        self.list = swing.JList(self.attachmentlist)
+        self.listPane = swing.JScrollPane(self.list)
+        self.listPane.preferredSize = (100, 100)
         try:
-#                array=self.program.readFromConfigFile()
-#                name=array[JESConstants.CONFIG_NAME]
-#                gt=array[JESConstants.CONFIG_GT]
-#                mail=array[JESConstants.CONFIG_MAIL]
-            namelabel=swing.JLabel("Name: "+JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_NAME))
-            maillabel=swing.JLabel("Media Files Attached: ")
-            gtlabel=swing.JLabel("Student ID#: "+JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_GT))
-            blanklabel=swing.JLabel("")
+            #                array=self.program.readFromConfigFile()
+            #                name=array[JESConstants.CONFIG_NAME]
+            #                gt=array[JESConstants.CONFIG_GT]
+            #                mail=array[JESConstants.CONFIG_MAIL]
+            namelabel = swing.JLabel(
+                "Name: " + JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_NAME))
+            maillabel = swing.JLabel("Media Files Attached: ")
+            gtlabel = swing.JLabel(
+                "Student ID#: " + JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_GT))
+            blanklabel = swing.JLabel("")
 
-            #Layout the components
+            # Layout the components
             turninProperties = swing.JPanel()
-            turninProperties.size = (150,50)
+            turninProperties.size = (150, 50)
             turninProperties.layout = awt.GridLayout(4, 2)
             turninProperties.add(namelabel)
             turninProperties.add(gtlabel)
@@ -1507,80 +1547,85 @@ class JESUI(swing.JFrame):
             turninProperties.add(titlelabel)
             turninProperties.add(self.titlefield)
             turninProperties.add(blanklabel)
-            self.turninWindow.contentPane.add(turninProperties, awt.BorderLayout.NORTH)
+            self.turninWindow.contentPane.add(
+                turninProperties, awt.BorderLayout.NORTH)
 
             attachPane = swing.JPanel()
             attachPane.layout = awt.BorderLayout()
             attachPane.add(maillabel, awt.BorderLayout.NORTH)
             attachPane.add(self.listPane, awt.BorderLayout.CENTER)
             buttonPane = swing.JPanel()
-            buttonPane.layout = awt.GridLayout(1,2)
+            buttonPane.layout = awt.GridLayout(1, 2)
             buttonPane.add(removebutton)
             buttonPane.add(addbutton)
             attachPane.add(buttonPane, awt.BorderLayout.SOUTH)
-            self.turninWindow.contentPane.add(attachPane, awt.BorderLayout.CENTER)
+            self.turninWindow.contentPane.add(
+                attachPane, awt.BorderLayout.CENTER)
 
             notesPane = swing.JPanel()
             notesPane.layout = awt.BorderLayout()
             notesPane.add(notesLabel, awt.BorderLayout.NORTH)
             notesPane.add(self.notesScrollPane, awt.BorderLayout.CENTER)
             sendPane = swing.JPanel()
-            sendPane.layout = awt.GridLayout(1,2)
+            sendPane.layout = awt.GridLayout(1, 2)
             sendPane.add(cancelbutton)
             sendPane.add(turninbutton)
             notesPane.add(sendPane, awt.BorderLayout.SOUTH)
             notesPane.size = (200, 300)
-            self.turninWindow.contentPane.add(notesPane, awt.BorderLayout.SOUTH)
+            self.turninWindow.contentPane.add(
+                notesPane, awt.BorderLayout.SOUTH)
 
-            #self.turninWindow.contentPane.add(toSubmitLabel)
-            #self.turninWindow.contentPane.add(fileNameLabel)
-            #self.turninWindow.contentPane.add(titlelabel)
-            #self.turninWindow.contentPane.add(self.titlefield)
-            #self.turninWindow.contentPane.add(namelabel)
-            #self.turninWindow.contentPane.add(gtlabel)
-            #self.turninWindow.contentPane.add(maillabel)
-            #self.turninWindow.contentPane.add(self.listPane)
-            #self.turninWindow.contentPane.add(removebutton)
-            #self.turninWindow.contentPane.add(addbutton)
-            #self.turninWindow.contentPane.add(notesLabel)
-            #self.turninWindow.contentPane.add(self.notesScrollPane)
-            #self.turninWindow.contentPane.add(cancelbutton)
-            #self.turninWindow.contentPane.add(turninbutton)
+            # self.turninWindow.contentPane.add(toSubmitLabel)
+            # self.turninWindow.contentPane.add(fileNameLabel)
+            # self.turninWindow.contentPane.add(titlelabel)
+            # self.turninWindow.contentPane.add(self.titlefield)
+            # self.turninWindow.contentPane.add(namelabel)
+            # self.turninWindow.contentPane.add(gtlabel)
+            # self.turninWindow.contentPane.add(maillabel)
+            # self.turninWindow.contentPane.add(self.listPane)
+            # self.turninWindow.contentPane.add(removebutton)
+            # self.turninWindow.contentPane.add(addbutton)
+            # self.turninWindow.contentPane.add(notesLabel)
+            # self.turninWindow.contentPane.add(self.notesScrollPane)
+            # self.turninWindow.contentPane.add(cancelbutton)
+            # self.turninWindow.contentPane.add(turninbutton)
             self.turninWindow.pack()
             self.turninWindow.setLocationRelativeTo(None)
             self.turninWindow.show()
         except:
-            a="JES needs to know who you are to turn in something.  \n"
-            b="Please choose Register from the Turnin menu to set JES's\n preferences.  "
-            c="When you are done you can try to turn this \nassignment in again."
-            self.errorWindow=swing.JFrame()
+            a = "JES needs to know who you are to turn in something.  \n"
+            b = "Please choose Register from the Turnin menu to set JES's\n preferences.  "
+            c = "When you are done you can try to turn this \nassignment in again."
+            self.errorWindow = swing.JFrame()
             swing.JOptionPane.showMessageDialog(self.errorWindow,
-                  a+b+c,
-                "Error - JES properties have not been set",
-                swing.JOptionPane.WARNING_MESSAGE)
+                                                a + b + c,
+                                                "Error - JES properties have not been set",
+                                                swing.JOptionPane.WARNING_MESSAGE)
 
-    ################################################################################
+    ##########################################################################
     # Function name: turninButtonPressed
     # Description:
     #     Handles events from turnin dialog
-    ################################################################################
-    def turninButtonPressed(self,event):
-        if event.source.text=='Turnin':
+    ##########################################################################
+    def turninButtonPressed(self, event):
+        if event.source.text == 'Turnin':
             try:
-                isSaved=1
+                isSaved = 1
 #                array=self.program.readFromConfigFile()
 
-                title= self.titlefield.getSelectedItem()
+                title = self.titlefield.getSelectedItem()
                 if self.editor.modified:
-                #modified for promptSave cancel button - Buck Scharfnorth 29 May 2008
-                    isSaved=self.promptSave(PROMPT_TURNIN_MESSAGE)
+                    # modified for promptSave cancel button - Buck Scharfnorth
+                    # 29 May 2008
+                    isSaved = self.promptSave(PROMPT_TURNIN_MESSAGE)
                 if not os.path.isfile(self.program.filename):
-                    isSaved=0
-                #modified for promptSave cancel button - Buck Scharfnorth 29 May 2008
+                    isSaved = 0
+                # modified for promptSave cancel button - Buck Scharfnorth 29
+                # May 2008
                 if isSaved > 0:
                     if JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_GT) == '':
                         self.turninWindow.dispose()
-                        self.errorWindow=swing.JFrame()
+                        self.errorWindow = swing.JFrame()
                         swing.JOptionPane.showMessageDialog(self,
                                                             'You must have a student your student number.',
                                                             'Turnin cannot complete.',
@@ -1588,7 +1633,7 @@ class JESUI(swing.JFrame):
                         self.openSettings()
                     elif JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_EMAIL_ADDR) == '':
                         self.turninWindow.dispose()
-                        self.errorWindow=swing.JFrame()
+                        self.errorWindow = swing.JFrame()
                         swing.JOptionPane.showMessageDialog(self,
                                                             'You must enter an e-mail address.',
                                                             'Turnin cannot complete.',
@@ -1596,65 +1641,74 @@ class JESUI(swing.JFrame):
                         self.openSettings()
                     elif JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_NAME) == '':
                         self.turninWindow.dispose()
-                        self.errorWindow=swing.JFrame()
+                        self.errorWindow = swing.JFrame()
                         swing.JOptionPane.showMessageDialog(self,
-                                                 'You must enter a name.',
-                                                 'Turnin cannot complete.',
-                                                 swing.JOptionPane.WARNING_MESSAGE)
+                                                            'You must enter a name.',
+                                                            'Turnin cannot complete.',
+                                                            swing.JOptionPane.WARNING_MESSAGE)
                         self.openSettings()
                     else:
-                        if title !='Assignments':
-                            filename=self.program.filename
+                        if title != 'Assignments':
+                            filename = self.program.filename
 #                            gt=array[JESConstants.CONFIG_GT]
-                            zip=self.buildFileArchive(gt,title,filename)
-                            j = JESHomeworkSubmission.JESHomeworkSubmission(title,filename,zip)
-                            thread = JESHomeworkTurninThread.JESHomeworkTurninThread(j,self,zip)
-                            self.turninstatuswindow=swing.JFrame("Turnin Status")
-                            self.turninstatuswindow.contentPane.layout=awt.GridLayout(1,2)
-                            self.turninstatuswindow.contentPane.add(swing.JLabel(JESResources.makeIcon("images/Thinking.gif")))
-                            self.turninstatuswindow.contentPane.add(self.turninstatuslabel)
-                            self.turninstatuswindow.setSize(400,150)
+                            zip = self.buildFileArchive(gt, title, filename)
+                            j = JESHomeworkSubmission.JESHomeworkSubmission(
+                                title, filename, zip)
+                            thread = JESHomeworkTurninThread.JESHomeworkTurninThread(
+                                j, self, zip)
+                            self.turninstatuswindow = swing.JFrame(
+                                "Turnin Status")
+                            self.turninstatuswindow.contentPane.layout = awt.GridLayout(
+                                1, 2)
+                            self.turninstatuswindow.contentPane.add(
+                                swing.JLabel(JESResources.makeIcon("images/Thinking.gif")))
+                            self.turninstatuswindow.contentPane.add(
+                                self.turninstatuslabel)
+                            self.turninstatuswindow.setSize(400, 150)
                             self.turninstatuswindow.show()
                             thread.start()
                             self.turninWindow.dispose()
                         else:
                             self.turninWindow.dispose()
-                            self.errorWindow=swing.JFrame()
+                            self.errorWindow = swing.JFrame()
                             swing.JOptionPane.showMessageDialog(self,
                                                                 'You must select an assignment from the list to submit.',
                                                                 'Turnin cannot complete.',
                                                                 swing.JOptionPane.WARNING_MESSAGE)
-                #modified for promptSave cancel button - Buck Scharfnorth 29 May 2008
-                elif isSaved==0:
+                # modified for promptSave cancel button - Buck Scharfnorth 29
+                # May 2008
+                elif isSaved == 0:
                     self.turninWindow.dispose()
-                    self.errorWindow=swing.JFrame()
+                    self.errorWindow = swing.JFrame()
                     swing.JOptionPane.showMessageDialog(self,
-                                  'There is no file open to submit, or the current file has not been saved.',
-                                  'Turnin cannot complete.',
-                                  swing.JOptionPane.WARNING_MESSAGE)
-                #modified for promptSave cancel button - Buck Scharfnorth 29 May 2008
+                                                        'There is no file open to submit, or the current file has not been saved.',
+                                                        'Turnin cannot complete.',
+                                                        swing.JOptionPane.WARNING_MESSAGE)
+                # modified for promptSave cancel button - Buck Scharfnorth 29
+                # May 2008
                 else:
                     self.turninWindow.dispose()
 
             except Exception, string:
                 self.turninWindow.dispose()
-                a="An error has occurred in the turnin process. "
-                b="It is likely\nthat the program turnin has failed.  Please "
-                c="check JES's settings and\nresubmit the assignment."
+                a = "An error has occurred in the turnin process. "
+                b = "It is likely\nthat the program turnin has failed.  Please "
+                c = "check JES's settings and\nresubmit the assignment."
                 try:
-                    d="\n   Error:  " + str(string)
+                    d = "\n   Error:  " + str(string)
                 except:
-                    d=""
-                self.errorWindow=swing.JFrame()
+                    d = ""
+                self.errorWindow = swing.JFrame()
                 swing.JOptionPane.showMessageDialog(self,
-                                                a+b+c+d,
-                                                "Error - Turnin has failed",
-                                                swing.JOptionPane.WARNING_MESSAGE)
+                                                    a + b + c + d,
+                                                    "Error - Turnin has failed",
+                                                    swing.JOptionPane.WARNING_MESSAGE)
         elif event.source.text == "Add File":
             chooser = swing.JFileChooser()
             chooser.setApproveButtonText("Attach File")
             returnVal = chooser.showOpenDialog(self.turninWindow)
-            if returnVal ==  0: #User has chosen a file, so now it can be opened
+            # User has chosen a file, so now it can be opened
+            if returnVal == 0:
                 self.attachmentlist.add(chooser.getSelectedFile().getPath())
                 self.list.setListData(self.attachmentlist)
         elif event.source.text == "Remove File":
@@ -1677,24 +1731,27 @@ class JESUI(swing.JFrame):
 #     Title>.zip.  Will also include any added files and notes from the
 #     turnin dialog.
 ########################################################################
-    def buildFileArchive(self,gt,title,fileToSend):
+    def buildFileArchive(self, gt, title, fileToSend):
         import zipfile
         import user
-        filenames=self.attachmentlist
-        writename = gt+'-'+title+'.zip'
-        writename=writename.strip()
-        writename=string.replace(writename," ","_")
-        if System.getProperty('os.name').find('Mac') <> -1:  # if we are on a Mac
+        filenames = self.attachmentlist
+        writename = gt + '-' + title + '.zip'
+        writename = writename.strip()
+        writename = string.replace(writename, " ", "_")
+        # if we are on a Mac
+        if System.getProperty('os.name').find('Mac') <> -1:
             writename = user.home + os.sep + writename
-        #open the zipfile for writing
+        # open the zipfile for writing
         file = zipfile.ZipFile(writename, "w")
         for name in filenames:
             if name.strip() != fileToSend.strip():
-                file.write(name,os.path.basename(name),zipfile.ZIP_DEFLATED)
-        file.write(fileToSend,os.path.basename(fileToSend),zipfile.ZIP_DEFLATED)
+                file.write(name, os.path.basename(name), zipfile.ZIP_DEFLATED)
+        file.write(
+            fileToSend, os.path.basename(fileToSend), zipfile.ZIP_DEFLATED)
         if JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_LOGBUFFER):
-            file.write(fileToSend+'log',os.path.basename(fileToSend+'log'),zipfile.ZIP_DEFLATED)
-        #Create and add a text file with the notes to the TA:
+            file.write(
+                fileToSend + 'log', os.path.basename(fileToSend + 'log'), zipfile.ZIP_DEFLATED)
+        # Create and add a text file with the notes to the TA:
         notesTA = open(".notesTA.txt", "w")
         notesTA.write(self.notesToTA.getText())
         notesTA.close()
@@ -1703,11 +1760,10 @@ class JESUI(swing.JFrame):
         return writename
 
 
-
 ########################################################################
     def grabAssignmentList(self):
         try:
-            ret=['Assignments']
+            ret = ['Assignments']
             url = net.URL(JESConstants.ASSIGNMENT_URL)
             h = httplib.HTTP(url.getHost())
             h.putrequest('GET', url.getFile())
@@ -1716,62 +1772,72 @@ class JESUI(swing.JFrame):
             h.endheaders()
             errcode, errmsg, headers = h.getreply()
             f = h.getfile()
-            data = f.read() # Get the raw HTML
+            data = f.read()  # Get the raw HTML
             f.close()
-            #Remove #BEGIN and #END from file
-            tempArr=string.split(data,'#BEGIN')
-            data=tempArr[1]
-            tempArr=string.split(data,'#END')
-            data=tempArr[0]
-            data=data.split("|")
+            # Remove #BEGIN and #END from file
+            tempArr = string.split(data, '#BEGIN')
+            data = tempArr[1]
+            tempArr = string.split(data, '#END')
+            data = tempArr[0]
+            data = data.split("|")
             for x in data:
-                arr=x.strip()
+                arr = x.strip()
                 ret.append(arr)
             return ret
         except:
             print "Error reading assignment list from network"
             return ['Assignments']
 
-    ################################################################################
+    ##########################################################################
     # Function name: openOptions
     # Description:
     #     Opens up the options frame
-    ################################################################################
+    ##########################################################################
     def openOptions(self):
-        self.optionsWindow=swing.JFrame('JES Options')
+        self.optionsWindow = swing.JFrame('JES Options')
 
-        self.optionsWindow.contentPane.layout = awt.GridLayout(11,2)
+        self.optionsWindow.contentPane.layout = awt.GridLayout(11, 2)
         #self.optionsWindow.size = (350,550)
 
-        donebutton = swing.JButton("Done",preferredSize=(100,20),
-                    actionPerformed=self.optionsButtonPressed)
-        cancelbutton= swing.JButton("Cancel",preferredSize=(100,20),
-                    actionPerformed=self.optionsButtonPressed)
+        donebutton = swing.JButton("Done", preferredSize=(100, 20),
+                                   actionPerformed=self.optionsButtonPressed)
+        cancelbutton = swing.JButton("Cancel", preferredSize=(100, 20),
+                                     actionPerformed=self.optionsButtonPressed)
 
-        modelabel=swing.JLabel("Mode:")
-        fontlabel=swing.JLabel("Font Size (1-"+str(JESConstants.HIGH_FONT)+"):")
-        gutterlabel=swing.JLabel("Line Numbers:")
-        blocklabel=swing.JLabel("Show Indentation Help:")
-        logginglabel=swing.JLabel("Logging:")
-        autosavelabel=swing.JLabel("Auto save on load:")
-        backupsavelabel=swing.JLabel("Save a backup copy on save:")
-        wrappixellabel=swing.JLabel("<html>Modulo pixel color values by 256<br><center>(356 mod 256 = 100)</center></html>")
+        modelabel = swing.JLabel("Mode:")
+        fontlabel = swing.JLabel(
+            "Font Size (1-" + str(JESConstants.HIGH_FONT) + "):")
+        gutterlabel = swing.JLabel("Line Numbers:")
+        blocklabel = swing.JLabel("Show Indentation Help:")
+        logginglabel = swing.JLabel("Logging:")
+        autosavelabel = swing.JLabel("Auto save on load:")
+        backupsavelabel = swing.JLabel("Save a backup copy on save:")
+        wrappixellabel = swing.JLabel(
+            "<html>Modulo pixel color values by 256<br><center>(356 mod 256 = 100)</center></html>")
         skinlabel = swing.JLabel("Skin:")
         showturninlabel = swing.JLabel("Show Turnin Menu")
 
-        self.autosaveBox = swing.JCheckBox( "", JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_AUTOSAVEONRUN) )
-        self.backupSaveBox = swing.JCheckBox( "", JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_BACKUPSAVE) )
-        self.wrappixelBox = swing.JCheckBox( "", JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_WRAPPIXELVALUES) )
-        self.gutterBox = swing.JCheckBox( "", JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_GUTTER) )
-        self.showTurninBox = swing.JCheckBox( "", JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_SHOWTURNIN) )
-        ## alexr flopped the sense of this checkbox
-        self.blockBox = swing.JCheckBox( "", not JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_BLOCK) )
-        self.loggerBox = swing.JCheckBox( "", JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_LOGBUFFER) )
+        self.autosaveBox = swing.JCheckBox(
+            "", JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_AUTOSAVEONRUN))
+        self.backupSaveBox = swing.JCheckBox(
+            "", JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_BACKUPSAVE))
+        self.wrappixelBox = swing.JCheckBox(
+            "", JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_WRAPPIXELVALUES))
+        self.gutterBox = swing.JCheckBox(
+            "", JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_GUTTER))
+        self.showTurninBox = swing.JCheckBox(
+            "", JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_SHOWTURNIN))
+        # alexr flopped the sense of this checkbox
+        self.blockBox = swing.JCheckBox(
+            "", not JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_BLOCK))
+        self.loggerBox = swing.JCheckBox(
+            "", JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_LOGBUFFER))
 
-        if JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_MODE) ==  JESConstants.BEGINNER_MODE:
-            self.userExperienceField = swing.JComboBox( JESConstants.USER_MODES)
+        if JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_MODE) == JESConstants.BEGINNER_MODE:
+            self.userExperienceField = swing.JComboBox(JESConstants.USER_MODES)
         else:
-            self.userExperienceField = swing.JComboBox( JESConstants.USER_MODES_2)
+            self.userExperienceField = swing.JComboBox(
+                JESConstants.USER_MODES_2)
 
 #        if int(self.program.userFont) ==  int(JESConstants.LOW_FONT):
 #            self.userFontField = swing.JComboBox( JESConstants.FONT_MODE_LOW)
@@ -1780,16 +1846,18 @@ class JESUI(swing.JFrame):
 #        else:
 #            self.userFontField = swing.JComboBox( JESConstants.FONT_MODE_HIGH)
         fontSizes = range(JESConstants.LOW_FONT, JESConstants.MID_FONT + 1, 2)
-        userFont = int(JESConfig.getInstance().getIntegerProperty(JESConfig.CONFIG_FONT))
-        self.userFontField = swing.JComboBox( fontSizes )
+        userFont = int(
+            JESConfig.getInstance().getIntegerProperty(JESConfig.CONFIG_FONT))
+        self.userFontField = swing.JComboBox(fontSizes)
         self.userFontField.setEditable(1)
         if userFont in fontSizes:
-            self.userFontField.setSelectedItem( userFont )
+            self.userFontField.setSelectedItem(userFont)
         else:
-            self.userFontField.insertItemAt( userFont, 0 )
-            self.userFontField.setSelectedItem( userFont )
+            self.userFontField.insertItemAt(userFont, 0)
+            self.userFontField.setSelectedItem(userFont)
 
-        self.skinField = swing.JComboBox( listskins(), actionListener=skinActionListener(self) )
+        self.skinField = swing.JComboBox(
+            listskins(), actionListener=skinActionListener(self))
 
         cur = currentskin()
         for i in range(self.skinField.getItemCount()):
@@ -1797,8 +1865,8 @@ class JESUI(swing.JFrame):
 
             # there's a reason for the "startswith". On the Mac, "Mac OS X"
             # and "Mac OS X Aqua" look the same but have different names!
-            if( str(item).startswith(cur) or cur.startswith(str(item))):
-                self.skinField.setSelectedItem( item)
+            if(str(item).startswith(cur) or cur.startswith(str(item))):
+                self.skinField.setSelectedItem(item)
 
         self.optionsWindow.contentPane.add(modelabel)
         self.optionsWindow.contentPane.add(self.userExperienceField)
@@ -1837,29 +1905,42 @@ class JESUI(swing.JFrame):
 
         self.optionsWindow.show()
 
-    def optionsButtonPressed(self,event):
-        if event.source.text=='Done':
-            JESConfig.getInstance().setStringProperty( JESConfig.CONFIG_MODE, self.userExperienceField.getSelectedItem() )
+    def optionsButtonPressed(self, event):
+        if event.source.text == 'Done':
+            JESConfig.getInstance().setStringProperty(
+                JESConfig.CONFIG_MODE, self.userExperienceField.getSelectedItem())
 
             chosenFontSize = self.userFontField.getSelectedItem()
-            if ( not str(chosenFontSize).isdigit() or chosenFontSize < 1 or chosenFontSize > JESConstants.HIGH_FONT ):
-                chosenFontSize = JESConfig.getInstance().getIntegerProperty(JESConfig.CONFIG_FONT);
-                swing.JOptionPane.showMessageDialog(self, "Invalid Font Size.  Please try again using a number between 1 and " + str(JESConstants.HIGH_FONT), "Invalid Font Size", swing.JOptionPane.ERROR_MESSAGE)
+            if (not str(chosenFontSize).isdigit() or chosenFontSize < 1 or chosenFontSize > JESConstants.HIGH_FONT):
+                chosenFontSize = JESConfig.getInstance().getIntegerProperty(
+                    JESConfig.CONFIG_FONT)
+                swing.JOptionPane.showMessageDialog(self, "Invalid Font Size.  Please try again using a number between 1 and " + str(
+                    JESConstants.HIGH_FONT), "Invalid Font Size", swing.JOptionPane.ERROR_MESSAGE)
 
-            JESConfig.getInstance().setIntegerProperty( JESConfig.CONFIG_FONT, chosenFontSize )
-            JESConfig.getInstance().setBooleanProperty( JESConfig.CONFIG_BLOCK, not self.blockBox.isSelected() )
-            JESConfig.getInstance().setBooleanProperty( JESConfig.CONFIG_GUTTER, self.gutterBox.isSelected() )
-            JESConfig.getInstance().setBooleanProperty( JESConfig.CONFIG_LOGBUFFER, self.loggerBox.isSelected() )
-            JESConfig.getInstance().setBooleanProperty( JESConfig.CONFIG_AUTOSAVEONRUN, self.autosaveBox.isSelected() )
-            JESConfig.getInstance().setBooleanProperty( JESConfig.CONFIG_BACKUPSAVE, self.backupSaveBox.isSelected() )
-            JESConfig.getInstance().setBooleanProperty( JESConfig.CONFIG_WRAPPIXELVALUES, self.wrappixelBox.isSelected() )
-            JESConfig.getInstance().setBooleanProperty( JESConfig.CONFIG_WRAPPIXELVALUES, self.wrappixelBox.isSelected() )
-            JESConfig.getInstance().setSessionWrapAround( self.wrappixelBox.isSelected() )
-            if( JESConfig.getInstance().getBooleanProperty( JESConfig.CONFIG_SHOWTURNIN ) != self.showTurninBox.isSelected() ):
-                JESConfig.getInstance().setBooleanProperty( JESConfig.CONFIG_SHOWTURNIN, self.showTurninBox.isSelected() )
+            JESConfig.getInstance().setIntegerProperty(
+                JESConfig.CONFIG_FONT, chosenFontSize)
+            JESConfig.getInstance().setBooleanProperty(
+                JESConfig.CONFIG_BLOCK, not self.blockBox.isSelected())
+            JESConfig.getInstance().setBooleanProperty(
+                JESConfig.CONFIG_GUTTER, self.gutterBox.isSelected())
+            JESConfig.getInstance().setBooleanProperty(
+                JESConfig.CONFIG_LOGBUFFER, self.loggerBox.isSelected())
+            JESConfig.getInstance().setBooleanProperty(
+                JESConfig.CONFIG_AUTOSAVEONRUN, self.autosaveBox.isSelected())
+            JESConfig.getInstance().setBooleanProperty(
+                JESConfig.CONFIG_BACKUPSAVE, self.backupSaveBox.isSelected())
+            JESConfig.getInstance().setBooleanProperty(
+                JESConfig.CONFIG_WRAPPIXELVALUES, self.wrappixelBox.isSelected())
+            JESConfig.getInstance().setBooleanProperty(
+                JESConfig.CONFIG_WRAPPIXELVALUES, self.wrappixelBox.isSelected())
+            JESConfig.getInstance().setSessionWrapAround(
+                self.wrappixelBox.isSelected())
+            if(JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_SHOWTURNIN) != self.showTurninBox.isSelected()):
+                JESConfig.getInstance().setBooleanProperty(
+                    JESConfig.CONFIG_SHOWTURNIN, self.showTurninBox.isSelected())
                 self.addmenu()
                 self.pack()
-                ## self.update(self.getGraphics())
+                # self.update(self.getGraphics())
 
             JESConfig.getInstance().writeConfig()
 
@@ -1905,51 +1986,51 @@ class JESUI(swing.JFrame):
         self.docpane.repaint()
 
     def getGoToLineNum(self):
-        self.gotoFrame=swing.JFrame("Goto Line Number")
-        self.gotoFrame.contentPane.layout = awt.GridLayout(2,2)
-        self.gotoFrame.size=(200,75)
-        gotobutton = swing.JButton("Goto",preferredSize=(100,20),
-                    actionPerformed=self.gotoButtonPressed)
-        cancelbutton= swing.JButton("Cancel",preferredSize=(100,20),
-                    actionPerformed=self.gotoButtonPressed)
-        linelabel=swing.JLabel("Line #:")
+        self.gotoFrame = swing.JFrame("Goto Line Number")
+        self.gotoFrame.contentPane.layout = awt.GridLayout(2, 2)
+        self.gotoFrame.size = (200, 75)
+        gotobutton = swing.JButton("Goto", preferredSize=(100, 20),
+                                   actionPerformed=self.gotoButtonPressed)
+        cancelbutton = swing.JButton("Cancel", preferredSize=(100, 20),
+                                     actionPerformed=self.gotoButtonPressed)
+        linelabel = swing.JLabel("Line #:")
         self.gotoFrame.contentPane.add(linelabel)
         self.gotoFrame.contentPane.add(self.linefield)
         self.gotoFrame.contentPane.add(cancelbutton)
         self.gotoFrame.contentPane.add(gotobutton)
         self.gotoFrame.show()
 
-    def gotoButtonPressed(self,event):
-        if event.source.text=='Goto':
+    def gotoButtonPressed(self, event):
+        if event.source.text == 'Goto':
             try:
-                a=int(self.linefield.text)
+                a = int(self.linefield.text)
                 self.editor.document.gotoLine(a)
-                self.linefield.text=''
+                self.linefield.text = ''
                 self.gotoFrame.dispose()
             except:
-                self.linefield.text=''
+                self.linefield.text = ''
                 self.gotoFrame.dispose()
         else:
-            self.linefield.text=''
+            self.linefield.text = ''
             self.gotoFrame.dispose()
 
     def search(self):
         if self.searchFrame == None:
-            self.searchFrame=swing.JFrame("Search for Text")
-            self.searchFrame.contentPane.layout = awt.GridLayout(3,2)
-            self.searchFrame.size=(200,100)
-            findbutton = swing.JButton("Find",preferredSize=(100,20),
-                    actionPerformed=self.searchButtonPressed)
-            donebutton= swing.JButton("Cancel",preferredSize=(100,20),
-                    actionPerformed=self.searchButtonPressed)
+            self.searchFrame = swing.JFrame("Search for Text")
+            self.searchFrame.contentPane.layout = awt.GridLayout(3, 2)
+            self.searchFrame.size = (200, 100)
+            findbutton = swing.JButton("Find", preferredSize=(100, 20),
+                                       actionPerformed=self.searchButtonPressed)
+            donebutton = swing.JButton("Cancel", preferredSize=(100, 20),
+                                       actionPerformed=self.searchButtonPressed)
             group = swing.ButtonGroup()
             group.add(self.up)
             group.add(self.down)
             buttonpanel = swing.JPanel()
-            buttonpanel.layout = awt.GridLayout(0,1)
+            buttonpanel.layout = awt.GridLayout(0, 1)
             buttonpanel.add(self.up)
             buttonpanel.add(self.down)
-            searchlabel=swing.JLabel("Text to Find:")
+            searchlabel = swing.JLabel("Text to Find:")
             self.searchFrame.contentPane.add(searchlabel)
             self.searchFrame.contentPane.add(self.searchfield)
             self.searchFrame.contentPane.add(buttonpanel)
@@ -1960,22 +2041,22 @@ class JESUI(swing.JFrame):
         else:
             self.searchFrame.show()
 
-    def searchButtonPressed(self,event):
-        if event.source.text=='Find':
+    def searchButtonPressed(self, event):
+        if event.source.text == 'Find':
             try:
-                toFind=self.searchfield.text
+                toFind = self.searchfield.text
                 if self.up.isSelected():
                     self.editor.document.searchBackward(toFind)
                 else:
                     self.editor.document.searchForward(toFind)
             except:
-                self.searchfield.text=''
+                self.searchfield.text = ''
                 self.searchFrame.hide()
         else:
-            self.searchfield.text=''
+            self.searchfield.text = ''
             self.searchFrame.hide()
 
-    def errorWindowClose(self,event):
+    def errorWindowClose(self, event):
         self.errorWindow.dispose()
 
     def startWork(self):
@@ -1986,7 +2067,8 @@ class JESUI(swing.JFrame):
 
     def addBreakPoint(self):
         lineno = self.editor.getLineNo()
-        self.program.interpreter.debugger.set_break(self.program.filename, lineno)
+        self.program.interpreter.debugger.set_break(
+            self.program.filename, lineno)
         # should contact the gutter here
 
     def watchVariable(self):
@@ -2011,22 +2093,26 @@ class JESUI(swing.JFrame):
         self.loadDifferent()
 
     def refreshDebugState(self):
-        enabled = self.program.interpreter.debug_mode# and self.program.editorLoaded()
-        #print self.program.interpreter.debug_mode , self.program.editorLoaded()
+        # and self.program.editorLoaded()
+        enabled = self.program.interpreter.debug_mode
+        # print self.program.interpreter.debug_mode ,
+        # self.program.editorLoaded()
         self.debugMenu.subElements[0].subElements[0].setSelected(enabled)
         self.debugMenu.subElements[0].subElements[1].setEnabled(enabled)
         self.debugMenu.subElements[0].subElements[2].setEnabled(enabled)
         self.program.interpreter.debugger.watcher.setVisible(enabled)
         if not enabled:
             self.debuggerButton.text = SHOW_DEBUGGER_CAPTION
-            self.debugMenu.subElements[0].subElements[0].text = DEBUG_SHOW_DEBUGGER
-            #line added to add a close button to debugger - 29 May 2008 by Buck Scharfnorth
+            self.debugMenu.subElements[0].subElements[
+                0].text = DEBUG_SHOW_DEBUGGER
+            # line added to add a close button to debugger - 29 May 2008 by
+            # Buck Scharfnorth
             self.windowSetting(COMMAND_WINDOW_2)
         else:
             self.windowSetting(COMMAND_WINDOW_3DEBUG)
             self.debuggerButton.text = HIDE_DEBUGGER_CAPTION
-            self.debugMenu.subElements[0].subElements[0].text = DEBUG_HIDE_DEBUGGER
-
+            self.debugMenu.subElements[0].subElements[
+                0].text = DEBUG_HIDE_DEBUGGER
 
 
 ######################################################################
@@ -2083,11 +2169,11 @@ class JESUI(swing.JFrame):
                 pass
         if len(pictures) > 0:
             picture = swing.JOptionPane.showInputDialog(self, "Choose a picture to examine:",
-                                                      "Open Picture Tool",
-                                                      swing.JOptionPane.INFORMATION_MESSAGE,
-                                                      None,
-                                                      pictures,
-                                                      pictures[0])
+                                                        "Open Picture Tool",
+                                                        swing.JOptionPane.INFORMATION_MESSAGE,
+                                                        None,
+                                                        pictures,
+                                                        pictures[0])
             if picture != None:
                 media.openPictureTool(picturesdict[picture])
         else:
@@ -2104,8 +2190,8 @@ class JESUI(swing.JFrame):
 #     in the picture tool.
 ######################################################################
     def loadFrameSequencerTool(self):
-#        media.showInformation('You will be asked to pick a folder. Temporary files will be stored here')
-#        media.openFrameSequencerTool(media.pickAFolder())
+        #        media.showInformation('You will be asked to pick a folder. Temporary files will be stored here')
+        #        media.openFrameSequencerTool(media.pickAFolder())
         #l = globals()
         l = self.program.interpreter.contextForExecution
         sounds = []
@@ -2132,16 +2218,19 @@ class JESUI(swing.JFrame):
                                                 swing.JOptionPane.ERROR_MESSAGE)
 
 
-## little utility bits added for making skin changing easier.
+# little utility bits added for making skin changing easier.
 
 # this tells us about all the available Swing look 'n' feels
 def listskins():
-    return [ str(skin.getName()) for skin in UIManager.getInstalledLookAndFeels()]
+    return [str(skin.getName()) for skin in UIManager.getInstalledLookAndFeels()]
+
 
 def currentskin():
     return str(UIManager.getLookAndFeel().getName())
 
+
 class skinActionListener(awt.event.ActionListener):
+
     def __init__(self, ui):
         self.ui = ui
 
@@ -2157,11 +2246,16 @@ class skinActionListener(awt.event.ActionListener):
 #     Creates a JPanel containing a right-aligned close button.
 #     Lets the user close the right panel (Help and Debugger).
 ####################################################################
+
+
 class hideRight(swing.JPanel):
-    #Create and set up button panel for hiding the right content pane (help/debugger)
+    # Create and set up button panel for hiding the right content pane
+    # (help/debugger)
+
     def __init__(self, actionPerformed):
         swing.JPanel.__init__(self)
-        hideRight = swing.JButton(swing.plaf.metal.MetalIconFactory.getInternalFrameCloseIcon(16))
+        hideRight = swing.JButton(
+            swing.plaf.metal.MetalIconFactory.getInternalFrameCloseIcon(16))
         hideRight.setBorderPainted(0)
         hideRight.setContentAreaFilled(0)
         hideRight.setAlignmentX(swing.JButton.RIGHT_ALIGNMENT)
@@ -2180,7 +2274,10 @@ class hideRight(swing.JPanel):
 #     Creates a subclass of a JPanel in order to use arbitrary property
 #     htmlBrowser (the instance of Html_Browser which is doing the actual work).
 ####################################################################
+
+
 class Html_Browser_With_Hide(swing.JPanel):
+
     def __init__(self, htmlBrowser):
         swing.JPanel.__init__(self)
         self.htmlBrowser = htmlBrowser

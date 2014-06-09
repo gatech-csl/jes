@@ -18,6 +18,8 @@ except (ImportError, AttributeError):
         except (ImportError, AttributeError):
             raise ImportError, 'swing not defined in javax.swing or java.awt.swing or com.sun.java.swing'
 import sys
+
+
 def test(panel, size=None, name='Swing Tester'):
     f = swing.JFrame(name, windowClosing=lambda event: sys.exit(0))
     if hasattr(panel, 'init'):
@@ -32,11 +34,12 @@ def test(panel, size=None, name='Swing Tester'):
     return f
 
 if swing is not None:
-    import pawt, sys
+    import pawt
+    import sys
     pawt.swing = swing
     sys.modules['pawt.swing'] = swing
     swing.__dict__['test'] = test
 
-    #These two lines help out jpythonc to figure out this very strange module
+    # These two lines help out jpythonc to figure out this very strange module
     swing.__dict__['__file__'] = __file__
     swing.__dict__['__jpythonc_name__'] = 'pawt.swing'

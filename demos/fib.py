@@ -5,5 +5,5 @@ def fib(i):
     y = 1
     while count < i:
         count = count + 1
-        x, y = y, x+y
+        x, y = y, x + y
     return y

@@ -2,7 +2,8 @@
 # Copyright (C) 2002-2007 the JES team
 # See JESCopyright.txt for full licensing information
 # This class, Copyright 2007, Alex Rudnick
-# 5/13/09: Changes for redesigning configuration writing from python to java -Buck
+# 5/13/09: Changes for redesigning configuration writing from python to
+# java -Buck
 
 import JESConfig
 import java.awt as awt
@@ -17,7 +18,9 @@ import os
 
 import JESConstants
 
-import httplib, urllib, base64
+import httplib
+import urllib
+import base64
 
 COMMAND_SEND = "Send Report"
 COMMAND_CANCEL = "Cancel"
@@ -32,7 +35,7 @@ class JESBugReporter(swing.JFrame):
 
     def __init__(self):
         self.contentPane.layout = swing.BoxLayout(self.contentPane,
-            swing.BoxLayout.Y_AXIS)
+                                                  swing.BoxLayout.Y_AXIS)
 
         message = swing.JLabel(BUGREPORTMESSAGE)
         message.setAlignmentX(awt.Component.CENTER_ALIGNMENT)
@@ -41,16 +44,15 @@ class JESBugReporter(swing.JFrame):
 
         self.add(swing.Box.createVerticalStrut(10))
 
-
         buttonbox = swing.Box(swing.BoxLayout.X_AXIS)
         self.sendbutton = swing.JButton(COMMAND_SEND,
-            actionPerformed=self.actionPerformed)
+                                        actionPerformed=self.actionPerformed)
         self.cancelbutton = swing.JButton(COMMAND_CANCEL,
-            actionPerformed=self.actionPerformed)
+                                          actionPerformed=self.actionPerformed)
         buttonbox.add(self.sendbutton)
         buttonbox.add(self.cancelbutton)
 
-        #self.add(swing.Box.createVerticalStrut(10))
+        # self.add(swing.Box.createVerticalStrut(10))
         self.add(buttonbox)
 
         buttonbox.setAlignmentX(awt.Component.CENTER_ALIGNMENT)
@@ -68,7 +70,8 @@ class JESBugReporter(swing.JFrame):
         cmd = event.getActionCommand()
 
         if cmd == COMMAND_SEND:
-            Desktop.getDesktop().browse(URI("http://code.google.com/p/mediacomp-jes/issues/list"))
+            Desktop.getDesktop().browse(
+                URI("http://code.google.com/p/mediacomp-jes/issues/list"))
 
         self.setVisible(0)
         self.dispose()

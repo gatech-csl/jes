@@ -1,7 +1,8 @@
-#JES- Jython Environment for Students
-#See JESCopyright.txt for full licensing information
-#Copyright (C) 2002  Jason Ergle, Claire Bailey, David Raines
-#This class, Copyright 2004  Ryan Connelly, Patrick Carnahan, Aron Giles, Adam Poncz
+# JES- Jython Environment for Students
+# See JESCopyright.txt for full licensing information
+# Copyright (C) 2002  Jason Ergle, Claire Bailey, David Raines
+# This class, Copyright 2004  Ryan Connelly, Patrick Carnahan, Aron Giles,
+# Adam Poncz
 
 
 import java.io as io
@@ -17,14 +18,15 @@ import JESConstants
 #     turnin information.  Supplies student's GT number and
 #     assignment name to find the appropraiate turnin URL and turnin type.
 ##################################################################
+
+
 class JESTurninTypeFinder:
+
     def __init__(self, hw):
         self.turninTypeData = []
         self.hw = ''
         self.hw = hw
         self.text = self.grabFile()
-
-
 
 
 ##################################################################
@@ -38,7 +40,7 @@ class JESTurninTypeFinder:
 ##################################################################
     def parseDataFile(self):
         try:
-            #Get the assignment turnin information
+            # Get the assignment turnin information
             beg = self.text.find("#BEGIN_TURNIN_TYPE_TABLE")
             end = self.text.find("#END_TURNIN_TYPE_TABLE")
             if (beg == -1) or (end == -1):
@@ -47,13 +49,14 @@ class JESTurninTypeFinder:
             talist = talist.split("\n")
             self.turninTypeData = []
             for entry in talist:
-                self.turninTypeData.append(entry.split("|")) # add a 2 element list to array
+                # add a 2 element list to array
+                self.turninTypeData.append(entry.split("|"))
             return 1
 
         except:
             import sys
-            a,b,c=sys.exc_info()
-            print a,b,c
+            a, b, c = sys.exc_info()
+            print a, b, c
             raise StandardError, "Error parsing data file. Most likely an invalid parse "
 
 ##################################################################
@@ -74,12 +77,12 @@ class JESTurninTypeFinder:
         try:
             for element in self.turninTypeData:
                 if string.strip(element[0]) == string.strip(self.hw):
-                    return string.strip(element[1]) # return the type
+                    return string.strip(element[1])  # return the type
             raise StandardError, "Could not find valid turnin type."
         except:
             import sys
-            a,b,c=sys.exc_info()
-            print a,b,c
+            a, b, c = sys.exc_info()
+            print a, b, c
             raise StandardError, "Error parsing turnin URL list"
 
 ##################################################################
@@ -98,12 +101,12 @@ class JESTurninTypeFinder:
             h.endheaders()
             errcode, errmsg, headers = h.getreply()
             f = h.getfile()
-            data = f.read() # Get the raw HTML
+            data = f.read()  # Get the raw HTML
             f.close()
             return data
         except Exception:
             import sys
-            a,b,c=sys.exc_info()
-            print a,b,c
+            a, b, c = sys.exc_info()
+            print a, b, c
             print "Error in JESAddressFinder.grabFile, could not get target mail address for submission"
             return None

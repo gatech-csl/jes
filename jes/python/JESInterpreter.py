@@ -1,12 +1,13 @@
-#JES- Jython Environment for Students
-#Copyright (C) 2002  Jason Ergle, Claire Bailey, David Raines, Joshua Sklare
-#See JESCopyright.txt for full licensing information
+# JES- Jython Environment for Students
+# Copyright (C) 2002  Jason Ergle, Claire Bailey, David Raines, Joshua Sklare
+# See JESCopyright.txt for full licensing information
 
 import JESResources
 import JESRunnable
 import JESExceptionRecord
 import JESThread
-import sys, os
+import sys
+import os
 import threading
 import traceback
 import string
@@ -15,14 +16,16 @@ import JESDebugger
 from code import compile_command
 from java.lang import System, Thread
 
+
 class JESInterpreter:
-################################################################################
-# Function name: __init__
-# Parameters:
-#     -program - the running instance of JESProgram
-# Description:
-#     Creates an instance of JESInterpreter
-################################################################################
+    ##########################################################################
+    # Function name: __init__
+    # Parameters:
+    #     -program - the running instance of JESProgram
+    # Description:
+    #     Creates an instance of JESInterpreter
+    ##########################################################################
+
     def __init__(self, program):
         self.program = program
         self.contextForExecution = {}
@@ -54,7 +57,6 @@ class JESInterpreter:
         while not self.contextForExecution:
             self.interpreterCondition.wait()
 
-
         for key in self.contextForExecution.keys():
             varsToHighlight[key] = 1
 
@@ -62,12 +64,11 @@ class JESInterpreter:
         return varsToHighlight
 
 
-
-################################################################################
+##########################################################################
 # Function name: preprocessing
 # Description:
 #     Loads the preprocessing file into the user's interpreter
-################################################################################
+##########################################################################
     def preprocessing(self):
         try:
             preproc = JESResources.getPathTo('python/JESPreprocessing.py')
@@ -76,15 +77,13 @@ class JESInterpreter:
             return 'true'
         except:
             import sys
-            a,b,c = sys.exc_info()
+            a, b, c = sys.exc_info()
             import traceback
-            traceback.print_exception(a,b,c)
+            traceback.print_exception(a, b, c)
             return None
 
 
-
-
-################################################################################
+##########################################################################
 # Function name: runCommand
 # Parameters:
 #     -compiledCode: the user's text, but compiled by the compile_command
@@ -94,7 +93,7 @@ class JESInterpreter:
 #     This method calls gui's setRunning(runBool) method and then sends text to
 #     the Jython interpreter. If the command generates an error or output, this
 #     method calls sendOutput().
-################################################################################
+##########################################################################
     def runCommand(self, text):
         if self.debug_mode:
             if self.debugger.running:
@@ -104,7 +103,6 @@ class JESInterpreter:
         else:
             self.run(text, 'run')
 
-
     def run(self, text, mode):
         jesThread = JESThread.JESThread(text, self, mode)
         self.jesThread = jesThread
@@ -113,11 +111,11 @@ class JESInterpreter:
     def debugCommand(self, text):
         self.debugger.runCommand(text)
 
-    def runFile(self,fileName, mode='load'):
+    def runFile(self, fileName, mode='load'):
         self.run(fileName, mode)
 
 
-################################################################################
+##########################################################################
 # Function name: load
 # Parameters:
 #     -fileText - the text to be loaded
@@ -125,9 +123,8 @@ class JESInterpreter:
 #     Loads the user's code into the context of the command window's
 #     interpreter.  reloads the preprocessing code, and if that succeds, loads
 #     the user's code.  uses loadHelper to perform the loading.
-################################################################################
+##########################################################################
     def load(self, fileName):
-
 
         # a previous version called
         # code.compile_command() here.  but the jython version
@@ -135,40 +132,39 @@ class JESInterpreter:
         # syntax exceptions.  Now we run the code in its own thread,
         # and seperate syntax errors from other exceptions later
 
-        #self.runCommand(fileText,'load')
-        self.runFile(fileName,'load')
+        # self.runCommand(fileText,'load')
+        self.runFile(fileName, 'load')
 
 
-################################################################################
+##########################################################################
 # Function name: sendOutput
 # Parameters:
 #     responseText: the text to be sent
 # Description:
 #     Sends text to the UI where the user can see it
-################################################################################
+##########################################################################
     def sendOutput(self, responseText):
         self.program.sendTextToCommandWindow(responseText)
 
-################################################################################
+##########################################################################
 # FunctionName: sendError
 # Description:
 #     Called when user code throws an exception.  It sends an error message to
 #     the command window.
-################################################################################
+##########################################################################
     def sendError(self):
         exc_type, exc_value, exc_traceback = sys.exc_info()
-        msg = self.GetExceptionDescription( exc_type )
+        msg = self.GetExceptionDescription(exc_type)
         self.sendOutput(msg)
 
-################################################################################
+##########################################################################
 # Function name: stopThread
 # Description:
 #     Stops a running thread of user code
-################################################################################
+##########################################################################
     def stopThread(self):
 
         self.jesThread.stop()
-
 
     def toggle_debug_mode(self):
         self.debug_mode = not self.debug_mode

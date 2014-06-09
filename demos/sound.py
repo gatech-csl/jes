@@ -3,7 +3,7 @@ def backwards(filename):
     target = makeSound(filename)
 
     sourceIndex = getLength(source)
-    for targetIndex in range(1, getLength(target)+1):
+    for targetIndex in range(1, getLength(target) + 1):
         sourceValue = getSampleValueAt(source, sourceIndex)
         setSampleValueAt(target, targetIndex, sourceValue)
         sourceIndex = sourceIndex - 1

@@ -3,9 +3,10 @@
 import sys
 import types
 
-__all__ = ["dis","disassemble","distb","disco","opname","cmp_op",
-           "hasconst","hasname","hasjrel","hasjabs","haslocal",
+__all__ = ["dis", "disassemble", "distb", "disco", "opname", "cmp_op",
+           "hasconst", "hasname", "hasjrel", "hasjabs", "haslocal",
            "hascompare", "hasfree"]
+
 
 def dis(x=None):
     """Disassemble classes, methods, functions, or code.
@@ -39,8 +40,9 @@ def dis(x=None):
         disassemble(x)
     else:
         raise TypeError, \
-              "don't know how to disassemble %s objects" % \
-              type(x).__name__
+            "don't know how to disassemble %s objects" % \
+            type(x).__name__
+
 
 def distb(tb=None):
     """Disassemble a traceback (default: last traceback)."""
@@ -49,8 +51,10 @@ def distb(tb=None):
             tb = sys.last_traceback
         except AttributeError:
             raise RuntimeError, "no last traceback to disassemble"
-        while tb.tb_next: tb = tb.tb_next
+        while tb.tb_next:
+            tb = tb.tb_next
     disassemble(tb.tb_frame.f_code, tb.tb_lasti)
+
 
 def disassemble(co, lasti=-1):
     """Disassemble a code object."""
@@ -63,20 +67,25 @@ def disassemble(co, lasti=-1):
     while i < n:
         c = code[i]
         op = ord(c)
-        if op == SET_LINENO and i > 0: print # Extra blank line
-        if i == lasti: print '-->',
-        else: print '   ',
-        if i in labels: print '>>',
-        else: print '  ',
+        if op == SET_LINENO and i > 0:
+            print  # Extra blank line
+        if i == lasti:
+            print '-->',
+        else:
+            print '   ',
+        if i in labels:
+            print '>>',
+        else:
+            print '  ',
         print `i`.rjust(4),
         print opname[op].ljust(20),
-        i = i+1
+        i = i + 1
         if op >= HAVE_ARGUMENT:
-            oparg = ord(code[i]) + ord(code[i+1])*256 + extended_arg
+            oparg = ord(code[i]) + ord(code[i + 1]) * 256 + extended_arg
             extended_arg = 0
-            i = i+2
+            i = i + 2
             if op == EXTENDED_ARG:
-                extended_arg = oparg*65536L
+                extended_arg = oparg * 65536L
             print `oparg`.rjust(5),
             if op in hasconst:
                 print '(' + `co.co_consts[oparg]` + ')',
@@ -96,6 +105,7 @@ def disassemble(co, lasti=-1):
 
 disco = disassemble                     # XXX For backwards compatibility
 
+
 def findlabels(code):
     """Detect all offsets in a byte code which are jump targets.
 
@@ -108,13 +118,13 @@ def findlabels(code):
     while i < n:
         c = code[i]
         op = ord(c)
-        i = i+1
+        i = i + 1
         if op >= HAVE_ARGUMENT:
-            oparg = ord(code[i]) + ord(code[i+1])*256
-            i = i+2
+            oparg = ord(code[i]) + ord(code[i + 1]) * 256
+            i = i + 2
             label = -1
             if op in hasjrel:
-                label = i+oparg
+                label = i + oparg
             elif op in hasjabs:
                 label = oparg
             if label >= 0:
@@ -123,7 +133,7 @@ def findlabels(code):
     return labels
 
 cmp_op = ('<', '<=', '==', '!=', '>', '>=', 'in', 'not in', 'is',
-        'is not', 'exception match', 'BAD')
+          'is not', 'exception match', 'BAD')
 
 hasconst = []
 hasname = []
@@ -134,18 +144,23 @@ hascompare = []
 hasfree = []
 
 opname = [''] * 256
-for op in range(256): opname[op] = '<' + `op` + '>'
+for op in range(256):
+    opname[op] = '<' + `op` + '>'
+
 
 def def_op(name, op):
     opname[op] = name
+
 
 def name_op(name, op):
     opname[op] = name
     hasname.append(op)
 
+
 def jrel_op(name, op):
     opname[op] = name
     hasjrel.append(op)
+
 
 def jabs_op(name, op):
     opname[op] = name
@@ -292,6 +307,7 @@ def_op('CALL_FUNCTION_VAR_KW', 142)  # #args + (#kwargs << 8)
 
 def_op('EXTENDED_ARG', 143)
 EXTENDED_ARG = 143
+
 
 def _test():
     """Simple test program to disassemble a file."""

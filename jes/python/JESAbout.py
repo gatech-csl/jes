@@ -1,6 +1,6 @@
-#JES- Jython Environment for Students
-#Copyright (C) 2002  Jason Ergle, Claire Bailey, David Raines, Joshua Sklare
-#See JESCopyright.txt for full licensing information
+# JES- Jython Environment for Students
+# Copyright (C) 2002  Jason Ergle, Claire Bailey, David Raines, Joshua Sklare
+# See JESCopyright.txt for full licensing information
 
 import JESConstants
 import JESResources
@@ -10,16 +10,18 @@ import javax.swing as swing
 
 ABOUT_TITLE = 'About JES'
 OK_BUTTON_CAPTION = 'OK'
-ABOUT_WINDOW_SIZE = (500,600)
+ABOUT_WINDOW_SIZE = (500, 600)
+
 
 class JESAbout(swing.JFrame, awt.event.ActionListener):
-################################################################################
-# Function name: __init__
-# Returns:
-#     An instance of the JESAbout class.
-# Description:
-#     Creates an instance of the JES about window class.
-################################################################################
+    ##########################################################################
+    # Function name: __init__
+    # Returns:
+    #     An instance of the JESAbout class.
+    # Description:
+    #     Creates an instance of the JES about window class.
+    ##########################################################################
+
     def __init__(self):
         self.size = ABOUT_WINDOW_SIZE
         self.title = ABOUT_TITLE
@@ -30,8 +32,9 @@ class JESAbout(swing.JFrame, awt.event.ActionListener):
         copyrightInfoArea = swing.JTextPane()
         copyrightInfoArea.setEditable(0)
 
-        #Load copyright information from the JES copyright file
-        copyrightFile = open(JESResources.getPathTo('help/JESCopyright.txt'), 'r')
+        # Load copyright information from the JES copyright file
+        copyrightFile = open(
+            JESResources.getPathTo('help/JESCopyright.txt'), 'r')
         copyrightInfoArea.text = copyrightFile.read()
         copyrightInfoArea.setCaretPosition(0)
         copyrightFile.close()
@@ -46,14 +49,14 @@ class JESAbout(swing.JFrame, awt.event.ActionListener):
         self.contentPane.add(topPane)
         self.contentPane.add(bottomPanel)
 
-################################################################################
+##########################################################################
 # Function name: actionPerformed
 # Parameters:
 #      -event: event that was performed.
 # Description:
 #      Catches events that occur in a JESAbout window.  If the OK button was
 #      pressed, then the window is closed (just hidden, but not destroyed).
-################################################################################
+##########################################################################
     def actionPerformed(self, event):
         actionCommand = event.getActionCommand()
         if actionCommand == OK_BUTTON_CAPTION:

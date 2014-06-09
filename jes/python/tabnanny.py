@@ -20,12 +20,14 @@ __all__ = ["check"]
 verbose = 0
 filename_only = 0
 
+
 def errprint(*args):
     sep = ""
     for arg in args:
         sys.stderr.write(sep + str(arg))
         sep = " "
     sys.stderr.write("\n")
+
 
 def main():
     global verbose, filename_only
@@ -45,15 +47,21 @@ def main():
     for arg in args:
         check(arg)
 
+
 class NannyNag:
+
     def __init__(self, lineno, msg, line):
         self.lineno, self.msg, self.line = lineno, msg, line
+
     def get_lineno(self):
         return self.lineno
+
     def get_msg(self):
         return self.msg
+
     def get_line(self):
         return self.line
+
 
 def check(file):
     if os.path.isdir(file) and not os.path.islink(file):
@@ -63,8 +71,8 @@ def check(file):
         for name in names:
             fullname = os.path.join(file, name)
             if (os.path.isdir(fullname) and
-                not os.path.islink(fullname) or
-                os.path.normcase(name[-3:]) == ".py"):
+                    not os.path.islink(fullname) or
+                    os.path.normcase(name[-3:]) == ".py"):
                 check(fullname)
         return
 
@@ -94,13 +102,17 @@ def check(file):
             print "offending line:", `line`
             print nag.get_msg()
         else:
-            if ' ' in file: file = '"' + file + '"'
-            if filename_only: print file
-            else: print file, badline, `line`
+            if ' ' in file:
+                file = '"' + file + '"'
+            if filename_only:
+                print file
+            else:
+                print file, badline, `line`
         return
 
     if verbose:
         print "%s: Clean bill of health." % `file`
+
 
 class Whitespace:
     # the characters used for space and tab
@@ -126,7 +138,7 @@ class Whitespace:
     #       true iff raw[:n] is of the form (T*)(S*)
 
     def __init__(self, ws):
-        self.raw  = ws
+        self.raw = ws
         S, T = Whitespace.S, Whitespace.T
         count = []
         b = n = nt = 0
@@ -143,8 +155,8 @@ class Whitespace:
                 b = 0
             else:
                 break
-        self.n    = n
-        self.nt   = nt
+        self.n = n
+        self.nt = nt
         self.norm = tuple(count), b
         self.is_simple = len(count) <= 1
 
@@ -152,7 +164,7 @@ class Whitespace:
     # preceding a tab)
     def longest_run_of_spaces(self):
         count, trailing = self.norm
-        return max(len(count)-1, trailing)
+        return max(len(count) - 1, trailing)
 
     def indent_level(self, tabsize):
         # count, il = self.norm
@@ -172,7 +184,7 @@ class Whitespace:
         count, trailing = self.norm
         il = 0
         for i in range(tabsize, len(count)):
-            il = il + i/tabsize * count[i]
+            il = il + i / tabsize * count[i]
         return trailing + tabsize * (il + self.nt)
 
     # return true iff self.indent_level(t) == other.indent_level(t)
@@ -188,11 +200,11 @@ class Whitespace:
         n = max(self.longest_run_of_spaces(),
                 other.longest_run_of_spaces()) + 1
         a = []
-        for ts in range(1, n+1):
+        for ts in range(1, n + 1):
             if self.indent_level(ts) != other.indent_level(ts):
-                a.append( (ts,
-                           self.indent_level(ts),
-                           other.indent_level(ts)) )
+                a.append((ts,
+                          self.indent_level(ts),
+                          other.indent_level(ts)))
         return a
 
     # Return true iff self.indent_level(t) < other.indent_level(t)
@@ -216,7 +228,7 @@ class Whitespace:
         n = max(self.longest_run_of_spaces(),
                 other.longest_run_of_spaces()) + 1
         # the self.n >= other.n test already did it for ts=1
-        for ts in range(2, n+1):
+        for ts in range(2, n + 1):
             if self.indent_level(ts) >= other.indent_level(ts):
                 return 0
         return 1
@@ -229,12 +241,13 @@ class Whitespace:
         n = max(self.longest_run_of_spaces(),
                 other.longest_run_of_spaces()) + 1
         a = []
-        for ts in range(1, n+1):
+        for ts in range(1, n + 1):
             if self.indent_level(ts) >= other.indent_level(ts):
-                a.append( (ts,
-                           self.indent_level(ts),
-                           other.indent_level(ts)) )
+                a.append((ts,
+                          self.indent_level(ts),
+                          other.indent_level(ts)))
         return a
+
 
 def format_witnesses(w):
     import string
@@ -263,7 +276,7 @@ if hasattr(tokenize, 'NL'):
                    INDENT=tokenize.INDENT,
                    DEDENT=tokenize.DEDENT,
                    NEWLINE=tokenize.NEWLINE,
-                   JUNK=(tokenize.COMMENT, tokenize.NL) ):
+                   JUNK=(tokenize.COMMENT, tokenize.NL)):
         global indents, check_equal
 
         if type == NEWLINE:
@@ -292,7 +305,8 @@ if hasattr(tokenize, 'NL'):
             # Ouch!  This assert triggers if the last line of the source
             # is indented *and* lacks a newline -- then DEDENTs pop out
             # of thin air.
-            # assert check_equal  # else no earlier NEWLINE, or an earlier INDENT
+            # assert check_equal  # else no earlier NEWLINE, or an earlier
+            # INDENT
             check_equal = 1
 
             del indents[-1]

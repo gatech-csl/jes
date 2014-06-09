@@ -1,8 +1,9 @@
-#JES- Jython Environment for Students
-#Copyright (C) 2002  Jason Ergle, Claire Bailey, David Raines
-#See JESCopyright.txt for full licensing information
-#This class, Copyright 2003  Adam Wilson, Yu Cheung Ho, Larry Olson, Eric Mickley
-# 5/13/09: Changes for redesigning configuration writing from python to java -Buck
+# JES- Jython Environment for Students
+# Copyright (C) 2002  Jason Ergle, Claire Bailey, David Raines
+# See JESCopyright.txt for full licensing information
+# This class, Copyright 2003  Adam Wilson, Yu Cheung Ho, Larry Olson, Eric Mickley
+# 5/13/09: Changes for redesigning configuration writing from python to
+# java -Buck
 
 import JESConfig
 import smtplib
@@ -38,17 +39,21 @@ import java.lang.System as system
 #     posting).
 ####################################################################
 class JESHomeworkSubmission:
+
     def __init__(self, hwTitle, fileName, zipFile):
-#       config = self.readFromConfigFile()
-        self.studentName =  JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_NAME)
-        self.gtNumber = JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_GT)
-        self.mailServer = JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_MAIL)
-        self.studentEmail = JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_EMAIL_ADDR)
+        #       config = self.readFromConfigFile()
+        self.studentName = JESConfig.getInstance().getStringProperty(
+            JESConfig.CONFIG_NAME)
+        self.gtNumber = JESConfig.getInstance().getStringProperty(
+            JESConfig.CONFIG_GT)
+        self.mailServer = JESConfig.getInstance().getStringProperty(
+            JESConfig.CONFIG_MAIL)
+        self.studentEmail = JESConfig.getInstance().getStringProperty(
+            JESConfig.CONFIG_EMAIL_ADDR)
         self.cowebPort = 80
         self.hwTitle = hwTitle
         self.fileName = fileName
         self.zipFile = zipFile
-
 
 
 ####################################################################
@@ -67,20 +72,20 @@ class JESHomeworkSubmission:
         doCoWeb = 0
         turninType = ''
 
-
-        #USE Turnin Type Table check
+        # USE Turnin Type Table check
         if(JESConstants.TURNIN_TYPE_TABLE):
             try:
-                turnTypeFinder = JESTurninTypeFinder.JESTurninTypeFinder(string.strip(self.hwTitle))
+                turnTypeFinder = JESTurninTypeFinder.JESTurninTypeFinder(
+                    string.strip(self.hwTitle))
                 turninType = turnTypeFinder.getTurninType()
             except Exception:
                 import sys
-                a,b,c=sys.exc_info()
-                print a,b,c
+                a, b, c = sys.exc_info()
+                print a, b, c
 
-            if( turninType == 'EMAIL' or turninType == 'BOTH'):
+            if(turninType == 'EMAIL' or turninType == 'BOTH'):
                 doEmail = 1
-            if( turninType == 'COWEB' or turninType == 'BOTH'):
+            if(turninType == 'COWEB' or turninType == 'BOTH'):
                 doCoWeb = 1
         else:
             if JESConstants.EMAIL_TURNIN:
@@ -93,8 +98,8 @@ class JESHomeworkSubmission:
                 self.emailTurnin()
         except Exception:
             import sys
-            a,b,c=sys.exc_info()
-            print a,b,c
+            a, b, c = sys.exc_info()
+            print a, b, c
             emailError = 1
         try:
             if doCoWeb:
@@ -118,7 +123,7 @@ class JESHomeworkSubmission:
 #     it sends the email through the defined SMTP server.
 ####################################################################
     def emailTurnin(self):
-        #Get email information
+        # Get email information
         try:
             addr = JESAddressFinder.JESAddressFinder()
             taEmail = addr.getTargetAddress(self.gtNumber, self.hwTitle)
@@ -126,42 +131,43 @@ class JESHomeworkSubmission:
                 raise StandardError, "Could not find an e-mail to send assignment."
                 return
 
-            filehandle = open(self.zipFile,"rb")
-           #CONSTRUCT EMAIL
-           #Build the email from all the parts of information:
+            filehandle = open(self.zipFile, "rb")
+           # CONSTRUCT EMAIL
+           # Build the email from all the parts of information:
             subject = "%s : %s : %s : %s" % \
-                      (self.hwTitle, self.studentName, self.gtNumber, self.fileName)
+                      (self.hwTitle, self.studentName,
+                       self.gtNumber, self.fileName)
             msgBody = 'From: %s\n' % self.studentEmail
             msgBody += 'Subject: %s\n' % subject
             file = StringIO.StringIO()
             mime = MimeWriter.MimeWriter(file)
-            mime.addheader("Mime-Version","1.0")
+            mime.addheader("Mime-Version", "1.0")
             mime.startmultipartbody("mixed")
-            part=mime.nextpart()
-            part.addheader("Content-Transfer-Encoding","quoted-printable")
-            part.startbody("text/plain")
-            quopri.encode(StringIO.StringIO("An Assignment Submission from "+self.studentName),file,0)
-            quopri.encode(StringIO.StringIO("Notes to TA: "),file,0)
-            #quopri.encode(StringIO.StringIO(notes),file,0)
             part = mime.nextpart()
-            part.addheader("Content-Transfer-Encoding","base64")
-            part.startbody('application/x-zip-compressed; name='+self.zipFile)
+            part.addheader("Content-Transfer-Encoding", "quoted-printable")
+            part.startbody("text/plain")
+            quopri.encode(StringIO.StringIO(
+                "An Assignment Submission from " + self.studentName), file, 0)
+            quopri.encode(StringIO.StringIO("Notes to TA: "), file, 0)
+            # quopri.encode(StringIO.StringIO(notes),file,0)
+            part = mime.nextpart()
+            part.addheader("Content-Transfer-Encoding", "base64")
+            part.startbody(
+                'application/x-zip-compressed; name=' + self.zipFile)
             base64.encode(filehandle, file)
             mime.lastpart()
             msgBody += file.getvalue()
             filehandle.close()
-           #END CONSTRUCT EMAIL
-            #SEND EMAIL:
+           # END CONSTRUCT EMAIL
+            # SEND EMAIL:
             servObj = smtplib.SMTP(self.mailServer)
             servObj.sendmail(self.studentEmail, taEmail, msgBody)
         except:
             print "Student E-mail: " + self.studentEmail + "\n"
             import sys
-            a,b,c=sys.exc_info()
-            print a,b,c
+            a, b, c = sys.exc_info()
+            print a, b, c
             raise StandardError, "Error emailing assignment."
-
-
 
 
 ####################################################################
@@ -173,18 +179,21 @@ class JESHomeworkSubmission:
 ####################################################################
     def cowebTurnin(self):
         try:
-            filehandle = open(self.zipFile,"rb")
+            filehandle = open(self.zipFile, "rb")
             url = net.URL(JESConstants.HW_COWEB_ADDRESS_URL)
             host = url.getHost()
             port = url.getPort()
             finder = JESURLFinder.JESURLFinder()
-            turninURL = finder.getTargetURL(self.gtNumber, string.strip(self.hwTitle))
-            if(turninURL == -1): # check if url is not found - RJC
+            turninURL = finder.getTargetURL(
+                self.gtNumber, string.strip(self.hwTitle))
+            if(turninURL == -1):  # check if url is not found - RJC
                 raise StandardError, "Unable to find a valid upload url for assignment."
 
-            selector = string.strip(turninURL[turninURL.find("/"):]) + JESConstants.HW_COWEB_ATTACH_SUFFIX
+            selector = string.strip(
+                turninURL[turninURL.find("/"):]) + JESConstants.HW_COWEB_ATTACH_SUFFIX
             fields = [['specific', 'true'], ['reference', 'true']]
-            files = [['filestuff', os.path.basename(self.zipFile), filehandle.read()]]
+            files = [
+                ['filestuff', os.path.basename(self.zipFile), filehandle.read()]]
             response = self.post_multipart(host, port, selector, fields, files)
             if response.status < 200 or response.status > 399:
                 system.out.println("Server resonded with unsuccessful message")
@@ -192,11 +201,11 @@ class JESHomeworkSubmission:
             return response
         except:
             import sys
-            a,b,c = sys.exc_info()
-            print a,b,c
+            a, b, c = sys.exc_info()
+            print a, b, c
             raise StandardError, "Error turning in to the Coweb."
 
-################################################################################
+##########################################################################
 # Function name: readFromConfigFile
 # Parameters: self
 # Description: Attempts to open the Configfile.  If it exists, it is opened and
@@ -205,27 +214,28 @@ class JESHomeworkSubmission:
 #       configfile should exist before this function is called.  If an IO Error
 #       occurs, a message will be printed to the transcript.
 #
-################################################################################
+##########################################################################
     def readFromConfigFile(self):
         try:
-            homedir=os.path.expanduser("~")
-            f=open(homedir+io.File.separator+JESConstants.JES_CONFIG_FILE_NAME,'r')
-            text=f.read()
+            homedir = os.path.expanduser("~")
+            f = open(
+                homedir + io.File.separator + JESConstants.JES_CONFIG_FILE_NAME, 'r')
+            text = f.read()
             f.close()
-            array=text.splitlines()
+            array = text.splitlines()
             return array
         except:
             raise StandardError, "Error reading configuration file."
 
-#All of the following code is:
-#Written by: Wade Leftwich
-#Date: 8/23/2002
-#URL: http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/146306
+# All of the following code is:
+# Written by: Wade Leftwich
+# Date: 8/23/2002
+# URL: http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/146306
     def post_multipart(self, host, port, selector, fields, files):
-        #Post fields and files to an http host as multipart/form-data.
-        #fields is a sequence of (name, value) elements for regular form fields.
-        #files is a sequence of (name, filename, value) elements for data to be uploaded as files
-        #Return the server's response page.
+        # Post fields and files to an http host as multipart/form-data.
+        # fields is a sequence of (name, value) elements for regular form fields.
+        # files is a sequence of (name, filename, value) elements for data to be uploaded as files
+        # Return the server's response page.
         array = self.encode_multipart_formdata(fields, files)
         h = httplib.HTTPConnection(host, port)
         h.putrequest('POST', selector)
@@ -238,9 +248,9 @@ class JESHomeworkSubmission:
         return response
 
     def encode_multipart_formdata(self, fields, files):
-        #fields is a sequence of (name, value) elements for regular form fields.
-        #files is a sequence of (name, filename, value) elements for data to be uploaded as files
-        #Return (content_type, body) ready for httplib.HTTP instance
+        # fields is a sequence of (name, value) elements for regular form fields.
+        # files is a sequence of (name, filename, value) elements for data to be uploaded as files
+        # Return (content_type, body) ready for httplib.HTTP instance
         BOUNDARY = '----------ThIs_Is_tHe_bouNdaRY_$'
         CRLF = '\r\n'
         L = []
@@ -251,7 +261,8 @@ class JESHomeworkSubmission:
             L.append(value)
         for (key, filename, value) in files:
             L.append('--' + BOUNDARY)
-            L.append('Content-Disposition: form-data; name="%s"; filename="%s"' % (key, filename))
+            L.append(
+                'Content-Disposition: form-data; name="%s"; filename="%s"' % (key, filename))
             L.append('Content-Type: %s' % self.get_content_type(filename))
             L.append('')
             L.append(value)

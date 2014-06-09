@@ -4,6 +4,7 @@ def decreaseRed(picture):
         setRed(p, getRed(p) * 0.5)
     return picture
 
+
 def decrease2(picture, x1, y1, x2, y2):
     for x in range(x1, x2):
         for y in range(y1, y2):

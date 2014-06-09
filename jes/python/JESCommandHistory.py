@@ -1,27 +1,29 @@
 import sys
 
+
 class JESCommandHistory:
 
-######################################################################
-# init
-#
-# defines the following fields:
-#
-# commandStack - the structure that holds the commands that have been
-#                typed
-# position     - stores how far "up" or "down" the user is in the stack
-#                tells which commands should be returned by the
-#                moveUp / moveDown functions
-# partialCommand - the commmand partially typed by the user, recorded
-#                  so it will still be available if the user dosen't
-#                  want to pull something from the history.
-#                  returned with the position falls to -1
-#
-# the moveUp and moveDown functions are called by the command window
-# when the user hits up or down on the keyboard.
-######################################################################
+    ######################################################################
+    # init
+    #
+    # defines the following fields:
+    #
+    # commandStack - the structure that holds the commands that have been
+    #                typed
+    # position     - stores how far "up" or "down" the user is in the stack
+    #                tells which commands should be returned by the
+    #                moveUp / moveDown functions
+    # partialCommand - the commmand partially typed by the user, recorded
+    #                  so it will still be available if the user dosen't
+    #                  want to pull something from the history.
+    #                  returned with the position falls to -1
+    #
+    # the moveUp and moveDown functions are called by the command window
+    # when the user hits up or down on the keyboard.
+    ######################################################################
+
     def __init__(self):
-        self.commandStack = ['' ]
+        self.commandStack = ['']
 
         self.position = -1
         self.partialCommand = ''
@@ -33,7 +35,7 @@ class JESCommandHistory:
 # resets the position, and the partial command because we assume that
 # command are only pushed after a whole command has been typed
 ######################################################################
-    def push(self,command):
+    def push(self, command):
         self.commandStack = [command] + self.commandStack
         self.position = -1
         self.setPartialCommand('')
@@ -53,7 +55,6 @@ class JESCommandHistory:
             self.position += 1
 
         return self.commandStack[self.position]
-
 
 
 ######################################################################
@@ -80,12 +81,10 @@ class JESCommandHistory:
 # accepts a partially typed command from the command window.
 # resets the position of the stack
 ######################################################################
-    def setPartialCommand(self,partialCommand):
-
+    def setPartialCommand(self, partialCommand):
 
         self.partialCommand = partialCommand
         self.position = -1
-
 
 
 if __name__ == '__main__':

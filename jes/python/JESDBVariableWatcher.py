@@ -11,19 +11,22 @@ import java.util.Hashtable as Hashtable
 import JESGutter
 import JESResources
 import JESExecHistoryModel as JESExecHistoryModel
-import java.io.FileWriter as FileWriter #Added by Brian for debugging
+import java.io.FileWriter as FileWriter  # Added by Brian for debugging
 import media
 import java.lang.System as System
 from java.lang import Thread
 from java.lang import Runnable
 
 
-BUTTON_SIZE=(50,50)
+BUTTON_SIZE = (50, 50)
 HIGHLIGHT_COLOR = awt.Color.green
 
+
 def variableDialog(ui):
-    var = swing.JOptionPane.showInputDialog(ui, 'Please type the variable to watch')
+    var = swing.JOptionPane.showInputDialog(
+        ui, 'Please type the variable to watch')
     return var
+
 
 def pickVariable(ui, vars):
     if len(vars) > 0:
@@ -37,13 +40,16 @@ def pickVariable(ui, vars):
         return var
     else:
         swing.JOptionPane.showMessageDialog(ui,
-                                           'There are no variables to remove',
-                                           'Error',
-                                           swing.JOptionPane.ERROR_MESSAGE)
+                                            'There are no variables to remove',
+                                            'Error',
+                                            swing.JOptionPane.ERROR_MESSAGE)
         return None
 
-#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------
+
+
 class DBControlPanel(swing.JPanel):
+
     def __init__(self, debugger):
         self.lastValue = None
         self.debugger = debugger
@@ -63,9 +69,9 @@ class DBControlPanel(swing.JPanel):
                                        toolTipText='add Variable',
                                        preferredSize=BUTTON_SIZE)
         self.deleteButton = swing.JButton(JESResources.makeIcon('images/minus.jpg'),
-                                       actionPerformed=self.actionPerformed,
-                                       toolTipText='remove Variable',
-                                       preferredSize=BUTTON_SIZE)
+                                          actionPerformed=self.actionPerformed,
+                                          toolTipText='remove Variable',
+                                          preferredSize=BUTTON_SIZE)
         self.stepButton = swing.JButton(JESResources.makeIcon('images/boot.jpg'),
                                         actionPerformed=self.actionPerformed,
                                         toolTipText='step',
@@ -73,13 +79,13 @@ class DBControlPanel(swing.JPanel):
         self.pauseIcon = JESResources.makeIcon('images/pause.jpg')
         self.runIcon = JESResources.makeIcon('images/run.jpg')
         self.runButton = swing.JButton(self.runIcon,
-                                        actionPerformed=self.actionPerformed,
-                                        toolTipText='run',
+                                       actionPerformed=self.actionPerformed,
+                                       toolTipText='run',
                                        preferredSize=BUTTON_SIZE)
         self.fullspeedButton = swing.JButton(JESResources.makeIcon('images/fullspeed.jpg'),
-                                        actionPerformed=self.actionPerformed,
-                                        toolTipText='full speed',
-                                       preferredSize=BUTTON_SIZE)
+                                             actionPerformed=self.actionPerformed,
+                                             toolTipText='full speed',
+                                             preferredSize=BUTTON_SIZE)
         self.stopButton = swing.JButton(JESResources.makeIcon('images/stop.jpg'),
                                         actionPerformed=self.actionPerformed,
                                         toolTipText='stop',
@@ -88,8 +94,8 @@ class DBControlPanel(swing.JPanel):
         self.add(self.slider)
         self.add(self.addButton)
         self.add(self.deleteButton)
-        #self.add(self.stepButton) # These two lines commented out by Brian O because of removed Pause functionality -- 23 June 2008
-        #self.add(self.runButton)
+        # self.add(self.stepButton) # These two lines commented out by Brian O because of removed Pause functionality -- 23 June 2008
+        # self.add(self.runButton)
         self.add(self.fullspeedButton)
         self.add(self.stopButton)
         self.initialButtonState()
@@ -179,8 +185,11 @@ class DBControlPanel(swing.JPanel):
         self.deleteButton.enabled = 1
         self.stopButton.enabled = 1
 
-#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------
+
+
 class JESDBVariableWatcher(swing.JPanel):
+
     def __init__(self, debugger):
         self.debugger = debugger
         self.controlPanel = DBControlPanel(self.debugger)
@@ -215,8 +224,11 @@ class JESDBVariableWatcher(swing.JPanel):
     def endExecution(self):
         self.history.endExecution()
 
-#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------
+
+
 class MyRenderer(swing.JLabel, swing.table.TableCellRenderer):
+
     def __init__(self):
         self.opaque = 1
 
@@ -228,18 +240,20 @@ class MyRenderer(swing.JLabel, swing.table.TableCellRenderer):
             self.background = HIGHLIGHT_COLOR
         return self
 
-#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------
+
+
 class WatcherTable(swing.JTable):
+
     def __init__(self, model):
             #self.times = 0;
         swing.JTable.__init__(self, model)
 
-
     def tableChanged(self, event):
-        #print "WatcherTable, tableChanged: " + Thread.currentThread().getName()
+        # print "WatcherTable, tableChanged: " + Thread.currentThread().getName()
         #self.times = self.times + 1
-        #print "Count ", self.times
+        # print "Count ", self.times
         swing.JTable.tableChanged(self, event)
         if event.getFirstRow() == swing.event.TableModelEvent.HEADER_ROW:
             self.model.setColumnWidths(self)
-#-------------------------------------------------------------------------------
+#-------------------------------------------------------------------------

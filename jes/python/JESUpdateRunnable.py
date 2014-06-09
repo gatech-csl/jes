@@ -1,8 +1,9 @@
 from java.lang import Runnable
 
-class JESUpdateRunnable( Runnable ):
 
-    def __init__(self,interpreter,text):
+class JESUpdateRunnable(Runnable):
+
+    def __init__(self, interpreter, text):
         self.interpreter = interpreter
 
         self.text = text
