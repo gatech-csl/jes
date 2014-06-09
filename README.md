@@ -59,7 +59,7 @@ JES in the `dependencies` folder:
 * `dependencies/jars`: JAR files for a bunch of libraries the JES Java code
   uses to work with media files.
 
-* `dependencies/jython`: An installation of Jython, currently version 2.2.1.
+* `dependencies/jython`: An installation of Jython, currently version 2.5.3.
   We need to keep this around because the Jython JAR doesn't have the
   standard library.
 
