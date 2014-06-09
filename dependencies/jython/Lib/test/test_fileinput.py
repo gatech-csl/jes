@@ -3,10 +3,10 @@ Tests for fileinput module.
 Nick Mathewson
 '''
 
-from test_support import verify, verbose, TESTFN
+from test.test_support import verify, verbose, TESTFN, TestFailed
 import sys, os, re
 from StringIO import StringIO
-from fileinput import FileInput
+from fileinput import FileInput, hook_encoded
 
 # The fileinput module has 2 interfaces: the FileInput class which does
 # all the work, and a few functions (input, etc.) that use a global _state
@@ -15,9 +15,9 @@ from fileinput import FileInput
 
 # Write lines (a list of lines) to temp file number i, and return the
 # temp file's name.
-def writeTmp(i, lines):
+def writeTmp(i, lines, mode='w'):  # opening in text mode is the default
     name = TESTFN + str(i)
-    f = open(name, 'w')
+    f = open(name, mode)
     f.writelines(lines)
     f.close()
     return name
@@ -157,3 +157,71 @@ try:
     verify(fi.lineno() == 6)
 finally:
     remove_tempfiles(t1, t2)
+
+if verbose:
+    print "15. Unicode filenames"
+try:
+    t1 = writeTmp(1, ["A\nB"])
+    encoding = sys.getfilesystemencoding()
+    if encoding is None:
+        encoding = 'ascii'
+    fi = FileInput(files=unicode(t1, encoding))
+    lines = list(fi)
+    verify(lines == ["A\n", "B"])
+finally:
+    remove_tempfiles(t1)
+
+if verbose:
+    print "16. fileno()"
+try:
+    t1 = writeTmp(1, ["A\nB"])
+    t2 = writeTmp(2, ["C\nD"])
+    fi = FileInput(files=(t1, t2))
+    verify(fi.fileno() == -1)
+    line = fi.next()
+    verify(fi.fileno() != -1)
+    fi.nextfile()
+    verify(fi.fileno() == -1)
+    line = list(fi)
+    verify(fi.fileno() == -1)
+finally:
+    remove_tempfiles(t1, t2)
+
+if verbose:
+    print "17. Specify opening mode"
+try:
+    # invalid mode, should raise ValueError
+    fi = FileInput(mode="w")
+    raise TestFailed("FileInput should reject invalid mode argument")
+except ValueError:
+    pass
+try:
+    # try opening in universal newline mode
+    t1 = writeTmp(1, ["A\nB\r\nC\rD"], mode="wb")
+    fi = FileInput(files=t1, mode="U")
+    lines = list(fi)
+    verify(lines == ["A\n", "B\n", "C\n", "D"])
+finally:
+    remove_tempfiles(t1)
+
+if verbose:
+    print "18. Test file opening hook"
+try:
+    # cannot use openhook and inplace mode
+    fi = FileInput(inplace=1, openhook=lambda f,m: None)
+    raise TestFailed("FileInput should raise if both inplace "
+                     "and openhook arguments are given")
+except ValueError:
+    pass
+try:
+    fi = FileInput(openhook=1)
+    raise TestFailed("FileInput should check openhook for being callable")
+except ValueError:
+    pass
+try:
+    t1 = writeTmp(1, ["A\nB"], mode="wb")
+    fi = FileInput(files=t1, openhook=hook_encoded("rot13"))
+    lines = list(fi)
+    verify(lines == ["N\n", "O"])
+finally:
+    remove_tempfiles(t1)

@@ -1,16 +1,16 @@
-import java.awt.print.Printable as Printable
 import java.awt.print as jPrint
 import java.awt.geom as geom
 import java.text as text
 import java.awt as awt
 import java.util as util
 import java.io as io
+import JESPrintable
 import JESProgram
 import string
 import os
 
 
-class JESPrintableDocument(Printable):
+class JESPrintableDocument(JESPrintable):
 
     def __init__(self, fileToPrint, name):
         self.fileName = fileToPrint
@@ -28,7 +28,7 @@ class JESPrintableDocument(Printable):
         except:
             self.rememberedEOF = 1
 
-    def print(self, g, pform, pageIndex):
+    def printPage(self, g, pform, pageIndex):
         try:
             # For catching IOException
             if (pageIndex != self.rememberedPageIndex):

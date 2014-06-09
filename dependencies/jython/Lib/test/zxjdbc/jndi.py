@@ -1,12 +1,9 @@
-
 # Jython Database Specification API 2.0
-#
-# $Id: jndi.py 1962 2001-12-14 04:20:03Z bzimmer $
 #
 # Copyright (c) 2001 brian zimmer <bzimmer@ziclix.com>
 
 """
-	This script is used to bind a JNDI reference for testing purposes only.
+        This script is used to bind a JNDI reference for testing purposes only.
 """
 from java.util import Hashtable
 from org.gjt.mm.mysql import MysqlDataSource
@@ -22,12 +19,12 @@ ds.setPort(3306)
 
 ctx = InitialContext(env)
 try:
-	try:
-		ctx.bind("/jdbc/mysqldb", ds)
-	except NameAlreadyBoundException, e:
-		ctx.unbind("/jdbc/mysqldb")
-		ctx.bind("/jdbc/mysqldb", ds)
+    try:
+        ctx.bind("/jdbc/mysqldb", ds)
+    except NameAlreadyBoundException, e:
+        ctx.unbind("/jdbc/mysqldb")
+        ctx.bind("/jdbc/mysqldb", ds)
 finally:
-	ctx.close()
+    ctx.close()
 
 print "bound [%s] at /jdbc/mysqldb" % (ds)

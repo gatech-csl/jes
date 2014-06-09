@@ -1,6 +1,10 @@
-"""Supporting definitions for the Python regression test."""
+"""Supporting definitions for the Python regression tests."""
+
+if __name__ != 'test.test_support':
+    raise ImportError, 'test_support must be imported from the test package'
 
 import sys
+import time
 
 class Error(Exception):
     """Base class for regression test exceptions."""
@@ -18,8 +22,19 @@ class TestSkipped(Error):
     TestFailed.
     """
 
+class ResourceDenied(TestSkipped):
+    """Test skipped because it requested a disallowed resource.
+
+    This is raised when a test calls requires() for a resource that
+    has not be enabled.  It is used to distinguish between expected
+    and unexpected skips.
+    """
+
 verbose = 1              # Flag set to 0 by regrtest.py
-use_resources = None       # Flag set to [] by regrtest.py
+use_resources = None     # Flag set to [] by regrtest.py
+junit_xml_dir = None     # Option set by regrtest.py
+max_memuse = 0           # Disable bigmem tests (they will still be run with
+                         # small sizes, to make sure they work.)
 
 # _original_stdout is meant to hold stdout at the time regrtest began.
 # This may be "the real" stdout, or IDLE's emulation of stdout, or whatever.
@@ -38,20 +53,71 @@ def unload(name):
     except KeyError:
         pass
 
+def unlink(filename):
+    import os
+    try:
+        os.unlink(filename)
+    except OSError:
+        pass
+
 def forget(modname):
+    '''"Forget" a module was ever imported by removing it from sys.modules and
+    deleting any .pyc and .pyo files.'''
     unload(modname)
     import os
     for dirname in sys.path:
-        try:
-            os.unlink(os.path.join(dirname, modname + '.pyc'))
-        except os.error:
-            pass
+        unlink(os.path.join(dirname, modname + os.extsep + 'pyc'))
+        # Deleting the .pyo file cannot be within the 'try' for the .pyc since
+        # the chance exists that there is no .pyc (and thus the 'try' statement
+        # is exited) but there is a .pyo file.
+        unlink(os.path.join(dirname, modname + os.extsep + 'pyo'))
+
+def is_resource_enabled(resource):
+    """Test whether a resource is enabled.  Known resources are set by
+    regrtest.py."""
+    return use_resources is not None and resource in use_resources
 
 def requires(resource, msg=None):
-    if use_resources is not None and resource not in use_resources:
+    """Raise ResourceDenied if the specified resource is not available.
+
+    If the caller's module is __main__ then automatically return True.  The
+    possibility of False being returned occurs when regrtest.py is executing."""
+    # see if the caller's module is __main__ - if so, treat as if
+    # the resource was set
+    if sys._getframe().f_back.f_globals.get("__name__") == "__main__":
+        return
+    if not is_resource_enabled(resource):
         if msg is None:
             msg = "Use of the `%s' resource not enabled" % resource
-        raise TestSkipped(msg)
+        raise ResourceDenied(msg)
+
+def bind_port(sock, host='', preferred_port=54321):
+    """Try to bind the sock to a port.  If we are running multiple
+    tests and we don't try multiple ports, the test can fails.  This
+    makes the test more robust."""
+
+    import socket, errno
+
+    # Find some random ports that hopefully no one is listening on.
+    # Ideally each test would clean up after itself and not continue listening
+    # on any ports.  However, this isn't the case.  The last port (0) is
+    # a stop-gap that asks the O/S to assign a port.  Whenever the warning
+    # message below is printed, the test that is listening on the port should
+    # be fixed to close the socket at the end of the test.
+    # Another reason why we can't use a port is another process (possibly
+    # another instance of the test suite) is using the same port.
+    for port in [preferred_port, 9907, 10243, 32999, 0]:
+        try:
+            sock.bind((host, port))
+            if port == 0:
+                port = sock.getsockname()[1]
+            return port
+        except socket.error, (err, msg):
+            if err != errno.EADDRINUSE:
+                raise
+            print >>sys.__stderr__, \
+                '  WARNING: failed to listen on port %d, trying another' % port
+    raise TestFailed, 'unable to find port to listen on'
 
 FUZZ = 1e-6
 
@@ -79,31 +145,94 @@ except NameError:
     have_unicode = 0
 
 is_jython = sys.platform.startswith('java')
-
-underlying_system = sys.platform
 if is_jython:
-    import java.lang.System
-    underlying_system = java.lang.System.getProperty('os.name').lower()
+    def make_jar_classloader(jar):
+        import os
+        from java.net import URL, URLClassLoader
+
+        url = URL('jar:file:%s!/' % jar)
+        if os._name == 'nt':
+            # URLJarFiles keep a cached open file handle to the jar even
+            # after this ClassLoader is GC'ed, disallowing Windows tests
+            # from removing the jar file from disk when finished with it
+            conn = url.openConnection()
+            if conn.getDefaultUseCaches():
+                # XXX: Globally turn off jar caching: this stupid
+                # instance method actually toggles a static flag. Need a
+                # better fix
+                conn.setDefaultUseCaches(False)
+
+        return URLClassLoader([url])
 
 import os
 # Filename used for testing
 if os.name == 'java':
     # Jython disallows @ in module names
-    TESTFN = '__test' # xxx mmh, something good and that works on unix too
-elif os.name != 'riscos':
+    TESTFN = '$test'
+elif os.name == 'riscos':
+    TESTFN = 'testfile'
+else:
     TESTFN = '@test'
     # Unicode name only used if TEST_FN_ENCODING exists for the platform.
     if have_unicode:
-        TESTFN_UNICODE=unicode("@test-\xe0\xf2", "latin-1") # 2 latin characters.
-        if os.name=="nt":
-            TESTFN_ENCODING="mbcs"
-else:
-    TESTFN = 'test'
-del os
+        # Assuming sys.getfilesystemencoding()!=sys.getdefaultencoding()
+        # TESTFN_UNICODE is a filename that can be encoded using the
+        # file system encoding, but *not* with the default (ascii) encoding
+        if isinstance('', unicode):
+            # python -U
+            # XXX perhaps unicode() should accept Unicode strings?
+            TESTFN_UNICODE = "@test-\xe0\xf2"
+        else:
+            # 2 latin characters.
+            TESTFN_UNICODE = unicode("@test-\xe0\xf2", "latin-1")
+        TESTFN_ENCODING = sys.getfilesystemencoding()
+        # TESTFN_UNICODE_UNENCODEABLE is a filename that should *not* be
+        # able to be encoded by *either* the default or filesystem encoding.
+        # This test really only makes sense on Windows NT platforms
+        # which have special Unicode support in posixmodule.
+        if (not hasattr(sys, "getwindowsversion") or
+                sys.getwindowsversion()[3] < 2): #  0=win32s or 1=9x/ME
+            TESTFN_UNICODE_UNENCODEABLE = None
+        else:
+            # Japanese characters (I think - from bug 846133)
+            TESTFN_UNICODE_UNENCODEABLE = eval('u"@test-\u5171\u6709\u3055\u308c\u308b"')
+            try:
+                # XXX - Note - should be using TESTFN_ENCODING here - but for
+                # Windows, "mbcs" currently always operates as if in
+                # errors=ignore' mode - hence we get '?' characters rather than
+                # the exception.  'Latin1' operates as we expect - ie, fails.
+                # See [ 850997 ] mbcs encoding ignores errors
+                TESTFN_UNICODE_UNENCODEABLE.encode("Latin1")
+            except UnicodeEncodeError:
+                pass
+            else:
+                print \
+                'WARNING: The filename %r CAN be encoded by the filesystem.  ' \
+                'Unicode filename tests may not be effective' \
+                % TESTFN_UNICODE_UNENCODEABLE
 
-from os import unlink
+# Make sure we can write to TESTFN, try in /tmp if we can't
+fp = None
+try:
+    fp = open(TESTFN, 'w+')
+except IOError:
+    TMP_TESTFN = os.path.join('/tmp', TESTFN)
+    try:
+        fp = open(TMP_TESTFN, 'w+')
+        TESTFN = TMP_TESTFN
+        del TMP_TESTFN
+    except IOError:
+        print ('WARNING: tests will fail, unable to write to: %s or %s' %
+                (TESTFN, TMP_TESTFN))
+if fp is not None:
+    fp.close()
+    unlink(TESTFN)
+del os, fp
 
 def findfile(file, here=__file__):
+    """Try to find a file on sys.path and the working directory.  If it is not
+    found the argument passed to the function is returned (this does not
+    necessarily signal failure; could still be the legitimate path)."""
     import os
     if os.path.isabs(file):
         return file
@@ -125,6 +254,16 @@ def verify(condition, reason='test failed'):
         raise TestFailed(reason)
 
 def vereq(a, b):
+    """Raise TestFailed if a == b is false.
+
+    This is better than verify(a == b) because, in case of failure, the
+    error message incorporates repr(a) and repr(b) so you can see the
+    inputs.
+
+    Note that "not (a == b)" isn't necessarily the same as "a != b"; the
+    former is tested.
+    """
+
     if not (a == b):
         raise TestFailed, "%r == %r" % (a, b)
 
@@ -144,7 +283,142 @@ def check_syntax(statement):
     else:
         print 'Missing SyntaxError: "%s"' % statement
 
+def open_urlresource(url):
+    import urllib, urlparse
+    import os.path
 
+    filename = urlparse.urlparse(url)[2].split('/')[-1] # '/': it's URL!
+
+    for path in [os.path.curdir, os.path.pardir]:
+        fn = os.path.join(path, filename)
+        if os.path.exists(fn):
+            return open(fn)
+
+    requires('urlfetch')
+    print >> get_original_stdout(), '\tfetching %s ...' % url
+    fn, _ = urllib.urlretrieve(url, filename)
+    return open(fn)
+
+#=======================================================================
+# Decorator for running a function in a different locale, correctly resetting
+# it afterwards.
+
+def run_with_locale(catstr, *locales):
+    def decorator(func):
+        def inner(*args, **kwds):
+            try:
+                import locale
+                category = getattr(locale, catstr)
+                orig_locale = locale.setlocale(category)
+            except AttributeError:
+                # if the test author gives us an invalid category string
+                raise
+            except:
+                # cannot retrieve original locale, so do nothing
+                locale = orig_locale = None
+            else:
+                for loc in locales:
+                    try:
+                        locale.setlocale(category, loc)
+                        break
+                    except:
+                        pass
+
+            # now run the function, resetting the locale on exceptions
+            try:
+                return func(*args, **kwds)
+            finally:
+                if locale and orig_locale:
+                    locale.setlocale(category, orig_locale)
+        inner.func_name = func.func_name
+        inner.__doc__ = func.__doc__
+        return inner
+    return decorator
+
+#=======================================================================
+# Big-memory-test support. Separate from 'resources' because memory use should be configurable.
+
+# Some handy shorthands. Note that these are used for byte-limits as well
+# as size-limits, in the various bigmem tests
+_1M = 1024*1024
+_1G = 1024 * _1M
+_2G = 2 * _1G
+
+# Hack to get at the maximum value an internal index can take.
+class _Dummy:
+    def __getslice__(self, i, j):
+        return j
+MAX_Py_ssize_t = _Dummy()[:]
+
+def set_memlimit(limit):
+    import re
+    global max_memuse
+    sizes = {
+        'k': 1024,
+        'm': _1M,
+        'g': _1G,
+        't': 1024*_1G,
+    }
+    m = re.match(r'(\d+(\.\d+)?) (K|M|G|T)b?$', limit,
+                 re.IGNORECASE | re.VERBOSE)
+    if m is None:
+        raise ValueError('Invalid memory limit %r' % (limit,))
+    memlimit = int(float(m.group(1)) * sizes[m.group(3).lower()])
+    if memlimit > MAX_Py_ssize_t:
+        memlimit = MAX_Py_ssize_t
+    if memlimit < _2G - 1:
+        raise ValueError('Memory limit %r too low to be useful' % (limit,))
+    max_memuse = memlimit
+
+def bigmemtest(minsize, memuse, overhead=5*_1M):
+    """Decorator for bigmem tests.
+
+    'minsize' is the minimum useful size for the test (in arbitrary,
+    test-interpreted units.) 'memuse' is the number of 'bytes per size' for
+    the test, or a good estimate of it. 'overhead' specifies fixed overhead,
+    independant of the testsize, and defaults to 5Mb.
+
+    The decorator tries to guess a good value for 'size' and passes it to
+    the decorated test function. If minsize * memuse is more than the
+    allowed memory use (as defined by max_memuse), the test is skipped.
+    Otherwise, minsize is adjusted upward to use up to max_memuse.
+    """
+    def decorator(f):
+        def wrapper(self):
+            if not max_memuse:
+                # If max_memuse is 0 (the default),
+                # we still want to run the tests with size set to a few kb,
+                # to make sure they work. We still want to avoid using
+                # too much memory, though, but we do that noisily.
+                maxsize = 5147
+                self.failIf(maxsize * memuse + overhead > 20 * _1M)
+            else:
+                maxsize = int((max_memuse - overhead) / memuse)
+                if maxsize < minsize:
+                    # Really ought to print 'test skipped' or something
+                    if verbose:
+                        sys.stderr.write("Skipping %s because of memory "
+                                         "constraint\n" % (f.__name__,))
+                    return
+                # Try to keep some breathing room in memory use
+                maxsize = max(maxsize - 50 * _1M, minsize)
+            return f(self, maxsize)
+        wrapper.minsize = minsize
+        wrapper.memuse = memuse
+        wrapper.overhead = overhead
+        return wrapper
+    return decorator
+
+def bigaddrspacetest(f):
+    """Decorator for tests that fill the address space."""
+    def wrapper(self):
+        if max_memuse < MAX_Py_ssize_t:
+            if verbose:
+                sys.stderr.write("Skipping %s because of memory "
+                                 "constraint\n" % (f.__name__,))
+        else:
+            return f(self)
+    return wrapper
 
 #=======================================================================
 # Preliminary PyUNIT integration.
@@ -160,8 +434,30 @@ class BasicTestRunner:
 
 
 def run_suite(suite, testclass=None):
+    """Run all TestCases in their own individual TestSuite"""
+    if not junit_xml_dir:
+        # Splitting tests apart slightly changes the handling of the
+        # TestFailed message
+        return _run_suite(suite, testclass)
+
+    failed = False
+    for test in suite:
+        suite = unittest.TestSuite()
+        suite.addTest(test)
+        try:
+            _run_suite(suite, testclass)
+        except TestFailed, e:
+            if not failed:
+                failed = e
+    if failed:
+        raise failed
+
+def _run_suite(suite, testclass=None):
     """Run tests from a unittest.TestSuite-derived class."""
-    if verbose:
+    if junit_xml_dir:
+        from junit_xml import JUnitXMLTestRunner
+        runner = JUnitXMLTestRunner(junit_xml_dir)
+    elif verbose:
         runner = unittest.TextTestRunner(sys.stdout, verbosity=2)
     else:
         runner = BasicTestRunner()
@@ -182,9 +478,19 @@ def run_suite(suite, testclass=None):
         raise TestFailed(err)
 
 
-def run_unittest(testclass):
-    """Run tests from a unittest.TestCase-derived class."""
-    run_suite(unittest.makeSuite(testclass), testclass)
+def run_unittest(*classes):
+    """Run tests from unittest.TestCase-derived classes."""
+    suite = unittest.TestSuite()
+    for cls in classes:
+        if isinstance(cls, (unittest.TestSuite, unittest.TestCase)):
+            suite.addTest(cls)
+        else:
+            suite.addTest(unittest.makeSuite(cls))
+    if len(classes)==1:
+        testclass = classes[0]
+    else:
+        testclass = None
+    run_suite(suite, testclass)
 
 
 #=======================================================================
@@ -209,57 +515,74 @@ def run_doctest(module, verbosity=None):
     # output shouldn't be compared by regrtest.
     save_stdout = sys.stdout
     sys.stdout = get_original_stdout()
+
+    if junit_xml_dir:
+        from junit_xml import Tee, write_doctest
+        save_stderr = sys.stderr
+        sys.stdout = stdout = Tee(sys.stdout)
+        sys.stderr = stderr = Tee(sys.stderr)
+
     try:
-        f, t = doctest.testmod(module, verbose=verbosity)
+        start = time.time()
+        try:
+            f, t = doctest.testmod(module, verbose=verbosity)
+        except:
+            took = time.time() - start
+            if junit_xml_dir:
+                write_doctest(junit_xml_dir, module.__name__, took, 'error',
+                              sys.exc_info(), stdout.getvalue(),
+                              stderr.getvalue())
+            raise
+        took = time.time() - start
         if f:
+            if junit_xml_dir:
+                write_doctest(junit_xml_dir, module.__name__, took, 'failure',
+                              stdout=stdout.getvalue(),
+                              stderr=stderr.getvalue())
             raise TestFailed("%d of %d doctests failed" % (f, t))
-        return f, t
     finally:
         sys.stdout = save_stdout
+    if junit_xml_dir:
+        write_doctest(junit_xml_dir, module.__name__, took,
+                      stdout=stdout.getvalue(), stderr=stderr.getvalue())
+    if verbose:
+        print 'doctest (%s) ... %d tests with zero failures' % (module.__name__, t)
+    return f, t
 
 #=======================================================================
-# Old Jython test functions
-# test_support.py above this line is just a copy from the current Python
-# release. Other functions needed by Jython tests go here until no longer
-# needed
-import string
+# Threading support to prevent reporting refleaks when running regrtest.py -R
 
-roman = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x', 'xi', 'xii']
-symbols = [
-	map(string.upper, roman),
-	string.uppercase,
-	range(1, 50),
-	string.lowercase,
-	roman,
-	]
-	
-def symbol(n, level):
-	return str(symbols[level][n-1])
+def threading_setup():
+    import threading
+    return len(threading._active), 0
 
-levels = [0]*20
-currentLevel = 0
-def print_test(txt, level=-1):
-    print txt
-    return level
-	
-oldStdout = None
+def threading_cleanup(num_active, num_limbo):
+    import threading
+    import time
 
-from StringIO import StringIO
-def beginCapture():
-	global oldStdout
-	
-	if oldStdout is not None:
-		raise TestError, "Internal error"
-		
-	oldStdout = sys.stdout
-	sys.stdout = StringIO()
-	
-def endCapture():
-	global oldStdout
-	
-	txt = sys.stdout.getvalue()
-	sys.stdout = oldStdout
-	oldStdout = None
-	
-	return txt
+    _MAX_COUNT = 10
+    count = 0
+    while len(threading._active) != num_active and count < _MAX_COUNT:
+        count += 1
+        time.sleep(0.1)
 
+def reap_children():
+    """Use this function at the end of test_main() whenever sub-processes
+    are started.  This will help ensure that no extra children (zombies)
+    stick around to hog resources and create problems when looking
+    for refleaks.
+    """
+
+    # Reap all our dead child processes so we don't leave zombies around.
+    # These hog resources and might be causing some of the buildbots to die.
+    import os
+    if hasattr(os, 'waitpid'):
+        any_process = -1
+        while True:
+            try:
+                # This will raise an exception on Windows.  That's ok.
+                pid, status = os.waitpid(any_process, os.WNOHANG)
+                if pid == 0:
+                    break
+            except:
+                break

@@ -1,7 +1,9 @@
+import htmlentitydefs
 import pprint
+import re
 import sgmllib
-import test_support
 import unittest
+from test import test_support
 
 
 class EventCollector(sgmllib.SGMLParser):
@@ -62,6 +64,37 @@ class CDATAEventCollector(EventCollector):
     def start_cdata(self, attrs):
         self.append(("starttag", "cdata", attrs))
         self.setliteral()
+
+
+class HTMLEntityCollector(EventCollector):
+
+    entity_or_charref = re.compile('(?:&([a-zA-Z][-.a-zA-Z0-9]*)'
+        '|&#(x[0-9a-zA-Z]+|[0-9]+))(;?)')
+
+    def convert_charref(self, name):
+        self.append(("charref", "convert", name))
+        if name[0] != "x":
+            return EventCollector.convert_charref(self, name)
+
+    def convert_codepoint(self, codepoint):
+        self.append(("codepoint", "convert", codepoint))
+        EventCollector.convert_codepoint(self, codepoint)
+
+    def convert_entityref(self, name):
+        self.append(("entityref", "convert", name))
+        return EventCollector.convert_entityref(self, name)
+
+    # These to record that they were called, then pass the call along
+    # to the default implementation so that it's actions can be
+    # recorded.
+
+    def handle_charref(self, data):
+        self.append(("charref", data))
+        sgmllib.SGMLParser.handle_charref(self, data)
+
+    def handle_entityref(self, data):
+        self.append(("entityref", data))
+        sgmllib.SGMLParser.handle_entityref(self, data)
 
 
 class SGMLParserTestCase(unittest.TestCase):
@@ -200,10 +233,70 @@ DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01//EN'
         self.check_events("""<a b='' c="">""", [
             ("starttag", "a", [("b", ""), ("c", "")]),
             ])
+        # URL construction stuff from RFC 1808:
+        safe = "$-_.+"
+        extra = "!*'(),"
+        reserved = ";/?:@&="
+        url = "http://example.com:8080/path/to/file?%s%s%s" % (
+            safe, extra, reserved)
+        self.check_events("""<e a=%s>""" % url, [
+            ("starttag", "e", [("a", url)]),
+            ])
+        # Regression test for SF patch #669683.
+        self.check_events("<e a=rgb(1,2,3)>", [
+            ("starttag", "e", [("a", "rgb(1,2,3)")]),
+            ])
+
+    def test_attr_values_entities(self):
+        """Substitution of entities and charrefs in attribute values"""
+        # SF bug #1452246
+        self.check_events("""<a b=&lt; c=&lt;&gt; d=&lt-&gt; e='&lt; '
+                                f="&xxx;" g='&#32;&#33;' h='&#500;'
+                                i='x?a=b&c=d;'
+                                j='&amp;#42;' k='&#38;#42;'>""",
+            [("starttag", "a", [("b", "<"),
+                                ("c", "<>"),
+                                ("d", "&lt->"),
+                                ("e", "< "),
+                                ("f", "&xxx;"),
+                                ("g", " !"),
+                                ("h", "&#500;"),
+                                ("i", "x?a=b&c=d;"),
+                                ("j", "&#42;"),
+                                ("k", "&#42;"),
+                                ])])
+
+    def test_convert_overrides(self):
+        # This checks that the character and entity reference
+        # conversion helpers are called at the documented times.  No
+        # attempt is made to really change what the parser accepts.
+        #
+        self.collector = HTMLEntityCollector
+        self.check_events(('<a title="&ldquo;test&#x201d;">foo</a>'
+                           '&foobar;&#42;'), [
+            ('entityref', 'convert', 'ldquo'),
+            ('charref', 'convert', 'x201d'),
+            ('starttag', 'a', [('title', '&ldquo;test&#x201d;')]),
+            ('data', 'foo'),
+            ('endtag', 'a'),
+            ('entityref', 'foobar'),
+            ('entityref', 'convert', 'foobar'),
+            ('charref', '42'),
+            ('charref', 'convert', '42'),
+            ('codepoint', 'convert', 42),
+            ])
 
     def test_attr_funky_names(self):
         self.check_events("""<a a.b='v' c:d=v e-f=v>""", [
             ("starttag", "a", [("a.b", "v"), ("c:d", "v"), ("e-f", "v")]),
+            ])
+
+    def test_attr_value_ip6_url(self):
+        # http://www.python.org/sf/853506
+        self.check_events(("<a href='http://[1080::8:800:200C:417A]/'>"
+                           "<a href=http://[1080::8:800:200C:417A]/>"), [
+            ("starttag", "a", [("href", "http://[1080::8:800:200C:417A]/")]),
+            ("starttag", "a", [("href", "http://[1080::8:800:200C:417A]/")]),
             ])
 
     def test_illegal_declarations(self):
@@ -262,14 +355,33 @@ DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01//EN'
             ("data", "def"),
             ])
 
+    def test_enumerated_attr_type(self):
+        s = "<!DOCTYPE doc [<!ATTLIST doc attr (a | b) >]>"
+        self.check_events(s, [
+            ('decl', 'DOCTYPE doc [<!ATTLIST doc attr (a | b) >]'),
+            ])
+
+    def test_read_chunks(self):
+        # SF bug #1541697, this caused sgml parser to hang
+        # Just verify this code doesn't cause a hang.
+        CHUNK = 1024  # increasing this to 8212 makes the problem go away
+
+        f = open(test_support.findfile('sgml_input.html'))
+        fp = sgmllib.SGMLParser()
+        while 1:
+            data = f.read(CHUNK)
+            fp.feed(data)
+            if len(data) != CHUNK:
+                break
+
     # XXX These tests have been disabled by prefixing their names with
     # an underscore.  The first two exercise outstanding bugs in the
     # sgmllib module, and the third exhibits questionable behavior
     # that needs to be carefully considered before changing it.
 
     def _test_starttag_end_boundary(self):
-        self.check_events("""<a b='<'>""", [("starttag", "a", [("b", "<")])])
-        self.check_events("""<a b='>'>""", [("starttag", "a", [("b", ">")])])
+        self.check_events("<a b='<'>", [("starttag", "a", [("b", "<")])])
+        self.check_events("<a b='>'>", [("starttag", "a", [("b", ">")])])
 
     def _test_buffer_artefacts(self):
         output = [("starttag", "a", [("b", "<")])]
@@ -287,6 +399,19 @@ DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01//EN'
         self.check_events(["<a b=", "'>'>"], output)
         self.check_events(["<a b='>", "'>"], output)
         self.check_events(["<a b='>'", ">"], output)
+
+        output = [("comment", "abc")]
+        self.check_events(["", "<!--abc-->"], output)
+        self.check_events(["<", "!--abc-->"], output)
+        self.check_events(["<!", "--abc-->"], output)
+        self.check_events(["<!-", "-abc-->"], output)
+        self.check_events(["<!--", "abc-->"], output)
+        self.check_events(["<!--a", "bc-->"], output)
+        self.check_events(["<!--ab", "c-->"], output)
+        self.check_events(["<!--abc", "-->"], output)
+        self.check_events(["<!--abc-", "->"], output)
+        self.check_events(["<!--abc--", ">"], output)
+        self.check_events(["<!--abc-->", ""], output)
 
     def _test_starttag_junk_chars(self):
         self.check_parse_error("<")

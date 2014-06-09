@@ -1,105 +1,131 @@
-from test_support import *
+doctests = """
 
-print_test("Sequence Unpacking (test_unpack.py)", 2)
+Unpack tuple
 
-t = (1, 2, 3)
-l = [4, 5, 6]
+    >>> t = (1, 2, 3)
+    >>> a, b, c = t
+    >>> a == 1 and b == 2 and c == 3
+    True
 
-class Seq:
-    def __getitem__(self, i):
-        if i >= 0 and i < 3: return i
-        raise IndexError
+Unpack list
 
-a = -1
-b = -1
-c = -1
+    >>> l = [4, 5, 6]
+    >>> a, b, c = l
+    >>> a == 4 and b == 5 and c == 6
+    True
 
-# unpack tuple
-print_test("tuple", 3)
-a, b, c = t
-assert a == 1 and b == 2 and c == 3
+Unpack implied tuple
 
-print_test("list", 3)
-a, b, c = l
-assert a == 4 and b == 5 and c == 6
+    >>> a, b, c = 7, 8, 9
+    >>> a == 7 and b == 8 and c == 9
+    True
 
-print_test("inline tuple")
-a, b, c = 7, 8, 9
-assert a == 7 and b == 8 and c == 9
+Unpack string... fun!
 
-print_test("string")
-a, b, c = 'one'
-assert a == 'o' and b == 'n' and c == 'e'
+    >>> a, b, c = 'one'
+    >>> a == 'o' and b == 'n' and c == 'e'
+    True
 
-print_test("generic sequence")
-a, b, c = Seq()
-assert a == 0 and b == 1 and c == 2
+Unpack generic sequence
 
-# now for some failures
-print_test("failures")
+    >>> class Seq:
+    ...     def __getitem__(self, i):
+    ...         if i >= 0 and i < 3: return i
+    ...         raise IndexError
+    ...
+    >>> a, b, c = Seq()
+    >>> a == 0 and b == 1 and c == 2
+    True
 
-print_test("non-sequence", 4)
-try:
-    a, b, c = 7
-    raise TestFailed
-except TypeError:
-    pass
+Single element unpacking, with extra syntax
 
-print_test("wrong size tuple")
-try:
-    a, b = t
-    raise TestFailed
-except ValueError:
-    pass
-    
-print_test("wrong size list")
-try:
-    a, b = l
-    raise TestFailed
-except ValueError:
-    pass
+    >>> st = (99,)
+    >>> sl = [100]
+    >>> a, = st
+    >>> a
+    99
+    >>> b, = sl
+    >>> b
+    100
 
+Now for some failures
 
-print_test("sequence too short")
-try:
-    a, b, c, d = Seq()
-    raise TestFailed
-except ValueError:
-    pass
+Unpacking non-sequence
 
+    >>> a, b, c = 7
+    Traceback (most recent call last):
+      ...
+    TypeError: 'int' object is not iterable
 
-print_test("sequence too long")
-try:
-    a, b = Seq()
-    raise TestFailed
-except ValueError:
-    pass
+Unpacking tuple of wrong size
 
+    >>> a, b = t
+    Traceback (most recent call last):
+      ...
+    ValueError: too many values to unpack
 
-# unpacking a sequence where the test for too long raises a different
-# kind of error
-BozoError = 'BozoError'
+Unpacking tuple of wrong size
 
-class BadSeq:
-    def __getitem__(self, i):
-        if i >= 0 and i < 3:
-            return i
-        elif i == 3:
-            raise BozoError
-        else:
-            raise IndexError
+    >>> a, b = l
+    Traceback (most recent call last):
+      ...
+    ValueError: too many values to unpack
 
-print_test("sequence too long, wrong error")
-try:
-    a, b, c, d, e = BadSeq()
-    raise TestFailed
-except BozoError:
-    pass
+Unpacking sequence too short
 
+    >>> a, b, c, d = Seq()
+    Traceback (most recent call last):
+      ...
+    ValueError: need more than 3 values to unpack
 
-print_test("sequence too short, wrong error")
-try:
-    a, b, c = BadSeq()
-    raise TestFailed
-except BozoError:
-    pass
+Unpacking sequence too long
+
+    >>> a, b = Seq()
+    Traceback (most recent call last):
+      ...
+    ValueError: too many values to unpack
+
+Unpacking a sequence where the test for too long raises a different kind of
+error
+
+    >>> class BozoError(Exception):
+    ...     pass
+    ...
+    >>> class BadSeq:
+    ...     def __getitem__(self, i):
+    ...         if i >= 0 and i < 3:
+    ...             return i
+    ...         elif i == 3:
+    ...             raise BozoError
+    ...         else:
+    ...             raise IndexError
+    ...
+
+Trigger code while not expecting an IndexError (unpack sequence too long, wrong
+error)
+
+    >>> a, b, c, d, e = BadSeq()
+    Traceback (most recent call last):
+      ...
+    BozoError
+
+Trigger code while expecting an IndexError (unpack sequence too short, wrong
+error)
+
+    >>> a, b, c = BadSeq()
+    Traceback (most recent call last):
+      ...
+    BozoError
+
+"""
+
+__test__ = {'doctests' : doctests}
+
+def test_main(verbose=False):
+    import sys
+    from test import test_support
+    from test import test_unpack
+    test_support.run_doctest(test_unpack, verbose)
+
+if __name__ == "__main__":
+    test_main(verbose=True)

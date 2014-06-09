@@ -1,6 +1,6 @@
 import os, sys, string, random, tempfile, unittest
 
-from test_support import run_unittest
+from test.test_support import run_unittest, is_jython
 
 class TestImport(unittest.TestCase):
 
@@ -17,13 +17,13 @@ class TestImport(unittest.TestCase):
                 del sys.modules[module_name]
 
     def setUp(self):
-        self.test_dir = tempfile.mktemp()
-        os.mkdir(self.test_dir)
+        self.test_dir = tempfile.mkdtemp()
         sys.path.append(self.test_dir)
         self.package_dir = os.path.join(self.test_dir,
                                         self.package_name)
         os.mkdir(self.package_dir)
-        open(os.path.join(self.package_dir, '__init__'+os.extsep+'py'), 'w')
+        open(os.path.join(self.package_dir, '__init__'+os.extsep+'py'),
+             'w').close()
         self.module_path = os.path.join(self.package_dir, 'foo'+os.extsep+'py')
 
     def tearDown(self):
@@ -36,10 +36,16 @@ class TestImport(unittest.TestCase):
         self.remove_modules()
 
     def rewrite_file(self, contents):
-        for extension in "co":
-            compiled_path = self.module_path + extension
+        if is_jython:
+            compiled_path = self.module_path.replace(".", "$") + ".class"
             if os.path.exists(compiled_path):
                 os.remove(compiled_path)
+        else:
+            for extension in "co":
+                compiled_path = self.module_path + extension
+                if os.path.exists(compiled_path):
+                    os.remove(compiled_path)
+
         f = open(self.module_path, 'w')
         f.write(contents)
         f.close()
@@ -57,8 +63,9 @@ class TestImport(unittest.TestCase):
                      not hasattr(sys.modules[self.package_name], 'foo'))
 
         # ...make up a variable name that isn't bound in __builtins__
+        import __builtin__
         var = 'a'
-        while var in dir(__builtins__):
+        while var in dir(__builtin__):
             var += random.choose(string.letters)
 
         # ...make a module that just contains that
@@ -67,12 +74,11 @@ class TestImport(unittest.TestCase):
         try: __import__(self.module_name)
         except NameError: pass
         else: raise RuntimeError, 'Failed to induce NameError.'
-        module = __import__(self.module_name).foo
 
         # ...now  change  the module  so  that  the NameError  doesn't
         # happen
         self.rewrite_file('%s = 1' % var)
-        reload(module)
+        module = __import__(self.module_name).foo
         self.assertEqual(getattr(module, var), 1)
 
 

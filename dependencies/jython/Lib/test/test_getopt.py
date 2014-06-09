@@ -3,7 +3,8 @@
 
 import getopt
 from getopt import GetoptError
-from test_support import verify, verbose
+from test.test_support import verify, verbose, run_doctest
+import os
 
 def expectException(teststr, expected, failure=AssertionError):
     """Executes a statement passed in teststr, and raises an exception
@@ -14,6 +15,10 @@ def expectException(teststr, expected, failure=AssertionError):
         pass
     else:
         raise failure
+
+old_posixly_correct = os.environ.get("POSIXLY_CORRECT")
+if old_posixly_correct is not None:
+    del os.environ["POSIXLY_CORRECT"]
 
 if verbose:
     print 'Running tests on getopt.short_has_arg'
@@ -105,6 +110,71 @@ verify(args == ['arg1', 'arg2'])
 expectException(
     "opts, args = getopt.getopt(cmdline, 'a:b', ['alpha', 'beta'])",
     GetoptError)
+
+# Test handling of GNU style scanning mode.
+if verbose:
+    print 'Running tests on getopt.gnu_getopt'
+cmdline = ['-a', 'arg1', '-b', '1', '--alpha', '--beta=2']
+# GNU style
+opts, args = getopt.gnu_getopt(cmdline, 'ab:', ['alpha', 'beta='])
+verify(opts == [('-a', ''), ('-b', '1'), ('--alpha', ''), ('--beta', '2')])
+verify(args == ['arg1'])
+# Posix style via +
+opts, args = getopt.gnu_getopt(cmdline, '+ab:', ['alpha', 'beta='])
+verify(opts == [('-a', '')])
+verify(args == ['arg1', '-b', '1', '--alpha', '--beta=2'])
+# Posix style via POSIXLY_CORRECT
+os.environ["POSIXLY_CORRECT"] = "1"
+opts, args = getopt.gnu_getopt(cmdline, 'ab:', ['alpha', 'beta='])
+verify(opts == [('-a', '')])
+verify(args == ['arg1', '-b', '1', '--alpha', '--beta=2'])
+
+
+if old_posixly_correct is None:
+    del os.environ["POSIXLY_CORRECT"]
+else:
+    os.environ["POSIXLY_CORRECT"] = old_posixly_correct
+
+#------------------------------------------------------------------------------
+
+libreftest = """
+Examples from the Library Reference:  Doc/lib/libgetopt.tex
+
+An example using only Unix style options:
+
+
+>>> import getopt
+>>> args = '-a -b -cfoo -d bar a1 a2'.split()
+>>> args
+['-a', '-b', '-cfoo', '-d', 'bar', 'a1', 'a2']
+>>> optlist, args = getopt.getopt(args, 'abc:d:')
+>>> optlist
+[('-a', ''), ('-b', ''), ('-c', 'foo'), ('-d', 'bar')]
+>>> args
+['a1', 'a2']
+
+Using long option names is equally easy:
+
+
+>>> s = '--condition=foo --testing --output-file abc.def -x a1 a2'
+>>> args = s.split()
+>>> args
+['--condition=foo', '--testing', '--output-file', 'abc.def', '-x', 'a1', 'a2']
+>>> optlist, args = getopt.getopt(args, 'x', [
+...     'condition=', 'output-file=', 'testing'])
+>>> optlist
+[('--condition', 'foo'), ('--testing', ''), ('--output-file', 'abc.def'), ('-x', '')]
+>>> args
+['a1', 'a2']
+
+"""
+
+__test__ = {'libreftest' : libreftest}
+
+import sys
+run_doctest(sys.modules[__name__], verbose)
+
+#------------------------------------------------------------------------------
 
 if verbose:
     print "Module getopt: tests completed successfully."

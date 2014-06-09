@@ -4,7 +4,7 @@
 """
 
 import errno
-from test_support import verbose
+from test.test_support import verbose
 
 errors = ['E2BIG', 'EACCES', 'EADDRINUSE', 'EADDRNOTAVAIL', 'EADV',
           'EAFNOSUPPORT', 'EAGAIN', 'EALREADY', 'EBADE', 'EBADF',
@@ -34,7 +34,7 @@ errors = ['E2BIG', 'EACCES', 'EADDRINUSE', 'EADDRNOTAVAIL', 'EADV',
           'EUSERS', 'EWOULDBLOCK', 'EXDEV', 'EXFULL']
 
 #
-# This is is a wee bit bogus since the module only conditionally adds
+# This is a wee bit bogus since the module only conditionally adds
 # errno constants if they have been defined by errno.h  However, this
 # test seems to work on SGI, Sparc & intel Solaris, and linux.
 #

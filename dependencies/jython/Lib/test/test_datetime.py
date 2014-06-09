@@ -3,25 +3,25 @@
 See http://www.zope.org/Members/fdrake/DateTimeWiki/TestCases
 """
 
+import os
 import sys
 import pickle
 import cPickle
 import unittest
+
+from test import test_support
 
 from datetime import MINYEAR, MAXYEAR
 from datetime import timedelta
 from datetime import tzinfo
 from datetime import time
 from datetime import date, datetime
-from test import test_support
 
-# Before Python 2.3, proto=2 was taken as a synonym for proto=1.
-# cPickle not updated in Jython so commenting out.
 pickle_choices = [(pickler, unpickler, proto)
-                  for pickler in pickle, #cPickle
-                  for unpickler in pickle, #cPickle
+                  for pickler in pickle, cPickle
+                  for unpickler in pickle, cPickle
                   for proto in range(3)]
-#assert len(pickle_choices) == 2*2*3
+assert len(pickle_choices) == 2*2*3
 
 # An arbitrary collection of objects of non-datetime types, for testing
 # mixed-type comparisons.
@@ -97,7 +97,6 @@ class TestTZInfo(unittest.TestCase):
             self.assertEqual(fo.tzname(dt), "Three")
             self.assertEqual(fo.dst(dt), timedelta(minutes=42))
 
-    #XXX: pickling not working for jython yet.
     def test_pickling_base(self):
         # There's no point to pickling tzinfo objects on their own (they
         # carry no data), but they need to be picklable anyway else
@@ -105,11 +104,10 @@ class TestTZInfo(unittest.TestCase):
         orig = tzinfo.__new__(tzinfo)
         self.failUnless(type(orig) is tzinfo)
         for pickler, unpickler, proto in pickle_choices:
-                green = pickler.dumps(orig, proto)
-                derived = unpickler.loads(green)
-                self.failUnless(type(derived) is tzinfo)
+            green = pickler.dumps(orig, proto)
+            derived = unpickler.loads(green)
+            self.failUnless(type(derived) is tzinfo)
 
-    #XXX: pickling not working for jython yet.
     def test_pickling_subclass(self):
         # Make sure we can pickle/unpickle an instance of a subclass.
         offset = timedelta(minutes=-300)
@@ -119,12 +117,12 @@ class TestTZInfo(unittest.TestCase):
         self.assertEqual(orig.utcoffset(None), offset)
         self.assertEqual(orig.tzname(None), 'cookie')
         for pickler, unpickler, proto in pickle_choices:
-                green = pickler.dumps(orig, proto)
-                derived = unpickler.loads(green)
-                self.failUnless(isinstance(derived, tzinfo))
-                self.failUnless(type(derived) is PicklableFixedOffset)
-                self.assertEqual(derived.utcoffset(None), offset)
-                self.assertEqual(derived.tzname(None), 'cookie')
+            green = pickler.dumps(orig, proto)
+            derived = unpickler.loads(green)
+            self.failUnless(isinstance(derived, tzinfo))
+            self.failUnless(type(derived) is PicklableFixedOffset)
+            self.assertEqual(derived.utcoffset(None), offset)
+            self.assertEqual(derived.tzname(None), 'cookie')
 
 #############################################################################
 # Base clase for testing a particular aspect of timedelta, time, date and
@@ -299,7 +297,6 @@ class TestTimeDelta(HarmlessMixedComparison):
         self.assertEqual(len(d), 1)
         self.assertEqual(d[t1], 2)
 
-    #XXX: pickling not working for jython yet.
     def test_pickling(self):
         args = 12, 34, 56
         orig = timedelta(*args)
@@ -447,6 +444,37 @@ class TestTimeDelta(HarmlessMixedComparison):
         self.failUnless(timedelta(microseconds=1))
         self.failUnless(not timedelta(0))
 
+    def test_subclass_timedelta(self):
+
+        class T(timedelta):
+            @staticmethod
+            def from_td(td):
+                return T(td.days, td.seconds, td.microseconds)
+
+            def as_hours(self):
+                sum = (self.days * 24 +
+                       self.seconds / 3600.0 +
+                       self.microseconds / 3600e6)
+                return round(sum)
+
+        t1 = T(days=1)
+        self.assert_(type(t1) is T)
+        self.assertEqual(t1.as_hours(), 24)
+
+        t2 = T(days=-1, seconds=-3600)
+        self.assert_(type(t2) is T)
+        self.assertEqual(t2.as_hours(), -25)
+
+        t3 = t1 + t2
+        self.assert_(type(t3) is timedelta)
+        t4 = T.from_td(t3)
+        self.assert_(type(t4) is T)
+        self.assertEqual(t3.days, t4.days)
+        self.assertEqual(t3.seconds, t4.seconds)
+        self.assertEqual(t3.microseconds, t4.microseconds)
+        self.assertEqual(str(t3), str(t4))
+        self.assertEqual(t4.as_hours(), -1)
+
 #############################################################################
 # date tests
 
@@ -482,6 +510,9 @@ class TestDateOnly(unittest.TestCase):
 
         dt2 = dt - delta
         self.assertEqual(dt2, dt - days)
+
+class SubclassDate(date):
+    sub_var = 1
 
 class TestDate(HarmlessMixedComparison):
     # Tests here should pass for both dates and datetimes, except for a
@@ -521,8 +552,8 @@ class TestDate(HarmlessMixedComparison):
             fromord = self.theclass.fromordinal(n)
             self.assertEqual(d, fromord)
             if hasattr(fromord, "hour"):
-                # if we're checking something fancier than a date, verify
-                # the extra fields have been zeroed out
+            # if we're checking something fancier than a date, verify
+            # the extra fields have been zeroed out
                 self.assertEqual(fromord.hour, 0)
                 self.assertEqual(fromord.minute, 0)
                 self.assertEqual(fromord.second, 0)
@@ -700,6 +731,15 @@ class TestDate(HarmlessMixedComparison):
         self.assertEqual(d.month, month)
         self.assertEqual(d.day, day)
 
+    def test_insane_fromtimestamp(self):
+        # It's possible that some platform maps time_t to double,
+        # and that this test will fail there.  This test should
+        # exempt such platforms (provided they return reasonable
+        # results!).
+        for insane in -1e200, 1e200:
+            self.assertRaises(ValueError, self.theclass.fromtimestamp,
+                              insane)
+
     def test_today(self):
         import time
 
@@ -804,6 +844,8 @@ class TestDate(HarmlessMixedComparison):
     def test_strftime(self):
         t = self.theclass(2005, 3, 2)
         self.assertEqual(t.strftime("m:%m d:%d y:%y"), "m:03 d:02 y:05")
+        self.assertEqual(t.strftime(""), "") # SF bug #761337
+        self.assertEqual(t.strftime('x'*1000), 'x'*1000) # SF bug #1556784
 
         self.assertRaises(TypeError, t.strftime) # needs an arg
         self.assertRaises(TypeError, t.strftime, "one", "two") # too many args
@@ -853,7 +895,6 @@ class TestDate(HarmlessMixedComparison):
             self.assertEqual(t.tm_yday, 61+i)
             self.assertEqual(t.tm_isdst, -1)
 
-    #XXX: pickling not working for jython yet.
     def test_pickling(self):
         args = 6, 7, 23
         orig = self.theclass(*args)
@@ -976,8 +1017,67 @@ class TestDate(HarmlessMixedComparison):
         base = cls(2000, 2, 29)
         self.assertRaises(ValueError, base.replace, year=2001)
 
+    def test_subclass_date(self):
+
+        class C(self.theclass):
+            theAnswer = 42
+
+            def __new__(cls, *args, **kws):
+                temp = kws.copy()
+                extra = temp.pop('extra')
+                result = self.theclass.__new__(cls, *args, **temp)
+                result.extra = extra
+                return result
+
+            def newmeth(self, start):
+                return start + self.year + self.month
+
+        args = 2003, 4, 14
+
+        dt1 = self.theclass(*args)
+        dt2 = C(*args, **{'extra': 7})
+
+        self.assertEqual(dt2.__class__, C)
+        self.assertEqual(dt2.theAnswer, 42)
+        self.assertEqual(dt2.extra, 7)
+        self.assertEqual(dt1.toordinal(), dt2.toordinal())
+        self.assertEqual(dt2.newmeth(-7), dt1.year + dt1.month - 7)
+
+    def test_pickling_subclass_date(self):
+
+        args = 6, 7, 23
+        orig = SubclassDate(*args)
+        for pickler, unpickler, proto in pickle_choices:
+            green = pickler.dumps(orig, proto)
+            derived = unpickler.loads(green)
+            self.assertEqual(orig, derived)
+
+    def test_backdoor_resistance(self):
+        # For fast unpickling, the constructor accepts a pickle string.
+        # This is a low-overhead backdoor.  A user can (by intent or
+        # mistake) pass a string directly, which (if it's the right length)
+        # will get treated like a pickle, and bypass the normal sanity
+        # checks in the constructor.  This can create insane objects.
+        # The constructor doesn't want to burn the time to validate all
+        # fields, but does check the month field.  This stops, e.g.,
+        # datetime.datetime('1995-03-25') from yielding an insane object.
+        base = '1995-03-25'
+        if not issubclass(self.theclass, datetime):
+            base = base[:4]
+        for month_byte in '9', chr(0), chr(13), '\xff':
+            self.assertRaises(TypeError, self.theclass,
+                                         base[:2] + month_byte + base[3:])
+        for ord_byte in range(1, 13):
+            # This shouldn't blow up because of the month byte alone.  If
+            # the implementation changes to do more-careful checking, it may
+            # blow up because other fields are insane.
+            self.theclass(base[:2] + chr(ord_byte) + base[3:])
+
 #############################################################################
 # datetime tests
+
+class SubclassDatetime(datetime):
+    sub_var = 1
 
 class TestDateTime(TestDate):
 
@@ -1069,6 +1169,17 @@ class TestDateTime(TestDate):
         dt2 = dt1 + us
         self.assertEqual(dt2 - dt1, us)
         self.assert_(dt1 < dt2)
+
+    def test_strftime_with_bad_tzname_replace(self):
+        # verify ok if tzinfo.tzname().replace() returns a non-string
+        class MyTzInfo(FixedOffset):
+            def tzname(self, dt):
+                class MyStr(str):
+                    def replace(self, *args):
+                        return None
+                return MyStr('name')
+        t = self.theclass(2005, 3, 2, 0, 0, 0, 0, MyTzInfo(3, 'name'))
+        self.assertRaises(TypeError, t.strftime, '%Z')
 
     def test_bad_constructor_arguments(self):
         # bad years
@@ -1206,7 +1317,6 @@ class TestDateTime(TestDate):
         # datetime + datetime is senseless
         self.assertRaises(TypeError, lambda: a + a)
 
-    #XXX: pickling not working for jython yet.
     def test_pickling(self):
         args = 6, 7, 23, 20, 59, 1, 64**2
         orig = self.theclass(*args)
@@ -1215,7 +1325,6 @@ class TestDateTime(TestDate):
             derived = unpickler.loads(green)
             self.assertEqual(orig, derived)
 
-    #XXX: pickling not working for jython yet.
     def test_more_pickling(self):
         a = self.theclass(2003, 2, 7, 16, 48, 37, 444116)
         s = pickle.dumps(a)
@@ -1223,6 +1332,14 @@ class TestDateTime(TestDate):
         self.assertEqual(b.year, 2003)
         self.assertEqual(b.month, 2)
         self.assertEqual(b.day, 7)
+
+    def test_pickling_subclass_datetime(self):
+        args = 6, 7, 23, 20, 59, 1, 64**2
+        orig = SubclassDatetime(*args)
+        for pickler, unpickler, proto in pickle_choices:
+            green = pickler.dumps(orig, proto)
+            derived = unpickler.loads(green)
+            self.assertEqual(orig, derived)
 
     def test_more_compare(self):
         # The test_compare() inherited from TestDate covers the error cases.
@@ -1285,6 +1402,45 @@ class TestDateTime(TestDate):
         got = self.theclass.utcfromtimestamp(ts)
         self.verify_field_equality(expected, got)
 
+    def test_microsecond_rounding(self):
+        # Test whether fromtimestamp "rounds up" floats that are less
+        # than one microsecond smaller than an integer.
+        self.assertEquals(self.theclass.fromtimestamp(0.9999999),
+                          self.theclass.fromtimestamp(1))
+
+    def test_insane_fromtimestamp(self):
+        # It's possible that some platform maps time_t to double,
+        # and that this test will fail there.  This test should
+        # exempt such platforms (provided they return reasonable
+        # results!).
+        for insane in -1e200, 1e200:
+            self.assertRaises(ValueError, self.theclass.fromtimestamp,
+                              insane)
+
+    def test_insane_utcfromtimestamp(self):
+        # It's possible that some platform maps time_t to double,
+        # and that this test will fail there.  This test should
+        # exempt such platforms (provided they return reasonable
+        # results!).
+        for insane in -1e200, 1e200:
+            self.assertRaises(ValueError, self.theclass.utcfromtimestamp,
+                              insane)
+
+    def test_negative_float_fromtimestamp(self):
+        # Windows doesn't accept negative timestamps
+        if os.name == "nt":
+            return
+        # The result is tz-dependent; at least test that this doesn't
+        # fail (like it did before bug 1646728 was fixed).
+        self.theclass.fromtimestamp(-1.05)
+
+    def test_negative_float_utcfromtimestamp(self):
+        # Windows doesn't accept negative timestamps
+        if os.name == "nt":
+            return
+        d = self.theclass.utcfromtimestamp(-1.05)
+        self.assertEquals(d, self.theclass(1969, 12, 31, 23, 59, 58, 950000))
+
     def test_utcnow(self):
         import time
 
@@ -1298,6 +1454,15 @@ class TestDateTime(TestDate):
                 break
             # Else try again a few times.
         self.failUnless(abs(from_timestamp - from_now) <= tolerance)
+
+    def test_strptime(self):
+        import time
+
+        string = '2004-12-01 13:02:47'
+        format = '%Y-%m-%d %H:%M:%S'
+        expected = self.theclass(*(time.strptime(string, format)[0:6]))
+        got = self.theclass.strptime(string, format)
+        self.assertEqual(expected, got)
 
     def test_more_timetuple(self):
         # This tests fields beyond those tested by the TestDate.test_timetuple.
@@ -1400,6 +1565,36 @@ class TestDateTime(TestDate):
             def dst(self, dt): return None
         alsobog = AlsoBogus()
         self.assertRaises(ValueError, dt.astimezone, alsobog) # also naive
+
+    def test_subclass_datetime(self):
+
+        class C(self.theclass):
+            theAnswer = 42
+
+            def __new__(cls, *args, **kws):
+                temp = kws.copy()
+                extra = temp.pop('extra')
+                result = self.theclass.__new__(cls, *args, **temp)
+                result.extra = extra
+                return result
+
+            def newmeth(self, start):
+                return start + self.year + self.month + self.second
+
+        args = 2003, 4, 14, 12, 13, 41
+
+        dt1 = self.theclass(*args)
+        dt2 = C(*args, **{'extra': 7})
+
+        self.assertEqual(dt2.__class__, C)
+        self.assertEqual(dt2.theAnswer, 42)
+        self.assertEqual(dt2.extra, 7)
+        self.assertEqual(dt1.toordinal(), dt2.toordinal())
+        self.assertEqual(dt2.newmeth(-7), dt1.year + dt1.month +
+                                          dt1.second - 7)
+
+class SubclassTime(time):
+    sub_var = 1
 
 class TestTime(HarmlessMixedComparison):
 
@@ -1593,10 +1788,17 @@ class TestTime(HarmlessMixedComparison):
         self.assert_(isinstance(self.theclass.resolution, timedelta))
         self.assert_(self.theclass.max > self.theclass.min)
 
-    #XXX: pickling not working for jython yet.
     def test_pickling(self):
         args = 20, 59, 16, 64**2
         orig = self.theclass(*args)
+        for pickler, unpickler, proto in pickle_choices:
+            green = pickler.dumps(orig, proto)
+            derived = unpickler.loads(green)
+            self.assertEqual(orig, derived)
+
+    def test_pickling_subclass_time(self):
+        args = 20, 59, 16, 64**2
+        orig = SubclassTime(*args)
         for pickler, unpickler, proto in pickle_choices:
             green = pickler.dumps(orig, proto)
             derived = unpickler.loads(green)
@@ -1635,6 +1837,39 @@ class TestTime(HarmlessMixedComparison):
         self.assertRaises(ValueError, base.replace, minute=-1)
         self.assertRaises(ValueError, base.replace, second=100)
         self.assertRaises(ValueError, base.replace, microsecond=1000000)
+
+    def test_subclass_time(self):
+
+        class C(self.theclass):
+            theAnswer = 42
+
+            def __new__(cls, *args, **kws):
+                temp = kws.copy()
+                extra = temp.pop('extra')
+                result = self.theclass.__new__(cls, *args, **temp)
+                result.extra = extra
+                return result
+
+            def newmeth(self, start):
+                return start + self.hour + self.second
+
+        args = 4, 5, 6
+
+        dt1 = self.theclass(*args)
+        dt2 = C(*args, **{'extra': 7})
+
+        self.assertEqual(dt2.__class__, C)
+        self.assertEqual(dt2.theAnswer, 42)
+        self.assertEqual(dt2.extra, 7)
+        self.assertEqual(dt1.isoformat(), dt2.isoformat())
+        self.assertEqual(dt2.newmeth(-7), dt1.hour + dt1.second - 7)
+
+    def test_backdoor_resistance(self):
+        # see TestDate.test_backdoor_resistance().
+        base = '2:59.0'
+        for hour_byte in ' ', '9', chr(24), '\xff':
+            self.assertRaises(TypeError, self.theclass,
+                                         hour_byte + base[1:])
 
 # A mixin for classes with a tzinfo= argument.  Subclasses must define
 # theclass as a class atribute, and theclass(1, 1, 1, tzinfo=whatever)
@@ -1901,7 +2136,6 @@ class TestTimeTZ(TestTime, TZInfoBase):
         t2 = self.theclass(23, 48, 6, 100, tzinfo=FixedOffset(-1010, ""))
         self.assertEqual(hash(t1), hash(t2))
 
-    #XXX: pickling not working for jython yet.
     def test_pickling(self):
         # Try one without a tzinfo.
         args = 20, 59, 16, 64**2
@@ -2019,6 +2253,32 @@ class TestTimeTZ(TestTime, TZInfoBase):
         t2 = t2.replace(tzinfo=Varies())
         self.failUnless(t1 < t2)  # t1's offset counter still going up
 
+    def test_subclass_timetz(self):
+
+        class C(self.theclass):
+            theAnswer = 42
+
+            def __new__(cls, *args, **kws):
+                temp = kws.copy()
+                extra = temp.pop('extra')
+                result = self.theclass.__new__(cls, *args, **temp)
+                result.extra = extra
+                return result
+
+            def newmeth(self, start):
+                return start + self.hour + self.second
+
+        args = 4, 5, 6, 500, FixedOffset(-300, "EST", 1)
+
+        dt1 = self.theclass(*args)
+        dt2 = C(*args, **{'extra': 7})
+
+        self.assertEqual(dt2.__class__, C)
+        self.assertEqual(dt2.theAnswer, 42)
+        self.assertEqual(dt2.extra, 7)
+        self.assertEqual(dt1.utcoffset(), dt2.utcoffset())
+        self.assertEqual(dt2.newmeth(-7), dt1.hour + dt1.second - 7)
+
 
 # Testing datetime objects with a non-None tzinfo.
 
@@ -2102,7 +2362,6 @@ class TestDateTimeTZ(TestDateTime, TZInfoBase):
         t2 = self.theclass(2, 2, 2, tzinfo=FixedOffset(0, ""))
         self.assertRaises(ValueError, lambda: t1 == t2)
 
-    #XXX: pickling not working for jython yet.
     def test_pickling(self):
         # Try one without a tzinfo.
         args = 6, 7, 23, 20, 59, 1, 64**2
@@ -2603,6 +2862,32 @@ class TestDateTimeTZ(TestDateTime, TZInfoBase):
         t2 = t2.replace(tzinfo=Varies())
         self.failUnless(t1 < t2)  # t1's offset counter still going up
 
+    def test_subclass_datetimetz(self):
+
+        class C(self.theclass):
+            theAnswer = 42
+
+            def __new__(cls, *args, **kws):
+                temp = kws.copy()
+                extra = temp.pop('extra')
+                result = self.theclass.__new__(cls, *args, **temp)
+                result.extra = extra
+                return result
+
+            def newmeth(self, start):
+                return start + self.hour + self.year
+
+        args = 2002, 12, 31, 4, 5, 6, 500, FixedOffset(-300, "EST", 1)
+
+        dt1 = self.theclass(*args)
+        dt2 = C(*args, **{'extra': 7})
+
+        self.assertEqual(dt2.__class__, C)
+        self.assertEqual(dt2.theAnswer, 42)
+        self.assertEqual(dt2.extra, 7)
+        self.assertEqual(dt1.utcoffset(), dt2.utcoffset())
+        self.assertEqual(dt2.newmeth(-7), dt1.hour + dt1.year - 7)
+
 # Pain to set up DST-aware tzinfo classes.
 
 def first_sunday_on_or_after(dt):
@@ -2915,6 +3200,49 @@ class TestTimezoneConversions(unittest.TestCase):
             start += HOUR
             fstart += HOUR
 
+
+#############################################################################
+# oddballs
+
+class Oddballs(unittest.TestCase):
+
+    def test_bug_1028306(self):
+        # Trying to compare a date to a datetime should act like a mixed-
+        # type comparison, despite that datetime is a subclass of date.
+        as_date = date.today()
+        as_datetime = datetime.combine(as_date, time())
+        self.assert_(as_date != as_datetime)
+        self.assert_(as_datetime != as_date)
+        self.assert_(not as_date == as_datetime)
+        self.assert_(not as_datetime == as_date)
+        self.assertRaises(TypeError, lambda: as_date < as_datetime)
+        self.assertRaises(TypeError, lambda: as_datetime < as_date)
+        self.assertRaises(TypeError, lambda: as_date <= as_datetime)
+        self.assertRaises(TypeError, lambda: as_datetime <= as_date)
+        self.assertRaises(TypeError, lambda: as_date > as_datetime)
+        self.assertRaises(TypeError, lambda: as_datetime > as_date)
+        self.assertRaises(TypeError, lambda: as_date >= as_datetime)
+        self.assertRaises(TypeError, lambda: as_datetime >= as_date)
+
+        # Neverthelss, comparison should work with the base-class (date)
+        # projection if use of a date method is forced.
+        self.assert_(as_date.__eq__(as_datetime))
+        different_day = (as_date.day + 1) % 20 + 1
+        self.assert_(not as_date.__eq__(as_datetime.replace(day=
+                                                     different_day)))
+
+        # And date should compare with other subclasses of date.  If a
+        # subclass wants to stop this, it's up to the subclass to do so.
+        date_sc = SubclassDate(as_date.year, as_date.month, as_date.day)
+        self.assertEqual(as_date, date_sc)
+        self.assertEqual(date_sc, as_date)
+
+        # Ditto for datetimes.
+        datetime_sc = SubclassDatetime(as_datetime.year, as_datetime.month,
+                                       as_date.day, 0, 0, 0)
+        self.assertEqual(as_datetime, datetime_sc)
+        self.assertEqual(datetime_sc, as_datetime)
+
 def test_suite():
     allsuites = [unittest.makeSuite(klass, 'test')
                  for klass in (TestModule,
@@ -2927,18 +3255,19 @@ def test_suite():
                                TestTimeTZ,
                                TestDateTimeTZ,
                                TestTimezoneConversions,
+                               Oddballs,
                               )
                 ]
     return unittest.TestSuite(allsuites)
 
 def test_main():
-    #import gc
+    import gc
     import sys
 
-    s = test_suite()
+    thesuite = test_suite()
     lastrc = None
     while True:
-        test_support.run_suite(s)
+        test_support.run_suite(thesuite)
         if 1:       # change to 0, under a debug build, for some leak detection
             break
         gc.collect()

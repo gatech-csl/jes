@@ -9,35 +9,48 @@ Written by Marc-Andre Lemburg (mal@lemburg.com).
 
 """#"
 
-def check(a, b):
-    if a != b:
-        print '*** check failed: %s != %s' % (repr(a), repr(b))
-    else:
-        print '%s == %s: OK' % (a, b)
+import test.test_support, unittest
 
-# test codec's full path name (see test/testcodec.py)
-codecname = 'test.testcodec'
+import codecs
 
-check(unicode('abc', codecname), u'abc')
-check(unicode('xdef', codecname), u'abcdef')
-check(unicode('defx', codecname), u'defabc')
-check(unicode('dxf', codecname), u'dabcf')
-check(unicode('dxfx', codecname), u'dabcfabc')
+# Register a search function which knows about our codec
+def codec_search_function(encoding):
+    if encoding == 'testcodec':
+        from test import testcodec
+        return tuple(testcodec.getregentry())
+    return None
 
-check(u'abc'.encode(codecname), 'abc')
-check(u'xdef'.encode(codecname), 'abcdef')
-check(u'defx'.encode(codecname), 'defabc')
-check(u'dxf'.encode(codecname), 'dabcf')
-check(u'dxfx'.encode(codecname), 'dabcfabc')
+codecs.register(codec_search_function)
 
-check(unicode('ydef', codecname), u'def')
-check(unicode('defy', codecname), u'def')
-check(unicode('dyf', codecname), u'df')
-check(unicode('dyfy', codecname), u'df')
+# test codec's name (see test/testcodec.py)
+codecname = 'testcodec'
 
-try:
-    unicode('abc\001', codecname)
-except UnicodeError:
-    print '\\001 maps to undefined: OK'
-else:
-    print '*** check failed: \\001 does not map to undefined'
+class CharmapCodecTest(unittest.TestCase):
+    def test_constructorx(self):
+        self.assertEquals(unicode('abc', codecname), u'abc')
+        self.assertEquals(unicode('xdef', codecname), u'abcdef')
+        self.assertEquals(unicode('defx', codecname), u'defabc')
+        self.assertEquals(unicode('dxf', codecname), u'dabcf')
+        self.assertEquals(unicode('dxfx', codecname), u'dabcfabc')
+
+    def test_encodex(self):
+        self.assertEquals(u'abc'.encode(codecname), 'abc')
+        self.assertEquals(u'xdef'.encode(codecname), 'abcdef')
+        self.assertEquals(u'defx'.encode(codecname), 'defabc')
+        self.assertEquals(u'dxf'.encode(codecname), 'dabcf')
+        self.assertEquals(u'dxfx'.encode(codecname), 'dabcfabc')
+
+    def test_constructory(self):
+        self.assertEquals(unicode('ydef', codecname), u'def')
+        self.assertEquals(unicode('defy', codecname), u'def')
+        self.assertEquals(unicode('dyf', codecname), u'df')
+        self.assertEquals(unicode('dyfy', codecname), u'df')
+
+    def test_maptoundefined(self):
+        self.assertRaises(UnicodeError, unicode, 'abc\001', codecname)
+
+def test_main():
+    test.test_support.run_unittest(CharmapCodecTest)
+
+if __name__ == "__main__":
+    test_main()

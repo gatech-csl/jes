@@ -3,9 +3,9 @@
    Nick Mathewson
 """
 import unittest
-from test_support import run_unittest, is_jython
+from test.test_support import run_unittest, is_jython
 
-from codeop import compile_command
+from codeop import compile_command, PyCF_DONT_IMPLY_DEDENT
 
 if is_jython:
     import sys
@@ -23,7 +23,7 @@ class CodeopTests(unittest.TestCase):
         '''succeed iff str is a valid piece of code'''
         if is_jython:
             code = compile_command(str, "<input>", symbol)
-            self.assert_(code)
+            self.assertTrue(code)
             if symbol == "single":
                 d,r = {},{}
                 saved_stdout = sys.stdout
@@ -39,7 +39,7 @@ class CodeopTests(unittest.TestCase):
                 r = { 'value': eval(str,ctx) }
             self.assertEquals(unify_callables(r),unify_callables(d))
         else:
-            expected = compile(str, "<input>", symbol)
+            expected = compile(str, "<input>", symbol, PyCF_DONT_IMPLY_DEDENT)
             self.assertEquals( compile_command(str, "<input>", symbol), expected)
 
     def assertIncomplete(self, str, symbol='single'):
@@ -52,9 +52,9 @@ class CodeopTests(unittest.TestCase):
             compile_command(str,symbol=symbol)
             self.fail("No exception thrown for invalid code")
         except SyntaxError:
-            self.assert_(is_syntax)
+            self.assertTrue(is_syntax)
         except OverflowError:
-            self.assert_(not is_syntax)
+            self.assertTrue(not is_syntax)
 
     def test_valid(self):
         av = self.assertValid
@@ -62,13 +62,15 @@ class CodeopTests(unittest.TestCase):
         # special case
         if not is_jython:
             self.assertEquals(compile_command(""),
-                            compile("pass", "<input>", 'single'))
+                            compile("pass", "<input>", 'single',
+                                    PyCF_DONT_IMPLY_DEDENT))
             self.assertEquals(compile_command("\n"),
-                            compile("pass", "<input>", 'single'))          
+                            compile("pass", "<input>", 'single',
+                                    PyCF_DONT_IMPLY_DEDENT))
         else:
             av("")
             av("\n")
-        
+
         av("a = 1")
         av("\na = 1")
         av("a = 1\n")
@@ -106,6 +108,26 @@ class CodeopTests(unittest.TestCase):
         av("\n \na**3","eval")
         av("#a\n#b\na**3","eval")
 
+        av("\n\na = 1\n\n")
+
+        av("\n\nif 1: a=1\n\n")
+
+        av("if 1:\n pass\n if 1:\n  pass\n else:\n  pass\n")
+        av("#a\n\n   \na=3\n\n")
+
+        av("\n\na**3","eval")
+        av("\n \na**3","eval")
+        av("#a\n#b\na**3","eval")
+
+        # this failed under Jython 2.2.1
+        av("def f():\n try: pass\n finally: [x for x in (1,2)]\n")
+
+        av("def f():\n pass\n#foo\n")
+
+        #XXX: works in CPython
+        if not is_jython:
+            av("@a.b.c\ndef f():\n pass\n")
+
     def test_incomplete(self):
         ai = self.assertIncomplete
 
@@ -123,9 +145,9 @@ class CodeopTests(unittest.TestCase):
         ai("if 1:")
         ai("if 1:\n")
         ai("if 1:\n pass\n if 1:\n  pass\n else:")
-        ai("if 1:\n pass\n if 1:\n  pass\n else:\n")          
-        ai("if 1:\n pass\n if 1:\n  pass\n else:\n  pass") 
-        
+        ai("if 1:\n pass\n if 1:\n  pass\n else:\n")
+        ai("if 1:\n pass\n if 1:\n  pass\n else:\n  pass")
+
         ai("def x():")
         ai("def x():\n")
         ai("def x():\n\n")
@@ -147,6 +169,95 @@ class CodeopTests(unittest.TestCase):
         ai("9+ \\","eval")
         ai("lambda z: \\","eval")
 
+        #Did not work in Jython 2.5rc2 see first issue in
+        # http://bugs.jython.org/issue1354
+        ai("if True:\n if True:\n  if True:   \n")
+
+        ai("@a(")
+        ai("@a(b")
+        ai("@a(b,")
+        ai("@a(b,c")
+        ai("@a(b,c,")
+
+        ai("from a import (")
+        ai("from a import (b")
+        ai("from a import (b,")
+        ai("from a import (b,c")
+        ai("from a import (b,c,")
+
+        ai("[");
+        ai("[a");
+        ai("[a,");
+        ai("[a,b");
+        ai("[a,b,");
+
+        ai("{");
+        ai("{a");
+        ai("{a:");
+        ai("{a:b");
+        ai("{a:b,");
+        ai("{a:b,c");
+        ai("{a:b,c:");
+        ai("{a:b,c:d");
+        ai("{a:b,c:d,");
+
+        ai("a(")
+        ai("a(b")
+        ai("a(b,")
+        ai("a(b,c")
+        ai("a(b,c,")
+
+        ai("a[")
+        ai("a[b")
+        ai("a[b,")
+        ai("a[b:")
+        ai("a[b:c")
+        ai("a[b:c:")
+        ai("a[b:c:d")
+
+        ai("def a(")
+        ai("def a(b")
+        ai("def a(b,")
+        ai("def a(b,c")
+        ai("def a(b,c,")
+
+        ai("(")
+        ai("(a")
+        ai("(a,")
+        ai("(a,b")
+        ai("(a,b,")
+
+        ai("if a:\n pass\nelif b:")
+        ai("if a:\n pass\nelif b:\n pass\nelse:")
+
+        ai("while a:")
+        ai("while a:\n pass\nelse:")
+
+        ai("for a in b:")
+        ai("for a in b:\n pass\nelse:")
+
+        ai("try:")
+        ai("try:\n pass\nexcept:")
+        ai("try:\n pass\nfinally:")
+        ai("try:\n pass\nexcept:\n pass\nfinally:")
+
+        ai("with a:")
+        ai("with a as b:")
+
+        ai("class a:")
+        ai("class a(")
+        ai("class a(b")
+        ai("class a(b,")
+        ai("class a():")
+
+        ai("[x for")
+        ai("[x for x in")
+        ai("[x for x in (")
+
+        ai("(x for")
+        ai("(x for x in")
+        ai("(x for x in (")
+
     def test_invalid(self):
         ai = self.assertInvalid
         ai("a b")
@@ -154,7 +265,7 @@ class CodeopTests(unittest.TestCase):
         ai("a @")
         ai("a b @")
         ai("a ** @")
-        
+
         ai("a = ")
         ai("a = 9 +")
 
@@ -167,7 +278,11 @@ class CodeopTests(unittest.TestCase):
         ai("a = 'a\\\n")
 
         ai("a = 1","eval")
-        ai("a = (","eval")
+
+        # XXX: PythonPartial.g needs to reject this.
+        if not is_jython:
+            ai("a = (","eval")
+
         ai("]","eval")
         ai("())","eval")
         ai("[}","eval")
@@ -175,11 +290,28 @@ class CodeopTests(unittest.TestCase):
         ai("lambda z:","eval")
         ai("a b","eval")
 
+        ai("return 2.3")
+        ai("if (a == 1 and b = 2): pass")
+        # XXX: PythonPartial.g needs to reject these.
+        if not is_jython:
+            ai("del 1")
+            ai("del ()")
+            ai("del (1,)")
+            ai("del [1]")
+            ai("del '1'")
+            ai("[i for i in range(10)] = (1, 2, 3)")
+            ai("a = 1 and b = 2");
+
     def test_filename(self):
         self.assertEquals(compile_command("a = 1\n", "abc").co_filename,
                           compile("a = 1\n", "abc", 'single').co_filename)
         self.assertNotEquals(compile_command("a = 1\n", "abc").co_filename,
                              compile("a = 1\n", "def", 'single').co_filename)
+
+    def test_no_universal_newlines(self):
+        # previously \r was translated due to universal newlines
+        code = compile_command("'\rfoo\r'", symbol='eval')
+        self.assertEqual(eval(code), '\rfoo\r')
 
 
 def test_main():

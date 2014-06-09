@@ -1,107 +1,126 @@
-import sys
-from test_support import *
+import test.test_support, unittest
 
-print_test("power (test_pow.py)", 2)
+class PowTest(unittest.TestCase):
 
-def powtest(type):
-    if (type!=float):
-        print_test("simple identities", 4)
-        for i in range(-1000, 1000):
-            assert type(i)**0 == 1
-            assert type(i)**1 == type(i)
-            if i > 0:
-            	assert type(0)**i == type(0)
-            	assert type(1)**i == type(1)
-            
-        print_test("cubes")
-        for i in range(-100, 100):
-            assert type(i)**3 == i*i*i
-    
-        print_test("powers of two")
-        pow2=1
-        for i in range(0,31):
-            assert 2**i == pow2
-            if i!=30: pow2=pow2*2
-    # modPow() has known assertion failures in all Sun 1.1 JDKs after 1.1.5.
-    # Apparently, Sun is not going to fix this for 1.1 since the bug still
-    # exists in 1.1.8 and the bug ID 4098742 is closed.
-    if sys.platform.startswith('java1.1') and type == long:
-        print_test('modpow... skipping due to JVM bugs', 4)
-        return
-    print_test("modpow", 4)
-    il, ih = -20, 20
-    jl, jh = -5,   5
-    kl, kh = -10, 10
-    compare = cmp
-    if (type==float):
-        il=1
-        compare = fcmp
-    elif (type==int):
-        jl=0
-    elif (type==long):
-        jl,jh = 0, 15
-    for i in range(il, ih+1):
-         for j in range(jl,jh+1):
-             for k in range(kl, kh+1):
-                 if (k!=0):
-                     try:
-                         assert compare(pow(type(i),j,k), type(i)**j % type(k)) == 0, '%s, %s, %s' % (i,j,k)
-                     except TypeError:
-                         if type==float:
-                             # Python 2.2 only allows 3rd arg if first 2 are integers
-                             pass
-                         else:
-                             raise
+    def powtest(self, type):
+        if type != float:
+            for i in range(-1000, 1000):
+                self.assertEquals(pow(type(i), 0), 1)
+                self.assertEquals(pow(type(i), 1), type(i))
+                self.assertEquals(pow(type(0), 1), type(0))
+                self.assertEquals(pow(type(1), 1), type(1))
 
-print_test("integers", 3)
-powtest(int)
-print_test("longs", 3)
-powtest(long)
-print_test("floats", 3)
-powtest(float)
+            for i in range(-100, 100):
+                self.assertEquals(pow(type(i), 3), i*i*i)
 
-print_test("mixed-mode", 3)
+            pow2 = 1
+            for i in range(0,31):
+                self.assertEquals(pow(2, i), pow2)
+                if i != 30 : pow2 = pow2*2
 
-assert 3**3%8 == pow(3,3,8) == 3
-assert 3**3%-8 == pow(3,3,-8) == -5
-assert 3**2%-2 == pow(3,2,-2) == -1
-assert -3**3%8 == pow(-3,3,8) == 5
-assert -3**3%-8 == pow(-3,3,-8) == -3
-assert 5**2%-8 == pow(5,2,-8) == -7
+            for othertype in int, long:
+                for i in range(-10, 0) + range(1, 10):
+                    ii = type(i)
+                    for j in range(1, 11):
+                        jj = -othertype(j)
+                        pow(ii, jj)
 
-assert 3L**3%8 == pow(3L,3,8) == 3L
-assert 3L**3%-8 == pow(3,3L,-8) == -5L
-assert 3L**2%-2 == pow(3,2,-2L) == -1L
-assert -3L**3%8 == pow(-3L,3,8) == 5L
-assert -3L**3%-8 == pow(-3,3L,-8) == -3L
-assert 5L**2%-8 == pow(5,2,-8L) == -7L
+        for othertype in int, long, float:
+            for i in range(1, 100):
+                zero = type(0)
+                exp = -othertype(i/10.0)
+                if exp == 0:
+                    continue
+                self.assertRaises(ZeroDivisionError, pow, zero, exp)
 
-# Python 2.2 only allows 3rd arg if first 2 are integers
-assert 3.**3%8 == pow(3.,3) % 8 == 3.
-assert 3.**3%-8 == pow(3,3.) % -8 == -5.
-assert 3.**2%-2 == pow(3,2) %-2. == -1.
-assert -3.**3%8 == pow(-3.,3) % 8 == 5.
-assert -3.**3%-8 == pow(-3,3.) % -8 == -3.
-assert 5.**2%-8 == pow(5,2) % -8. == -7.
+        il, ih = -20, 20
+        jl, jh = -5,   5
+        kl, kh = -10, 10
+        asseq = self.assertEqual
+        if type == float:
+            il = 1
+            asseq = self.assertAlmostEqual
+        elif type == int:
+            jl = 0
+        elif type == long:
+            jl, jh = 0, 15
+        for i in range(il, ih+1):
+            for j in range(jl, jh+1):
+                for k in range(kl, kh+1):
+                    if k != 0:
+                        if type == float or j < 0:
+                            self.assertRaises(TypeError, pow, type(i), j, k)
+                            continue
+                        asseq(
+                            pow(type(i),j,k),
+                            pow(type(i),j)% type(k)
+                        )
 
-print_test( "Validate that TypeError is thrown with 3 args if first two args aren't integers" )
-import unittest
-tc = unittest.TestCase( "fail" ) # get failUnlessRaises method
-tc.failUnlessRaises( TypeError, pow, 3., 3, 8 )
-tc.failUnlessRaises( TypeError, pow, 3, 3., 8 )
+    def test_powint(self):
+        self.powtest(int)
 
-if sys.platform.startswith('java1.1'):
-    print_test("miscellaneous... skipping due to JVM bugs", 3)
-else:    
-    print_test("miscellaneous", 3)
-    for i in range(-10, 11):
-        for j in range(0, 6):
-            for k in range(-7, 11):
-                if (j>=0 and k!=0):
-                    o=pow(i,j) % k
-                    n=pow(i,j,k)
-                    assert o == n, 'Integer mismatch: %d, %d, %d' % (i,j,k)
-                if (j>=0 and k<>0):
-                    o=pow(long(i),j) % k
-                    n=pow(long(i),j,k)
-                    assert o == n, 'Long mismatch: %s, %s, %s' % (i,j,k)
+    def test_powlong(self):
+        self.powtest(long)
+
+    def test_powfloat(self):
+        self.powtest(float)
+
+    def test_other(self):
+        # Other tests-- not very systematic
+        self.assertEquals(pow(3,3) % 8, pow(3,3,8))
+        self.assertEquals(pow(3,3) % -8, pow(3,3,-8))
+        self.assertEquals(pow(3,2) % -2, pow(3,2,-2))
+        self.assertEquals(pow(-3,3) % 8, pow(-3,3,8))
+        self.assertEquals(pow(-3,3) % -8, pow(-3,3,-8))
+        self.assertEquals(pow(5,2) % -8, pow(5,2,-8))
+
+        self.assertEquals(pow(3L,3L) % 8, pow(3L,3L,8))
+        self.assertEquals(pow(3L,3L) % -8, pow(3L,3L,-8))
+        self.assertEquals(pow(3L,2) % -2, pow(3L,2,-2))
+        self.assertEquals(pow(-3L,3L) % 8, pow(-3L,3L,8))
+        self.assertEquals(pow(-3L,3L) % -8, pow(-3L,3L,-8))
+        self.assertEquals(pow(5L,2) % -8, pow(5L,2,-8))
+
+        for i in range(-10, 11):
+            for j in range(0, 6):
+                for k in range(-7, 11):
+                    if j >= 0 and k != 0:
+                        self.assertEquals(
+                            pow(i,j) % k,
+                            pow(i,j,k)
+                        )
+                    if j >= 0 and k != 0:
+                        self.assertEquals(
+                            pow(long(i),j) % k,
+                            pow(long(i),j,k)
+                        )
+
+    def test_bug643260(self):
+        class TestRpow:
+            def __rpow__(self, other):
+                return None
+        None ** TestRpow() # Won't fail when __rpow__ invoked.  SF bug #643260.
+
+    def test_bug705231(self):
+        # -1.0 raised to an integer should never blow up.  It did if the
+        # platform pow() was buggy, and Python didn't worm around it.
+        eq = self.assertEquals
+        a = -1.0
+        eq(pow(a, 1.23e167), 1.0)
+        eq(pow(a, -1.23e167), 1.0)
+        for b in range(-10, 11):
+            eq(pow(a, float(b)), b & 1 and -1.0 or 1.0)
+        for n in range(0, 100):
+            fiveto = float(5 ** n)
+            # For small n, fiveto will be odd.  Eventually we run out of
+            # mantissa bits, though, and thereafer fiveto will be even.
+            expected = fiveto % 2.0 and -1.0 or 1.0
+            eq(pow(a, fiveto), expected)
+            eq(pow(a, -fiveto), expected)
+        eq(expected, 1.0)   # else we didn't push fiveto to evenness
+
+def test_main():
+    test.test_support.run_unittest(PowTest)
+
+if __name__ == "__main__":
+    test_main()

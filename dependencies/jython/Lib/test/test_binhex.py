@@ -6,16 +6,15 @@
 """
 import binhex
 import os
-import tempfile
-import test_support
 import unittest
+from test import test_support
 
 
 class BinHexTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.fname1 = tempfile.mktemp()
-        self.fname2 = tempfile.mktemp()
+        self.fname1 = test_support.TESTFN + "1"
+        self.fname2 = test_support.TESTFN + "2"
 
     def tearDown(self):
         try: os.unlink(self.fname1)

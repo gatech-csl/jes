@@ -1,7 +1,14 @@
 # Python test set -- part 1, grammar.
 # This just tests whether the parser accepts them all.
 
-from test_support import *
+# NOTE: When you run this test as a script from the command line, you
+# get warnings about certain hex/oct constants.  Since those are
+# issued by the parser, you can't suppress them by adding a
+# filterwarnings() call to this module.  Therefore, to shut up the
+# regression test, the filterwarnings() call has been added to
+# regrtest.py.
+
+from test.test_support import TestFailed, verify, vereq, check_syntax
 import sys
 
 print '1. Parser'
@@ -30,26 +37,28 @@ try:
 except ImportError:
     maxint = 2147483647
 if maxint == 2147483647:
-    if -2147483647-1 != 020000000000: raise TestFailed, 'max negative int'
+    # The following test will start to fail in Python 2.4;
+    # change the 020000000000 to -020000000000
+    if -2147483647-1 != -020000000000: raise TestFailed, 'max negative int'
     # XXX -2147483648
-    if 037777777777 != -1: raise TestFailed, 'oct -1'
-    if 0xffffffff != -1: raise TestFailed, 'hex -1'
+    if 037777777777 < 0: raise TestFailed, 'large oct'
+    if 0xffffffff < 0: raise TestFailed, 'large hex'
     for s in '2147483648', '040000000000', '0x100000000':
         try:
             x = eval(s)
         except OverflowError:
-            print "OverflowError on huge integer literal " + `s`
+            print "OverflowError on huge integer literal " + repr(s)
 elif eval('maxint == 9223372036854775807'):
-    if eval('-9223372036854775807-1 != 01000000000000000000000'):
+    if eval('-9223372036854775807-1 != -01000000000000000000000'):
         raise TestFailed, 'max negative int'
-    if eval('01777777777777777777777') != -1: raise TestFailed, 'oct -1'
-    if eval('0xffffffffffffffff') != -1: raise TestFailed, 'hex -1'
+    if eval('01777777777777777777777') < 0: raise TestFailed, 'large oct'
+    if eval('0xffffffffffffffff') < 0: raise TestFailed, 'large hex'
     for s in '9223372036854775808', '02000000000000000000000', \
              '0x10000000000000000':
         try:
             x = eval(s)
         except OverflowError:
-            print "OverflowError on huge integer literal " + `s`
+            print "OverflowError on huge integer literal " + repr(s)
 else:
     print 'Weird maxint value', maxint
 
@@ -148,28 +157,31 @@ def f2(one_argument): pass
 def f3(two, arguments): pass
 def f4(two, (compound, (argument, list))): pass
 def f5((compound, first), two): pass
-verify(f2.func_code.co_varnames == ('one_argument',))
-verify(f3.func_code.co_varnames == ('two', 'arguments'))
+vereq(f2.func_code.co_varnames, ('one_argument',))
+vereq(f3.func_code.co_varnames, ('two', 'arguments'))
 if sys.platform.startswith('java'):
-    verify(f4.func_code.co_varnames ==
+    vereq(f4.func_code.co_varnames,
            ('two', '(compound, (argument, list))', 'compound', 'argument',
                         'list',))
-    verify(f5.func_code.co_varnames ==
+    vereq(f5.func_code.co_varnames,
            ('(compound, first)', 'two', 'compound', 'first'))
 else:
-    verify(f4.func_code.co_varnames == ('two', '.2', 'compound',
-                                        'argument',  'list'))
-    verify(f5.func_code.co_varnames == ('.0', 'two', 'compound', 'first'))
+    vereq(f4.func_code.co_varnames,
+          ('two', '.1', 'compound', 'argument',  'list'))
+    vereq(f5.func_code.co_varnames,
+          ('.0', 'two', 'compound', 'first'))
 def a1(one_arg,): pass
 def a2(two, args,): pass
 def v0(*rest): pass
 def v1(a, *rest): pass
 def v2(a, b, *rest): pass
 def v3(a, (b, c), *rest): return a, b, c, rest
+# ceval unpacks the formal arguments into the first argcount names;
+# thus, the names nested inside tuples must appear after these names.
 if sys.platform.startswith('java'):
     verify(v3.func_code.co_varnames == ('a', '(b, c)', 'rest', 'b', 'c'))
 else:
-    verify(v3.func_code.co_varnames == ('a', '.2', 'rest', 'b', 'c'))
+    vereq(v3.func_code.co_varnames, ('a', '.1', 'rest', 'b', 'c'))
 verify(v3(1, (2, 3), 4) == (1, 2, 3, (4,)))
 def d01(a=1): pass
 d01()
@@ -243,6 +255,14 @@ d22v(1, 2, 3, 4, 5)
 d22v(*(1, 2, 3, 4))
 d22v(1, 2, *(3, 4, 5))
 d22v(1, *(2, 3), **{'d': 4})
+def d31v((x)): pass
+d31v(1)
+def d32v((x,)): pass
+d32v((1,))
+
+# Check ast errors in *args and *kwargs
+check_syntax("f(*g(1=2))")
+check_syntax("f(**g(1=2))")
 
 ### lambdef: 'lambda' [varargslist] ':' test
 print 'lambdef'
@@ -257,6 +277,7 @@ l5 = lambda x, y, z=2: x + y + z
 verify(l5(1, 2) == 5)
 verify(l5(1, 2, 3) == 6)
 check_syntax("lambda x: x = 2")
+check_syntax("lambda (None,): None")
 
 ### stmt: simple_stmt | compound_stmt
 # Tested below
@@ -264,6 +285,10 @@ check_syntax("lambda x: x = 2")
 ### simple_stmt: small_stmt (';' small_stmt)* [';']
 print 'simple_stmt'
 x = 1; pass; del x
+def foo():
+    # verify statments that end with semi-colons
+    x = 1; pass; del x;
+foo()
 
 ### small_stmt: expr_stmt | print_stmt  | pass_stmt | del_stmt | flow_stmt | import_stmt | global_stmt | access_stmt | exec_stmt
 # Tested below
@@ -401,6 +426,10 @@ def g1(): return
 def g2(): return 1
 g1()
 x = g2()
+check_syntax("class foo:return 1")
+
+print 'yield_stmt'
+check_syntax("class foo:yield 1")
 
 print 'raise_stmt' # 'raise' test [',' test]
 try: raise RuntimeError, 'just testing'
@@ -408,12 +437,16 @@ except RuntimeError: pass
 try: raise KeyboardInterrupt
 except KeyboardInterrupt: pass
 
-print 'import_stmt' # 'import' NAME (',' NAME)* | 'from' NAME 'import' ('*' | NAME (',' NAME)*)
+print 'import_name' # 'import' dotted_as_names
 import sys
 import time, sys
+print 'import_from' # 'from' dotted_name 'import' ('*' | '(' import_as_names ')' | import_as_names)
 from time import time
+from time import (time)
 from sys import *
 from sys import path, argv
+from sys import (path, argv)
+from sys import (path, argv,)
 
 print 'global_stmt' # 'global' NAME (',' NAME)*
 def f():
@@ -483,6 +516,15 @@ while 0: pass
 while 0: pass
 else: pass
 
+# Issue1920: "while 0" is optimized away,
+# ensure that the "else" clause is still present.
+x = 0
+while 0:
+    x = 1
+else:
+    x = 2
+assert x == 2
+
 print 'for_stmt' # 'for' exprlist 'in' exprlist ':' suite ['else' ':' suite]
 for i in 1, 2, 3: pass
 for i, j, k in (): pass
@@ -502,6 +544,11 @@ class Squares:
 n = 0
 for x in Squares(10): n = n+x
 if n != 285: raise TestFailed, 'for over growing sequence'
+
+result = []
+for x, in [(1,), (2,), (3,)]:
+    result.append(x)
+vereq(result, [1, 2, 3])
 
 print 'try_stmt'
 ### try_stmt: 'try' ':' suite (except_clause ':' suite)+ ['else' ':' suite]
@@ -639,6 +686,18 @@ s = a[:]
 s = a[-5:]
 s = a[:-1]
 s = a[-4:-3]
+# A rough test of SF bug 1333982.  http://python.org/sf/1333982
+# The testing here is fairly incomplete.
+# Test cases should include: commas with 1 and 2 colons
+d = {}
+d[1] = 1
+d[1,] = 2
+d[1,2] = 3
+d[1,2,3] = 4
+L = list(d)
+L.sort()
+print L
+
 
 print 'atoms'
 ### atom: '(' [testlist] ')' | '[' [testlist] ']' | '{' [dictmaker] '}' | '`' testlist '`' | NAME | NUMBER | STRING
@@ -664,6 +723,7 @@ x = {'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5, 'six': 6}
 
 x = `x`
 x = `1 or 2 or 3`
+x = `1,2`
 x = x
 x = 'x'
 x = 123
@@ -672,8 +732,9 @@ x = 123
 ### testlist: test (',' test)* [',']
 # These have been exercised enough above
 
-print 'classdef' # 'class' NAME ['(' testlist ')'] ':' suite
+print 'classdef' # 'class' NAME ['(' [testlist] ')'] ':' suite
 class B: pass
+class B2(): pass
 class C1(B): pass
 class C2(B): pass
 class D(C1, C2, B): pass
@@ -692,7 +753,7 @@ print [3 * x for x in nums]
 print [x for x in nums if x > 2]
 print [(i, s) for i in nums for s in strs]
 print [(i, s) for i in nums for s in [f for f in strs if "n" in f]]
-print [(lambda a:[a**i for i in range(a+1)])(j) for j in range(5)] 
+print [(lambda a:[a**i for i in range(a+1)])(j) for j in range(5)]
 
 def test_in_func(l):
     return [None < x < 3 for x in l if x > 2]
@@ -730,3 +791,80 @@ print [
         for (sp_sno, sp_pno) in suppart
           if sno == sp_sno and pno == sp_pno
 ]
+
+# generator expression tests
+g = ([x for x in range(10)] for x in range(1))
+verify(g.next() == [x for x in range(10)])
+try:
+    g.next()
+    raise TestFailed, 'should produce StopIteration exception'
+except StopIteration:
+    pass
+
+a = 1
+try:
+    g = (a for d in a)
+    g.next()
+    raise TestFailed, 'should produce TypeError'
+except TypeError:
+    pass
+
+verify(list((x, y) for x in 'abcd' for y in 'abcd') == [(x, y) for x in 'abcd' for y in 'abcd'])
+verify(list((x, y) for x in 'ab' for y in 'xy') == [(x, y) for x in 'ab' for y in 'xy'])
+
+a = [x for x in range(10)]
+b = (x for x in (y for y in a))
+verify(sum(b) == sum([x for x in range(10)]))
+
+verify(sum(x**2 for x in range(10)) == sum([x**2 for x in range(10)]))
+verify(sum(x*x for x in range(10) if x%2) == sum([x*x for x in range(10) if x%2]))
+verify(sum(x for x in (y for y in range(10))) == sum([x for x in range(10)]))
+verify(sum(x for x in (y for y in (z for z in range(10)))) == sum([x for x in range(10)]))
+verify(sum(x for x in [y for y in (z for z in range(10))]) == sum([x for x in range(10)]))
+verify(sum(x for x in (y for y in (z for z in range(10) if True)) if True) == sum([x for x in range(10)]))
+verify(sum(x for x in (y for y in (z for z in range(10) if True) if False) if True) == 0)
+check_syntax("foo(x for x in range(10), 100)")
+check_syntax("foo(100, x for x in range(10))")
+
+# test for outmost iterable precomputation
+x = 10; g = (i for i in range(x)); x = 5
+verify(len(list(g)) == 10)
+
+# This should hold, since we're only precomputing outmost iterable.
+x = 10; t = False; g = ((i,j) for i in range(x) if t for j in range(x))
+x = 5; t = True;
+verify([(i,j) for i in range(10) for j in range(5)] == list(g))
+
+# Grammar allows multiple adjacent 'if's in listcomps and genexps,
+# even though it's silly. Make sure it works (ifelse broke this.)
+verify([ x for x in range(10) if x % 2 if x % 3 ], [1, 5, 7])
+verify((x for x in range(10) if x % 2 if x % 3), [1, 5, 7])
+
+# Verify unpacking single element tuples in listcomp/genexp.
+vereq([x for x, in [(4,), (5,), (6,)]], [4, 5, 6])
+vereq(list(x for x, in [(7,), (8,), (9,)]), [7, 8, 9])
+
+# Test ifelse expressions in various cases
+def _checkeval(msg, ret):
+    "helper to check that evaluation of expressions is done correctly"
+    print x
+    return ret
+
+verify([ x() for x in lambda: True, lambda: False if x() ] == [True])
+verify([ x() for x in (lambda: True, lambda: False) if x() ] == [True])
+verify([ x(False) for x in (lambda x: False if x else True, lambda x: True if x else False) if x(False) ] == [True])
+verify((5 if 1 else _checkeval("check 1", 0)) == 5)
+verify((_checkeval("check 2", 0) if 0 else 5) == 5)
+verify((5 and 6 if 0 else 1) == 1)
+verify(((5 and 6) if 0 else 1) == 1)
+verify((5 and (6 if 1 else 1)) == 6)
+verify((0 or _checkeval("check 3", 2) if 0 else 3) == 3)
+verify((1 or _checkeval("check 4", 2) if 1 else _checkeval("check 5", 3)) == 1)
+verify((0 or 5 if 1 else _checkeval("check 6", 3)) == 5)
+verify((not 5 if 1 else 1) == False)
+verify((not 5 if 0 else 1) == 1)
+verify((6 + 1 if 1 else 2) == 7)
+verify((6 - 1 if 1 else 2) == 5)
+verify((6 * 2 if 1 else 4) == 12)
+verify((6 / 2 if 1 else 3) == 3)
+verify((6 < 4 if 0 else 2) == 2)

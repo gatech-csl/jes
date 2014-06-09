@@ -1,13 +1,20 @@
-Welcome to Jython 2.2.1
-=======================
-This is the 2.2.1 release of Jython, an implementation of the Python
-programming language on the Java Virtual Machine.  2.2.1 is a bugfix release
-that takes care of all of the major bugs that have been reported since 2.2.
-See the NEWS file for a more complete list of changes.
+Welcome to Jython 2.5.3!
+========================
 
-The release was compiled on Mac OS X with JDK 5 but it should run on an JVM
-with version 1.4.2 or later.
+This is the final release of Jython 2.5.3.
 
-Bug reports can be created at http://jython.org/bugs whereas more general
-questions can be sent to the Jython-users mailing list, 
-jython-users@lists.sourceforge.net.
+Thanks to Adconion Media Group (http://www.adconion.com/) for sponsoring this
+release, and thanks to all who contribute to Jython.
+
+This release fixes numerous bugs since the 2.5.2 release of Jython. Some
+highlights include:
+
+* File uploads where broken in Tomcat and Jetty.
+* Imports sometimes blew the stack. This was seen in SQLAlchemy for example.
+* Some race conditions and threading issues where fixed.
+* Several JSR 223 problems have been fixed.
+
+Please see the NEWS file for detailed release notes.  The release was compiled
+on Ubuntu with JDK 6 and requires JDK 5 to run.
+
+Please try this out and report any bugs at http://bugs.jython.org.

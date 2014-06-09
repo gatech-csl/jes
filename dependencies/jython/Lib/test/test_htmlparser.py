@@ -3,8 +3,8 @@
 import HTMLParser
 import pprint
 import sys
-import test_support
 import unittest
+from test import test_support
 
 
 class EventCollector(HTMLParser.HTMLParser):
@@ -101,6 +101,9 @@ class HTMLParserTestCase(TestCaseBase):
         self._run_check("<?processing instruction>", [
             ("pi", "processing instruction"),
             ])
+        self._run_check("<?processing instruction ?>", [
+            ("pi", "processing instruction ?"),
+            ])
 
     def test_simple_html(self):
         self._run_check("""
@@ -112,7 +115,7 @@ comment1b-->
 <Img sRc='Bar' isMAP>sample
 text
 &#x201C;
-<!--comment2a-- --comment2b-->
+<!--comment2a-- --comment2b--><!>
 </Html>
 """, [
     ("data", "\n"),
@@ -197,6 +200,14 @@ DOCTYPE html [
         self._run_check("""<a b='' c="">""", [
             ("starttag", "a", [("b", ""), ("c", "")]),
             ])
+        # Regression test for SF patch #669683.
+        self._run_check("<e a=rgb(1,2,3)>", [
+            ("starttag", "e", [("a", "rgb(1,2,3)")]),
+            ])
+        # Regression test for SF bug #921657.
+        self._run_check("<a href=mailto:xyz@example.com>", [
+            ("starttag", "a", [("href", "mailto:xyz@example.com")]),
+            ])
 
     def test_attr_entity_replacement(self):
         self._run_check("""<a b='&amp;&gt;&lt;&quot;&apos;'>""", [
@@ -231,6 +242,19 @@ DOCTYPE html [
         self._run_check(["<a b=", "'>'>"], output)
         self._run_check(["<a b='>", "'>"], output)
         self._run_check(["<a b='>'", ">"], output)
+
+        output = [("comment", "abc")]
+        self._run_check(["", "<!--abc-->"], output)
+        self._run_check(["<", "!--abc-->"], output)
+        self._run_check(["<!", "--abc-->"], output)
+        self._run_check(["<!-", "-abc-->"], output)
+        self._run_check(["<!--", "abc-->"], output)
+        self._run_check(["<!--a", "bc-->"], output)
+        self._run_check(["<!--ab", "c-->"], output)
+        self._run_check(["<!--abc", "-->"], output)
+        self._run_check(["<!--abc-", "->"], output)
+        self._run_check(["<!--abc--", ">"], output)
+        self._run_check(["<!--abc-->", ""], output)
 
     def test_starttag_junk_chars(self):
         self._parse_error("</>")

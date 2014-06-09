@@ -5,7 +5,7 @@
 import unittest
 import os, tempfile, re
 
-from test_support import TestSkipped, run_unittest
+from test.test_support import TestSkipped, run_unittest, reap_children
 from commands import *
 
 # The module says:
@@ -24,21 +24,33 @@ class CommandTests(unittest.TestCase):
         self.assertEquals(getoutput('echo xyzzy'), 'xyzzy')
         self.assertEquals(getstatusoutput('echo xyzzy'), (0, 'xyzzy'))
 
-        # we use mktemp in the next line to get a filename which we
-        # _know_ won't exist.  This is guaranteed to fail.
-        status, output = getstatusoutput('cat ' + tempfile.mktemp())
-        self.assertNotEquals(status, 0)
+        # we use mkdtemp in the next line to create an empty directory
+        # under our exclusive control; from that, we can invent a pathname
+        # that we _know_ won't exist.  This is guaranteed to fail.
+        dir = None
+        try:
+            dir = tempfile.mkdtemp()
+            name = os.path.join(dir, "foo")
+
+            status, output = getstatusoutput('cat ' + name)
+            self.assertNotEquals(status, 0)
+        finally:
+            if dir is not None:
+                os.rmdir(dir)
 
     def test_getstatus(self):
         # This pattern should match 'ls -ld /.' on any posix
-        # system, however perversely configured.
+        # system, however perversely configured.  Even on systems
+        # (e.g., Cygwin) where user and group names can have spaces:
+        #     drwxr-xr-x   15 Administ Domain U     4096 Aug 12 12:50 /
+        #     drwxr-xr-x   15 Joe User My Group     4096 Aug 12 12:50 /
+        # Note that the first case above has a space in the group name
+        # while the second one has a space in both names.
         pat = r'''d.........   # It is a directory.
+                  \+?          # It may have ACLs.
                   \s+\d+       # It has some number of links.
-                  \s+\w+\s+\w+ # It has a user and group, which may
-                               #     be named anything.
-                  \s+\d+       # It has a size.
-                  [^/]*        # Skip the date.
-                  /.           # and end with the name of the file.
+                  [^/]*        # Skip user, group, size, and date.
+                  /\.          # and end with the name of the file.
                '''
 
         self.assert_(re.match(pat, getstatus("/."), re.VERBOSE))
@@ -46,6 +58,7 @@ class CommandTests(unittest.TestCase):
 
 def test_main():
     run_unittest(CommandTests)
+    reap_children()
 
 
 if __name__ == "__main__":

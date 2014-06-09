@@ -1,27 +1,29 @@
 # Python test set -- part 2, opcodes
 
-from test_support import *
+from test.test_support import TestFailed
 
 
-print_test('Opcodes (test_opcodes.py)', 1)
-print_test('try inside for loop', 2)
+print '2. Opcodes'
+print 'XXX Not yet fully implemented'
 
+print '2.1 try inside for loop'
 n = 0
 for i in range(10):
-        n = n+i
-        try: 1/0
-        except NameError: pass
-        except ZeroDivisionError: pass
-        except TypeError: pass
-        try: pass
-        except: pass
-        try: pass
-        finally: pass
-        n = n+i
-        
-assert n == 90, 'try inside for'
+    n = n+i
+    try: 1/0
+    except NameError: pass
+    except ZeroDivisionError: pass
+    except TypeError: pass
+    try: pass
+    except: pass
+    try: pass
+    finally: pass
+    n = n+i
+if n != 90:
+    raise TestFailed, 'try inside for'
 
-print_test('raise class exceptions')
+
+print '2.2 raise class exceptions'
 
 class AClass: pass
 class BClass(AClass): pass
@@ -48,12 +50,12 @@ b = BClass()
 
 try: raise AClass, b
 except BClass, v:
-        assert v == b, 'class exceptions'
-else: raise TestFailed
+    if v != b: raise TestFailed, "v!=b"
+else: raise TestFailed, "no exception"
 
 try: raise b
 except AClass, v:
-        assert v == b, 'class exceptions'
+    if v != b: raise TestFailed, "v!=b AClass"
 
 # not enough arguments
 try:  raise BClass, a
@@ -61,5 +63,39 @@ except TypeError: pass
 
 try:  raise DClass, a
 except DClass, v:
-    assert isinstance(v, DClass)
+    if not isinstance(v, DClass):
+        raise TestFailed, "v not DClass"
 
+print '2.3 comparing function objects'
+
+f = eval('lambda: None')
+g = eval('lambda: None')
+if f == g: raise TestFailed, "functions should not be same"
+
+f = eval('lambda a: a')
+g = eval('lambda a: a')
+if f == g: raise TestFailed, "functions should not be same"
+
+f = eval('lambda a=1: a')
+g = eval('lambda a=1: a')
+if f == g: raise TestFailed, "functions should not be same"
+
+f = eval('lambda: 0')
+g = eval('lambda: 1')
+if f == g: raise TestFailed
+
+f = eval('lambda: None')
+g = eval('lambda a: None')
+if f == g: raise TestFailed
+
+f = eval('lambda a: None')
+g = eval('lambda b: None')
+if f == g: raise TestFailed
+
+f = eval('lambda a: None')
+g = eval('lambda a=None: None')
+if f == g: raise TestFailed
+
+f = eval('lambda a=0: None')
+g = eval('lambda a=1: None')
+if f == g: raise TestFailed

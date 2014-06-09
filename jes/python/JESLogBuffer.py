@@ -9,18 +9,6 @@ import java.lang.StringBuffer as StringBuffer
 import org.python.core
 
 
-# workaround to support java 1.5 jython bug
-if sys.registry.getProperty('java.version') >= '1.5.0':
-    for n, f in java.lang.AbstractStringBuilder.__dict__.items():
-        x = org.python.core.PyReflectedFunction(n)
-        for a in f.argslist:
-            if a is None:
-                continue
-            m = StringBuffer.getMethod(n, a.args)
-            x.addMethod(m)
-        StringBuffer.__dict__[n] = x
-
-
 class JESLogBuffer:
 
     ##########################################################################

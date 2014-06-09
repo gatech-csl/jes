@@ -1,6 +1,7 @@
 import parser
-import test_support
+import os
 import unittest
+from test import test_support
 
 #
 #  First, we test that we can generate trees from valid source fragments,
@@ -9,13 +10,14 @@ import unittest
 #
 
 class RoundtripLegalSyntaxTestCase(unittest.TestCase):
+
     def roundtrip(self, f, s):
         st1 = f(s)
         t = st1.totuple()
         try:
             st2 = parser.sequence2st(t)
-        except parser.ParserError:
-            self.fail("could not roundtrip %r" % s)
+        except parser.ParserError, why:
+            self.fail("could not roundtrip %r: %s" % (s, why))
 
         self.assertEquals(t, st2.totuple(),
                           "could not re-generate syntax tree")
@@ -27,15 +29,22 @@ class RoundtripLegalSyntaxTestCase(unittest.TestCase):
         self.roundtrip(parser.suite, s)
 
     def test_yield_statement(self):
-        self.check_suite("from __future__ import generators\n"
-                         "def f(): yield 1")
-        self.check_suite("from __future__ import generators\n"
-                         "def f(): return; yield 1")
-        self.check_suite("from __future__ import generators\n"
-                         "def f(): yield 1; return")
-        self.check_suite("from __future__ import generators\n"
-                         "def f():\n"
+        self.check_suite("def f(): yield 1")
+        self.check_suite("def f(): yield")
+        self.check_suite("def f(): x += yield")
+        self.check_suite("def f(): x = yield 1")
+        self.check_suite("def f(): x = y = yield 1")
+        self.check_suite("def f(): x = yield")
+        self.check_suite("def f(): x = y = yield")
+        self.check_suite("def f(): 1 + (yield)*2")
+        self.check_suite("def f(): (yield 1)*2")
+        self.check_suite("def f(): return; yield 1")
+        self.check_suite("def f(): yield 1; return")
+        self.check_suite("def f():\n"
                          "    for x in range(30):\n"
+                         "        yield x\n")
+        self.check_suite("def f():\n"
+                         "    if (yield):\n"
                          "        yield x\n")
 
     def test_expressions(self):
@@ -43,6 +52,10 @@ class RoundtripLegalSyntaxTestCase(unittest.TestCase):
         self.check_expr("[1, 2, 3]")
         self.check_expr("[x**3 for x in range(20)]")
         self.check_expr("[x**3 for x in range(20) if x % 3]")
+        self.check_expr("[x**3 for x in range(20) if x % 2 if x % 3]")
+        self.check_expr("list(x**3 for x in range(20))")
+        self.check_expr("list(x**3 for x in range(20) if x % 3)")
+        self.check_expr("list(x**3 for x in range(20) if x % 2 if x % 3)")
         self.check_expr("foo(*args)")
         self.check_expr("foo(*args, **kw)")
         self.check_expr("foo(**kw)")
@@ -70,6 +83,8 @@ class RoundtripLegalSyntaxTestCase(unittest.TestCase):
         self.check_expr("lambda foo=bar, blaz=blat+2, **z: 0")
         self.check_expr("lambda foo=bar, blaz=blat+2, *y, **z: 0")
         self.check_expr("lambda x, *y, **z: 0")
+        self.check_expr("(x for x in range(10))")
+        self.check_expr("foo(x for x in range(10))")
 
     def test_print(self):
         self.check_suite("print")
@@ -120,15 +135,41 @@ class RoundtripLegalSyntaxTestCase(unittest.TestCase):
         self.check_suite("def f(a, b, foo=bar, *args, **kw): pass")
         self.check_suite("def f(a, b, foo=bar, **kw): pass")
 
+        self.check_suite("@staticmethod\n"
+                         "def f(): pass")
+        self.check_suite("@staticmethod\n"
+                         "@funcattrs(x, y)\n"
+                         "def f(): pass")
+        self.check_suite("@funcattrs()\n"
+                         "def f(): pass")
+
+    def test_class_defs(self):
+        self.check_suite("class foo():pass")
+
     def test_import_from_statement(self):
         self.check_suite("from sys.path import *")
         self.check_suite("from sys.path import dirname")
+        self.check_suite("from sys.path import (dirname)")
+        self.check_suite("from sys.path import (dirname,)")
         self.check_suite("from sys.path import dirname as my_dirname")
+        self.check_suite("from sys.path import (dirname as my_dirname)")
+        self.check_suite("from sys.path import (dirname as my_dirname,)")
         self.check_suite("from sys.path import dirname, basename")
+        self.check_suite("from sys.path import (dirname, basename)")
+        self.check_suite("from sys.path import (dirname, basename,)")
         self.check_suite(
             "from sys.path import dirname as my_dirname, basename")
         self.check_suite(
+            "from sys.path import (dirname as my_dirname, basename)")
+        self.check_suite(
+            "from sys.path import (dirname as my_dirname, basename,)")
+        self.check_suite(
             "from sys.path import dirname, basename as my_basename")
+        self.check_suite(
+            "from sys.path import (dirname, basename as my_basename)")
+        self.check_suite(
+            "from sys.path import (dirname, basename as my_basename,)")
+        self.check_suite("from .bogus import x")
 
     def test_basic_import_statement(self):
         self.check_suite("import sys")
@@ -136,6 +177,10 @@ class RoundtripLegalSyntaxTestCase(unittest.TestCase):
         self.check_suite("import sys, math")
         self.check_suite("import sys as system, math")
         self.check_suite("import sys, math as my_math")
+
+    def test_pep263(self):
+        self.check_suite("# -*- coding: iso-8859-1 -*-\n"
+                         "pass\n")
 
     def test_assert(self):
         self.check_suite("assert alo < ahi and blo < bhi\n")
@@ -146,6 +191,7 @@ class RoundtripLegalSyntaxTestCase(unittest.TestCase):
 #
 
 class IllegalSyntaxTestCase(unittest.TestCase):
+
     def check_bad_tree(self, tree, label):
         try:
             parser.sequence2st(tree)
@@ -159,7 +205,7 @@ class IllegalSyntaxTestCase(unittest.TestCase):
         self.check_bad_tree((1, 2, 3), "<junk>")
 
     def test_illegal_yield_1(self):
-        """Illegal yield statement: def f(): return 1; yield 1"""
+        # Illegal yield statement: def f(): return 1; yield 1
         tree = \
         (257,
          (264,
@@ -214,7 +260,7 @@ class IllegalSyntaxTestCase(unittest.TestCase):
         self.check_bad_tree(tree, "def f():\n  return 1\n  yield 1")
 
     def test_illegal_yield_2(self):
-        """Illegal return in generator: def f(): return 1; yield 1"""
+        # Illegal return in generator: def f(): return 1; yield 1
         tree = \
         (257,
          (264,
@@ -278,7 +324,7 @@ class IllegalSyntaxTestCase(unittest.TestCase):
         self.check_bad_tree(tree, "def f():\n  return 1\n  yield 1")
 
     def test_print_chevron_comma(self):
-        """Illegal input: print >>fp,"""
+        # Illegal input: print >>fp,
         tree = \
         (257,
          (264,
@@ -301,7 +347,7 @@ class IllegalSyntaxTestCase(unittest.TestCase):
         self.check_bad_tree(tree, "print >>fp,")
 
     def test_a_comma_comma_c(self):
-        """Illegal input: a,,c"""
+        # Illegal input: a,,c
         tree = \
         (258,
          (311,
@@ -328,7 +374,7 @@ class IllegalSyntaxTestCase(unittest.TestCase):
         self.check_bad_tree(tree, "a,,c")
 
     def test_illegal_operator(self):
-        """Illegal input: a $= b"""
+        # Illegal input: a $= b
         tree = \
         (257,
          (264,
@@ -368,15 +414,36 @@ class IllegalSyntaxTestCase(unittest.TestCase):
                   (266,
                    (282, (1, 'foo'))), (4, ''))),
                 (4, ''),
-                (0, '')) 
+                (0, ''))
         self.check_bad_tree(tree, "malformed global ast")
 
+
+class CompileTestCase(unittest.TestCase):
+
+    # These tests are very minimal. :-(
+
+    def test_compile_expr(self):
+        st = parser.expr('2 + 3')
+        code = parser.compilest(st)
+        self.assertEquals(eval(code), 5)
+
+    def test_compile_suite(self):
+        st = parser.suite('x = 2; y = x + 3')
+        code = parser.compilest(st)
+        globs = {}
+        exec code in globs
+        self.assertEquals(globs['y'], 5)
+
+    def test_compile_error(self):
+        st = parser.suite('1 = 3 + 4')
+        self.assertRaises(SyntaxError, parser.compilest, st)
+
 def test_main():
-    loader = unittest.TestLoader()
-    suite = unittest.TestSuite()
-    suite.addTest(loader.loadTestsFromTestCase(RoundtripLegalSyntaxTestCase))
-    suite.addTest(loader.loadTestsFromTestCase(IllegalSyntaxTestCase))
-    test_support.run_suite(suite)
+    test_support.run_unittest(
+        RoundtripLegalSyntaxTestCase,
+        IllegalSyntaxTestCase,
+        CompileTestCase,
+    )
 
 
 if __name__ == "__main__":

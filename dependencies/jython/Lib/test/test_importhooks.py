@@ -2,7 +2,7 @@ import sys
 import imp
 import os
 import unittest
-import test_support
+from test import test_support
 
 
 test_src = """\
@@ -191,7 +191,7 @@ class ImportHooksTestCase(ImportHooksBaseTestCase):
         sys.meta_path.append(i)
         sys.path_hooks.append(ImpWrapper)
         #mnames = ("colorsys", "urlparse", "distutils.core", "compiler.misc")
-        mnames = ("email.Encoders", "urlparse", "colorsys")
+        mnames = ("colorsys", "urlparse", "distutils.core")
         for mname in mnames:
             parent = mname.split(".")[0]
             for n in sys.modules.keys():
@@ -212,4 +212,3 @@ def test_main():
 
 if __name__ == "__main__":
     test_main()
-

@@ -3,7 +3,7 @@
    Roger E. Masse
 """
 import cl
-from test_support import verbose
+from test.test_support import verbose
 
 clattrs = ['ADDED_ALGORITHM_ERROR', 'ALAW', 'ALGORITHM_ID',
 'ALGORITHM_VERSION', 'AUDIO', 'AWARE_ERROR', 'AWARE_MPEG_AUDIO',
@@ -64,7 +64,7 @@ clattrs = ['ADDED_ALGORITHM_ERROR', 'ALAW', 'ALGORITHM_ID',
 
 
 # This is a very inobtrusive test for the existence of the cl
-# module and all it's attributes.
+# module and all its attributes.
 
 def main():
     # touch all the attributes of al without doing anything

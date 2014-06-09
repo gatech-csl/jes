@@ -24,7 +24,7 @@ from math import sin
 from math import sqrt
 from math import tan
 from math import pi
-import os.sep as pathSep
+from os import sep as pathSep
 
 
 global __debugSystem__

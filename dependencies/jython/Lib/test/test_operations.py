@@ -1,475 +1,78 @@
 # Python test set -- part 3, built-in operations.
 
-from test_support import *
 
-print_test('Operations (test_operations.py)', 1)
+print '3. Operations'
+print 'XXX Mostly not yet implemented'
 
-print_test('Numeric', 2)
-print_test('+', 3)
-assert 0 + 0 == 0
-assert 0 + 3 == 3
-assert 0 + 42 == 42
-assert 3 + 0 == 3
-assert 3 + 3 == 6
-assert 3 + 42 == 45
-assert 42 + 0 == 42
-assert 42 + 3 == 45
-assert 42 + 42 == 84
-assert 0.0 + 0.0 == 0.0
-assert 0.0 + 3.0 == 3.0
-assert 0.0 + 42.0 == 42.0
-assert 3.0 + 0.0 == 3.0
-assert 3.0 + 3.0 == 6.0
-assert 3.0 + 42.0 == 45.0
-assert 42.0 + 0.0 == 42.0
-assert 42.0 + 3.0 == 45.0
-assert 42.0 + 42.0 == 84.0
-assert 0L + 0L == 0L
-assert 0L + 3L == 3L
-assert 0L + 42L == 42L
-assert 3L + 0L == 3L
-assert 3L + 3L == 6L
-assert 3L + 42L == 45L
-assert 42L + 0L == 42L
-assert 42L + 3L == 45L
-assert 42L + 42L == 84L
-print_test('-', 3)
-assert 0 - 0 == 0
-assert 0 - 3 == -3
-assert 0 - 42 == -42
-assert 3 - 0 == 3
-assert 3 - 3 == 0
-assert 3 - 42 == -39
-assert 42 - 0 == 42
-assert 42 - 3 == 39
-assert 42 - 42 == 0
-assert 0.0 - 0.0 == 0.0
-assert 0.0 - 3.0 == -3.0
-assert 0.0 - 42.0 == -42.0
-assert 3.0 - 0.0 == 3.0
-assert 3.0 - 3.0 == 0.0
-assert 3.0 - 42.0 == -39.0
-assert 42.0 - 0.0 == 42.0
-assert 42.0 - 3.0 == 39.0
-assert 42.0 - 42.0 == 0.0
-assert 0L - 0L == 0L
-assert 0L - 3L == -3L
-assert 0L - 42L == -42L
-assert 3L - 0L == 3L
-assert 3L - 3L == 0L
-assert 3L - 42L == -39L
-assert 42L - 0L == 42L
-assert 42L - 3L == 39L
-assert 42L - 42L == 0L
-print_test('*', 3)
-assert 0 * 0 == 0
-assert 0 * 3 == 0
-assert 0 * 42 == 0
-assert 3 * 0 == 0
-assert 3 * 3 == 9
-assert 3 * 42 == 126
-assert 42 * 0 == 0
-assert 42 * 3 == 126
-assert 42 * 42 == 1764
-assert 0.0 * 0.0 == 0.0
-assert 0.0 * 3.0 == 0.0
-assert 0.0 * 42.0 == 0.0
-assert 3.0 * 0.0 == 0.0
-assert 3.0 * 3.0 == 9.0
-assert 3.0 * 42.0 == 126.0
-assert 42.0 * 0.0 == 0.0
-assert 42.0 * 3.0 == 126.0
-assert 42.0 * 42.0 == 1764.0
-assert 0L * 0L == 0L
-assert 0L * 3L == 0L
-assert 0L * 42L == 0L
-assert 3L * 0L == 0L
-assert 3L * 3L == 9L
-assert 3L * 42L == 126L
-assert 42L * 0L == 0L
-assert 42L * 3L == 126L
-assert 42L * 42L == 1764L
-print_test('/', 3)
-assert 0 / 3 == 0
-assert 0 / 42 == 0
-assert 3 / 3 == 1
-assert 3 / 42 == 0
-assert 42 / 3 == 14
-assert 42 / 42 == 1
-assert 0.0 / 3.0 == 0.0
-assert 0.0 / 42.0 == 0.0
-assert 3.0 / 3.0 == 1.0
-assert abs(3.0 / 42.0 - 0.0714285714286) < 0.000001
-assert 42.0 / 3.0 == 14.0
-assert 42.0 / 42.0 == 1.0
-assert 0L / 3L == 0L
-assert 0L / 42L == 0L
-assert 3L / 3L == 1L
-assert 3L / 42L == 0L
-assert 42L / 3L == 14L
-assert 42L / 42L == 1L
-print_test('**', 3)
-assert 0 ** 0 == 1
-assert 0 ** 3 == 0
-assert 0 ** 42 == 0
-assert 3 ** 0 == 1
-assert 3 ** 3 == 27
-assert 42 ** 0 == 1
-assert 42 ** 3 == 74088
-assert 0.0 ** 0.0 == 1.0
-assert 0.0 ** 3.0 == 0.0
-assert 0.0 ** 42.0 == 0.0
-assert 3.0 ** 0.0 == 1.0
-assert 3.0 ** 3.0 == 27.0
-assert abs(3.0 ** 42.0 - 1.0941898913151237e+020) < 1e10
-assert 42.0 ** 0.0 == 1.0
-assert 42.0 ** 3.0 == 74088.0
-assert abs(42.0 ** 42.0 - 1.5013093754529659e+068) < 1e58
-assert 0L ** 0L == 1L
-assert 0L ** 3L == 0L
-assert 0L ** 42L == 0L
-assert 3L ** 0L == 1L
-assert 3L ** 3L == 27L
-assert 3L ** 42L == 109418989131512359209L
-assert 42L ** 0L == 1L
-assert 42L ** 3L == 74088L
-assert 42L ** 42L == 150130937545296572356771972164254457814047970568738777235893533016064L
-print_test('%', 3)
-assert 0 % 3 == 0
-assert 0 % 42 == 0
-assert 3 % 3 == 0
-assert 3 % 42 == 3
-assert 42 % 3 == 0
-assert 42 % 42 == 0
-assert 0.0 % 3.0 == 0.0
-assert 0.0 % 42.0 == 0.0
-assert 3.0 % 3.0 == 0.0
-assert 3.0 % 42.0 == 3.0
-assert 42.0 % 3.0 == 0.0
-assert 42.0 % 42.0 == 0.0
-assert 0L % 3L == 0L
-assert 0L % 42L == 0L
-assert 3L % 3L == 0L
-assert 3L % 42L == 3L
-assert 42L % 3L == 0L
-assert 42L % 42L == 0L
 
-print_test('Binary', 2)
-print_test('|', 3)
-assert 0 | 0 == 0
-assert 0 | 3 == 3
-assert 0 | 42 == 42
-assert 3 | 0 == 3
-assert 3 | 3 == 3
-assert 3 | 42 == 43
-assert 42 | 0 == 42
-assert 42 | 3 == 43
-assert 42 | 42 == 42
-assert 0L | 0L == 0L
-assert 0L | 3L == 3L
-assert 0L | 42L == 42L
-assert 3L | 0L == 3L
-assert 3L | 3L == 3L
-assert 3L | 42L == 43L
-assert 42L | 0L == 42L
-assert 42L | 3L == 43L
-assert 42L | 42L == 42L
-print_test('^', 3)
-assert 0 ^ 0 == 0
-assert 0 ^ 3 == 3
-assert 0 ^ 42 == 42
-assert 3 ^ 0 == 3
-assert 3 ^ 3 == 0
-assert 3 ^ 42 == 41
-assert 42 ^ 0 == 42
-assert 42 ^ 3 == 41
-assert 42 ^ 42 == 0
-assert 0L ^ 0L == 0L
-assert 0L ^ 3L == 3L
-assert 0L ^ 42L == 42L
-assert 3L ^ 0L == 3L
-assert 3L ^ 3L == 0L
-assert 3L ^ 42L == 41L
-assert 42L ^ 0L == 42L
-assert 42L ^ 3L == 41L
-assert 42L ^ 42L == 0L
-print_test('&', 3)
-assert 0 & 0 == 0
-assert 0 & 3 == 0
-assert 0 & 42 == 0
-assert 3 & 0 == 0
-assert 3 & 3 == 3
-assert 3 & 42 == 2
-assert 42 & 0 == 0
-assert 42 & 3 == 2
-assert 42 & 42 == 42
-assert 0L & 0L == 0L
-assert 0L & 3L == 0L
-assert 0L & 42L == 0L
-assert 3L & 0L == 0L
-assert 3L & 3L == 3L
-assert 3L & 42L == 2L
-assert 42L & 0L == 0L
-assert 42L & 3L == 2L
-assert 42L & 42L == 42L
-print_test('<<', 3)
-assert 0 << 0 == 0
-assert 0 << 3 == 0
-assert 0 << 42 == 0
-assert 3 << 0 == 3
-assert 3 << 3 == 24
-assert 3 << 42 == 0
-assert 42 << 0 == 42
-assert 42 << 3 == 336
-assert 42 << 42 == 0
-assert 0L << 0L == 0L
-assert 0L << 3L == 0L
-assert 0L << 42L == 0L
-assert 3L << 0L == 3L
-assert 3L << 3L == 24L
-assert 3L << 42L == 13194139533312L
-assert 42L << 0L == 42L
-assert 42L << 3L == 336L
-assert 42L << 42L == 184717953466368L
-print_test('>>', 3)
-assert 0 >> 0 == 0
-assert 0 >> 3 == 0
-assert 0 >> 42 == 0
-assert 3 >> 0 == 3
-assert 3 >> 3 == 0
-assert 3 >> 42 == 0
-assert 42 >> 0 == 42
-assert 42 >> 3 == 5
-assert 42 >> 42 == 0
-assert 0L >> 0L == 0L
-assert 0L >> 3L == 0L
-assert 0L >> 42L == 0L
-assert 3L >> 0L == 3L
-assert 3L >> 3L == 0L
-assert 3L >> 42L == 0L
-assert 42L >> 0L == 42L
-assert 42L >> 3L == 5L
-assert 42L >> 42L == 0L
+print '3.1 Dictionary lookups fail if __cmp__() raises an exception'
 
-print_test('Comparison', 2)
-print_test('<', 3)
-assert (0 < 0) == 0
-assert (0 < 3) == 1
-assert (0 < 42) == 1
-assert (3 < 0) == 0
-assert (3 < 3) == 0
-assert (3 < 42) == 1
-assert (42 < 0) == 0
-assert (42 < 3) == 0
-assert (42 < 42) == 0
-assert (0.0 < 0.0) == 0
-assert (0.0 < 3.0) == 1
-assert (0.0 < 42.0) == 1
-assert (3.0 < 0.0) == 0
-assert (3.0 < 3.0) == 0
-assert (3.0 < 42.0) == 1
-assert (42.0 < 0.0) == 0
-assert (42.0 < 3.0) == 0
-assert (42.0 < 42.0) == 0
-assert (0L < 0L) == 0
-assert (0L < 3L) == 1
-assert (0L < 42L) == 1
-assert (3L < 0L) == 0
-assert (3L < 3L) == 0
-assert (3L < 42L) == 1
-assert (42L < 0L) == 0
-assert (42L < 3L) == 0
-assert (42L < 42L) == 0
-print_test('>', 3)
-assert (0 > 0) == 0
-assert (0 > 3) == 0
-assert (0 > 42) == 0
-assert (3 > 0) == 1
-assert (3 > 3) == 0
-assert (3 > 42) == 0
-assert (42 > 0) == 1
-assert (42 > 3) == 1
-assert (42 > 42) == 0
-assert (0.0 > 0.0) == 0
-assert (0.0 > 3.0) == 0
-assert (0.0 > 42.0) == 0
-assert (3.0 > 0.0) == 1
-assert (3.0 > 3.0) == 0
-assert (3.0 > 42.0) == 0
-assert (42.0 > 0.0) == 1
-assert (42.0 > 3.0) == 1
-assert (42.0 > 42.0) == 0
-assert (0L > 0L) == 0
-assert (0L > 3L) == 0
-assert (0L > 42L) == 0
-assert (3L > 0L) == 1
-assert (3L > 3L) == 0
-assert (3L > 42L) == 0
-assert (42L > 0L) == 1
-assert (42L > 3L) == 1
-assert (42L > 42L) == 0
-print_test('==', 3)
-assert (0 == 0) == 1
-assert (0 == 3) == 0
-assert (0 == 42) == 0
-assert (3 == 0) == 0
-assert (3 == 3) == 1
-assert (3 == 42) == 0
-assert (42 == 0) == 0
-assert (42 == 3) == 0
-assert (42 == 42) == 1
-assert (0.0 == 0.0) == 1
-assert (0.0 == 3.0) == 0
-assert (0.0 == 42.0) == 0
-assert (3.0 == 0.0) == 0
-assert (3.0 == 3.0) == 1
-assert (3.0 == 42.0) == 0
-assert (42.0 == 0.0) == 0
-assert (42.0 == 3.0) == 0
-assert (42.0 == 42.0) == 1
-assert (0L == 0L) == 1
-assert (0L == 3L) == 0
-assert (0L == 42L) == 0
-assert (3L == 0L) == 0
-assert (3L == 3L) == 1
-assert (3L == 42L) == 0
-assert (42L == 0L) == 0
-assert (42L == 3L) == 0
-assert (42L == 42L) == 1
-print_test('<=', 3)
-assert (0 <= 0) == 1
-assert (0 <= 3) == 1
-assert (0 <= 42) == 1
-assert (3 <= 0) == 0
-assert (3 <= 3) == 1
-assert (3 <= 42) == 1
-assert (42 <= 0) == 0
-assert (42 <= 3) == 0
-assert (42 <= 42) == 1
-assert (0.0 <= 0.0) == 1
-assert (0.0 <= 3.0) == 1
-assert (0.0 <= 42.0) == 1
-assert (3.0 <= 0.0) == 0
-assert (3.0 <= 3.0) == 1
-assert (3.0 <= 42.0) == 1
-assert (42.0 <= 0.0) == 0
-assert (42.0 <= 3.0) == 0
-assert (42.0 <= 42.0) == 1
-assert (0L <= 0L) == 1
-assert (0L <= 3L) == 1
-assert (0L <= 42L) == 1
-assert (3L <= 0L) == 0
-assert (3L <= 3L) == 1
-assert (3L <= 42L) == 1
-assert (42L <= 0L) == 0
-assert (42L <= 3L) == 0
-assert (42L <= 42L) == 1
-print_test('>=', 3)
-assert (0 >= 0) == 1
-assert (0 >= 3) == 0
-assert (0 >= 42) == 0
-assert (3 >= 0) == 1
-assert (3 >= 3) == 1
-assert (3 >= 42) == 0
-assert (42 >= 0) == 1
-assert (42 >= 3) == 1
-assert (42 >= 42) == 1
-assert (0.0 >= 0.0) == 1
-assert (0.0 >= 3.0) == 0
-assert (0.0 >= 42.0) == 0
-assert (3.0 >= 0.0) == 1
-assert (3.0 >= 3.0) == 1
-assert (3.0 >= 42.0) == 0
-assert (42.0 >= 0.0) == 1
-assert (42.0 >= 3.0) == 1
-assert (42.0 >= 42.0) == 1
-assert (0L >= 0L) == 1
-assert (0L >= 3L) == 0
-assert (0L >= 42L) == 0
-assert (3L >= 0L) == 1
-assert (3L >= 3L) == 1
-assert (3L >= 42L) == 0
-assert (42L >= 0L) == 1
-assert (42L >= 3L) == 1
-assert (42L >= 42L) == 1
-print_test('and', 3)
-assert (0 and 0) == 0
-assert (0 and 3) == 0
-assert (0 and 42) == 0
-assert (3 and 0) == 0
-assert (3 and 3) == 3
-assert (3 and 42) == 42
-assert (42 and 0) == 0
-assert (42 and 3) == 3
-assert (42 and 42) == 42
-assert (0.0 and 0.0) == 0.0
-assert (0.0 and 3.0) == 0.0
-assert (0.0 and 42.0) == 0.0
-assert (3.0 and 0.0) == 0.0
-assert (3.0 and 3.0) == 3.0
-assert (3.0 and 42.0) == 42.0
-assert (42.0 and 0.0) == 0.0
-assert (42.0 and 3.0) == 3.0
-assert (42.0 and 42.0) == 42.0
-assert (0L and 0L) == 0L
-assert (0L and 3L) == 0L
-assert (0L and 42L) == 0L
-assert (3L and 0L) == 0L
-assert (3L and 3L) == 3L
-assert (3L and 42L) == 42L
-assert (42L and 0L) == 0L
-assert (42L and 3L) == 3L
-assert (42L and 42L) == 42L
-print_test('or', 3)
-assert (0 or 0) == 0
-assert (0 or 3) == 3
-assert (0 or 42) == 42
-assert (3 or 0) == 3
-assert (3 or 3) == 3
-assert (3 or 42) == 3
-assert (42 or 0) == 42
-assert (42 or 3) == 42
-assert (42 or 42) == 42
-assert (0.0 or 0.0) == 0.0
-assert (0.0 or 3.0) == 3.0
-assert (0.0 or 42.0) == 42.0
-assert (3.0 or 0.0) == 3.0
-assert (3.0 or 3.0) == 3.0
-assert (3.0 or 42.0) == 3.0
-assert (42.0 or 0.0) == 42.0
-assert (42.0 or 3.0) == 42.0
-assert (42.0 or 42.0) == 42.0
-assert (0L or 0L) == 0L
-assert (0L or 3L) == 3L
-assert (0L or 42L) == 42L
-assert (3L or 0L) == 3L
-assert (3L or 3L) == 3L
-assert (3L or 42L) == 3L
-assert (42L or 0L) == 42L
-assert (42L or 3L) == 42L
-assert (42L or 42L) == 42L
+class BadDictKey:
 
-print_test('Indexing', 2)
-lst = range(5)
+    def __hash__(self):
+        return hash(self.__class__)
 
-print_test('[i]', 3)
-assert lst[0] == 0
-assert lst[3] == 3
-lst[3] = 99 
-assert lst[3] == 99
-lst[3] = 3
+    def __cmp__(self, other):
+        if isinstance(other, self.__class__):
+            print "raising error"
+            raise RuntimeError, "gotcha"
+        return other
 
-print_test('[i:j]', 3)
-assert lst[:2] == [0,1]
-assert lst[-3:] == [2,3,4]
-assert lst[2:] == [2,3,4]
-assert lst[0:2] == [0,1]
-assert lst[1:3] == [1,2]
+d = {}
+x1 = BadDictKey()
+x2 = BadDictKey()
+d[x1] = 1
+for stmt in ['d[x2] = 2',
+             'z = d[x2]',
+             'x2 in d',
+             'd.has_key(x2)',
+             'd.get(x2)',
+             'd.setdefault(x2, 42)',
+             'd.pop(x2)',
+             'd.update({x2: 2})']:
+    try:
+        exec stmt
+    except RuntimeError:
+        print "%s: caught the RuntimeError outside" % (stmt,)
+    else:
+        print "%s: No exception passed through!"     # old CPython behavior
 
-print_test('in', 3)
-assert 2 in lst
-assert not (8 in lst)
 
-print_test('not in', 3)
-assert 8 not in lst
-assert not (2 not in lst)
+# Dict resizing bug, found by Jack Jansen in 2.2 CVS development.
+# This version got an assert failure in debug build, infinite loop in
+# release build.  Unfortunately, provoking this kind of stuff requires
+# a mix of inserts and deletes hitting exactly the right hash codes in
+# exactly the right order, and I can't think of a randomized approach
+# that would be *likely* to hit a failing case in reasonable time.
+
+d = {}
+for i in range(5):
+    d[i] = i
+for i in range(5):
+    del d[i]
+for i in range(5, 9):  # i==8 was the problem
+    d[i] = i
+
+
+# Another dict resizing bug (SF bug #1456209).
+# This caused Segmentation faults or Illegal instructions.
+
+class X(object):
+    def __hash__(self):
+        return 5
+    def __eq__(self, other):
+        if resizing:
+            d.clear()
+        return False
+d = {}
+resizing = False
+d[X()] = 1
+d[X()] = 2
+d[X()] = 3
+d[X()] = 4
+d[X()] = 5
+# now trigger a resize
+resizing = True
+d[9] = 6
+
+print 'resize bugs not triggered.'

@@ -1,268 +1,260 @@
-from test_support import verify, verbose, TestFailed, sortdict
-from UserList import UserList
+"""Doctest for method/function calls.
 
-def f(*a, **k):
-    print a, sortdict(k)
+We're going the use these types for extra testing
 
-def g(x, *y, **z):
-    print x, y, sortdict(z)
+    >>> from UserList import UserList
+    >>> from UserDict import UserDict
 
-def h(j=1, a=2, h=3):
-    print j, a, h
+We're defining four helper functions
 
-f()
-f(1)
-f(1, 2)
-f(1, 2, 3)
+    >>> def e(a,b):
+    ...     print a, b
 
-f(1, 2, 3, *(4, 5))
-f(1, 2, 3, *[4, 5])
-f(1, 2, 3, *UserList([4, 5]))
-f(1, 2, 3, **{'a':4, 'b':5})
-f(1, 2, 3, *(4, 5), **{'a':6, 'b':7})
-f(1, 2, 3, x=4, y=5, *(6, 7), **{'a':8, 'b':9})
+    >>> def f(*a, **k):
+    ...     print a, test_support.sortdict(k)
 
-try:
-    g()
-except TypeError, err:
-    print "TypeError:", err
-else:
-    print "should raise TypeError: not enough arguments; expected 1, got 0"
+    >>> def g(x, *y, **z):
+    ...     print x, y, test_support.sortdict(z)
 
-try:
-    g(*())
-except TypeError, err:
-    print "TypeError:", err
-else:
-    print "should raise TypeError: not enough arguments; expected 1, got 0"
+    >>> def h(j=1, a=2, h=3):
+    ...     print j, a, h
 
-try:
-    g(*(), **{})
-except TypeError, err:
-    print "TypeError:", err
-else:
-    print "should raise TypeError: not enough arguments; expected 1, got 0"
+Argument list examples
 
-g(1)
-g(1, 2)
-g(1, 2, 3)
-g(1, 2, 3, *(4, 5))
-class Nothing: pass
-try:
-    g(*Nothing())
-except TypeError, attr:
-    pass
-else:
-    print "should raise TypeError"
+    >>> f()
+    () {}
+    >>> f(1)
+    (1,) {}
+    >>> f(1, 2)
+    (1, 2) {}
+    >>> f(1, 2, 3)
+    (1, 2, 3) {}
+    >>> f(1, 2, 3, *(4, 5))
+    (1, 2, 3, 4, 5) {}
+    >>> f(1, 2, 3, *[4, 5])
+    (1, 2, 3, 4, 5) {}
+    >>> f(1, 2, 3, *UserList([4, 5]))
+    (1, 2, 3, 4, 5) {}
 
-class Nothing:
-    def __len__(self):
-        return 5
-try:
-    g(*Nothing())
-except TypeError, attr:
-    pass
-else:
-    print "should raise TypeError"
+Here we add keyword arguments
 
-class Nothing:
-    def __len__(self):
-        return 5
-    def __getitem__(self, i):
-        if i < 3:
-            return i
-        else:
-            raise IndexError, i
-g(*Nothing())
+    >>> f(1, 2, 3, **{'a':4, 'b':5})
+    (1, 2, 3) {'a': 4, 'b': 5}
+    >>> f(1, 2, 3, *[4, 5], **{'a':6, 'b':7})
+    (1, 2, 3, 4, 5) {'a': 6, 'b': 7}
+    >>> f(1, 2, 3, x=4, y=5, *(6, 7), **{'a':8, 'b': 9})
+    (1, 2, 3, 6, 7) {'a': 8, 'b': 9, 'x': 4, 'y': 5}
 
-class Nothing:
-    def __init__(self):
-        self.c = 0
-    def __iter__(self):
-        return self
-try:
-    g(*Nothing())
-except TypeError, attr:
-    pass
-else:
-    print "should raise TypeError"
+    >>> f(1, 2, 3, **UserDict(a=4, b=5))
+    (1, 2, 3) {'a': 4, 'b': 5}
+    >>> f(1, 2, 3, *(4, 5), **UserDict(a=6, b=7))
+    (1, 2, 3, 4, 5) {'a': 6, 'b': 7}
+    >>> f(1, 2, 3, x=4, y=5, *(6, 7), **UserDict(a=8, b=9))
+    (1, 2, 3, 6, 7) {'a': 8, 'b': 9, 'x': 4, 'y': 5}
 
-class Nothing:
-    def __init__(self):
-        self.c = 0
-    def __iter__(self):
-        return self
-    def next(self):
-        if self.c == 4:
-            raise StopIteration
-        c = self.c
-        self.c += 1
-        return c
-g(*Nothing())
+Examples with invalid arguments (TypeErrors). We're also testing the function
+names in the exception messages.
 
-# make sure the function call doesn't stomp on the dictionary?
-d = {'a': 1, 'b': 2, 'c': 3}
-d2 = d.copy()
-verify(d == d2)
-g(1, d=4, **d)
-print sortdict(d)
-print sortdict(d2)
-verify(d == d2, "function call modified dictionary")
+Verify clearing of SF bug #733667
 
-# what about willful misconduct?
-def saboteur(**kw):
-    kw['x'] = locals() # yields a cyclic kw
-    return kw
-d = {}
-kw = saboteur(a=1, **d)
-verify(d == {})
-# break the cycle
-del kw['x']
+    >>> e(c=4)
+    Traceback (most recent call last):
+      ...
+    TypeError: e() got an unexpected keyword argument 'c'
 
-try:
-    g(1, 2, 3, **{'x':4, 'y':5})
-except TypeError, err:
-    print err
-else:
-    print "should raise TypeError: keyword parameter redefined"
+    >>> g()
+    Traceback (most recent call last):
+      ...
+    TypeError: g() takes at least 1 argument (0 given)
 
-try:
-    g(1, 2, 3, a=4, b=5, *(6, 7), **{'a':8, 'b':9})
-except TypeError, err:
-    print err
-else:
-    print "should raise TypeError: keyword parameter redefined"
+    >>> g(*())
+    Traceback (most recent call last):
+      ...
+    TypeError: g() takes at least 1 argument (0 given)
 
-try:
-    f(**{1:2})
-except TypeError, err:
-    print err
-else:
-    print "should raise TypeError: keywords must be strings"
+    >>> g(*(), **{})
+    Traceback (most recent call last):
+      ...
+    TypeError: g() takes at least 1 argument (0 given)
 
-try:
-    h(**{'e': 2})
-except TypeError, err:
-    print err
-else:
-    print "should raise TypeError: unexpected keyword argument: e"
+    >>> g(1)
+    1 () {}
+    >>> g(1, 2)
+    1 (2,) {}
+    >>> g(1, 2, 3)
+    1 (2, 3) {}
+    >>> g(1, 2, 3, *(4, 5))
+    1 (2, 3, 4, 5) {}
 
-try:
-    h(*h)
-except TypeError, err:
-    print err
-else:
-    print "should raise TypeError: * argument must be a tuple"
+    >>> class Nothing: pass
+    ...
+    >>> g(*Nothing())
+    Traceback (most recent call last):
+      ...
+    TypeError: g() argument after * must be a sequence
 
-try:
-    dir(*h)
-except TypeError, err:
-    print err
-else:
-    print "should raise TypeError: * argument must be a tuple"
+    >>> class Nothing:
+    ...     def __len__(self): return 5
+    ...
 
-try:
-    None(*h)
-except TypeError, err:
-    print err
-else:
-    print "should raise TypeError: * argument must be a tuple"
+    >>> g(*Nothing())
+    Traceback (most recent call last):
+      ...
+    TypeError: g() argument after * must be a sequence
 
-try:
-    h(**h)
-except TypeError, err:
-    print err
-else:
-    print "should raise TypeError: ** argument must be a dictionary"
+    >>> class Nothing:
+    ...     def __len__(self): return 5
+    ...     def __getitem__(self, i):
+    ...         if i<3: return i
+    ...         else: raise IndexError(i)
+    ...
 
-try:
-    dir(**h)
-except TypeError, err:
-    print err
-else:
-    print "should raise TypeError: ** argument must be a dictionary"
+    >>> g(*Nothing())
+    0 (1, 2) {}
 
-try:
-    None(**h)
-except TypeError, err:
-    print err
-else:
-    print "should raise TypeError: ** argument must be a dictionary"
+    >>> class Nothing:
+    ...     def __init__(self): self.c = 0
+    ...     def __iter__(self): return self
+    ...     def next(self):
+    ...         if self.c == 4:
+    ...             raise StopIteration
+    ...         c = self.c
+    ...         self.c += 1
+    ...         return c
+    ...
 
-try:
-    dir(b=1,**{'b':1})
-except TypeError, err:
-    print err
-else:
-    print "should raise TypeError: dir() got multiple values for keyword argument 'b'"
+    >>> g(*Nothing())
+    0 (1, 2, 3) {}
 
-def f2(*a, **b):
-    return a, b
+Make sure that the function doesn't stomp the dictionary
 
-d = {}
-for i in range(512):
-    key = 'k%d' % i
-    d[key] = i
-a, b = f2(1, *(2, 3), **d)
-print len(a), len(b), b == d
+    >>> d = {'a': 1, 'b': 2, 'c': 3}
+    >>> d2 = d.copy()
+    >>> g(1, d=4, **d)
+    1 () {'a': 1, 'b': 2, 'c': 3, 'd': 4}
+    >>> d == d2
+    True
 
-class Foo:
-    def method(self, arg1, arg2):
-        return arg1 + arg2
+What about willful misconduct?
 
-x = Foo()
-print Foo.method(*(x, 1, 2))
-print Foo.method(x, *(1, 2))
-try:
-    print Foo.method(*(1, 2, 3))
-except TypeError, err:
-    pass
-else:
-    print 'expected a TypeError for unbound method call'
-try:
-    print Foo.method(1, *(2, 3))
-except TypeError, err:
-    pass
-else:
-    print 'expected a TypeError for unbound method call'
+    >>> def saboteur(**kw):
+    ...     kw['x'] = 'm'
+    ...     return kw
 
-# A PyCFunction that takes only positional parameters should allow an
-# empty keyword dictionary to pass without a complaint, but raise a
-# TypeError if the dictionary is non-empty.
-id(1, **{})
-try:
-    id(1, **{"foo": 1})
-except TypeError:
-    pass
-else:
-    raise TestFailed, 'expected TypeError; no exception raised'
+    >>> d = {}
+    >>> kw = saboteur(a=1, **d)
+    >>> d
+    {}
 
-a, b, d, e, v, k = 'A', 'B', 'D', 'E', 'V', 'K'
-funcs = []
-maxargs = {}
-for args in ['', 'a', 'ab']:
-    for defargs in ['', 'd', 'de']:
-        for vararg in ['', 'v']:
-            for kwarg in ['', 'k']:
-                name = 'z' + args + defargs + vararg + kwarg
-                arglist = list(args) + map(
-                    lambda x: '%s="%s"' % (x, x), defargs)
-                if vararg: arglist.append('*' + vararg)
-                if kwarg: arglist.append('**' + kwarg)
-                decl = (('def %s(%s): print "ok %s", a, b, d, e, v, ' +
-                         'type(k) is type ("") and k or sortdict(k)')
-                         % (name, ', '.join(arglist), name))
-                exec(decl)
-                func = eval(name)
-                funcs.append(func)
-                maxargs[func] = len(args + defargs)
 
-for name in ['za', 'zade', 'zabk', 'zabdv', 'zabdevk']:
-    func = eval(name)
-    for args in [(), (1, 2), (1, 2, 3, 4, 5)]:
-        for kwargs in ['', 'a', 'd', 'ad', 'abde']:
-            kwdict = {}
-            for k in kwargs: kwdict[k] = k + k
-            print func.func_name, args, sortdict(kwdict), '->',
-            try: apply(func, args, kwdict)
-            except TypeError, err: print err
+    >>> g(1, 2, 3, **{'x': 4, 'y': 5})
+    Traceback (most recent call last):
+      ...
+    TypeError: g() got multiple values for keyword argument 'x'
+
+    >>> f(**{1:2})
+    Traceback (most recent call last):
+      ...
+    TypeError: f() keywords must be strings
+
+    >>> h(**{'e': 2})
+    Traceback (most recent call last):
+      ...
+    TypeError: h() got an unexpected keyword argument 'e'
+
+    >>> h(*h)
+    Traceback (most recent call last):
+      ...
+    TypeError: h() argument after * must be a sequence
+
+    >>> dir(*h)
+    Traceback (most recent call last):
+      ...
+    TypeError: dir() argument after * must be a sequence
+
+    >>> None(*h)
+    Traceback (most recent call last):
+      ...
+    TypeError: NoneType argument after * must be a sequence
+
+    >>> h(**h)
+    Traceback (most recent call last):
+      ...
+    TypeError: h() argument after ** must be a mapping
+
+    >>> dir(**h)
+    Traceback (most recent call last):
+      ...
+    TypeError: dir() argument after ** must be a mapping
+
+    >>> None(**h)
+    Traceback (most recent call last):
+      ...
+    TypeError: NoneType argument after ** must be a mapping
+
+    >>> dir(b=1, **{'b': 1})
+    Traceback (most recent call last):
+      ...
+    TypeError: dir() got multiple values for keyword argument 'b'
+
+Another helper function
+
+    >>> def f2(*a, **b):
+    ...     return a, b
+
+
+    >>> d = {}
+    >>> for i in xrange(512):
+    ...     key = 'k%d' % i
+    ...     d[key] = i
+    >>> a, b = f2(1, *(2,3), **d)
+    >>> len(a), len(b), b == d
+    (3, 512, True)
+
+    >>> class Foo:
+    ...     def method(self, arg1, arg2):
+    ...         return arg1+arg2
+
+    >>> x = Foo()
+    >>> Foo.method(*(x, 1, 2))
+    3
+    >>> Foo.method(x, *(1, 2))
+    3
+    >>> Foo.method(*(1, 2, 3))
+    Traceback (most recent call last):
+      ...
+    TypeError: unbound method method() must be called with Foo instance as \
+first argument (got int instance instead)
+
+    >>> Foo.method(1, *[2, 3])
+    Traceback (most recent call last):
+      ...
+    TypeError: unbound method method() must be called with Foo instance as \
+first argument (got int instance instead)
+
+A PyCFunction that takes only positional parameters shoud allow an
+empty keyword dictionary to pass without a complaint, but raise a
+TypeError if te dictionary is not empty
+
+    >>> try:
+    ...     silence = id(1, *{})
+    ...     True
+    ... except:
+    ...     False
+    True
+
+    >>> id(1, **{'foo': 1})
+    Traceback (most recent call last):
+      ...
+    TypeError: id() takes no keyword arguments
+
+"""
+
+from test import test_support
+
+def test_main():
+    import test_extcall # self import
+    test_support.run_doctest(test_extcall, True)
+
+if __name__ == '__main__':
+    test_main()

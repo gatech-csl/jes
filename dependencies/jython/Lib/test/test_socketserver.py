@@ -1,11 +1,13 @@
 # Test suite for SocketServer.py
 
-import test_support
-from test_support import verbose, verify, TESTFN, TestSkipped
+from test import test_support
+from test.test_support import (verbose, verify, TESTFN, TestSkipped,
+                               reap_children)
 test_support.requires('network')
 
 from SocketServer import *
 import socket
+import errno
 import select
 import time
 import threading
@@ -43,7 +45,7 @@ def receive(sock, n, timeout=20):
     if sock in r:
         return sock.recv(n)
     else:
-        raise RuntimeError, "timed out on %s" % `sock`
+        raise RuntimeError, "timed out on %r" % (sock,)
 
 def testdgram(proto, addr):
     s = socket.socket(proto, socket.SOCK_DGRAM)
@@ -77,6 +79,14 @@ class ServerThread(threading.Thread):
             pass
         if verbose: print "thread: creating server"
         svr = svrcls(self.__addr, self.__hdlrcls)
+        # pull the address out of the server in case it changed
+        # this can happen if another process is using the port
+        addr = svr.server_address
+        if addr:
+            self.__addr = addr
+            if self.__addr != svr.socket.getsockname():
+                raise RuntimeError('server_address was %s, expected %s' %
+                                       (self.__addr, svr.socket.getsockname()))
         if verbose: print "thread: serving three times"
         svr.serve_a_few()
         if verbose: print "thread: done"
@@ -94,6 +104,19 @@ def pickaddr(proto):
         return (host, pickport())
     else:
         fn = TESTFN + str(pickport())
+        if os.name == 'os2':
+            # AF_UNIX socket names on OS/2 require a specific prefix
+            # which can't include a drive letter and must also use
+            # backslashes as directory separators
+            if fn[1] == ':':
+                fn = fn[2:]
+            if fn[0] in (os.sep, os.altsep):
+                fn = fn[1:]
+            fn = os.path.join('\socket', fn)
+            if os.sep == '/':
+                fn = fn.replace(os.sep, os.altsep)
+            else:
+                fn = fn.replace(os.altsep, os.sep)
         testfiles.append(fn)
         return fn
 
@@ -123,11 +146,29 @@ def testloop(proto, servers, hdlrcls, testfunc):
         t.join()
         if verbose: print "done"
 
-tcpservers = [TCPServer, ThreadingTCPServer]
-if hasattr(os, 'fork'):
+class ForgivingTCPServer(TCPServer):
+    # prevent errors if another process is using the port we want
+    def server_bind(self):
+        host, default_port = self.server_address
+        # this code shamelessly stolen from test.test_support
+        # the ports were changed to protect the innocent
+        import sys
+        for port in [default_port, 3434, 8798, 23833]:
+            try:
+                self.server_address = host, port
+                TCPServer.server_bind(self)
+                break
+            except socket.error, (err, msg):
+                if err != errno.EADDRINUSE:
+                    raise
+                print >>sys.__stderr__, \
+                    '  WARNING: failed to listen on port %d, trying another' % port
+
+tcpservers = [ForgivingTCPServer, ThreadingTCPServer]
+if hasattr(os, 'fork') and os.name not in ('os2',):
     tcpservers.append(ForkingTCPServer)
 udpservers = [UDPServer, ThreadingUDPServer]
-if hasattr(os, 'fork'):
+if hasattr(os, 'fork') and os.name not in ('os2',):
     udpservers.append(ForkingUDPServer)
 
 if not hasattr(socket, 'AF_UNIX'):
@@ -135,16 +176,27 @@ if not hasattr(socket, 'AF_UNIX'):
     dgramservers = []
 else:
     class ForkingUnixStreamServer(ForkingMixIn, UnixStreamServer): pass
-    streamservers = [UnixStreamServer, ThreadingUnixStreamServer,
-                     ForkingUnixStreamServer]
+    streamservers = [UnixStreamServer, ThreadingUnixStreamServer]
+    if hasattr(os, 'fork') and os.name not in ('os2',):
+        streamservers.append(ForkingUnixStreamServer)
     class ForkingUnixDatagramServer(ForkingMixIn, UnixDatagramServer): pass
-    dgramservers = [UnixDatagramServer, ThreadingUnixDatagramServer,
-                    ForkingUnixDatagramServer]
+    dgramservers = [UnixDatagramServer, ThreadingUnixDatagramServer]
+    if hasattr(os, 'fork') and os.name not in ('os2',):
+        dgramservers.append(ForkingUnixDatagramServer)
+
+def sloppy_cleanup():
+    # See http://python.org/sf/1540386
+    # We need to reap children here otherwise a child from one server
+    # can be left running for the next server and cause a test failure.
+    time.sleep(DELAY)
+    reap_children()
 
 def testall():
     testloop(socket.AF_INET, tcpservers, MyStreamHandler, teststream)
+    sloppy_cleanup()
     testloop(socket.AF_INET, udpservers, MyDatagramHandler, testdgram)
     if hasattr(socket, 'AF_UNIX'):
+        sloppy_cleanup()
         testloop(socket.AF_UNIX, streamservers, MyStreamHandler, teststream)
         # Alas, on Linux (at least) recvfrom() doesn't return a meaningful
         # client address so this cannot work:
@@ -160,6 +212,7 @@ def test_main():
         testall()
     finally:
         cleanup()
+    reap_children()
 
 if __name__ == "__main__":
     test_main()

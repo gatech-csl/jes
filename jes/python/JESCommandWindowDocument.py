@@ -49,11 +49,9 @@ class JESCommandWindowDocument(DefaultStyledDocument):
     def changeFontSize(self, fontSize):
         newFontSize = int(fontSize)
         swing.text.StyleConstants.setFontSize(self.textAttrib, newFontSize)
-        text = DefaultStyledDocument.getText(
-            self, 0, DefaultStyledDocument.getLength(self))
-        DefaultStyledDocument.remove(
-            self, 0, DefaultStyledDocument.getLength(self))
-        DefaultStyledDocument.insertString(self, 0, text, self.textAttrib)
+        text = self.getText(0, self.getLength())
+        self.remove(0, self.getLength())
+        self.insertString(0, text, self.textAttrib)
 
 
 # some other undocumented functions.
@@ -64,46 +62,28 @@ class JESCommandWindowDocument(DefaultStyledDocument):
             str = JESConstants.TAB
 
         if self.command.getIsSystem() != FALSE:
-            DefaultStyledDocument.insertString(self,
-                                               offset,
-                                               str,
-                                               self.textAttrib)
-
+            DefaultStyledDocument.insertString(self, offset, str, self.textAttrib)
         else:
             # When insertString is called by Jython, check to make sure the
             # string is to be inserted after the most recent prompt
 
             if self.command.getCaretPosition() >= self.command.getOldPos():
-
-                DefaultStyledDocument.insertString(self,
-                                                   offset,
-                                                   str,
-                                                   self.textAttrib)
+                DefaultStyledDocument.insertString(self, offset, str, self.textAttrib)
             else:
                 # if an absent minded user has put the cursor
                 # behind the current ">>>" command start point,
                 # and he starts typing, we move the cursor to the right
                 # place, and insert the text at the end of the text.
                 self.command.setCaretPosition(self.getLength())
-                DefaultStyledDocument.insertString(self,
-                                                   # offset,
-                                                   self.getLength(),
-                                                   str,
-                                                   self.textAttrib)
+                DefaultStyledDocument.insertString(self, self.getLength(), str, self.textAttrib)
             # sort of a hack
             # if a backspace is pressed from the initial cursor position,
             # getCaretPosition becomes less than old position, and the system
             # locks up
             if self.command.getCaretPosition() + 1 == self.command.getOldPos():
-                DefaultStyledDocument.insertString(self,
-                                                   offset,
-                                                   ' ',
-                                                   self.textAttrib)
+                DefaultStyledDocument.insertString(self, offset, ' ', self.textAttrib)
+                DefaultStyledDocument.insertString(self, offset + 1, str, self.textAttrib)
 
-                DefaultStyledDocument.insertString(self,
-                                                   offset + 1,
-                                                   str,
-                                                   self.textAttrib)
 ##########################################################################
 # Function name: insertString
 # Parameters:
@@ -121,6 +101,7 @@ class JESCommandWindowDocument(DefaultStyledDocument):
         self.addString(offset, str)
         self.command.commandHistory.setPartialCommand(
             self.command.getCurrentCommandLine())
+
 ##########################################################################
 # Function name: remove
 # Parameters:

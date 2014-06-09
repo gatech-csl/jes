@@ -1,6 +1,7 @@
-import test_support, unittest
+from test import test_support
+import unittest
 import pickle
-    
+
 #myint and its test taken from pickletester, the other "my" classes and tests
 #      are based on it.
 class myint(int):
@@ -81,7 +82,7 @@ class TestSubclasses(unittest.TestCase):
 
         self.assertEqual(Spam(), 0L)
         self.assertEqual(str(Spam()), "hi")
-    
+
     def test_tuple(self):
         class Spam(tuple):
             def __str__(self):
@@ -180,24 +181,16 @@ class TestSubclasses(unittest.TestCase):
         s = pickle.dumps(picklee)
         y = pickle.loads(s)
         self.assertEqual(picklee, y)
- 
+
     def test_pickle_builtins(self):
         #ignores cPickle for now.
 
         self.picklecheck(myint(4))
         self.picklecheck(mystr('x'))
         self.picklecheck(mytuple([1,2]))
-  
-def test_suite():
-    allsuites = [unittest.makeSuite(klass, 'test')
-                 for klass in (TestSubclasses,
-                              )
-                ]
-    return unittest.TestSuite(allsuites)
 
 
 def test_main():
-    import sys
     test_support.run_unittest(TestSubclasses)
 
 if __name__ == "__main__":

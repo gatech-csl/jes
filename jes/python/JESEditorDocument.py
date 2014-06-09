@@ -128,14 +128,13 @@ class JESEditorDocument(HighlightingStyledDocument):
         self.undoManager = swing.undo.UndoManager()
         self.undoManager.setLimit(MAX_UNDO_EVENTS_TO_RETAIN)
 
-        HighlightingStyledDocument.setKeywordStyle(self, self.keywordAttrib)
-        HighlightingStyledDocument.setEnvironmentWordStyle(
-            self, self.jesEnvironmentWordAttrib)
-        HighlightingStyledDocument.setStringStyle(self, self.stringAttrib)
-        HighlightingStyledDocument.setLParenStyle(self, self.lParenAttrib)
-        HighlightingStyledDocument.setRParenStyle(self, self.rParenAttrib)
-        HighlightingStyledDocument.setCommentStyle(self, self.commentAttrib)
-        HighlightingStyledDocument.setDefaultStyle(self, self.textAttrib)
+        self.setKeywordStyle(self.keywordAttrib)
+        self.setEnvironmentWordStyle(self.jesEnvironmentWordAttrib)
+        self.setStringStyle(self.stringAttrib)
+        self.setLParenStyle(self.lParenAttrib)
+        self.setRParenStyle(self.rParenAttrib)
+        self.setCommentStyle(self.commentAttrib)
+        self.setDefaultStyle(self.textAttrib)
 
         # The following variables are set when showErrorLine is called.  They
         # are then used to unhighlight the line when the next text modification
@@ -165,8 +164,7 @@ class JESEditorDocument(HighlightingStyledDocument):
         swing.text.StyleConstants.setFontSize(self.rParenAttrib, newFontSize)
         swing.text.StyleConstants.setFontSize(self.lParenAttrib, newFontSize)
         swing.text.StyleConstants.setFontSize(self.keywordAttrib, newFontSize)
-        HighlightingStyledDocument.updateHighlightingInRange(
-            self, 0, HighlightingStyledDocument.getLength(self))
+        self.updateHighlightingInRange(0, self.getLength())
         self.editor.gui.gutter.repaint()
 
 ##########################################################################
@@ -183,9 +181,8 @@ class JESEditorDocument(HighlightingStyledDocument):
     def insertString(self, offset, str, a, addUndoEvent=1):
         if self.needToSetEnvironment:
             # Give the environment and key words to the Highlighting Document
-            HighlightingStyledDocument.setEnvironmentWords(
-                self, self.editor.program.getVarsToHighlight().keys())
-            HighlightingStyledDocument.setKeywords(self, keyword.kwlist)
+            self.setEnvironmentWords(self.editor.program.getVarsToHighlight().keys())
+            self.setKeywords(keyword.kwlist)
             self.needToSetEnvironment = 0
         if self.errorLineStart >= 0:
             self.removeErrorHighlighting()
@@ -207,11 +204,8 @@ class JESEditorDocument(HighlightingStyledDocument):
         self.editor.modified = 1
         self.editor.gui.loadButton.enabled = 1
         if addUndoEvent:
-            self.addUndoEvent(INSERT_EVENT,
-                              offset,
-                              str)
-        HighlightingStyledDocument.insertString(
-            self, offset, str, self.textAttrib)
+            self.addUndoEvent(INSERT_EVENT, offset, str)
+        HighlightingStyledDocument.insertString(self, offset, str, self.textAttrib)
 
 
 ##########################################################################
@@ -247,8 +241,7 @@ class JESEditorDocument(HighlightingStyledDocument):
     def removeErrorHighlighting(self):
         # Unhighlight a line if showErrorLine was called earlier
         if self.errorLineStart >= 0:
-            HighlightingStyledDocument.updateHighlightingInRange(self, self.errorLineStart,
-                                                                 self.errorLineLen)
+            self.updateHighlightingInRange(self.errorLineStart, self.errorLineLen)
             self.errorLineStart = -1
             self.errorLineLen = -1
 
@@ -371,10 +364,8 @@ class JESEditorDocument(HighlightingStyledDocument):
         self.errorLineLen = endOffset - offset
 
         # Set the correct text attribute for the error line
-        HighlightingStyledDocument.setCharacterAttributes(self, self.errorLineStart,
-                                                          self.errorLineLen,
-                                                          self.errorLineAttrib,
-                                                          1)
+        self.setCharacterAttributes(self.errorLineStart, self.errorLineLen,
+                                    self.errorLineAttrib, 1)
 
         # Set cusor to error line to ensure that the error line will be visible
         self.editor.setCaretPosition(self.errorLineStart)

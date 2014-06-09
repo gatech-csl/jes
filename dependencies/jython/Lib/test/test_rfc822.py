@@ -1,7 +1,7 @@
 import rfc822
 import sys
-import test_support
 import unittest
+from test import test_support
 
 try:
     from cStringIO import StringIO
@@ -45,6 +45,10 @@ class MessageTestCase(unittest.TestCase):
                 print 'extra parsed address:', repr(n), repr(a)
                 continue
             i = i + 1
+            self.assertEqual(mn, n,
+                             "Un-expected name: %s != %s" % (`mn`, `n`))
+            self.assertEqual(ma, a,
+                             "Un-expected address: %s != %s" % (`ma`, `a`))
             if mn == n and ma == a:
                 pass
             else:
@@ -53,7 +57,7 @@ class MessageTestCase(unittest.TestCase):
         out = m.getdate('date')
         if out:
             self.assertEqual(out,
-                             (1999, 1, 13, 23, 57, 35, 0, 0, 0),
+                             (1999, 1, 13, 23, 57, 35, 0, 1, 0),
                              "date conversion failed")
 
 
@@ -129,6 +133,12 @@ class MessageTestCase(unittest.TestCase):
             'To: person@dom.ain (User J. Person)\n\n',
             [('User J. Person', 'person@dom.ain')])
 
+    def test_doublecomment(self):
+        # The RFC allows comments within comments in an email addr
+        self.check(
+            'To: person@dom.ain ((User J. Person)), John Doe <foo@bar.com>\n\n',
+            [('User J. Person', 'person@dom.ain'), ('John Doe', 'foo@bar.com')])
+
     def test_twisted(self):
         # This one is just twisted.  I don't know what the proper
         # result should be, but it shouldn't be to infloop, which is
@@ -176,6 +186,17 @@ class MessageTestCase(unittest.TestCase):
             'foo',
             [('', 'guido@[132.151.1.21]')])
 
+    def test_iter(self):
+        m = rfc822.Message(StringIO(
+            'Date:    Wed, 13 Jan 1999 23:57:35 -0500\n'
+            'From:    Guido van Rossum <guido@CNRI.Reston.VA.US>\n'
+            'To:      "Guido van\n'
+            '\t : Rossum" <guido@python.org>\n'
+            'Subject: test2\n'
+            '\n'
+            'test2\n' ))
+        self.assertEqual(sorted(m), ['date', 'from', 'subject', 'to'])
+
     def test_rfc2822_phrases(self):
         # RFC 2822 (the update to RFC 822) specifies that dots in phrases are
         # obsolete syntax, which conforming programs MUST recognize but NEVER
@@ -185,7 +206,7 @@ class MessageTestCase(unittest.TestCase):
         self.check('To: User J. Person <person@dom.ain>\n\n',
                    [('User J. Person', 'person@dom.ain')])
 
-    # This takes to long to add to the test suite
+    # This takes too long to add to the test suite
 ##    def test_an_excrutiatingly_long_address_field(self):
 ##        OBSCENELY_LONG_HEADER_MULTIPLIER = 10000
 ##        oneaddr = ('Person' * 10) + '@' + ('.'.join(['dom']*10)) + '.com'
@@ -193,6 +214,25 @@ class MessageTestCase(unittest.TestCase):
 ##        lst = rfc822.AddrlistClass(addr).getaddrlist()
 ##        self.assertEqual(len(lst), OBSCENELY_LONG_HEADER_MULTIPLIER)
 
+    def test_2getaddrlist(self):
+        eq = self.assertEqual
+        msg = self.create_message("""\
+To: aperson@dom.ain
+Cc: bperson@dom.ain
+Cc: cperson@dom.ain
+Cc: dperson@dom.ain
+
+A test message.
+""")
+        ccs = [('', a) for a in
+               ['bperson@dom.ain', 'cperson@dom.ain', 'dperson@dom.ain']]
+        addrs = msg.getaddrlist('cc')
+        addrs.sort()
+        eq(addrs, ccs)
+        # Try again, this one used to fail
+        addrs = msg.getaddrlist('cc')
+        addrs.sort()
+        eq(addrs, ccs)
 
     def test_parseaddr(self):
         eq = self.assertEqual
@@ -202,6 +242,12 @@ class MessageTestCase(unittest.TestCase):
            ('Bea A. Person', 'bperson@dom.ain'))
         eq(rfc822.parseaddr('Cynthia Person <cperson@dom.ain>'),
            ('Cynthia Person', 'cperson@dom.ain'))
+
+    def test_quote_unquote(self):
+        eq = self.assertEqual
+        eq(rfc822.quote('foo\\wacky"name'), 'foo\\\\wacky\\"name')
+        eq(rfc822.unquote('"foo\\\\wacky\\"name"'), 'foo\\wacky"name')
+
 
 def test_main():
     test_support.run_unittest(MessageTestCase)

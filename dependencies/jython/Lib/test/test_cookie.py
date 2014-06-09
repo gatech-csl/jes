@@ -1,26 +1,29 @@
 # Simple test suite for Cookie.py
 
-from test_support import verify, verbose, run_doctest
+from test.test_support import verify, verbose, run_doctest
 import Cookie
+
+import warnings
+warnings.filterwarnings("ignore",
+                        ".* class is insecure.*",
+                        DeprecationWarning)
 
 # Currently this only tests SimpleCookie
 
 cases = [
     ('chips=ahoy; vienna=finger', {'chips':'ahoy', 'vienna':'finger'}),
-    ('keebler="E=mc2; L=\\"Loves\\"; fudge=\\012;";',
+    ('keebler="E=mc2; L=\\"Loves\\"; fudge=\\012;"',
      {'keebler' : 'E=mc2; L="Loves"; fudge=\012;'}),
 
     # Check illegal cookies that have an '=' char in an unquoted value
-    ('keebler=E=mc2;', {'keebler' : 'E=mc2'})
+    ('keebler=E=mc2', {'keebler' : 'E=mc2'})
     ]
 
 for data, dict in cases:
     C = Cookie.SimpleCookie() ; C.load(data)
     print repr(C)
-    print str(C)
-    items = dict.items()
-    items.sort()
-    for k, v in items:
+    print C.output(sep='\n')
+    for k, v in sorted(dict.iteritems()):
         print ' ', k, repr( C[k].value ), repr(v)
         verify(C[k].value == v)
         print C[k]

@@ -7,7 +7,7 @@ import javax.swing.ImageIcon;
 /**
  * This manages JES resources which live under the jes.home directory.
  */
-class JESResources {
+public class JESResources {
     private static String homePath;
     private static File homeFile;
 

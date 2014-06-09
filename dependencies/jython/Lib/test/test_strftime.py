@@ -3,7 +3,7 @@
 # Sanity checker for time.strftime
 
 import time, calendar, sys, os, re
-from test_support import verbose
+from test.test_support import verbose
 
 def main():
     global verbose
@@ -28,6 +28,16 @@ def main():
         for i in range(25):
             strftest(now + (i + j*100)*23*3603)
 
+def escapestr(text, ampm):
+    """Escape text to deal with possible locale values that have regex
+    syntax while allowing regex syntax used for the comparison."""
+    new_text = re.escape(text)
+    new_text = new_text.replace(re.escape(ampm), ampm)
+    new_text = new_text.replace("\%", "%")
+    new_text = new_text.replace("\:", ":")
+    new_text = new_text.replace("\?", "?")
+    return new_text
+
 def strftest(now):
     if verbose:
         print "strftime test for", time.ctime(now)
@@ -38,7 +48,7 @@ def strftest(now):
     if now[3] < 12: ampm='(AM|am)'
     else: ampm='(PM|pm)'
 
-    jan1 = time.localtime(time.mktime((now[0], 1, 1) + (0,)*6))
+    jan1 = time.localtime(time.mktime((now[0], 1, 1, 0, 0, 0, 0, 1, 0)))
 
     try:
         if now[8]: tz = time.tzname[1]
@@ -50,6 +60,8 @@ def strftest(now):
     elif now[3] > 0: clock12 = now[3]
     else: clock12 = 12
 
+    # Make sure any characters that could be taken as regex syntax is
+    # escaped in escapestr()
     expectations = (
         ('%a', calendar.day_abbr[now[6]], 'abbreviated weekday name'),
         ('%A', calendar.day_name[now[6]], 'full weekday name'),
@@ -110,7 +122,7 @@ def strftest(now):
         except ValueError, error:
             print "Standard '%s' format gave error:" % e[0], error
             continue
-        if re.match(e[1], result): continue
+        if re.match(escapestr(e[1], ampm), result): continue
         if not result or result[0] == '%':
             print "Does not support standard '%s' format (%s)" % (e[0], e[2])
         else:
@@ -125,7 +137,7 @@ def strftest(now):
                 print "Error for nonstandard '%s' format (%s): %s" % \
                       (e[0], e[2], str(result))
             continue
-        if re.match(e[1], result):
+        if re.match(escapestr(e[1], ampm), result):
             if verbose:
                 print "Supports nonstandard '%s' format (%s)" % (e[0], e[2])
         elif not result or result[0] == '%':

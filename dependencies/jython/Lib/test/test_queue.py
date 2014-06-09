@@ -1,39 +1,79 @@
 # Some simple Queue module tests, plus some failure conditions
-# to ensure the Queue locks remain stable
+# to ensure the Queue locks remain stable.
 import Queue
 import sys
 import threading
 import time
 
-from test_support import verify, TestFailed, verbose
+from test.test_support import verify, TestFailed, verbose
 
-queue_size = 5
+QUEUE_SIZE = 5
 
-# Execute a function that blocks, and in a seperate thread, a function that
-# triggers the release.  Returns the result of the blocking function.
+# A thread to run a function that unclogs a blocked Queue.
 class _TriggerThread(threading.Thread):
     def __init__(self, fn, args):
         self.fn = fn
         self.args = args
         self.startedEvent = threading.Event()
         threading.Thread.__init__(self)
+
     def run(self):
-        time.sleep(.1)
+        # The sleep isn't necessary, but is intended to give the blocking
+        # function in the main thread a chance at actually blocking before
+        # we unclog it.  But if the sleep is longer than the timeout-based
+        # tests wait in their blocking functions, those tests will fail.
+        # So we give them much longer timeout values compared to the
+        # sleep here (I aimed at 10 seconds for blocking functions --
+        # they should never actually wait that long - they should make
+        # progress as soon as we call self.fn()).
+        time.sleep(0.1)
         self.startedEvent.set()
         self.fn(*self.args)
 
-def _doBlockingTest( block_func, block_args, trigger_func, trigger_args):
+# Execute a function that blocks, and in a separate thread, a function that
+# triggers the release.  Returns the result of the blocking function.
+# Caution:  block_func must guarantee to block until trigger_func is
+# called, and trigger_func must guarantee to change queue state so that
+# block_func can make enough progress to return.  In particular, a
+# block_func that just raises an exception regardless of whether trigger_func
+# is called will lead to timing-dependent sporadic failures, and one of
+# those went rarely seen but undiagnosed for years.  Now block_func
+# must be unexceptional.  If block_func is supposed to raise an exception,
+# call _doExceptionalBlockingTest() instead.
+def _doBlockingTest(block_func, block_args, trigger_func, trigger_args):
+    t = _TriggerThread(trigger_func, trigger_args)
+    t.start()
+    result = block_func(*block_args)
+    # If block_func returned before our thread made the call, we failed!
+    if not t.startedEvent.isSet():
+        raise TestFailed("blocking function '%r' appeared not to block" %
+                         block_func)
+    t.join(10) # make sure the thread terminates
+    if t.isAlive():
+        raise TestFailed("trigger function '%r' appeared to not return" %
+                         trigger_func)
+    return result
+
+# Call this instead if block_func is supposed to raise an exception.
+def _doExceptionalBlockingTest(block_func, block_args, trigger_func,
+                               trigger_args, expected_exception_class):
     t = _TriggerThread(trigger_func, trigger_args)
     t.start()
     try:
-        return block_func(*block_args)
+        try:
+            block_func(*block_args)
+        except expected_exception_class:
+            raise
+        else:
+            raise TestFailed("expected exception of kind %r" %
+                             expected_exception_class)
     finally:
-        # If we unblocked before our thread made the call, we failed!
-        if not t.startedEvent.isSet():
-            raise TestFailed("blocking function '%r' appeared not to block" % (block_func,))
-        t.join(1) # make sure the thread terminates
+        t.join(10) # make sure the thread terminates
         if t.isAlive():
-            raise TestFailed("trigger function '%r' appeared to not return" % (trigger_func,))
+            raise TestFailed("trigger function '%r' appeared to not return" %
+                             trigger_func)
+        if not t.startedEvent.isSet():
+            raise TestFailed("trigger thread ended but event never set")
 
 # A Queue subclass that can provoke failure at a moment's notice :)
 class FailingQueueException(Exception):
@@ -58,21 +98,38 @@ class FailingQueue(Queue.Queue):
 def FailingQueueTest(q):
     if not q.empty():
         raise RuntimeError, "Call this function with an empty queue"
-    for i in range(queue_size-1):
+    for i in range(QUEUE_SIZE-1):
         q.put(i)
-    q.fail_next_put = True
     # Test a failing non-blocking put.
+    q.fail_next_put = True
     try:
         q.put("oops", block=0)
         raise TestFailed("The queue didn't fail when it should have")
     except FailingQueueException:
         pass
+    q.fail_next_put = True
+    try:
+        q.put("oops", timeout=0.1)
+        raise TestFailed("The queue didn't fail when it should have")
+    except FailingQueueException:
+        pass
     q.put("last")
     verify(q.full(), "Queue should be full")
-    q.fail_next_put = True
     # Test a failing blocking put
+    q.fail_next_put = True
     try:
-        _doBlockingTest( q.put, ("full",), q.get, ())
+        _doBlockingTest(q.put, ("full",), q.get, ())
+        raise TestFailed("The queue didn't fail when it should have")
+    except FailingQueueException:
+        pass
+    # Check the Queue isn't damaged.
+    # put failed, but get succeeded - re-add
+    q.put("last")
+    # Test a failing timeout put
+    q.fail_next_put = True
+    try:
+        _doExceptionalBlockingTest(q.put, ("full", True, 10), q.get, (),
+                                   FailingQueueException)
         raise TestFailed("The queue didn't fail when it should have")
     except FailingQueueException:
         pass
@@ -87,7 +144,7 @@ def FailingQueueTest(q):
     # Test a blocking put
     _doBlockingTest( q.put, ("full",), q.get, ())
     # Empty it
-    for i in range(queue_size):
+    for i in range(QUEUE_SIZE):
         q.get()
     verify(q.empty(), "Queue should be empty")
     q.put("first")
@@ -98,11 +155,19 @@ def FailingQueueTest(q):
     except FailingQueueException:
         pass
     verify(not q.empty(), "Queue should not be empty")
+    q.fail_next_get = True
+    try:
+        q.get(timeout=0.1)
+        raise TestFailed("The queue didn't fail when it should have")
+    except FailingQueueException:
+        pass
+    verify(not q.empty(), "Queue should not be empty")
     q.get()
     verify(q.empty(), "Queue should be empty")
     q.fail_next_get = True
     try:
-        _doBlockingTest( q.get, (), q.put, ('empty',))
+        _doExceptionalBlockingTest(q.get, (), q.put, ('empty',),
+                                   FailingQueueException)
         raise TestFailed("The queue didn't fail when it should have")
     except FailingQueueException:
         pass
@@ -117,9 +182,11 @@ def SimpleQueueTest(q):
     # I guess we better check things actually queue correctly a little :)
     q.put(111)
     q.put(222)
-    verify(q.get()==111 and q.get()==222, "Didn't seem to queue the correct data!")
-    for i in range(queue_size-1):
+    verify(q.get() == 111 and q.get() == 222,
+           "Didn't seem to queue the correct data!")
+    for i in range(QUEUE_SIZE-1):
         q.put(i)
+        verify(not q.empty(), "Queue should not be empty")
     verify(not q.full(), "Queue should not be full")
     q.put("last")
     verify(q.full(), "Queue should be full")
@@ -128,10 +195,16 @@ def SimpleQueueTest(q):
         raise TestFailed("Didn't appear to block with a full queue")
     except Queue.Full:
         pass
+    try:
+        q.put("full", timeout=0.01)
+        raise TestFailed("Didn't appear to time-out with a full queue")
+    except Queue.Full:
+        pass
     # Test a blocking put
-    _doBlockingTest( q.put, ("full",), q.get, ())
+    _doBlockingTest(q.put, ("full",), q.get, ())
+    _doBlockingTest(q.put, ("full", True, 10), q.get, ())
     # Empty it
-    for i in range(queue_size):
+    for i in range(QUEUE_SIZE):
         q.get()
     verify(q.empty(), "Queue should be empty")
     try:
@@ -139,17 +212,67 @@ def SimpleQueueTest(q):
         raise TestFailed("Didn't appear to block with an empty queue")
     except Queue.Empty:
         pass
+    try:
+        q.get(timeout=0.01)
+        raise TestFailed("Didn't appear to time-out with an empty queue")
+    except Queue.Empty:
+        pass
     # Test a blocking get
-    _doBlockingTest( q.get, (), q.put, ('empty',))
+    _doBlockingTest(q.get, (), q.put, ('empty',))
+    _doBlockingTest(q.get, (True, 10), q.put, ('empty',))
+
+cum = 0
+cumlock = threading.Lock()
+
+def worker(q):
+    global cum
+    while True:
+        x = q.get()
+        if x is None:
+            q.task_done()
+            return
+        cumlock.acquire()
+        try:
+            cum += x
+        finally:
+            cumlock.release()
+        q.task_done()
+
+def QueueJoinTest(q):
+    global cum
+    cum = 0
+    for i in (0,1):
+        threading.Thread(target=worker, args=(q,)).start()
+    for i in xrange(100):
+        q.put(i)
+    q.join()
+    verify(cum==sum(range(100)), "q.join() did not block until all tasks were done")
+    for i in (0,1):
+        q.put(None)         # instruct the threads to close
+    q.join()                # verify that you can join twice
+
+def QueueTaskDoneTest(q):
+    try:
+        q.task_done()
+    except ValueError:
+        pass
+    else:
+        raise TestFailed("Did not detect task count going negative")
 
 def test():
-    q=Queue.Queue(queue_size)
+    q = Queue.Queue()
+    QueueTaskDoneTest(q)
+    QueueJoinTest(q)
+    QueueJoinTest(q)
+    QueueTaskDoneTest(q)
+
+    q = Queue.Queue(QUEUE_SIZE)
     # Do it a couple of times on the same queue
     SimpleQueueTest(q)
     SimpleQueueTest(q)
     if verbose:
         print "Simple Queue tests seemed to work"
-    q = FailingQueue(queue_size)
+    q = FailingQueue(QUEUE_SIZE)
     FailingQueueTest(q)
     FailingQueueTest(q)
     if verbose:

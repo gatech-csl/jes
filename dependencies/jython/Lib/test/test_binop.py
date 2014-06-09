@@ -1,7 +1,7 @@
 """Tests for binary operators on subtypes of built-in types."""
 
-import test_support
 import unittest
+from test import test_support
 
 def gcd(a, b):
     """Greatest common divisor using Euclid's algorithm."""
@@ -178,7 +178,7 @@ class Rat(object):
         return (x, self - other * x)
 
     def __rdivmod__(self, other):
-        "Divide two Rats, returning quotient and remainder (reversed args)."""
+        """Divide two Rats, returning quotient and remainder (reversed args)."""
         if isint(other):
             other = Rat(other)
         elif not isRat(other):

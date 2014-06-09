@@ -3,12 +3,12 @@
    Roger E. Masse
 """
 import al
-from test_support import verbose
+from test.test_support import verbose
 
 alattrs = ['__doc__', '__name__', 'getdefault', 'getminmax', 'getname', 'getparams',
            'newconfig', 'openport', 'queryparams', 'setparams']
 
-# This is a very unobtrusive test for the existence of the al module and all it's
+# This is a very unobtrusive test for the existence of the al module and all its
 # attributes.  More comprehensive examples can be found in Demo/al
 
 def main():
