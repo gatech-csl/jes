@@ -27,50 +27,43 @@ class JESExceptionRecord:
 
 
 ##########################################################################
-# Function name: GetExceptionDescription
+# Function name: getExceptionDescription
 # Parameters:
-#     -exception: exception object containing information about the exception
-#                 that occured.
+#     -exception: Exception object containing information about the exception
+#                 that occured. (This is the exception value, not the type!)
 # Return:
 #     Returns a message as a string describing the error that occured.
 # Description:
 #     This function takes in an exception object and returns a user friendly
 #     message describing the error that occured.
 ##########################################################################
-    def GetExceptionDescription(self, exception):
+    def getExceptionDescription(self, exception):
         import org.python.core.PyString as PyString
         if exception.__class__ == PyString:
             return exception + '\n'
-        className = exception.__name__
 
-        try:  # this fails on java classes i think
-            print str(exception.__doc__)
-        except:
-            pass
+        cls = type(exception)
+        className = cls.__name__
+
+        # At least some exceptions don't have a __dict__ under Jython 2.5.
+        # We build our own __dict__ here.
+        attributes = {}
+        for name in dir(exception):
+            attributes[name] = getattr(exception, name)
 
         if JESConstants.EXCEPTION_MESSAGES.has_key(className):
-            if className == 'SyntaxError' and exception.lineno == None:
-                msg = 'Your code contains at least one syntax error, meaning it is not legal jython.'
-            else:
-                msg = JESConstants.EXCEPTION_MESSAGES[
-                    className] % exception.__dict__
+            template = JESConstants.EXCEPTION_MESSAGES[className]
+            msg = template % attributes
         else:
-            try:
-                msg = JESConstants.GENERIC_EXCEPTION_MESSAGE + \
-                    exception.__doc__
-            except:
-                # no __doc__ field
-                msg = JESConstants.GENERIC_EXCEPTION_MESSAGE + \
-                    "The error " + exception.__name__ + " has occured"
+            msg = JESConstants.GENERIC_EXCEPTION_MESSAGE % className
 
-            try:
-                for eachArg in exception.args:
-                    msg += '\n' + eachArg
-            except:
-                pass
-                # the try/except here is to handle the case where the exception
-                # does not have any arguments.  The exception is thrown, and
-                # an empty message is sent.
+            doc = getattr(cls, '__doc__')
+            if doc:
+                msg += '\n' + exception.__doc__
+
+            args = getattr(exception, 'args', ())
+            for arg in exception.args:
+                msg += '\n' + arg
 
         msg += '\n'
         return msg
@@ -132,7 +125,7 @@ class JESExceptionRecord:
     # param - type,value,traceback - the return values of sys.exc_info()
     # return: None
     #
-    # The exc_msg is set entirely from GetExceptionDescription
+    # The exc_msg is set entirely from getExceptionDescription
     # The line_number is set from a value of exc_value, which here
     # is an array
     ##########################################################################
@@ -146,7 +139,7 @@ class JESExceptionRecord:
         except:
             pass
 
-        self.exc_msg = self.GetExceptionDescription(exc_type)
+        self.exc_msg = self.getExceptionDescription(exc_value)
         txtStack = self.getExceptionInfo(exc_traceback)
 
         if (self.showLineNumber(txtStack)):
@@ -171,10 +164,8 @@ class JESExceptionRecord:
                 self.line_number = lineno
 
             if (not self.line_number is None) and (self.line_number != 0):
-
                 if (filename == self.programObj.filename):
-
-                    self.exc_msg += "The error is on line %d\n" % self.line_number
+                    self.exc_msg += "The error is on line %d.\n" % self.line_number
                 else:
                     (filename, lineno) = (lastFileName, lastNum)
                     self.exc_msg += "Look at line %d of the current file.\n" % self.line_number
@@ -195,7 +186,7 @@ class JESExceptionRecord:
     # the following variables are filled in the function,  and appended to
     # set the value of self.exc_msg:
     #
-    # exceptionDesc: the return value of self.GetExceptionDescription
+    # exceptionDesc: the return value of self.getExceptionDescription
     # stackMsg: the (possibly empty (ie, '') ) text stack trace
     #           not shown if the error occured in a single line in the
     #           command window
@@ -223,7 +214,7 @@ class JESExceptionRecord:
         showStk = self.showStack(txtStack)
 
         if str(exc_value).find(': '):
-            print ('The error was:' + str(exc_value)
+            print ('The error was: ' + str(exc_value)
                    [(str(exc_value).find(': ') + 1):])
         else:
             print ('The error value is: ' + str(exc_value))
@@ -233,11 +224,9 @@ class JESExceptionRecord:
         lineNumMsg = ''
         self.line_number = None
 
-        exceptionDesc = self.GetExceptionDescription(exc_type)
+        exceptionDesc = self.getExceptionDescription(exc_value)
         try:
-
             nameOfExcMsg = self.getNameOfExcMsg(exc_type, exc_value)
-
         except:
             # some exceptions don't have names
             pass
@@ -300,12 +289,10 @@ class JESExceptionRecord:
 ######################################################################
     def getNameOfExcMsg(self, exc_type, exc_value):
         if JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_MODE) == JESConstants.EXPERT_MODE:
-
             return "%s: %s\n" % (exc_type.__name__, exc_value)
         elif exc_type.__name__ == 'SoundException':
             return "%s\n" % (exc_value)
         else:
-
             return ''
 
     def getLineNum(self, txtStack):

@@ -147,17 +147,6 @@ class JESInterpreter:
         self.program.sendTextToCommandWindow(responseText)
 
 ##########################################################################
-# FunctionName: sendError
-# Description:
-#     Called when user code throws an exception.  It sends an error message to
-#     the command window.
-##########################################################################
-    def sendError(self):
-        exc_type, exc_value, exc_traceback = sys.exc_info()
-        msg = self.GetExceptionDescription(exc_type)
-        self.sendOutput(msg)
-
-##########################################################################
 # Function name: stopThread
 # Description:
 #     Stops a running thread of user code

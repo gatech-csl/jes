@@ -154,11 +154,14 @@ class JESThread(Thread):
                 if self.mode == 'debug':
                     self.interpreter.debugger.running = 0
                 self.mode = 'run'
+
                 exc_type, exc_value, exc_traceback = sys.exc_info()
-                self.excRecord = JESExceptionRecord.JESExceptionRecord(self.interpreter.program.filename,
-                                                                       self.interpreter.program)
-                self.excRecord.setFromUserCode(
-                    exc_type, exc_value, exc_traceback)
+                self.excRecord = JESExceptionRecord.JESExceptionRecord(
+                    self.interpreter.program.filename,
+                    self.interpreter.program
+                )
+                self.excRecord.setFromUserCode(exc_type, exc_value, exc_traceback)
+
                 if debug:
                     print 'exception from JESThread.run()'
                     import traceback

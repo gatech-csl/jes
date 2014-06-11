@@ -152,23 +152,23 @@ EXCEPTION_MESSAGES = {
     'NotImplementedError': 'A method that was called must be implemented in a sub-class. You need to define this method yourself before you use it, jython or JES will not do it for you.',
     'OSError': 'An error occurred while making an operating system call. Please tell a TA what you were doing when this happened, so we may correct it.',
     'OverflowError': 'An arithmetic result is outside the range of acceptable values. This means that the answer is either too large or too small to be represented.',
-    'RuntimeError': 'I wasn\'t able to do what you wanted on line %(lineno)s',
+    'RuntimeError': "An unexpected error happened.",
     'StackOverflowError': 'You have overrun the stack. This means that way too many functions were called before they ever had a chance to return.',
-    'SyntaxError': 'Your code contains at least one syntax error, meaning it is not legal jython. This error is located on %(lineno)s. Please correct it.',
+    'SyntaxError': "Your code contains at least one syntax error, meaning it is not legal Jython.",
     'SystemError': 'An internal system error has occurred.  Please tell a TA what you were doing when this happened so that we may correct it. ',
-    'SystemExit': 'A call of the sys.exit() function has been made. Normally this would exit JES entirely, but we don\'t want you doing this. If you want to exit JES, use the exit option in the file menu.',
+    'SystemExit': 'A call to the sys.exit() function has been made. Normally this would exit JES entirely, but we want to make sure you don\'t exit accidentally and lose your work. If you want to exit JES, use the Exit option in the File menu.',
     'TypeError': 'An attempt was made to call a function with a parameter of an invalid type. This means that you did something such as trying to pass a string to a method that is expecting an integer.',
     'UnboundLocalError': 'A local name was used before it was created. You need to define the method or variable before you try to use it.',
     'UnicodeError': 'An error occurred while encoding or decoding Unicode characters.',
     'ValueError': 'An error occurred attempting to pass an argument to a function.',
     'WindowsError': 'An error occurred while making a Windows system call. Please let your TA know what you were doing when this happened, so we can fix it.',
     'ZeroDivisionError': 'You have attempted to divide a number by zero. In mathematics (and in computing), this gives an undefined result. JES cannot deal with this and you should never be attempting to do it.',
-    'java.lang.ThreadDeath': 'The code has been stopped due to you hitting the stop button.',
+    'ThreadDeath': 'The code has been stopped due to you hitting the stop button.',
     'TokenError': 'There is something wrong with the text of the file you had me try to load.\nYou may have not have as many closing parenthesis as opening parenthesis, or you may have tried to use a jython keyword (if, def, etc...) as a function. This cannot be done.'}
 
 # Error messages that we can't actually catch:
 
 #   'MemoryError'          : 'The system does not have enough memory to allocate an object.',
 
-GENERIC_EXCEPTION_MESSAGE = 'I wasn\'t able to do what you wanted.\n'
+GENERIC_EXCEPTION_MESSAGE = 'A Python %s happened while running your program, so it stopped.'
 TAB_ERROR_MESSAGE = "There was a spacing error in the program.\nIt might be from a previous line, but I think the error is in line "
