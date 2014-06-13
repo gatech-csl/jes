@@ -570,8 +570,8 @@ public class SimpleTurtle {
         int oldY = yPos;
 
         // change the current position
-        xPos = oldX + (int)(pixels * Math.sin(Math.toRadians(heading)));
-        yPos = oldY + (int)(pixels * -Math.cos(Math.toRadians(heading)));
+        xPos = oldX + (int) Math.round(pixels *  Math.sin(Math.toRadians(heading)));
+        yPos = oldY + (int) Math.round(pixels * -Math.cos(Math.toRadians(heading)));
 
         // add a move from the old position to the new position to the pen
         pen.addMove(oldX, oldY, xPos, yPos);
