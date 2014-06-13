@@ -217,7 +217,7 @@ class JESDBVariableWatcher(swing.JPanel):
             self.history.appendVariable(var)
 
     def unwatchVariable(self):
-        var = pickVariable(self, self.debugger.watcher.getVariables())
+        var = pickVariable(self, self.history.getVars())
         if var:
             self.history.removeVariable(var)
 
