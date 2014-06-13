@@ -3,6 +3,7 @@ import cmd
 import bdb
 import pdb
 import threading
+import linecache
 import time
 import math
 import JESDBVariableWatcher
@@ -70,11 +71,16 @@ class JESDebugger(pdb.Pdb):
         else:
             # if we're not in stop mode then we're in...
             # unique to JESDB...the running debug mode!!
-
-            # get line and frame number
-            import linecache
-            import time
             self.setup(frame, traceback)
+            self.handle_each_step(frame)
+
+    # Chose an intentionally obtuse name to minimize the likelihood of
+    # name conflicts with Pdb.
+    def handle_each_step(self, frame):
+        actual_filename = frame.f_code.co_filename
+        target_filename = self.interpreter.program.filename
+
+        if actual_filename == target_filename:
             lineno = frame.f_lineno
             filename = self.interpreter.program.filename
             line = linecache.getline(filename, lineno)
@@ -83,18 +89,18 @@ class JESDebugger(pdb.Pdb):
             for var in self.history.getVars():
                 try:
                     value = eval(
-                        var, self.curframe.f_locals,  self.curframe.f_globals)
+                        var, self.curframe.f_locals, self.curframe.f_globals)
                     values.append(value)
                 except:
                     values.append('-')  # add dummy
 
+            # Append the row to the table.
             runnableSnapshot = snapShotRunner()
             runnableSnapshot.history = self.history
             runnableSnapshot.lineno = lineno
             runnableSnapshot.line = line
             runnableSnapshot.values = values
-            swing.SwingUtilities.invokeLater(
-                runnableSnapshot)  # append row to table
+            swing.SwingUtilities.invokeLater(runnableSnapshot)
 
             if self.speed < self.MAX_SPEED:
                 if self.speed == 0:
@@ -103,27 +109,14 @@ class JESDebugger(pdb.Pdb):
                     self.lock.release()
                     pass
                 else:
-                    t = time.time()
                     period = SPEED_FACTOR / self.speed
-                    # Dorn, no complicated stuff here, but this does
                     time.sleep(period)
-                    # hang up the AWT thread for unknown reasons
-                    # if self.last_time == -1:
-                    #    pause = period
-                    # else:
-                    #    pause = period - (t - self.last_time)
-                    #self.last_time = t
-                    # if pause > 0:
-                    #    time.sleep(pause)
-            if not self.running:
-                self.interpreter.jesThread.stop()  # stop myself
+
 
     # Overrides pdb.user_line
     def user_line(self, frame):
         """This function is called when we stop or break at this line."""
-        if frame.f_code.co_filename == self.interpreter.program.filename:
-            self.running = 1
-            self.interaction(frame, None)
+        self.interaction(frame, None)
 
     # Overrides pdb.user_return
     def user_return(self, frame, return_value):
