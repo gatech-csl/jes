@@ -66,7 +66,6 @@ class JESStdOutputBuffer:
         return self.text
 
     def printNow(self, text):
-
         runnable = JESUpdateRunnable.JESUpdateRunnable(self.interpreter, text)
         #self.interpreter.program.gui.swing.SwingUtilities.invokeLater( runnable )
         self.interpreter.program.gui.swing.SwingUtilities.invokeAndWait(
