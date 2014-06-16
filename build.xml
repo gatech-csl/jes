@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="jes" basedir="." default="build"
+    xmlns:if="ant:if" xmlns:unless="ant:unless">
+    <!-- Paths to things in the repository -->
+    <property name="jes.home"           location="jes" />
+
+    <property name="jes.python.src"     location="${jes.home}/python" />
+    <property name="jes.java.src"       location="${jes.home}/java" />
+    <property name="jes.java.class"     location="${jes.home}/classes" />
+    <property name="jes.javadoc"        location="${jes.home}/javadoc" />
+
+    <property name="jes.main"           value="JESstartup" />
+
+    <property name="jes.deps"           location="dependencies" />
+    <property name="jes.deps.jardir"    location="${jes.deps}/jars" />
+
+    <property name="python.home"        location="${jes.deps}/jython" />
+    <property name="python.main"        value="org.python.util.jython" />
+
+    <property name="jes.tests"          location="tests" />
+    <property name="jes.tests.script"   location="${jes.tests}/TestExecute.py" />
+    <property name="jes.tests.output"   location="${jes.tests}/test-output" />
+
+
+    <!-- Detecting our OS -->
+    <condition property="userpaths.windows">
+        <os family="windows" />
+    </condition>
+    <condition property="userpaths.mac">
+        <os family="mac" />
+    </condition>
+    <condition property="userpaths.linux">
+        <not>
+            <or>
+                <os family="windows" />
+                <os family="mac" />
+            </or>
+        </not>
+    </condition>
+
+
+    <!-- JES classpath -->
+    <fileset id="jes.deps.jars" dir="${jes.deps.jardir}">
+        <include name="*.jar" />
+    </fileset>
+
+    <path id="jes.classpath">
+        <pathelement path="${jes.java.class}" />
+        <fileset refid="jes.deps.jars" />
+    </path>
+
+
+    <!-- JES Python path -->
+    <path id="jes.pythonpath">
+        <pathelement path="${jes.python.src}" />
+    </path>
+
+    <property name="python.path" value="${toString:jes.pythonpath}" />
+
+
+    <!-- JES system properties -->
+    <propertyset id="jes.properties">
+        <propertyref name="python.home" />
+        <propertyref name="python.cachedir" />
+        <propertyref name="python.path" />
+        <propertyref name="jes.home" />
+    </propertyset>
+
+
+    <!-- Building JES -->
+    <target name="build" depends="compile, javadoc"
+        description="Build everything that needs to be built." />
+
+    <target name="compile"
+        description="Build the Java class files.">
+        <mkdir dir="${jes.java.class}" />
+        <javac srcdir="${jes.java.src}" destdir="${jes.java.class}"
+               includeantruntime="false" debug="on">
+            <classpath refid="jes.classpath" />
+        </javac>
+    </target>
+
+    <target name="javadoc"
+        description="Build the Javadocs for the Java classes.">
+        <javadoc destdir="${jes.javadoc}">
+            <!-- We have to use a fileset because JES doesn't use packages. -->
+            <fileset dir="${jes.java.src}">
+                <include name="**/*.java" />
+            </fileset>
+
+            <classpath refid="jes.classpath" />
+            <arg value="-quiet" />
+        </javadoc>
+    </target>
+
+
+    <!-- Booting JES -->
+    <property environment="env" />
+
+    <target name="system-paths">
+        <property name="python.cachedir"    value="${env.LOCALAPPDATA}/JES/jython-cache"
+                  if:set="userpaths.windows" />
+        <property name="jes.configfile"     value="${env.AppData}/JES/JESConfig.txt"
+                  if:set="userpaths.windows" />
+
+        <property name="python.cachedir"    value="${user.home}/Library/Caches/JES/jython-cache"
+                  if:set="userpaths.mac" />
+        <property name="jes.configfile"     value="${user.home}/Library/Application Support/JES/JESConfig.txt"
+                  if:set="userpaths.mac" />
+
+        <property name="python.cachedir"    value="${user.home}/.cache/jes/jython-cache"
+                  if:set="userpaths.linux" />
+        <property name="jes.configfile"     value="${user.home}/.config/jes/JESConfig.txt"
+                  if:set="userpaths.linux" />
+    </target>
+
+    <target name="jython-cache" depends="system-paths"
+        description="Ensure that the Jython cache exists.">
+        <mkdir dir="${python.cachedir}" />
+    </target>
+
+
+    <!-- Testing JES -->
+    <target name="test" depends="compile, jython-cache"
+        description="Run the JES regression test suite.">
+        <java classname="${python.main}">
+            <classpath refid="jes.classpath" />
+            <syspropertyset refid="jes.properties" />
+
+            <arg file="${jes.tests.script}" />
+        </java>
+    </target>
+
+
+    <!-- Cleaning up after JES -->
+    <target name="clean" depends="clean-java, clean-python, clean-pkgcache, clean-test"
+        description="CLEAN ALL THE THINGS!" />
+
+    <target name="clean-java" depends="clean-java-classes, clean-javadoc"
+        description="Remove the built classes and Javadoc." />
+
+    <target name="clean-java-classes"
+        description="Remove the compiled Java classes.">
+        <delete includeemptydirs="true">
+            <fileset dir="${jes.java.class}" includes="**/*" />
+        </delete>
+    </target>
+
+    <target name="clean-javadoc"
+        description="Remove the built Javadocs.">
+        <delete includeemptydirs="true">
+            <fileset dir="${jes.javadoc}" includes="**/*" />
+        </delete>
+    </target>
+
+    <target name="clean-python"
+        description="Remove the cached Python classes.">
+        <delete>
+            <fileset dir="${jes.python.src}" includes="**/*$py.class" />
+        </delete>
+    </target>
+
+    <target name="clean-pkgcache" depends="system-paths"
+        description="Clean the Jython package cache.">
+        <delete dir="${python.cache}" />
+    </target>
+
+    <target name="clean-test"
+        description="Remove files generated by the test suite.">
+        <delete>
+            <fileset dir="${jes.tests.output}" includes="**/*" excludes="README" />
+        </delete>
+    </target>
+
+
+    <!-- Debugging the build file -->
+    <target name="antprops" depends="system-paths"
+        description="Print Ant properties (for working on the build script).">
+        <echoproperties />
+    </target>
+</project>
+

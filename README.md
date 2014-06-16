@@ -15,24 +15,26 @@ over the years (as seen in the `JESCopyright.txt` file).
 
 Running JES
 -----------
-If you're on a system with a Java development environment and a set of GNU
-core utilities (including make) installed, just run:
+The easiest way to run JES is with a downloadable package,
+but unfortunately those haven't been built for JES 5 yet.
+Each of them includes its own `README.txt` with instructions.
 
-    make run
-
-If not...sorry, but you can't right now. I just finished reorganizing the
-entire source tree, and while the `Makefile` works with the new layout,
-the other launchers don't yet.
+If you're working on JES, or you just want to run the latest development
+version, you will need to download a Java Development Kit and Apache Ant.
+The first step is to build JES: just run `ant`.
+Then, you can run the `jes.sh` shell script on Mac or Linux,
+or `jes.bat` on Windows.
 
 
 What's in the repository
 ------------------------
-The `Makefile` is used by developers to launch JES and run all of its tests.
-You can run `make run` to build JES, `make test` to run all the tests, and
-`make clean` to erase everything you built.
+The `build.xml` is used by developers to launch JES and run all of its tests.
+It contains instructions for Apache Ant.
+You can run `ant build` to build JES, `ant test` to run all the tests, and
+`ant clean` to erase everything you built.
 
-The `JES.bat`, `JES.sh`, and `JES.exe` files launch JES on different
-platforms, but as I said earlier, they don't work right now.
+The `jes.sh` file launches JES on Mac and Linux, and `JES.bat` does the same
+on Windows.
 
 All the source files and resources for JES itself live in the `jes` folder:
 
@@ -66,6 +68,9 @@ JES in the `dependencies` folder:
 The `tests` folder contains Python programs that test different parts of JES
 to make sure we wrote them according to the specifications.
 (You can't run these from inside JES.)
+
+The `packaging` folder contains files used to build the distribution packages
+for each platform.
 
 The `demos` folder contains programs you can run to try out JES.
 

@@ -57,3 +57,23 @@ This property is used by JES itself to find its files.
 It will look for `python`, `images`, `help`, and `javadoc` subdirectories,
 so the easiest thing to do is use the `jes` directory.
 
+
+## JES Config File (jes.configfile)
+
+This property will *eventually* be used as the location of the JESConfig.txt
+file. It's not implemented yet, though!
+
+This file isn't really human-editable, so you should store it somewhere
+"behind the scenes" in the user's home directory
+
+
+## Options for JESstartup
+
+There are a couple of options you can pass to the JESstartup class.
+These do require all the above properties to be set.
+Pass `--properties`, and it will print all the system properties and exit.
+Pass `--shell`, and it will open a Python interactive prompt in your console,
+instead of starting JES.
+
+Both of these options can be passed to `jes.sh` and `JES.bat`.
+
