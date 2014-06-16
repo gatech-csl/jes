@@ -1,3 +1,6 @@
+JES- Jython Environment for Students version 5.0 alpha
+Copyright (C) 2014 Matthew Frazier and Mark Guzdial
+
 JES- Jython Environment for Students version 4.3
 Copyright (C) 2009 Brian Dorn and Barbara Ericson
 
