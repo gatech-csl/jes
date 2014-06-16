@@ -67,7 +67,8 @@ JES in the `dependencies` folder:
 
 The `tests` folder contains Python programs that test different parts of JES
 to make sure we wrote them according to the specifications.
-(You can't run these from inside JES.)
+You can run these from inside JES by opening the `TestExecute.py` file,
+but it's much easier to just use `ant test`.
 
 The `packaging` folder contains files used to build the distribution packages
 for each platform.

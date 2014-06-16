@@ -1,10 +1,24 @@
+"""
+This file runs all the tests.
+You can run it directly using Jython, or by running 'ant test',
+or you can run it from within JES by loading it and calling run_tests().
+
+The return value will look something like:
+
+    <unittest._TextTestResult run=198 errors=0 failures=0>
+
+If the "errors" or "failures" numbers are greater than 0,
+it means that the tests didn't work.
+See if you can find the reasons in the test output,
+but if you can't, you'll need to run the tests with Ant.
+"""
+
 import sys
 import unittest
 import os.path
 import sys
 import os
 import fnmatch
-
 
 def find(search_root, patterns=None, recurse=0, return_dirs=1):
     """
@@ -36,21 +50,16 @@ def find(search_root, patterns=None, recurse=0, return_dirs=1):
     return matches
 
 
-def main():
+def run_tests():
     root_path = os.path.dirname(__file__)
 
-    print root_path
-
     test_case_paths = find(root_path, ["Test_*.py", "test_*.py"], 0, 1)
-
-    print test_case_paths
 
     prefix_len = 0
     suffix_len = len(".py")
 
-    sys.path.append(root_path)
-
-    print sys.path
+    if root_path not in sys.path:
+        sys.path.append(root_path)
 
     test_cases = []
     for test_case_path in test_case_paths:
@@ -63,10 +72,16 @@ def main():
         test_cases)
 
     suite_runner = unittest.TextTestRunner(verbosity=2)
-    suite_runner.run(master_test_suite)
-    print 'Done'
+    return suite_runner.run(master_test_suite)
 
-    return 0
+
+def main():
+    result = run_tests()
+    if result.wasSuccessful():
+        return 0
+    else:
+        return 1
 
 if __name__ == "__main__":
     sys.exit(main())
+

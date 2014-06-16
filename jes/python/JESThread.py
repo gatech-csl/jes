@@ -42,6 +42,8 @@ class JESThread(Thread):
             self.fileName = code
         self.interpreter = interpreter
         self.contextForExecution = interpreter.contextForExecution
+        if self.mode == 'load':
+            self.contextForExecution['__file__'] = self.fileName
         self.outputBuffer = None
         self.errMsg = None
         self.excRecord = None
