@@ -6,7 +6,7 @@ import JESConfig
 from java.awt import Color
 from java.lang import ArrayIndexOutOfBoundsException, System
 import javax.swing as swing
-print System.getProperties()
+
 TEST_DIRECTORY = os.path.dirname(__file__) + "/"
 PICTURES = TEST_DIRECTORY + "test-pictures/"
 OUTPUT = TEST_DIRECTORY + "test-output/"

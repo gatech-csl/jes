@@ -126,6 +126,17 @@ class JESDebugger(pdb.Pdb):
     def user_exception(self, frame, (exc_type, exc_value, exc_traceback)):
         pass
 
+    # Overrides pdb.user_call
+    def user_call(self, frame, argument_list):
+        """This method is called when there is the remote possibility
+        that we ever need to stop in this function."""
+        if self._wait_for_mainpyfile:
+            return
+        if self.stop_here(frame):
+            # Only overridden just to remove this line:
+            #print >>self.stdout, '--Call--'
+            self.interaction(frame, None)
+
     def run(self, cmd, globals=None, locals=None):
         self.running = 0
         self.clearHistory()
