@@ -1,6 +1,7 @@
 import java.awt.Frame;
 import java.awt.Toolkit;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Properties;
 import org.python.util.jython;
 import java.io.File;
@@ -25,9 +26,16 @@ public class JESstartup {
         if (strings.length > 0) {
             if (strings[0].equals("--properties")) {
                 Properties props = System.getProperties();
-                for (String name : props.stringPropertyNames()) {
+
+                // Sort the list of properties
+                String[] blank = new String[0];
+                String[] propNames = props.stringPropertyNames().toArray(blank);
+                Arrays.sort(propNames);
+
+                for (String name : propNames) {
                     System.out.printf("%s = %s\n", name, props.getProperty(name));
                 }
+
                 System.exit(0);
             } else if (strings[0].equals("--shell")) {
                 String[] args = new String[] {};
