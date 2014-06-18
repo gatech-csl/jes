@@ -11,9 +11,9 @@ set jes_home=%jes_base%\jes
 
 rem What Java should we use?
 if DEFINED JAVA_HOME (
-    set java=%JAVA_HOME%\bin\java
+    set java=%JAVA_HOME%\bin\javaw
 ) else (
-    set java=java
+    set java=javaw
 )
 
 
@@ -57,7 +57,7 @@ if NOT DEFINED JAVA_MEMORY (
     set JAVA_MEMORY=-Xmx512m
 )
 
-"%java%" -classpath %classpath% %JAVA_MEMORY% ^
+start "JES" "%java%" -classpath %classpath% %JAVA_MEMORY% ^
     -Djes.home="%jes_home%" ^
     -Djes.configfile="%jesconfig%" ^
     -Dpython.home="%pythonhome%" ^
