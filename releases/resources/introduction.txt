@@ -1,0 +1,16 @@
+JES is a development environment designed for [Media Computation][].
+It allows students to use the Python programming language (specifically,
+Jython, which is a version of Python implemented in Java) to manipulate
+images, sounds, and videos.
+
+[Media Computation]: http://mediacomputation.org/
+
+JES is incorporated in "Introduction to Computing and Programming in Python:
+A Multimedia Approach," by Mark Guzdial and Barbara Ericson. Dr. Guzdial
+is the project leader, and the project has been worked on by many people
+over the years (as seen in the `JESCopyright.txt` file).
+
+JES is Free Software, made available under the GNU General Public License.
+This means that everyone may use JES, free of charge, and share it with
+anyone. Everyone can also make changes to JES and share those changes.
+You can read the full license information in the `JESCopyright.txt` file.

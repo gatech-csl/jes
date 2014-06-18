@@ -2,6 +2,11 @@
 *.class
 jes/javadoc/
 
+# Built releases
+releases/*.*
+releases/stage
+!releases/build-releases.xml
+
 # Files created during testing
 tests/test-output/*
 !tests/test-output/README

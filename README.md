@@ -5,19 +5,25 @@ It allows students to use the Python programming language (specifically,
 Jython, which is a version of Python implemented in Java) to manipulate
 images, sounds, and videos.
 
-[Media Computation]: http://coweb.cc.gatech.edu/mediaComp-teach
+[Media Computation]: http://mediacomputation.org/
 
 JES is incorporated in "Introduction to Computing and Programming in Python:
 A Multimedia Approach," by Mark Guzdial and Barbara Ericson. Dr. Guzdial
 is the project leader, and the project has been worked on by many people
-over the years (as seen in the `JESCopyright.txt` file).
+over the years (as seen in the `jes/help/JESCopyright.txt` file).
+
+JES is Free Software, made available under the GNU General Public License.
+This means that everyone may use JES, free of charge, and share it with
+anyone. Everyone can also make changes to JES and share those changes.
+You can read the full license information in the `jes/help/JESCopyright.txt`
+file.
 
 
 Running JES
 -----------
 The easiest way to run JES is with a downloadable package,
 but unfortunately those haven't been built for JES 5 yet.
-Each of them includes its own `README.txt` with instructions.
+Each of them includes its own `JESReadme.txt` with instructions.
 
 If you're working on JES, or you just want to run the latest development
 version, you will need to download a Java Development Kit and Apache Ant.
@@ -29,7 +35,7 @@ or `jes.bat` on Windows.
 What's in the repository
 ------------------------
 The `build.xml` is used by developers to launch JES and run all of its tests.
-It contains instructions for Apache Ant.
+It contains instructions for Apache Ant (http://ant.apache.org/).
 You can run `ant build` to build JES, `ant test` to run all the tests, and
 `ant clean` to erase everything you built.
 
@@ -70,8 +76,17 @@ to make sure we wrote them according to the specifications.
 You can run these from inside JES by opening the `TestExecute.py` file,
 but it's much easier to just use `ant test`.
 
-The `packaging` folder contains files used to build the distribution packages
-for each platform.
+The `releases` folder is where JES releases (like ZIP files, Windows
+installers, or Mac applications) are built. You can build them by running
+`ant release`, and they appear directly inside the `releases` folder.
+You can see a list of available resources by running `ant -p`.
+
+* The `releases/build-releases.xml` file contains the Ant instructions for
+  building each kind of release. (Ant considers it part of `build.xml`,
+  so you can't run it by itself.)
+
+* The `releases/resources` folder contains files that get included as part
+  of the releases, like README files or platform-specific installers.
 
 The `demos` folder contains programs you can run to try out JES.
 

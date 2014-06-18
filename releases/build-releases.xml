@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+    This file isn't complete on its own!
+    It needs to be imported from JES's main build.xml.
+-->
+
+    <!-- Release file structures -->
+    <property name="jes.release.stage"      location="${jes.release.dir}/stage" />
+    <property name="jes.release.resources"  location="${jes.release.dir}/resources" />
+    <property name="jes.release.basename"   value="jes-${jes.version}" />
+
+
+    <!-- Master "release" target -->
+    <target name="release" depends="release-linux"
+        description="Build all the releases we can make on the current platform." />
+
+    <target name="clean-releases"
+        description="Remove built releases, and the staging directories.">
+        <delete includeemptydirs="true">
+            <fileset dir="${jes.release.dir}">
+                <include name="**/*" />
+                <exclude name="build-releases.xml" />
+                <exclude name="resources/**/*" />
+            </fileset>
+        </delete>
+    </target>
+
+    <target name="clean-release-stage"
+        description="Remove the staging directories for releases, but leave the release packages.">
+        <delete dir="${jes.release.stage}" />
+    </target>
+
+
+    <!-- File lists common across releases -->
+    <fileset id="jes.release.contents.python" dir="${basedir}">
+        <include name="jes/python/**/*.py" />
+        <include name="dependencies/jython/**/*" />
+    </fileset>
+
+    <fileset id="jes.release.contents.java-src" dir="${basedir}">
+        <include name="jes/java/**/*.java" />
+    </fileset>
+
+    <fileset id="jes.release.contents.java-built" dir="${basedir}">
+        <include name="jes/classes/**/*.class" />
+        <include name="dependencies/jars/**/*.jar" />
+    </fileset>
+
+    <fileset id="jes.release.contents.static" dir="${basedir}">
+        <include name="jes/images/**/*" />
+        <include name="jes/help/**/*" />
+        <include name="jes/javadoc/**/*" />
+    </fileset>
+
+    <fileset id="jes.release.extras" dir="${basedir}">
+        <include name="demos/**/*.py" />
+    </fileset>
+
+
+    <!-- Common readme fragments -->
+    <loadfile property="jes.release.text.introduction"
+        srcFile="${jes.release.resources}/introduction.txt" />
+    <filter token="introductiontext"            value="${jes.release.text.introduction}" />
+
+
+    <!-- linux release type: shell script, no embedded Java -->
+    <property name="jes.release.linux.resources"    location="${jes.release.resources}/linux" />
+    <property name="jes.release.linux.readme"       location="${jes.release.linux.resources}/JESReadme.txt" />
+
+    <property name="jes.release.linux.basename"     value="${jes.release.basename}-linux" />
+    <property name="jes.release.linux.stage"
+            location="${jes.release.stage}/${jes.release.linux.basename}" />
+    <property name="jes.release.linux.tarball"
+            location="${jes.release.dir}/${jes.release.linux.basename}.tar.gz" />
+
+    <target name="release-linux" depends="build"
+        description="Build a release for Linux and other UNIX systems">
+        <!-- Create and clean the stage directory -->
+        <mkdir dir="${jes.release.linux.stage}" />
+        <delete includeemptydirs="true">
+            <fileset dir="${jes.release.linux.stage}" includes="**/*" />
+        </delete>
+
+        <!-- Copy everything JES needs into the stage directory -->
+        <copy todir="${jes.release.linux.stage}">
+            <fileset refid="jes.release.contents.python" />
+            <fileset refid="jes.release.contents.java-built" />
+            <fileset refid="jes.release.contents.java-src" />
+            <fileset refid="jes.release.contents.static" />
+            <fileset refid="jes.release.extras" />
+        </copy>
+
+        <copy file="${jes.launcher.sh}" todir="${jes.release.linux.stage}" />
+        <chmod file="${jes.release.linux.stage}/jes.sh" perm="755" />
+
+        <copy file="${jes.help.copyright}" todir="${jes.release.linux.stage}" />
+        <copy file="${jes.release.linux.readme}" todir="${jes.release.linux.stage}" filtering="on" />
+
+        <!-- Tar it all up -->
+        <tar destfile="${jes.release.linux.tarball}" longfile="gnu">
+            <tarfileset dir="${jes.release.stage}"
+                includes="${jes.release.linux.basename}/**/*"
+                excludes="${jes.release.linux.basename}/jes.sh" />
+            <tarfileset dir="${jes.release.stage}" filemode="755"
+                includes="${jes.release.linux.basename}/jes.sh" />
+        </tar>
+    </target>
+

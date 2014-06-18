@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE project [
+       <!ENTITY releases SYSTEM "releases/build-releases.xml">
+]>
+
 <project name="jes" basedir="." default="build"
     xmlns:if="ant:if" xmlns:unless="ant:unless">
+    <!-- Project metadata -->
+    <property name="jes.version"        value="5.0a" />
+    <property name="jes.homepage"       value="https://github.com/gatech-csl/jes" />
+    <property name="jes.homepage.host"  value="GitHub" />
+
+    <filter token="version"             value="${jes.version}" />
+    <filter token="homepage"            value="${jes.homepage}" />
+    <filter token="homepagehost"        value="${jes.homepage.host}" />
+
     <!-- Paths to things in the repository -->
     <property name="jes.home"           location="jes" />
 
@@ -20,6 +34,14 @@
     <property name="jes.tests"          location="tests" />
     <property name="jes.tests.script"   location="${jes.tests}/TestExecute.py" />
     <property name="jes.tests.output"   location="${jes.tests}/test-output" />
+
+    <property name="jes.release.dir"    location="releases" />
+
+    <property name="jes.help"           location="${jes.home}/help" />
+    <property name="jes.help.copyright" location="${jes.help}/JESCopyright.txt" />
+
+    <property name="jes.launcher.sh"    location="jes.sh" />
+    <property name="jes.launcher.bat"   location="jes.bat" />
 
 
     <!-- Detecting our OS -->
@@ -133,8 +155,8 @@
 
 
     <!-- Cleaning up after JES -->
-    <target name="clean" depends="clean-java, clean-python, clean-pkgcache, clean-test"
-        description="CLEAN ALL THE THINGS!" />
+    <target name="clean" depends="clean-java, clean-python, clean-pkgcache, clean-test, clean-release-stage"
+        description="CLEAN ALL THE THINGS! (Except release packages.)" />
 
     <target name="clean-java" depends="clean-java-classes, clean-javadoc"
         description="Remove the built classes and Javadoc." />
@@ -161,7 +183,7 @@
     </target>
 
     <target name="clean-pkgcache" depends="system-paths"
-        description="Clean the Jython package cache.">
+        description="Remove the Jython package cache.">
         <delete dir="${python.cache}" />
     </target>
 
@@ -171,6 +193,9 @@
             <fileset dir="${jes.tests.output}" includes="**/*" excludes="README" />
         </delete>
     </target>
+
+
+    &releases;
 
 
     <!-- Debugging the build file -->
