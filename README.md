@@ -88,6 +88,15 @@ You can see a list of available resources by running `ant -p`.
 * The `releases/resources` folder contains files that get included as part
   of the releases, like README files or platform-specific installers.
 
+* The `releases/stage` folder is used by Ant to arrange all the files for the
+  releases before it actually zips them all up.
+
+* If you want to build Windows installers, you'll need to install NSIS
+  (http://nsis.sourceforge.net/Main_Page). It runs on both Windows and Linux.
+  Then, when running Ant, add `-Dmakensis=<the path to makensis.exe>`.
+  Otherwise, Ant won't know how to find NSIS, and it won't make the
+  installers. (You can still make ZIP files for Windows without having NSIS.)
+
 The `demos` folder contains programs you can run to try out JES.
 
 The `working-on-jes` folder contains articles written by the JES developers
