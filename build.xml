@@ -102,7 +102,11 @@
         </javac>
     </target>
 
-    <target name="javadoc"
+    <uptodate property="jes.javadoc.uptodate" targetfile="${jes.javadoc}/index-all.html">
+        <srcfiles dir="${jes.java.src}" includes="**/*.java" />
+    </uptodate>
+
+    <target name="javadoc" unless="jes.javadoc.uptodate"
         description="Build the Javadocs for the Java classes.">
         <javadoc destdir="${jes.javadoc}">
             <!-- We have to use a fileset because JES doesn't use packages. -->
