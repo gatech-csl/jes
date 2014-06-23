@@ -12,7 +12,7 @@
 
 
     <!-- Master "release" target -->
-    <target name="release" depends="release-linux, release-windows-all"
+    <target name="release" depends="release-linux, release-windows-all, release-macosx"
         description="Build all the releases we can make on the current platform." />
 
     <target name="clean-releases"
@@ -198,5 +198,69 @@
 
         <!-- Copy it to the nsis directory -->
         <copy file="${jes.release.windows.installer.stage}" todir="${jes.release.dir}" />
+    </target>
+
+
+    <!-- Mac OS X release -->
+    <property name="jes.release.macosx.resources"  location="${jes.release.resources}/macosx" />
+
+    <property name="jes.release.macosx.basename" value="${jes.release.basename}-macosx" />
+    <property name="jes.release.macosx.bundle" location="${jes.release.dir}/JES.app" />
+    <property name="jes.release.macosx.bundle.contents"
+            location="${jes.release.macosx.bundle}/Contents/Resources/Java" />
+    <property name="jes.release.macosx.zipfile"
+            location="${jes.release.dir}/${jes.release.macosx.basename}.zip" />
+
+    <!-- macosx-app release type: app packed with AppBundler -->
+    <taskdef name="jarbundler"
+             classname="net.sourceforge.jarbundler.JarBundler"
+             classpath="${jes.release.macosx.resources}/jarbundler-2.3.1.jar" />
+
+    <target name="release-macosx" depends="build">
+        <!-- Pack the JES classes into a JAR -->
+        <jar destfile="${jes.home}/classes.jar" basedir="${jes.java.class}" />
+
+        <!-- Build the JES.app skeleton -->
+        <delete dir="${jes.release.macosx.bundle}" />
+        <delete file="${jes.release.macosx.zipfile}" />
+
+        <jarbundler dir="${jes.release.dir}"
+            mainclass="JESstartup"
+            name="JES"
+            bundleid="edu.gatech.cc.csl.JES"
+            version="${jes.version}"
+            copyright="${jes.copyright}"
+            icon="${jes.home}/images/JESi2.icns"
+            signature="JESX"
+            stubfile="${jes.release.macosx.resources}/jes-launcher.sh"
+            jvmversion="${jes.target-java}+"
+            verbose="true">
+
+            <jarfileset dir="${basedir}">
+                <include name="jes/classes.jar" />
+                <include name="dependencies/jars/*.jar" />
+            </jarfileset>
+        </jarbundler>
+
+        <!-- Copy in the extra stuff -->
+        <copy todir="${jes.release.macosx.bundle.contents}">
+            <fileset refid="jes.release.contents.python" />
+            <fileset refid="jes.release.contents.java-src" />
+            <fileset refid="jes.release.contents.static" />
+        </copy>
+
+        <!-- Zip it all up -->
+        <zip destfile="${jes.release.macosx.zipfile}">
+            <zipfileset dir="${jes.release.dir}">
+                <include name="JES.app/**/*" />
+                <exclude name="JES.app/Contents/MacOS/jes-launcher.sh" />
+            </zipfileset>
+            <zipfileset filemode="755" dir="${jes.release.dir}">
+                <include name="JES.app/Contents/MacOS/jes-launcher.sh" />
+            </zipfileset>
+        </zip>
+
+        <!-- Get rid of the JAR we made -->
+        <delete file="${jes.home}/classes.jar" />
     </target>
 
