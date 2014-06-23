@@ -19,10 +19,11 @@
 !define APPNAME "JES"
 !define APPFULLNAME "JES - Jython Environment for Students"
 !define APPVERSION "@version@"
+!define APPGUID "{AE72B60E-47B2-46FE-AC9E-0436A26DAD7D}"
 !define PUBLISHERNAME "Georgia Institute of Technology"
 
 !define UNINSTALLNAME "Uninstall JES"
-!define UNINSTALLREGKEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPNAME}"
+!define UNINSTALLREGKEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPGUID}"
 
 # The size in KB of everything copied into Program Files.
 # This is a super-estimate.
@@ -30,6 +31,8 @@
 
 Name "${APPNAME}"
 OutFile "jes-@version@-windows-nojava.exe"
+
+RequestExecutionLevel admin
 
 InstallDir "$ProgramFiles\JES"
 InstallDirRegKey HKLM "Software\JES" "InstallDir"
@@ -99,17 +102,15 @@ SectionEnd
 
 Section "Uninstall"
   Delete "$DESKTOP\JES.lnk"
-  Delete "$SMPROGRAMS\JES\JES.lnk"
-  Delete "$SMPROGRAMS\JES\${UNINSTALLNAME}.lnk"
-  RMDir "$SMPROGRAMS\JES"
+  RMDir /r "$SMPROGRAMS\JES"
 
-  RMDir /r "$INSTDIR\.\jes"
-  RMDir /r "$INSTDIR\.\dependencies"
-  RMDir /r "$INSTDIR\.\demos"
+  RMDir /r "$INSTDIR\jes"
+  RMDir /r "$INSTDIR\dependencies"
+  RMDir /r "$INSTDIR\demos"
 
-  Delete "$INSTDIR\.\JESCopyright.txt"
-  Delete "$INSTDIR\.\jes.bat"
-  Delete "$INSTDIR\.\JES.exe"
+  Delete "$INSTDIR\JESCopyright.txt"
+  Delete "$INSTDIR\jes.bat"
+  Delete "$INSTDIR\JES.exe"
 
   Delete "$INSTDIR\${UNINSTALLNAME}.exe"
 
