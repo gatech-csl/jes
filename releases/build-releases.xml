@@ -118,8 +118,12 @@
     <property name="jes.release.windows.stage.readmes"
             location="${jes.release.windows.stage}/readmes" />
 
+    <property name="jes.release.windows.jre.basename" value="jre-win32-1.7.0_60" />
+    <property name="jes.release.windows.jre.zipfile"
+            location="${jes.release.windows.resources}/${jes.release.windows.jre.basename}.zip" />
+
     <target name="release-windows-all"
-        depends="release-windows-zip-nojava, release-windows-installer-nojava"
+        depends="release-windows-zip-nojava, release-windows-zip-java, release-windows-installer-nojava"
         description="Builds all available Windows release types" />
 
     <target name="release-windows-contents" depends="build"
@@ -152,13 +156,15 @@
 
 
     <!-- windows-zip release type: exe + batch file in a ZIP, no embedded Java -->
-    <property name="jes.release.windows.zip.zipfile"
+    <property name="jes.release.windows.zip-nojava.zipfile"
             location="${jes.release.dir}/${jes.release.windows.basename}-nojava.zip" />
+    <property name="jes.release.windows.zip-java.zipfile"
+            location="${jes.release.dir}/${jes.release.windows.basename}.zip" />
 
     <target name="release-windows-zip-nojava" depends="release-windows-contents"
         description="Builds a ZIP file for Windows (with no JRE)">
         <!-- Reset the ZIP -->
-        <delete file="${jes.release.windows.zip.zipfile}" />
+        <delete file="${jes.release.windows.zip-nojava.zipfile}" />
         <!-- Build our readme...we're doing this slightly weirdly -->
         <mkdir dir="${jes.release.windows.stage.readmes}/zip-nojava" />
         <copy file="${jes.release.windows.resources}/zip-nojava-readme.txt"
@@ -166,9 +172,32 @@
                 filtering="on" />
 
         <!-- ZIP it all up -->
-        <zip destfile="${jes.release.windows.zip.zipfile}">
+        <zip destfile="${jes.release.windows.zip-nojava.zipfile}">
             <fileset refid="jes.release.windows.stage.contents" />
             <fileset dir="${jes.release.windows.stage.readmes}/zip-nojava" />
+        </zip>
+    </target>
+
+    <target name="release-windows-zip-java" depends="release-windows-contents"
+        description="Builds a ZIP file for Windows (including a JRE)">
+        <!-- Reset the ZIP -->
+        <delete file="${jes.release.windows.zip-java.zipfile}" />
+        <!-- Build our readme...we're doing this slightly weirdly -->
+        <mkdir dir="${jes.release.windows.stage.readmes}/zip-java" />
+        <copy file="${jes.release.windows.resources}/zip-java-readme.txt"
+                tofile="${jes.release.windows.stage.readmes}/zip-java/JESReadme.txt"
+                filtering="on" />
+        <copy file="${jes.release.windows.resources}/jre-win32-readme.txt"
+                tofile="${jes.release.windows.stage.readmes}/zip-java/JavaReadme.txt"
+                filtering="on" />
+
+        <!-- ZIP it all up -->
+        <zip destfile="${jes.release.windows.zip-java.zipfile}">
+            <fileset refid="jes.release.windows.stage.contents" />
+            <fileset dir="${jes.release.windows.stage.readmes}/zip-java" />
+            <zipfileset src="${jes.release.windows.jre.zipfile}"
+                    includes="**/*"
+                    prefix="${jes.launcher.bat.embedded-jre}" />
         </zip>
     </target>
 

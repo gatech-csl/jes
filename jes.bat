@@ -16,10 +16,16 @@ set jes_home=%jes_base%\jes
 rem What Java should we use?
 set java_exe=java.exe
 
-if DEFINED JAVA_HOME (
-    set java=%JAVA_HOME%\bin\%java_exe%
+set java_bundled=%jes_base%\dependencies\jre-win32
+
+if EXIST %java_bundled% (
+    set java=%java_bundled%\bin\%java_exe%
 ) else (
-    set java=%java_exe%
+    if DEFINED JAVA_HOME (
+        set java=%JAVA_HOME%\bin\%java_exe%
+    ) else (
+        set java=%java_exe%
+    )
 )
 
 

@@ -44,6 +44,8 @@
 
     <property name="jes.launcher.sh"    location="jes.sh" />
     <property name="jes.launcher.bat"   location="jes.bat" />
+    
+    <property name="jes.launcher.bat.embedded-jre"  value="dependencies/jre-win32" />
 
 
     <!-- Detecting our OS -->
