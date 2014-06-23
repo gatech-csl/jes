@@ -2,6 +2,10 @@
 setlocal
 
 rem Launches JES in place on Windows.
+rem This will keep a Command Prompt window open,
+rem so it's suitable for debugging weird issues.
+rem JES.exe just launches this file without the Command Prompt,
+rem so end users should use that file.
 
 rem Where are we?
 set jes_base=%~dp0
@@ -10,10 +14,12 @@ set jes_home=%jes_base%\jes
 
 
 rem What Java should we use?
+set java_exe=java.exe
+
 if DEFINED JAVA_HOME (
-    set java=%JAVA_HOME%\bin\javaw
+    set java=%JAVA_HOME%\bin\%java_exe%
 ) else (
-    set java=javaw
+    set java=%java_exe%
 )
 
 
@@ -57,7 +63,7 @@ if NOT DEFINED JAVA_MEMORY (
     set JAVA_MEMORY=-Xmx512m
 )
 
-start "JES" "%java%" -classpath %classpath% %JAVA_MEMORY% ^
+"%java%" -classpath "%classpath%" %JAVA_MEMORY% ^
     -Djes.home="%jes_home%" ^
     -Djes.configfile="%jesconfig%" ^
     -Dpython.home="%pythonhome%" ^
