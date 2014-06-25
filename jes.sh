@@ -61,5 +61,6 @@ java -classpath "$CLASSPATH" \
     -Dpython.home="$PYTHONHOME" \
     -Dpython.path="$PYTHONPATH" \
     -Dpython.cachedir="$PYTHONCACHE" \
+    -Dapple.laf.useScreenMenuBar=true \
     JESstartup "$@"
 

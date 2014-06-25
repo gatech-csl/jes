@@ -1,5 +1,8 @@
 import java.awt.Frame;
+import java.awt.Image;
 import java.awt.Toolkit;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Properties;
@@ -44,9 +47,12 @@ public class JESstartup {
             }
         }
 
-        String[] args = {"-c", "import JESProgram; mainJESProgram = JESProgram.JESProgram()"};
+        // Set the dock icon and show the splash window
+        setOSXDockIcon();
         Frame frame = SplashWindow.splash(JESResources.getPathTo("images/JESsplash-v43.png"));
 
+        // Actually boot Jython
+        String[] args = {"-c", "import JESProgram; mainJESProgram = JESProgram.JESProgram()"};
         try {
             jython.main(args);
         } catch (Throwable throwable) {
@@ -79,6 +85,40 @@ public class JESstartup {
                                            .getMessage());
         }
         return var_class;
+    }
+
+    private static void setOSXDockIcon () {
+        // This attempts to access the Apple eAWT toolkit using reflection.
+        // This means we don't need to get a stub JAR and worry about
+        // compiling it.
+        // https://gist.github.com/bchapuis/1562406
+        try {
+            // Get the class.
+            Class util = Class.forName("com.apple.eawt.Application");
+            Method getApplication = util.getMethod("getApplication", new Class[0]);
+            Object application = getApplication.invoke(util);
+
+            // Get the setDockIconImage method.
+            Class params[] = new Class[1];
+            params[0] = Image.class;
+            Method setDockIconImage = util.getMethod("setDockIconImage", params);
+
+            // Actually set the image.
+            // I don't know _why_ passing null here works.
+            // My guess is that Apple somehow elects an image based on the
+            // first window created, and setting it to null means
+            // "use the default." Then the -Xdock:icon JVM option sets
+            // the default.
+            setDockIconImage.invoke(application, (Object) null);
+        } catch (ClassNotFoundException e) {
+            // Probably not on Apple.
+        } catch (NoSuchMethodException e) {
+            // Whatever...
+        } catch (InvocationTargetException e) {
+            // Whatever...
+        } catch (IllegalAccessException e) {
+            // Whatever...
+        }
     }
 }
 

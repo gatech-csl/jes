@@ -135,6 +135,7 @@ if [ -x "$JAVACMD" ]; then
     exec "$JAVACMD" \
         -classpath "$CLASSPATH" \
 	    -Xdock:icon="$CONTENTS/Resources/${CFBundleIconFile}" \
+	    -Dapple.laf.useScreenMenuBar=true \
 	    -Xdock:name="${CFBundleName}" \
         ${JAVA_MEMORY:--Xmx512m} \
         -Djes.home="$JES_HOME" \
