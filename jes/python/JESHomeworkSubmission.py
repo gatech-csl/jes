@@ -41,7 +41,6 @@ import java.lang.System as system
 class JESHomeworkSubmission:
 
     def __init__(self, hwTitle, fileName, zipFile):
-        #       config = self.readFromConfigFile()
         self.studentName = JESConfig.getInstance().getStringProperty(
             JESConfig.CONFIG_NAME)
         self.gtNumber = JESConfig.getInstance().getStringProperty(
@@ -204,28 +203,6 @@ class JESHomeworkSubmission:
             a, b, c = sys.exc_info()
             print a, b, c
             raise StandardError, "Error turning in to the Coweb."
-
-##########################################################################
-# Function name: readFromConfigFile
-# Parameters: self
-# Description: Attempts to open the Configfile.  If it exists, it is opened and
-#       read into an array.  Each line of the file will get its spot in the array
-#       and newline characters will be removed.  The array is returned.  The
-#       configfile should exist before this function is called.  If an IO Error
-#       occurs, a message will be printed to the transcript.
-#
-##########################################################################
-    def readFromConfigFile(self):
-        try:
-            homedir = os.path.expanduser("~")
-            f = open(
-                homedir + io.File.separator + JESConstants.JES_CONFIG_FILE_NAME, 'r')
-            text = f.read()
-            f.close()
-            array = text.splitlines()
-            return array
-        except:
-            raise StandardError, "Error reading configuration file."
 
 # All of the following code is:
 # Written by: Wade Leftwich

@@ -15,28 +15,6 @@ MID_FONT = 32
 HIGH_FONT = 72
 
 
-# AUTOOPENDOC is an option that's been removed, but for compatability for
-# folks who may be using earlier beta versions, it retains a slot.
-CONFIG_NAME = 0
-CONFIG_GT = 1
-CONFIG_MAIL = 2
-CONFIG_MODE = 3
-CONFIG_FONT = 4
-CONFIG_EMAIL_ADDR = 5
-CONFIG_GUTTER = 6
-CONFIG_BLOCK = 7
-CONFIG_WEB_TURNIN = 8
-CONFIG_AUTOSAVEONRUN = 9
-CONFIG_AUTOOPENDOC = 10
-CONFIG_WRAPPIXELVALUES = 11
-CONFIG_SKIN = 12
-CONFIG_SHOWTURNIN = 13
-CONFIG_BACKUPSAVE = 14
-CONFIG_LOGBUFFER = 15
-CONFIG_MEDIAPATH = 16
-CONFIG_NLINES = 17
-
-
 FONT_MODE_LOW = [LOW_FONT, MID_FONT, HIGH_FONT]
 FONT_MODE_MID = [MID_FONT, LOW_FONT, HIGH_FONT]
 FONT_MODE_HIGH = [HIGH_FONT, MID_FONT, LOW_FONT]
@@ -123,8 +101,6 @@ JESPROGRAM_ERROR_LOADING_FILE = '\nThere was an error loading the file.  ' \
 JESPROGRAM_NO_FILE = '\nNo file has been selected.\n' + \
                      'You must open a saved file, or save the opened file,\n' +\
                      'before clicking LOAD\n'
-
-JES_CONFIG_FILE_NAME = "JESConfig.txt"
 
 EDITOR_LOAD_WARNING = "WARNING: Current code has not been loaded.\n"
 HELP_START_PAGE = 'http://coweb.cc.gatech.edu/mediaComp-teach/25'

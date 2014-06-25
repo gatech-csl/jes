@@ -1208,13 +1208,6 @@ class JESUI(swing.JFrame):
 ##########################################################################
     def printCommand(self):
         name = JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_NAME)
-#        try:
-# Sets up local variables according to an existing config file.
-#            array=self.program.readFromConfigFile()
-#            name=array[JESConstants.CONFIG_NAME]
-#        except:
-# If we have a problem, just set them all to the empty string
-#            name='Unknown'
         isSaved = 1
         if self.editor.modified:
             # modified for promptSave cancel button - Buck Scharfnorth 29 May
@@ -1270,14 +1263,6 @@ class JESUI(swing.JFrame):
         self.nameStatusLabel.text = 'Current User: ' + \
             JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_NAME)
         self.nameStatusLabel.setForeground(awt.Color.black)
-#        try:
-#            array=self.program.readFromConfigFile()
-#            name=array[JESConstants.CONFIG_NAME]
-#            name='Current User: '+ name + '   '
-#            self.nameStatusLabel.text =name
-#            self.nameStatusLabel.setForeground(awt.Color.black)
-#        except:
-#            self.nameStatusLabel.text ='Not Registered   '
 
 ##########################################################################
 # Function name: SetHelpFiles
@@ -1336,27 +1321,6 @@ class JESUI(swing.JFrame):
 ##########################################################################
     def openSettings(self):
         if self.settingsWindow == None:
-            #            try:
-            # Sets up local variables according to an existing config file.
-            #                array=self.program.readFromConfigFile()
-            #                name=array[JESConstants.CONFIG_NAME]
-            #                gt=array[JESConstants.CONFIG_GT]
-            #
-            #                if(array[JESConstants.CONFIG_MAIL] == ''):
-            # mail=JESConstants.MAIL_SERVER #default to mail.gatech.edu
-            #                else:
-            #                    mail=array[JESConstants.CONFIG_MAIL]
-            #
-            #                mailaddr = array[JESConstants.CONFIG_EMAIL_ADDR]
-            #                webDefs = array[JESConstants.CONFIG_WEB_TURNIN]
-            #            except:
-            # If we have a problem, just set them all to the empty string
-            #                name=''
-            #                gt=''
-            #                mailaddr = ''
-            #                mail = JESConstants.MAIL_SERVER
-            #                webDefs = JESConstants.WEB_DEFINITIONS
-            # Creating the window
             self.settingsWindow = swing.JFrame("JES Settings")
             self.settingsWindow.contentPane.layout = awt.GridLayout(0, 2)
             self.settingsWindow.size = (250, 150)
@@ -1451,18 +1415,6 @@ class JESUI(swing.JFrame):
             self.settingsWindow.hide()
         else:
             JESConfig.getInstance().writeConfig()
-#            list = []
-#            if self.namefield.text != None:
-#                list.append([JESConstants.CONFIG_NAME, self.namefield.text])
-#            if self.gtfield.text != None:
-#                list.append([JESConstants.CONFIG_GT, self.gtfield.text])
-#            if self.mailfield.text != None:
-#                list.append([JESConstants.CONFIG_MAIL, self.mailfield.text])
-#            if self.mailaddrfield.text != None:
-#                list.append([JESConstants.CONFIG_EMAIL_ADDR, self.mailaddrfield.text])
-#            if self.webDefsField.text != None:
-#                list.append([JESConstants.CONFIG_WEB_TURNIN, self.webDefsField.text])
-#            self.program.writeConfigListToFile(list)
             self.UpdateName()
             self.settingsWindow.hide()
 
@@ -1525,10 +1477,6 @@ class JESUI(swing.JFrame):
         self.listPane = swing.JScrollPane(self.list)
         self.listPane.preferredSize = (100, 100)
         try:
-            #                array=self.program.readFromConfigFile()
-            #                name=array[JESConstants.CONFIG_NAME]
-            #                gt=array[JESConstants.CONFIG_GT]
-            #                mail=array[JESConstants.CONFIG_MAIL]
             namelabel = swing.JLabel(
                 "Name: " + JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_NAME))
             maillabel = swing.JLabel("Media Files Attached: ")
@@ -1650,7 +1598,6 @@ class JESUI(swing.JFrame):
                     else:
                         if title != 'Assignments':
                             filename = self.program.filename
-#                            gt=array[JESConstants.CONFIG_GT]
                             zip = self.buildFileArchive(gt, title, filename)
                             j = JESHomeworkSubmission.JESHomeworkSubmission(
                                 title, filename, zip)
