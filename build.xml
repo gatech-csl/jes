@@ -26,6 +26,7 @@
     <property name="jes.javadoc"        location="${jes.home}/javadoc" />
 
     <property name="jes.main"           value="JESstartup" />
+    <property name="jes.configfile.name" value="JESConfig.properties" />
 
     <property name="jes.deps"           location="dependencies" />
     <property name="jes.deps.jardir"    location="${jes.deps}/jars" />
@@ -44,7 +45,7 @@
 
     <property name="jes.launcher.sh"    location="jes.sh" />
     <property name="jes.launcher.bat"   location="jes.bat" />
-    
+
     <property name="jes.launcher.bat.embedded-jre"  value="dependencies/jre-win32" />
 
 
@@ -90,6 +91,7 @@
         <propertyref name="python.cachedir" />
         <propertyref name="python.path" />
         <propertyref name="jes.home" />
+        <propertyref name="jes.configfile" />
     </propertyset>
 
 
@@ -130,19 +132,25 @@
     <property environment="env" />
 
     <target name="system-paths">
-        <property name="python.cachedir"    value="${env.LOCALAPPDATA}/JES/jython-cache"
+        <property name="python.cachedir"
+                  value="${env.LOCALAPPDATA}/JES/jython-cache"
                   if:set="userpaths.windows" />
-        <property name="jes.configfile"     value="${env.AppData}/JES/JESConfig.txt"
+        <property name="jes.configfile"
+                  value="${env.AppData}/JES/${jes.configfile.name}"
                   if:set="userpaths.windows" />
 
-        <property name="python.cachedir"    value="${user.home}/Library/Caches/JES/jython-cache"
+        <property name="python.cachedir"
+                  value="${user.home}/Library/Caches/JES/jython-cache"
                   if:set="userpaths.mac" />
-        <property name="jes.configfile"     value="${user.home}/Library/Application Support/JES/JESConfig.txt"
+        <property name="jes.configfile"
+                  value="${user.home}/Library/Application Support/JES/${jes.configfile.name}"
                   if:set="userpaths.mac" />
 
-        <property name="python.cachedir"    value="${user.home}/.cache/jes/jython-cache"
+        <property name="python.cachedir"
+                  value="${user.home}/.cache/jes/jython-cache"
                   if:set="userpaths.linux" />
-        <property name="jes.configfile"     value="${user.home}/.config/jes/JESConfig.txt"
+        <property name="jes.configfile"
+                  value="${user.home}/.config/jes/${jes.configfile.name}"
                   if:set="userpaths.linux" />
     </target>
 

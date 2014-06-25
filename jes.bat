@@ -55,8 +55,8 @@ if NOT EXIST %pythoncache% (
 )
 
 
-rem What about JESConfig.txt?
-set jesconfig=%APPDATA%\JES\JESConfig.txt
+rem What about JESConfig.properties?
+set jesconfig=%APPDATA%\JES\JESConfig.properties
 
 if NOT EXIST %APPDATA%\JES (
     md %APPDATA%\JES

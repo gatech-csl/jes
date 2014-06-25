@@ -60,11 +60,14 @@ so the easiest thing to do is use the `jes` directory.
 
 ## JES Config File (jes.configfile)
 
-This property will *eventually* be used as the location of the JESConfig.txt
-file. It's not implemented yet, though!
+This property is the path to the JES configuration file, including its
+name (which is usually `JESConfig.properties`). This is where JES keeps all
+the user settings which need to remain across restarts.
 
-This file isn't really human-editable, so you should store it somewhere
-"behind the scenes" in the user's home directory
+Most of the time users don't really need to see it or edit it.
+So you should store it somewhere "behind the scenes" in the user's
+home directory. (If it's left out, JES will put it *directly*
+in the user's home directory, which may annoy people. I know it annoys me.)
 
 
 ## Options for JESstartup

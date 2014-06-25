@@ -42,11 +42,13 @@ fi
 mkdir -p $PYTHONCACHE
 
 
-# What about JESConfig.txt?
+# What about JESConfig.properties?
+JESCONFIGNAME=JESConfig.properties
+
 if test -d "$HOME/Library/Application Support"; then
-    JESCONFIG="$HOME/Library/Application Support/JES/JESConfig.txt"
+    JESCONFIG="$HOME/Library/Application Support/JES/$JESCONFIGNAME"
 else
-    JESCONFIG="$HOME/.config/jes/JESConfig.txt"
+    JESCONFIG="$HOME/.config/jes/$JESCONFIGNAME"
 fi
 
 mkdir -p "$(dirname "$JESCONFIG")"

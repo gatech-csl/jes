@@ -93,9 +93,9 @@ PYTHONCACHE="$HOME/.cache/jes/jython-cache"
 mkdir -p $PYTHONCACHE
 
 
-# What about JESConfig.txt?
+# What about JESConfig.properties?
 
-JESCONFIG="$HOME/Library/Application Support/JES/JESConfig.txt"
+JESCONFIG="$HOME/Library/Application Support/JES/JESConfig.properties"
 mkdir -p "$(dirname "$JESCONFIG")"
 
 
