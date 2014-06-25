@@ -18,7 +18,7 @@ set java_exe=java.exe
 
 set java_bundled=%jes_base%\dependencies\jre-win32
 
-if EXIST %java_bundled% (
+if EXIST "%java_bundled%" (
     set java=%java_bundled%\bin\%java_exe%
 ) else (
     if DEFINED JAVA_HOME (

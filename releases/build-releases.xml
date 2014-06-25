@@ -123,7 +123,7 @@
             location="${jes.release.windows.resources}/${jes.release.windows.jre.basename}.zip" />
 
     <target name="release-windows-all"
-        depends="release-windows-zip-nojava, release-windows-zip-java, release-windows-installer-nojava"
+        depends="release-windows-zip-nojava, release-windows-zip-java, release-windows-installer"
         description="Builds all available Windows release types" />
 
     <target name="release-windows-contents" depends="build"
@@ -157,9 +157,9 @@
 
     <!-- windows-zip release type: exe + batch file in a ZIP, no embedded Java -->
     <property name="jes.release.windows.zip-nojava.zipfile"
-            location="${jes.release.dir}/${jes.release.windows.basename}-nojava.zip" />
+            location="${jes.release.dir}/${jes.release.windows.basename}-java-required.zip" />
     <property name="jes.release.windows.zip-java.zipfile"
-            location="${jes.release.dir}/${jes.release.windows.basename}.zip" />
+            location="${jes.release.dir}/${jes.release.windows.basename}-java-included.zip" />
 
     <target name="release-windows-zip-nojava" depends="release-windows-contents"
         description="Builds a ZIP file for Windows (with no JRE)">
@@ -204,29 +204,29 @@
 
     <!-- windows-installer release type: exe + batch file, packed with NSIS, no embedded Java -->
     <property name="jes.release.windows.installer.filename"
-            value="${jes.release.windows.basename}-nojava.exe" />
+            value="${jes.release.windows.basename}.exe" />
 
     <property name="jes.release.windows.installer.stage"
             location="${jes.release.windows.stage}/${jes.release.windows.installer.filename}" />
     <property name="jes.release.windows.installer.exe"
             location="${jes.release.dir}/${jes.release.windows.installer.filename}" />
 
-    <target name="release-windows-installer-nojava" depends="release-windows-contents" if="makensis"
-        description="Builds an EXE installer for Windows (with no JRE)">
+    <target name="release-windows-installer" depends="release-windows-contents" if="makensis"
+        description="Builds an EXE installer for Windows">
         <!-- Reset the installer -->
         <delete file="${jes.release.windows.installer.stage}" />
 
         <!-- Copy the .nsi file -->
-        <copy file="${jes.release.windows.resources}/installer-nojava.nsi"
+        <copy file="${jes.release.windows.resources}/jes-installer.nsi"
                 todir="${jes.release.windows.stage}" filtering="on" />
 
         <!-- Run makensis -->
         <exec executable="${makensis}" dir="${jes.release.windows.stage}">
-            <arg value="installer-nojava.nsi" />
+            <arg value="jes-installer.nsi" />
         </exec>
 
-        <!-- Copy it to the nsis directory -->
-        <copy file="${jes.release.windows.installer.stage}" todir="${jes.release.dir}" />
+        <!-- Move it to the releases directory -->
+        <move file="${jes.release.windows.installer.stage}" todir="${jes.release.dir}" />
     </target>
 
 

@@ -12,11 +12,15 @@
 #
 # To build an installer from the script you would normally do:
 #
-#   makensis installer-nojava.nsi
+#   makensis jes-installer.nsi
 #
-# which will generate the output file 'jes-@version@-windows-nojava.exe'.
+# which will generate the output file 'jes-@version@-windows.exe'.
+
+!addplugindir ..\..\resources\windows\nsis-plugins
+!addincludedir ..\..\resources\windows\nsis-plugins
 
 !include MUI2.nsh
+!include zipdll.nsh
 
 !define APPNAME "JES"
 !define APPFULLNAME "JES - Jython Environment for Students"
@@ -24,17 +28,15 @@
 !define APPGUID "{AE72B60E-47B2-46FE-AC9E-0436A26DAD7D}"
 !define PUBLISHERNAME "Georgia Institute of Technology"
 
+!define REQUIREDJAVA "1.5"
+
 !define INSTALLSUBTITLE "JES: Jython Environment for Students (version @version@)"
 
 !define UNINSTALLNAME "Uninstall JES"
 !define UNINSTALLREGKEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPGUID}"
 
-# The size in KB of everything copied into Program Files.
-# This is a super-estimate.
-!define INSTALLSIZE 28332
-
 Name "${APPNAME}"
-OutFile "jes-@version@-windows-nojava.exe"
+OutFile "jes-@version@-windows.exe"
 
 RequestExecutionLevel admin
 
@@ -44,18 +46,19 @@ InstallDirRegKey HKLM "Software\JES" "InstallDir"
 ShowInstDetails hide
 ShowUninstDetails hide
 
+Var TotalInstalledSize
+
 
 # Modern UI Interface Settings
 
 !define MUI_ABORTWARNING
 !define MUI_ICON "jes/images/jesicon.ico"
-!define MUI_COMPONENTSPAGE_NODESC
 
 
 # Modern UI Pages
 
 !define MUI_WELCOMEPAGE_TITLE "JES: Jython Environment for Students"
-!define MUI_WELCOMEPAGE_TEXT "This program will install JES version @version@ on your computer. This version of JES requires a Java Runtime Environment, so ensure that you have one installed before continuing. Everything else JES needs is included, though."
+!define MUI_WELCOMEPAGE_TEXT "This program will install JES version @version@ on your computer. It won't take long; just follow the instructions."
 !insertmacro MUI_PAGE_WELCOME
 
 !define MUI_PAGE_HEADER_TEXT "License"
@@ -64,10 +67,10 @@ ShowUninstDetails hide
 !define MUI_LICENSEPAGE_TEXT_BOTTOM "This means that everyone may use JES, free of charge, and share it with anyone. Everyone can also make changes to JES and share those changes."
 !insertmacro MUI_PAGE_LICENSE "JESCopyright.txt"
 
-!define MUI_PAGE_HEADER_TEXT "Select Shortcuts"
+!define MUI_PAGE_HEADER_TEXT "Installation Options"
 !define MUI_PAGE_HEADER_SUBTEXT "${INSTALLSUBTITLE}"
-!define MUI_COMPONENTSPAGE_TEXT_TOP "Where would you like to have shortcuts to JES?"
-!define MUI_COMPONENTSPAGE_TEXT_COMPLIST "Select locations:"
+!define MUI_COMPONENTSPAGE_TEXT_TOP "This lets you customize how JES is installed. (The defaults are usually fine.)"
+!define MUI_COMPONENTSPAGE_TEXT_COMPLIST "Select options:"
 !insertmacro MUI_PAGE_COMPONENTS
 
 !define MUI_PAGE_HEADER_TEXT "Select Install Location"
@@ -115,7 +118,7 @@ ShowUninstDetails hide
 
 # Install Sections
 
-Section -JES
+Section -JES SecJES
   SectionIn RO
 
   SetOutPath "$INSTDIR\."
@@ -145,23 +148,51 @@ Section -JES
   WriteRegDWORD HKLM "${UNINSTALLREGKEY}" "NoRepair" 1
 
   # This is what the size is for
-  WriteRegDWORD HKLM "${UNINSTALLREGKEY}" "EstimatedSize" ${INSTALLSIZE}
+  Call ComputeTotalInstalledSize
+  WriteRegDWORD HKLM "${UNINSTALLREGKEY}" "EstimatedSize" $TotalInstalledSize
 SectionEnd
 
-Section "Start Menu Shortcuts"
+Section "Java Runtime Environment" SecJRE
+  ; When I computed this, the JRE was 44764K zipped and 126759K unzipped
+  AddSize 81815
+
+  ; We keep the JRE in a ZIP file because it's really huge
+  ; (Even the ZIP file is 45 MB, unpacked it's like 120 MB)
+  GetTempFileName $3
+  File /oname=$3 "..\..\resources\windows\jre-win32-1.7.0_60.zip"
+  !insertmacro ZIPDLL_EXTRACT "$3" "$INSTDIR\dependencies\jre-win32" "<ALL>"
+  Delete $3
+SectionEnd
+
+Section "Start Menu Shortcuts" SecStartMenu
   CreateDirectory "$SMPROGRAMS\JES"
   CreateShortCut "$SMPROGRAMS\JES\${UNINSTALLNAME}.lnk" "$INSTDIR\${UNINSTALLNAME}.exe" "" "$INSTDIR\${UNINSTALLNAME}.exe" 0
   CreateShortCut "$SMPROGRAMS\JES\JES.lnk" "$INSTDIR\.\JES.exe" "" "$INSTDIR\.\JES.exe" 0
 SectionEnd
 
-Section "Desktop Icons"
+Section "Desktop Icon" SecDesktop
   CreateShortCut "$DESKTOP\JES.lnk" "$INSTDIR\.\JES.exe" "" "$INSTDIR\.\JES.exe" 0
 SectionEnd
 
 
+# Section descriptions
+
+LangString DESC_JRE ${LANG_ENGLISH} "This installs a Java Runtime Environment for JES to use. If you don't have a JRE installed already, the installer will select this for you."
+
+LangString DESC_StartMenu ${LANG_ENGLISH} "This will add a shortcut to JES (and its uninstaller) in the Start Menu."
+
+LangString DESC_Desktop ${LANG_ENGLISH} "This will place a JES icon on your Desktop, so you can launch it quickly."
+
+!insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecJRE} $(DESC_JRE)
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecStartMenu} $(DESC_StartMenu)
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecDesktop} $(DESC_Desktop)
+!insertmacro MUI_FUNCTION_DESCRIPTION_END
+
+
 # Uninstall Sections
 
-Section "Uninstall"
+Section "Uninstall" UnsecJES
   Delete "$DESKTOP\JES.lnk"
   RMDir /r "$SMPROGRAMS\JES"
 
@@ -180,3 +211,129 @@ Section "Uninstall"
   # Remove the uninstaller registry key
   DeleteRegKey HKLM "${UNINSTALLREGKEY}"
 SectionEnd
+
+
+# Java version detector
+
+Function .onInit
+  Push "${REQUIREDJAVA}"
+  Call DetectJava
+  Pop $0    # The return value from DetectJava
+
+  StrCmp $0 "!" RequireJRE
+  StrCmp $0 "<" RequireJRE
+  Goto DontRequireJRE
+
+  RequireJRE:
+    # MessageBox MB_OK "We have not found a JRE. You are required to install one. :-/"
+    !insertmacro SetSectionFlag ${SecJRE} ${SF_SELECTED}
+    !insertmacro SetSectionFlag ${SecJRE} ${SF_RO}
+    Return
+
+  DontRequireJRE:
+    # MessageBox MB_OK "We have found a JRE in $0 for JES to use."
+    !insertmacro ClearSectionFlag ${SecJRE} ${SF_SELECTED}
+    Return
+FunctionEnd
+
+
+Function DetectJava
+  # NSIS wiki: New installer with JRE check ...
+  # Stack input: Requested JRE version
+  # Stack output: Java home if Java found,
+  # "<" if Java is old, "!" if Java does not exist
+
+  Exch $0   # Save the current $0
+            # $0: Requested JRE version (input from stack)
+  Push $1   # $1: Found Java version
+  Push $2   # $2: Found JAVA_HOME
+  Push $3   # $3: Requested major/minor version
+  Push $4   # $4: Found major/minor version
+
+  #DetectJavaJRE:
+    # See if the version is in the Registry
+    ReadRegStr $1 HKLM "SOFTWARE\JavaSoft\Java Runtime Environment" "CurrentVersion"
+    StrCmp $1 "" DetectJavaJDK
+    # Now get the JAVA_HOME
+    ReadRegStr $2 HKLM "SOFTWARE\JavaSoft\Java Runtime Environment\$1" "JavaHome"
+    StrCmp $2 "" DetectJavaJDK
+    # See if there's a java EXE there
+    IfFileExists "$2\bin\java.exe" 0 DetectJavaJDK
+    # Sweet, check its version
+    Goto DetectJavaCheckVersion
+
+  DetectJavaJDK:
+    # See if the version is in the Registry
+    ReadRegStr $1 HKLM "SOFTWARE\JavaSoft\Java Development Kit" "CurrentVersion"
+    StrCmp $1 "" DetectJavaNone
+    # Now get the JAVA_HOME
+    ReadRegStr $2 HKLM "SOFTWARE\JavaSoft\Java Development Kit\$1" "JavaHome"
+    StrCmp $2 "" DetectJavaNone
+    # See if there's a java EXE there
+    IfFileExists "$2\bin\java.exe" 0 DetectJavaNone
+    # Sweet, check its version
+    Goto DetectJavaCheckVersion
+
+  DetectJavaCheckVersion:
+    # Compare the major versions
+    StrCpy $3 $0 1    # Copy character 0 of the requested JRE version to $3
+    StrCpy $4 $1 1    # Copy character 0 of the found JRE version to $4
+    IntCmp $4 $3 0 DetectJavaOld DetectJavaNew
+    
+    # Compare the minor versions
+    StrCpy $3 $0 1 2  # Copy character 2 of the requested JRE version to $3
+    StrCpy $4 $1 1 2  # Copy character 2 of the found JRE version to $4
+    IntCmp $4 $3 DetectJavaNew DetectJavaOld DetectJavaNew
+
+  DetectJavaNew:
+    Push $2
+    Goto DetectJavaEnd
+
+  DetectJavaOld:
+    Push "<"
+    Goto DetectJavaEnd
+
+  DetectJavaNone:
+    Push "!"
+    Goto DetectJavaEnd
+
+  DetectJavaEnd:
+    # The return value is on top of the stack.
+    # The Exch instructions move it to the second position on the stack
+    # before we pop each of the registers.
+    Exch
+    Pop $4
+    Exch
+    Pop $3
+    Exch
+    Pop $2
+    Exch
+    Pop $1
+    Exch
+    Pop $0
+FunctionEnd
+
+
+Function ComputeTotalInstalledSize
+  # NSIS wiki: Add uninstall information to Add/Remove Programs
+  Push $0
+  Push $1
+
+  StrCpy $TotalInstalledSize 0
+  
+  ${ForEach} $1 0 256 + 1
+    ${if} ${SectionIsSelected} $1
+      SectionGetSize $1 $0
+      IntOp $TotalInstalledSize $TotalInstalledSize + $0
+    ${Endif}
+    
+    ${if} ${errors}
+      ${break}
+    ${Endif}
+  ${Next}
+  ClearErrors
+
+  Pop $1
+  Pop $0
+  Return
+FunctionEnd
