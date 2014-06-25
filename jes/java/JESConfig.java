@@ -1,287 +1,467 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Properties;
 
 /**
- * The JES Config Class
- * Created for the Jython Environment for Students
- * The JESConfig Class reads the config file information for the JES
- * config file, located at JES_CONFIG_FILE_NAME
+ * Represents a set of JES configuration information.
+ * There is only one instance of this class, because the configuration
+ * values are used in many places.
+ *
+ * The class loads and stores its data in a .properties file.
+ * It also can read and write old files that stored the property values
+ * one per line in a predefined order.
  */
 public class JESConfig {
-    // Configuration Array Location Values
+    // SETTING NAMES
+    // Add a constant here for each new setting.
+
+    /** Whether to wrap red/blue/green values from 0 to 255. */
+    public static final String CONFIG_WRAPPIXELVALUES = "media.wraprgb";
+
+    /** The last-used media path. */
+    public static final String CONFIG_MEDIAPATH = "media.path";
+
+
+    /** The selected interface mode. */
+    public static final String CONFIG_MODE = "interface.mode";
+
+    /** The Java UI skin. */
+    public static final String CONFIG_SKIN = "interface.skin";
+
+    /** The interface font size. */
+    public static final String CONFIG_FONT = "interface.fontsize";
+
+    /** Whether to display line numbers. */
+    public static final String CONFIG_GUTTER = "interface.gutter";
+
+    /** Whether to help the user indent with an indentation block. */
+    public static final String CONFIG_BLOCK = "interface.block";
+
+
+    /** Whether to save files automatically on load. */
+    public static final String CONFIG_AUTOSAVEONRUN = "save.onload";
+
+    /** Whether to save backup files. */
+    public static final String CONFIG_BACKUPSAVE = "save.backups";
+
+    /** Whether to save program logs or not. */
+    public static final String CONFIG_LOGBUFFER = "save.logs";
+
+
+    /** Whether to show the turnin menu or not. */
+    public static final String CONFIG_SHOWTURNIN = "turnin.enabled";
+
+    /** The mail server to send assignment submissions to. */
+    public static final String CONFIG_MAIL = "turnin.mail.server";
+
+    /** The CoWeb server that the user can turn things into. */
+    public static final String CONFIG_WEB_TURNIN = "turnin.coweb.server";
+
+
+    /** The user's name. */
+    public static final String CONFIG_NAME = "user.name";
+
+    /** The user's GTID number. */
+    public static final String CONFIG_GT = "user.gtid";
+
+    /** The user's email address. */
+    public static final String CONFIG_EMAIL_ADDR = "user.email";
+
 
     /**
-    * Ease-of-use constant for JES Config file.
-    * Specifies a filename to use as the JES settings file.
-    */
-    public static final String JES_CONFIG_FILE_NAME = "JESConfig.txt";
-    /**
-    * Ease-of-use constant for the JES user's name (for turn-in purposes).
-    */
-    public static final int CONFIG_NAME = 0;
-    /**
-    * Ease-of-use constant for the JES user's ID # (for turn-in purposes).
-    */
-    public static final int CONFIG_GT = 1;
-    /**
-    * Ease-of-use constant for the JES user's mail server (for turn-in purposes).
-    */
-    public static final int CONFIG_MAIL = 2;
-    /**
-    * Ease-of-use constant for the JES user's experience level ("Normal" or "Expert").
-    */
-    public static final int CONFIG_MODE = 3;
-    /**
-    * Ease-of-use constant for the JES user's font-size (1-72).
-    */
-    public static final int CONFIG_FONT = 4;
-    /**
-    * Ease-of-use constant for the JES user's e-mail address (for turn-in purposes).
-    */
-    public static final int CONFIG_EMAIL_ADDR = 5;
-    /**
-    * Ease-of-use constant for the JES line number gutter (0 is off, 1 is on).
-    */
-    public static final int CONFIG_GUTTER = 6;
-    /**
-    * Ease-of-use constant for the JES indention help (0 is on, 1 is off).
-    */
-    public static final int CONFIG_BLOCK = 7;
-    /**
-    * Ease-of-use constant for the JES user's web-turnin server (coweb site).
-    */
-    public static final int CONFIG_WEB_TURNIN = 8;
-    /**
-    * Ease-of-use constant for the JES auto save on load option (0 is off, 1 is on).
-    */
-    public static final int CONFIG_AUTOSAVEONRUN = 9;
-    /**
-    * Depreciated option, retained for backward compatibility.
-    */
-    public static final int CONFIG_AUTOOPENDOC = 10;
-    /**
-    * Ease-of-use constant for the JES wrap pixel value option (0 out of bounds colors capped, 1 colors will be (value % 256)).
-    */
-    public static final int CONFIG_WRAPPIXELVALUES = 11;
-    /**
-    * Ease-of-use constant for the JES skin option (UIManager.getLookAndFeel().getName()).
-    */
-    public static final int CONFIG_SKIN = 12;
-    /**
-    * Ease-of-use constant for the JES turnin menu option (0 off, 1 on).
-    */
-    public static final int CONFIG_SHOWTURNIN = 13;
-    /**
-    * Ease-of-use constant for the JES save backup copy on save option (0 off, 1 on).
-    */
-    public static final int CONFIG_BACKUPSAVE = 14;
-    /**
-    * Ease-of-use constant for the JES save logs option (0 off, 1 on).
-    */
-    public static final int CONFIG_LOGBUFFER = 15;
-    /**
-    * Ease-of-use constant for the JES mediapath option (default is user.home).
-    */
-    public static final int CONFIG_MEDIAPATH = 16;
-    /**
-    * Number of options in the current version of JES.
-    */
-    public static final int CONFIG_NLINES = 17;
-
-    // Instance for the singleton pattern
-    private static JESConfig theInstance = null;
-
-    // Other instance variables
-    private ArrayList<String> properties;
-    private String[] defaults = {"", "", "", "Normal", "12", "", "1", "0", "", "0", "", "0", "", "0", "1", "1", ""};
-    private boolean configLoaded = true;
-    private boolean sessionWrapAround = false;
-    /**
-     * A constructor to preload JES settings or load defaults if settings file cannot be read.
+     * This Properties object contains properties which are used to "fill in"
+     * a Properties file after it's loaded, when properties are absent.
      */
-    private JESConfig() {
-        properties = readConfig();
-        if (properties == null) {
-            configLoaded = false;
-            properties = new ArrayList<String>(Arrays.asList(defaults));
-        }
+    private static final Properties defaults = new Properties();
 
-        if (!(new File(getStringProperty(CONFIG_MEDIAPATH))).exists()) {
-            setStringProperty(CONFIG_MEDIAPATH, System.getProperty("user.home"));
+    static {
+        defaults.setProperty(CONFIG_WRAPPIXELVALUES,    "0");
+        defaults.setProperty(CONFIG_MEDIAPATH,          "");
+
+        defaults.setProperty(CONFIG_MODE,               "Normal");
+        defaults.setProperty(CONFIG_SKIN,               "");
+        defaults.setProperty(CONFIG_FONT,               "12");
+        defaults.setProperty(CONFIG_GUTTER,             "1");
+        defaults.setProperty(CONFIG_BLOCK,              "0");
+
+        defaults.setProperty(CONFIG_AUTOSAVEONRUN,      "0");
+        defaults.setProperty(CONFIG_BACKUPSAVE,         "1");
+        defaults.setProperty(CONFIG_LOGBUFFER,          "1");
+
+        defaults.setProperty(CONFIG_SHOWTURNIN,         "0");
+        defaults.setProperty(CONFIG_MAIL,               "");
+        defaults.setProperty(CONFIG_WEB_TURNIN,         "");
+
+        defaults.setProperty(CONFIG_NAME,               "");
+        defaults.setProperty(CONFIG_GT,                 "");
+        defaults.setProperty(CONFIG_EMAIL_ADDR,         "");
+    };
+
+
+    // CONFIGURATION FILE INFO
+
+    /**
+     * The default name of the modern JES .properties files.
+     */
+    public static final String DEFAULT_FILE_NAME = "JESConfig.properties";
+
+    /**
+     * The header to include in .properties files.
+     */
+    private static final String FILE_COMMENTS =
+        "### JES configuration file. You can change these options from Edit:Options in JES.";
+
+    /**
+     * The value to substitute for true.
+     */
+    private static final String TRUE = "1";
+
+    /**
+     * The value to substitute for false.
+     */
+    private static final String FALSE = "0";
+
+    /**
+     * The default name of the legacy JESConfig.txt files.
+     */
+    public static final String MIGRATION_FILE_NAME = "JESConfig.txt";
+
+    /**
+     * The order in which properties appeared in legacy configuration files.
+     */
+    private static final String[] MIGRATION_ORDER = {
+        CONFIG_NAME,
+        CONFIG_GT,
+        CONFIG_MAIL,
+        CONFIG_MODE,
+        CONFIG_FONT,
+        CONFIG_EMAIL_ADDR,
+        CONFIG_GUTTER,
+        CONFIG_BLOCK,
+        CONFIG_WEB_TURNIN,
+        CONFIG_AUTOSAVEONRUN,
+        null,
+        CONFIG_WRAPPIXELVALUES,
+        CONFIG_SKIN,
+        CONFIG_SHOWTURNIN,
+        CONFIG_BACKUPSAVE,
+        CONFIG_LOGBUFFER,
+        CONFIG_MEDIAPATH
+    };
+
+
+    /**
+     * Returns a File pointing to the current configuration file,
+     * as indicated by the jes.configfile property. If that property is
+     * not set, then the default config file is used.
+     */
+    public static File getConfigFile () {
+        String path = System.getProperty("jes.configfile");
+
+        if (path != null) {
+            return new File(path);
+        } else {
+            return getDefaultConfigFile();
         }
-        sessionWrapAround = getBooleanProperty(CONFIG_WRAPPIXELVALUES);
     }
 
     /**
-     * Method to get the instance of the JESConfig singleton pattern
-     * @return the instance of JESConfig
+     * Returns a File pointing to the default configuration file location,
+     * independent of the current platform. (This is usually not ideal.)
      */
-    public static JESConfig getInstance() {
+    public static File getDefaultConfigFile () {
+        return new File(System.getProperty("user.home") +
+                        File.separatorChar + DEFAULT_FILE_NAME);
+    }
+
+    /**
+     * Returns a File pointing to the location of the configuration file
+     * used before JES 5.0.
+     */
+    public static File getMigrationConfigFile () {
+        return new File(System.getProperty("user.home") +
+                        File.separatorChar + MIGRATION_FILE_NAME);
+    }
+
+
+    // SINGLETON
+
+    private static JESConfig theInstance = null;
+
+    /**
+     * Returns the one instance of JESConfig, loading the configuration
+     * files in the process.
+     */
+    public static JESConfig getInstance () {
         if (theInstance == null) {
             theInstance = new JESConfig();
+            theInstance.loadConfig();
         }
 
         return theInstance;
     }
 
-    /**
-     * Method to get the current value of the pixel wrap around option.
-     * getSessionWrapAround and setSessionWrapAround will ignore the value
-     * in user settings.
-     * @return the boolean value of the pixel wrap around
-     */
-    public boolean getSessionWrapAround() {
-        return sessionWrapAround;
-    }
+
+    // INSTANCE STATE
+
+    private Properties properties;
+
+    private boolean loaded = false;
+    private boolean migrated = false;
+    private boolean modified = false;
+
+    private IOException loadError = null;
+    private IOException writeError = null;
 
     /**
-     * Method to set the current value of the pixel wrap around option.
-     * getSessionWrapAround and setSessionWrapAround will ignore the value
-     * in user settings.
-     * @param value the new value for the pixel wrap around
+     * Initializes a blank JESConfig instance.
      */
-    public void setSessionWrapAround(boolean value) {
-        sessionWrapAround = value;
+    private JESConfig () {
+        properties = new Properties(defaults);
     }
 
-    /**
-     * Method to determine if the JES_CONFIG_FILE was read and previous settings restored
-     * @return true if the JES_CONFIG_FILE was succesfully loaded
-     */
-    public boolean isConfigLoaded() {
-        return configLoaded;
-    }
-
-    /**
-     * Method to get a JES String property
-     * @param property the JESConfig.CONFIG_* constant for the desired property
-     * @return the value of the specified property as a String
-     */
-    public String getStringProperty(int property) {
-        if ((property >= 0) && (property < CONFIG_NLINES)) {
-            return properties.get(property);
-        } else {
-            return "";
+    private void afterLoad () {
+        if (!(new File(getStringProperty(CONFIG_MEDIAPATH))).exists()) {
+            setStringProperty(CONFIG_MEDIAPATH, System.getProperty("user.home"));
         }
+        wrapRGB = getBooleanProperty(CONFIG_WRAPPIXELVALUES);
     }
 
-    /**
-     * Method to get a JES boolean property
-     * @param property the JESConfig.CONFIG_* constant for the desired property
-     * @return the value of the specified property as a boolean
-     */
-    public boolean getBooleanProperty(int property) {
-        String val = getStringProperty(property);
-        return val.equals("1") ? true : false;
-    }
+    // FILE HANDLING
 
     /**
-     * Method to get a JES Integer property
-     * @param property the JESConfig.CONFIG_* constant for the desired property
-     * @return the value of the specified property as an Integer
+     * Reads a file full of properties.
      */
-    public int getIntegerProperty(int property) {
+    public void loadConfig () {
+        Properties props = new Properties(defaults);
 
-        String val = getStringProperty(property);
-        if (!val.equals("")) {
-            return Integer.parseInt(val);
-        } else
-            //TODO:  default value?  But this shouldn't happen says Buck
-        {
-            return 0;
-        }
-    }
+        // Start loading, maybe?
+        File propFile = getConfigFile();
+        File migrationFile = getMigrationConfigFile();
 
-    /**
-     * Method to set a JES String property
-     * @param property the JESConfig.CONFIG_* constant for the desired property
-     * @param value the new String value for the specified property
-     */
-    public void setStringProperty(int property, String value) {
-        if ((property >= 0) && (property < CONFIG_NLINES)) {
-            properties.set(property, value);
-        }
-    }
+        FileInputStream stream = null;
 
-    /**
-     * Method to set a JES Integer property
-     * @param property the JESConfig.CONFIG_* constant for the desired property
-     * @param value the new Integer value for the specified property
-     */
-    public void setIntegerProperty(int property, int value) {
-        setStringProperty(property, value + "");
-    }
-
-    /**
-     * Method to set a JES Boolean property
-     * @param property the JESConfig.CONFIG_* constant for the desired property
-     * @param value the new Boolean value for the specified property
-     */
-    public void setBooleanProperty(int property, boolean value) {
-        setStringProperty(property, value ? "1" : "0");
-    }
-
-    /**
-     * Method to read the JES settings file from user.home/JES_CONFIG_FILE_NAME
-     * @return an ArrayList of settings values
-     */
-    private ArrayList<String> readConfig() {
-        ArrayList<String> properties = null;
         try {
-            String inputFileName =
-                System.getProperty("user.home") +
-                File.separatorChar + JES_CONFIG_FILE_NAME;
-            File inputFile = new File(inputFileName);
-            FileInputStream in = new
-            FileInputStream(inputFile);
+            if (propFile.exists()) {
+                FileInputStream propStream = new FileInputStream(propFile);
+                props.load(propStream);
 
-            byte bt[] = new
-            byte[(int)inputFile.length()];
-            in.read(bt);
-            String s = new String(bt);
-            in.close();
-            properties = new ArrayList<String>(Arrays.asList(s.split("\r\n|\r|\n")));
-            //you must be upgrading; adding blanks...
-            while (properties.size() < CONFIG_NLINES) {
-                properties.add("");
+                loaded = true;
+                migrated = false;
+            } else if (migrationFile.exists()) {
+                FileInputStream textStream = new FileInputStream(migrationFile);
+                migrateOldConfigFile(props, migrationFile, textStream);
+
+                loaded = true;
+                migrated = true;
+            } else {
+                loaded = false;
+                migrated = false;
             }
-        } catch (java.io.IOException e) {
-            System.out.println("Cannot access JESConfig file," + JES_CONFIG_FILE_NAME);
-            System.out.println(e);
+
+            loadError = null;
+            properties = props;
+            modified = migrated;
+            afterLoad();
+        } catch (IOException exc) {
+            loadError = exc;
+            exc.printStackTrace();
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException exc) {
+                    // seriously?!
+                }
+            }
         }
-        return properties;
     }
 
     /**
      * Method to write the current JES settings to the file user.home/JES_CONFIG_FILE_NAME
      */
-    public void writeConfig() {
+    public void writeConfig () {
+        if (!modified) {
+            return;
+        }
+
+        File propFile = getConfigFile();
+        FileOutputStream stream = null;
+
         try {
-            String inputFileName = System.getProperty("user.home") + File.separatorChar + JES_CONFIG_FILE_NAME;
-            File outputFile = new File(inputFileName);
-            FileOutputStream fos = new FileOutputStream(outputFile);
-            OutputStreamWriter out = new OutputStreamWriter(fos);
-            for (int i = 0; i < properties.size(); i++) {
-                out.write(properties.get(i));
-                out.write("\r\n");
+            stream = new FileOutputStream(propFile);
+            properties.store(stream, FILE_COMMENTS);
+
+            writeError = null;
+            loaded = true;
+            modified = false;
+        } catch (IOException exc) {
+            writeError = exc;
+            exc.printStackTrace();
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException exc) {
+                    // seriously?!
+                }
             }
-            out.close();
-        } catch (java.io.IOException e) {
-            System.out.println("Cannot access JESConfig file," + JES_CONFIG_FILE_NAME);
-            System.out.println(e);
         }
     }
 
-    // Main for testing
-    public static void main(String[] args) {
-        JESConfig jConfig = JESConfig.getInstance();
-        for (int i = 0; i < CONFIG_NLINES; i++) {
-            System.out.println(jConfig.getStringProperty(i));
-        }
-        jConfig.writeConfig();
-        System.out.println("MEDIAPATH: " + JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_MEDIAPATH));
+
+    // CONFIGURATION STATUS
+
+    /**
+     * Indicates that the configuration was loaded from a file.
+     */
+    public boolean wasLoaded() {
+        return loaded;
+    }
+
+    /**
+     * Indicates that the configuration was loaded from an configuration file
+     * from before JES 5.0. It will be saved to a .properties file when
+     * it's written out.
+     */
+    public boolean wasMigrated () {
+        return migrated;
+    }
+
+    /**
+     * Indicates that a property has been added to the configuration
+     * since it was loaded.
+     */
+    public boolean isModified () {
+        return modified;
+    }
+
+    /**
+     * Returns the most recent load error.
+     */
+    public IOException getLoadError () {
+        return loadError;
     }
 
 
+    // READ PROPERTIES
+
+    /**
+     * Reads a property from the settings.
+     *
+     * @param property The name of the property.
+     * You should use one of the JESConfig.CONFIG_* constants.
+     * @return The string value, or "" if the value is unset.
+     */
+    public String getStringProperty (String property) {
+        String value = properties.getProperty(property);
+        return value != null ? value : "";
+    }
+
+    /**
+     * Reads a property from the settings as a Boolean.
+     *
+     * @param property The name of the property.
+     * You should use one of the JESConfig.CONFIG_* constants.
+     * @return The boolean value, or false if the value is unset.
+     */
+    public boolean getBooleanProperty (String property) {
+        String val = getStringProperty(property);
+        return val.equals(TRUE) ? true : false;
+    }
+
+    /**
+     * Reads a property from the settings as an integer.
+     *
+     * @param property The name of the property.
+     * You should use one of the JESConfig.CONFIG_* constants.
+     * @return The integral value, or 0 if the value is unset.
+     */
+    public int getIntegerProperty (String property) {
+        String val = getStringProperty(property);
+        if (!val.equals("")) {
+            return Integer.parseInt(val);
+        } else {
+            return 0;
+        }
+    }
+
+
+    // WRITE PROPERTIES
+
+    /**
+     * Sets a property.
+     *
+     * @param property The name of the property.
+     * You should use one of the JESConfig.CONFIG_* constants.
+     * @param value The value to set for the property.
+     */
+    public void setStringProperty (String property, String value) {
+        properties.setProperty(property, value);
+        modified = true;
+    }
+
+    /**
+     * Sets a property and stores it as an integer.
+     *
+     * @param property The name of the property.
+     * You should use one of the JESConfig.CONFIG_* constants.
+     * @param value The value to set for the property.
+     */
+    public void setIntegerProperty (String property, int value) {
+        setStringProperty(property, String.valueOf(value));
+    }
+
+    /**
+     * Sets a property and stores it as a Boolean.
+     *
+     * @param property The name of the property.
+     * You should use one of the JESConfig.CONFIG_* constants.
+     * @param value The value to set for the property.
+     */
+    public void setBooleanProperty (String property, boolean value) {
+        setStringProperty(property, value ? TRUE : FALSE);
+    }
+
+
+    // MIGRATION
+
+    private void migrateOldConfigFile (Properties props, File inputFile, InputStream input)
+            throws IOException {
+        byte bt[] = new byte[(int) inputFile.length()];
+        input.read(bt);
+
+        String[] lines = new String(bt).split("\r\n|\r|\n");
+
+        // For every line that has a corresponding MIGRATION_ORDER entry,
+        // copy the value into props.
+        for (int line = 0; line < lines.length && line < MIGRATION_ORDER.length; line++) {
+            if (MIGRATION_ORDER[line] != null) {
+                props.setProperty(MIGRATION_ORDER[line], lines[line]);
+            }
+        }
+    }
+
+
+    // WRAPAROUND OVERRIDE
+
+    private boolean wrapRGB = false;
+
+    /**
+     * Returns whether to wrap RGB values within the range 0-255.
+     * (This is independent of the user's actual config file setting.)
+     */
+    public boolean getSessionWrapAround () {
+        return wrapRGB;
+    }
+
+    /**
+     * Alters whether to wrap RGB values within the range 0-255,
+     * without changing the user's setting in the config file.
+     */
+    public void setSessionWrapAround (boolean value) {
+        wrapRGB = value;
+    }
 }
+

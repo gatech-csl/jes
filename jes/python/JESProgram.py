@@ -117,9 +117,28 @@ class JESProgram:
 
         # Show introduction window if settings could not be loaded (Either new
         # JES user or bad write permissions)
-        if not JESConfig.getInstance().isConfigLoaded():
+        config = JESConfig.getInstance()
+        loadError = config.getLoadError()
+
+        if loadError is not None:
+            swing.JOptionPane.showMessageDialog(
+                self.gui,
+                "Your JESConfig.properties file could not be opened!\n" +
+                loadError.toString(),
+                "JES Configuration",
+                swing.JOptionPane.ERROR_MESSAGE
+            )
+        elif config.wasMigrated():
+            swing.JOptionPane.showMessageDialog(
+                self.gui,
+                "Your settings were imported from JES 4.3.\n" +
+                "JES doesn't use the JESConfig.txt file in" +
+                "your home directory anymore, so you can delete it.",
+                "JES Configuration",
+                swing.JOptionPane.INFORMATION_MESSAGE
+            )
+        elif not config.wasLoaded():
             self.openIntroductionWindow()
-            # self.openSettingsGUI()
 
         # self.gui.repaint()
 
