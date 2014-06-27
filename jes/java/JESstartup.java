@@ -49,7 +49,7 @@ public class JESstartup {
 
         // Set the dock icon and show the splash window
         setOSXDockIcon();
-        Frame frame = SplashWindow.splash(JESResources.getPathTo("images/JESsplash-v43.png"));
+        Frame frame = JESSplashWindow.splash();
 
         // Actually boot Jython
         String[] args = {"-c", "import JESProgram; mainJESProgram = JESProgram.JESProgram()"};
