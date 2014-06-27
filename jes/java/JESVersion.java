@@ -1,4 +1,4 @@
-class JESVersion {
+public class JESVersion {
     public static final String VERSION = "5.0";
     public static final String RELEASE = VERSION + "-snapshot";
     public static final String RELEASE_DATE = "Not Yet Released";

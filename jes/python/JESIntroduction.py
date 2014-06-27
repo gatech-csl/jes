@@ -4,6 +4,7 @@
 
 import JESConstants
 import JESResources
+import JESVersion
 import java.awt as awt
 import java.lang as lang
 import javax.swing as swing
@@ -35,8 +36,11 @@ class JESIntroduction(swing.JFrame, awt.event.ActionListener):
         # Load information from the JES introduction file
         introductionFile = open(
             JESResources.getPathTo('help/JESIntroduction.txt'), 'r')
-        introductionInfoArea.text = introductionFile.read()
+        introductionText = introductionFile.read().replace("@version@",
+                                                           JESVersion.VERSION)
         introductionFile.close()
+
+        introductionInfoArea.text = introductionText
 
         okButton = swing.JButton(OK_BUTTON_CAPTION, actionListener=self)
 
