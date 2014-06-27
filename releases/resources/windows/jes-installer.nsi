@@ -14,7 +14,7 @@
 #
 #   makensis jes-installer.nsi
 #
-# which will generate the output file 'jes-@version@-windows.exe'.
+# which will generate the output file 'jes-@release@-windows.exe'.
 
 !addplugindir ..\..\resources\windows\nsis-plugins
 !addincludedir ..\..\resources\windows\nsis-plugins
@@ -24,19 +24,19 @@
 
 !define APPNAME "JES"
 !define APPFULLNAME "JES - Jython Environment for Students"
-!define APPVERSION "@version@"
+!define APPVERSION "@release@"
 !define APPGUID "{AE72B60E-47B2-46FE-AC9E-0436A26DAD7D}"
 !define PUBLISHERNAME "Georgia Institute of Technology"
 
 !define REQUIREDJAVA "1.5"
 
-!define INSTALLSUBTITLE "JES: Jython Environment for Students (version @version@)"
+!define INSTALLSUBTITLE "JES: Jython Environment for Students (version @release@)"
 
 !define UNINSTALLNAME "Uninstall JES"
 !define UNINSTALLREGKEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPGUID}"
 
 Name "${APPNAME}"
-OutFile "jes-@version@-windows.exe"
+OutFile "jes-@release@-windows.exe"
 
 RequestExecutionLevel admin
 
@@ -58,7 +58,7 @@ Var TotalInstalledSize
 # Modern UI Pages
 
 !define MUI_WELCOMEPAGE_TITLE "JES: Jython Environment for Students"
-!define MUI_WELCOMEPAGE_TEXT "This program will install JES version @version@ on your computer. It won't take long; just follow the instructions."
+!define MUI_WELCOMEPAGE_TEXT "This program will install JES version @release@ on your computer. It won't take long; just follow the instructions."
 !insertmacro MUI_PAGE_WELCOME
 
 !define MUI_PAGE_HEADER_TEXT "License"

@@ -1,5 +1,5 @@
-JES @version@ for Windows
-=========================
+JES @release@ for Windows
+============================
 @introductiontext@
 
 Requirements

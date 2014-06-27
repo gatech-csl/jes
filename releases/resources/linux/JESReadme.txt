@@ -1,5 +1,5 @@
-JES @version@ for Linux
-========================
+JES @release@ for Linux
+==========================
 @introductiontext@
 
 Requirements
@@ -39,7 +39,7 @@ If not, open your Terminal or Terminal Emulator program (see above),
 and `cd` to the directory where you unzipped JES (it probably won't be
 this exact folder):
 
-    cd Downloads/jes-@version@-linux
+    cd Downloads/jes-@release@-linux
 
 Then, you can run the shell script with:
 

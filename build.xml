@@ -7,15 +7,21 @@
 <project name="jes" basedir="." default="build"
     xmlns:if="ant:if" xmlns:unless="ant:unless">
     <!-- Project metadata -->
+    <property name="release"            value="-snapshot" unless:set="release" />
+
     <property name="jes.copyright"      value="© 2014 Matthew Frazier, Mark Guzdial, and others" />
-    <property name="jes.version"        value="5.0a" />
-    <property name="jes.target-java"    value="1.5" />
+    <property name="jes.version"        value="5.0" />
+    <property name="jes.release"        value="${jes.version}${release}" />
+
     <property name="jes.homepage"       value="https://github.com/gatech-csl/jes" />
     <property name="jes.homepage.host"  value="GitHub" />
 
     <filter token="version"             value="${jes.version}" />
+    <filter token="release"             value="${jes.release}" />
     <filter token="homepage"            value="${jes.homepage}" />
     <filter token="homepagehost"        value="${jes.homepage.host}" />
+
+    <property name="jes.target-java"    value="1.5" />
 
     <!-- Paths to things in the repository -->
     <property name="jes.home"           location="jes" />

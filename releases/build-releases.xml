@@ -8,7 +8,7 @@
     <!-- Release file structures -->
     <property name="jes.release.stage"      location="${jes.release.dir}/stage" />
     <property name="jes.release.resources"  location="${jes.release.dir}/resources" />
-    <property name="jes.release.basename"   value="jes-${jes.version}" />
+    <property name="jes.release.basename"   value="jes-${jes.release}" />
 
 
     <!-- Master "release" target -->
@@ -257,7 +257,7 @@
             mainclass="JESstartup"
             name="JES"
             bundleid="edu.gatech.cc.csl.JES"
-            version="${jes.version}"
+            version="${jes.release}"
             copyright="${jes.copyright}"
             icon="${jes.home}/images/JESi2.icns"
             signature="JESX"
