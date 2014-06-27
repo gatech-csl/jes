@@ -6,14 +6,19 @@
 -->
 
     <!-- Release file structures -->
+    <property name="jes.release.basename"   value="jes-${jes.release}" />
+    <property name="jes.release.products"   location="${jes.release.dir}/${jes.release.basename}" />
     <property name="jes.release.stage"      location="${jes.release.dir}/stage" />
     <property name="jes.release.resources"  location="${jes.release.dir}/resources" />
-    <property name="jes.release.basename"   value="jes-${jes.release}" />
 
 
     <!-- Master "release" target -->
     <target name="release" depends="release-linux, release-windows-all, release-macosx"
         description="Build all the releases we can make on the current platform." />
+
+    <target name="release-dir">
+        <mkdir dir="${jes.release.products}" />
+    </target>
 
     <target name="clean-releases"
         description="Remove built releases, and the staging directories.">
@@ -72,9 +77,9 @@
     <property name="jes.release.linux.stage"
             location="${jes.release.stage}/${jes.release.linux.basename}" />
     <property name="jes.release.linux.tarball"
-            location="${jes.release.dir}/${jes.release.linux.basename}.tar.gz" />
+            location="${jes.release.products}/${jes.release.linux.basename}.tar.gz" />
 
-    <target name="release-linux" depends="build"
+    <target name="release-linux" depends="build, release-dir"
         description="Build a release for Linux and other UNIX systems">
         <!-- Create and clean the stage directory -->
         <mkdir dir="${jes.release.linux.stage}" />
@@ -114,7 +119,7 @@
 
     <property name="jes.release.windows.basename"   value="${jes.release.basename}-windows" />
     <property name="jes.release.windows.stage"
-            location="${jes.release.stage}/${jes.release.windows.basename}-contents" />
+            location="${jes.release.stage}/${jes.release.windows.basename}" />
     <property name="jes.release.windows.stage.readmes"
             location="${jes.release.windows.stage}/readmes" />
 
@@ -157,11 +162,11 @@
 
     <!-- windows-zip release type: exe + batch file in a ZIP, no embedded Java -->
     <property name="jes.release.windows.zip-nojava.zipfile"
-            location="${jes.release.dir}/${jes.release.windows.basename}-java-required.zip" />
+            location="${jes.release.products}/${jes.release.windows.basename}-java-required.zip" />
     <property name="jes.release.windows.zip-java.zipfile"
-            location="${jes.release.dir}/${jes.release.windows.basename}-java-included.zip" />
+            location="${jes.release.products}/${jes.release.windows.basename}-java-included.zip" />
 
-    <target name="release-windows-zip-nojava" depends="release-windows-contents"
+    <target name="release-windows-zip-nojava" depends="release-windows-contents, release-dir"
         description="Builds a ZIP file for Windows (with no JRE)">
         <!-- Reset the ZIP -->
         <delete file="${jes.release.windows.zip-nojava.zipfile}" />
@@ -178,7 +183,7 @@
         </zip>
     </target>
 
-    <target name="release-windows-zip-java" depends="release-windows-contents"
+    <target name="release-windows-zip-java" depends="release-windows-contents, release-dir"
         description="Builds a ZIP file for Windows (including a JRE)">
         <!-- Reset the ZIP -->
         <delete file="${jes.release.windows.zip-java.zipfile}" />
@@ -209,9 +214,9 @@
     <property name="jes.release.windows.installer.stage"
             location="${jes.release.windows.stage}/${jes.release.windows.installer.filename}" />
     <property name="jes.release.windows.installer.exe"
-            location="${jes.release.dir}/${jes.release.windows.installer.filename}" />
+            location="${jes.release.products}/${jes.release.windows.installer.filename}" />
 
-    <target name="release-windows-installer" depends="release-windows-contents" if="makensis"
+    <target name="release-windows-installer" depends="release-windows-contents, release-dir" if="makensis"
         description="Builds an EXE installer for Windows">
         <!-- Reset the installer -->
         <delete file="${jes.release.windows.installer.stage}" />
@@ -226,34 +231,37 @@
         </exec>
 
         <!-- Move it to the releases directory -->
-        <move file="${jes.release.windows.installer.stage}" todir="${jes.release.dir}" />
+        <move file="${jes.release.windows.installer.stage}" todir="${jes.release.products}" />
     </target>
 
 
     <!-- Mac OS X release -->
-    <property name="jes.release.macosx.resources"  location="${jes.release.resources}/macosx" />
-
     <property name="jes.release.macosx.basename" value="${jes.release.basename}-macosx" />
-    <property name="jes.release.macosx.bundle" location="${jes.release.dir}/JES.app" />
+    <property name="jes.release.macosx.resources"  location="${jes.release.resources}/macosx" />
+    <property name="jes.release.macosx.stage"
+            location="${jes.release.stage}/${jes.release.macosx.basename}" />
+
+    <property name="jes.release.macosx.bundle" location="${jes.release.macosx.stage}/JES.app" />
     <property name="jes.release.macosx.bundle.contents"
             location="${jes.release.macosx.bundle}/Contents/Resources/Java" />
     <property name="jes.release.macosx.zipfile"
-            location="${jes.release.dir}/${jes.release.macosx.basename}.zip" />
+            location="${jes.release.products}/${jes.release.macosx.basename}.zip" />
 
     <!-- macosx-app release type: app packed with AppBundler -->
     <taskdef name="jarbundler"
              classname="net.sourceforge.jarbundler.JarBundler"
              classpath="${jes.release.macosx.resources}/jarbundler-2.3.1.jar" />
 
-    <target name="release-macosx" depends="build">
+    <target name="release-macosx" depends="build, release-dir">
         <!-- Pack the JES classes into a JAR -->
         <jar destfile="${jes.home}/classes.jar" basedir="${jes.java.class}" />
 
         <!-- Build the JES.app skeleton -->
         <delete dir="${jes.release.macosx.bundle}" />
         <delete file="${jes.release.macosx.zipfile}" />
+        <mkdir dir="${jes.release.macosx.stage}" />
 
-        <jarbundler dir="${jes.release.dir}"
+        <jarbundler dir="${jes.release.macosx.stage}"
             mainclass="JESstartup"
             name="JES"
             bundleid="edu.gatech.cc.csl.JES"
@@ -280,11 +288,11 @@
 
         <!-- Zip it all up -->
         <zip destfile="${jes.release.macosx.zipfile}">
-            <zipfileset dir="${jes.release.dir}">
+            <zipfileset dir="${jes.release.macosx.stage}">
                 <include name="JES.app/**/*" />
                 <exclude name="JES.app/Contents/MacOS/jes-launcher.sh" />
             </zipfileset>
-            <zipfileset filemode="755" dir="${jes.release.dir}">
+            <zipfileset filemode="755" dir="${jes.release.macosx.stage}">
                 <include name="JES.app/Contents/MacOS/jes-launcher.sh" />
             </zipfileset>
         </zip>
