@@ -44,6 +44,7 @@ class JESExceptionRecord:
 
         cls = type(exception)
         className = cls.__name__
+        doc = getattr(cls, '__doc__')
 
         # At least some exceptions don't have a __dict__ under Jython 2.5.
         # We build our own __dict__ here.
@@ -54,15 +55,15 @@ class JESExceptionRecord:
         if JESConstants.EXCEPTION_MESSAGES.has_key(className):
             template = JESConstants.EXCEPTION_MESSAGES[className]
             msg = template % attributes
+            if doc:
+                msg = doc + '\n' + msg
         else:
             msg = JESConstants.GENERIC_EXCEPTION_MESSAGE % className
-
-            doc = getattr(cls, '__doc__')
             if doc:
-                msg += '\n' + exception.__doc__
+                msg = doc + '\n' + msg
 
             args = getattr(exception, 'args', ())
-            for arg in exception.args:
+            for arg in args:
                 msg += '\n' + arg
 
         msg += '\n'
