@@ -12,11 +12,11 @@ import javax.imageio.ImageIO;
 class JESSplashWindow extends SplashWindow {
     private static final String SPLASH_FILE = "images/JESsplash.png";
     private static final int SPLASH_TEXT_X = 30;
-    private static final int SPLASH_TEXT_Y = 225;
+    private static final int SPLASH_TEXT_Y = 222;
 
     private static final String SPLASH_FONT = "Sans";
     private static final int SPLASH_FONT_SIZE = 12;
-    private static final int SPLASH_FONT_LINE_HEIGHT = 18;
+    private static final int SPLASH_FONT_LINE_HEIGHT = 17;
     private static final int SPLASH_FONT_STYLE = Font.PLAIN;
 
     public static Frame splash () {
@@ -41,7 +41,8 @@ class JESSplashWindow extends SplashWindow {
         String[] lines = {
             "JES version " + JESVersion.RELEASE +
                 " – " + JESVersion.RELEASE_DATE,
-            "© " + JESVersion.COPYRIGHT_YEARS + ", " + JESVersion.LICENSE,
+            "© " + JESVersion.COPYRIGHT_YEARS + " various authors.",
+            "JES is Free Software (" + JESVersion.LICENSE + ").",
             "See Help:About to meet the JES development team!"
         };
 

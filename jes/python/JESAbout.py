@@ -10,7 +10,7 @@ import javax.swing as swing
 
 ABOUT_TITLE = 'About JES'
 OK_BUTTON_CAPTION = 'OK'
-ABOUT_WINDOW_SIZE = (500, 600)
+ABOUT_WINDOW_SIZE = (600, 600)
 
 
 class JESAbout(swing.JFrame, awt.event.ActionListener):
@@ -35,7 +35,7 @@ class JESAbout(swing.JFrame, awt.event.ActionListener):
         # Load copyright information from the JES copyright file
         copyrightFile = open(
             JESResources.getPathTo('help/JESCopyright.txt'), 'r')
-        copyrightInfoArea.text = copyrightFile.read()
+        copyrightInfoArea.text = copyrightFile.read().decode("utf8")
         copyrightInfoArea.setCaretPosition(0)
         copyrightFile.close()
 
