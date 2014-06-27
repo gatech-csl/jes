@@ -13,11 +13,19 @@
     <property name="jes.version"        value="5.0" />
     <property name="jes.release"        value="${jes.version}${release}" />
 
+    <tstamp>
+        <format property="jes.release.date" pattern="MMMMM d, yyyy" />
+        <format property="jes.release.year" pattern="yyyy" />
+    </tstamp>
+
     <property name="jes.homepage"       value="https://github.com/gatech-csl/jes" />
     <property name="jes.homepage.host"  value="GitHub" />
 
     <filter token="version"             value="${jes.version}" />
     <filter token="release"             value="${jes.release}" />
+    <filter token="releasesuffix"       value="${release}" />
+    <filter token="releasedate"         value="${jes.release.date}" />
+    <filter token="releaseyear"         value="${jes.release.year}" />
     <filter token="homepage"            value="${jes.homepage}" />
     <filter token="homepagehost"        value="${jes.homepage.host}" />
 
@@ -105,7 +113,13 @@
     <target name="build" depends="compile, javadoc"
         description="Build everything that needs to be built." />
 
-    <target name="compile"
+    <target name="version">
+        <copy file="${jes.java.src}/JESVersion.java.in"
+                tofile="${jes.java.src}/JESVersion.java"
+                filtering="on" overwrite="true" />
+    </target>
+
+    <target name="compile" depends="version"
         description="Build the Java class files.">
         <mkdir dir="${jes.java.class}" />
         <javac srcdir="${jes.java.src}" destdir="${jes.java.class}"

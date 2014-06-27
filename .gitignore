@@ -2,6 +2,9 @@
 *.class
 jes/javadoc/
 
+# Generated Java files
+jes/java/JESVersion.java
+
 # Built releases
 releases/*.*
 releases/stage

@@ -39,10 +39,10 @@ class JESSplashWindow extends SplashWindow {
             RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
         String[] lines = {
-            "JES version " + JESVersion.RELEASE +
-                " – " + JESVersion.RELEASE_DATE,
-            "© " + JESVersion.COPYRIGHT_YEARS + " various authors.",
-            "JES is Free Software (" + JESVersion.LICENSE + ").",
+            "JES version " + JESVersion.getRelease() +
+                " – " + JESVersion.getReleaseDate(),
+            "© " + JESVersion.getCopyrightYears() + " various authors.",
+            "JES is Free Software (" + JESVersion.getLicense() + ").",
             "See Help:About to meet the JES development team!"
         };
 

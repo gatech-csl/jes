@@ -1,0 +1,36 @@
+public class JESVersion {
+    public static final String VERSION = "@version@";
+    public static final String RELEASE = VERSION + "@releasesuffix@";
+
+    public static final String RELEASE_DATE = "@releasedate@";
+
+    public static final String COPYRIGHT_FIRST_YEAR = "2002";
+    public static final String COPYRIGHT_LAST_YEAR = "@releaseyear@";
+
+    public static final String COPYRIGHT_YEARS =
+            COPYRIGHT_FIRST_YEAR + "–" + COPYRIGHT_LAST_YEAR;
+
+    public static final String LICENSE = "GNU General Public License";
+
+
+    public static String getVersion () {
+        return VERSION;
+    }
+
+    public static String getRelease () {
+        return RELEASE;
+    }
+
+    public static String getReleaseDate () {
+        return RELEASE_DATE;
+    }
+
+    public static String getCopyrightYears () {
+        return COPYRIGHT_YEARS;
+    }
+
+    public static String getLicense () {
+        return LICENSE;
+    }
+}
+
