@@ -129,7 +129,7 @@ def setMediaPath(file=None):
 
 
 def getMediaPath(filename=""):
-    return FileChooser.getMediaPath(filename)
+    return str(FileChooser.getMediaPath(filename))
 
 
 def setMediaFolder(file=None):
@@ -142,7 +142,7 @@ def setTestMediaFolder():
 
 
 def getMediaFolder(filename=""):
-    return getMediaPath(filename)
+    return str(getMediaPath(filename))
 
 
 def showMediaFolder():
@@ -155,9 +155,9 @@ def getShortPath(filename):
     if len(dirs) < 1:
         return "."
     elif len(dirs) == 1:
-        return dirs[0]
+        return str(dirs[0])
     else:
-        return (dirs[len(dirs) - 2] + os.sep + dirs[len(dirs) - 1])
+        return str(dirs[len(dirs) - 2] + os.sep + dirs[len(dirs) - 1])
 
 
 def setLibPath(directory=None):
@@ -1076,7 +1076,7 @@ def requestIntegerInRange(message, min, max):
 
 
 def requestString(message):
-    return SimpleInput.getString(message)
+    return str(SimpleInput.getString(message))
 
 
 # 5/15/09 Dorn: Updated input and raw_input to read from the console
@@ -1116,7 +1116,7 @@ def playNote(note, duration, intensity=64):
 def pickAFile():
     # Note: this needs to be done in a threadsafe manner, see FileChooser
     # for details how this is accomplished.
-    return FileChooser.pickAFile()
+    return str(FileChooser.pickAFile())
 
 
 def pickAFolder():
@@ -1124,7 +1124,7 @@ def pickAFolder():
     # for details how this is accomplished.
     dir = FileChooser.pickADirectory()
     if (dir != None):
-        return dir + os.sep
+        return str(dir + os.sep)
     return None
 
 
