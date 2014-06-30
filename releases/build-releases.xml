@@ -11,9 +11,11 @@
     <property name="jes.release.stage"      location="${jes.release.dir}/stage" />
     <property name="jes.release.resources"  location="${jes.release.dir}/resources" />
 
+    <property name="jes.release.index.src"  location="${jes.release.resources}/index.html" />
+
 
     <!-- Master "release" target -->
-    <target name="release" depends="release-linux, release-windows-all, release-macosx"
+    <target name="release" depends="release-index, release-testkit, release-linux, release-windows-all, release-macosx"
         description="Build all the releases we can make on the current platform." />
 
     <target name="release-dir">
@@ -67,6 +69,15 @@
     <loadfile property="jes.release.text.introduction"
         srcFile="${jes.release.resources}/introduction.txt" />
     <filter token="introductiontext"            value="${jes.release.text.introduction}" />
+
+    <loadfile property="jes.release.text.copyright"
+        srcFile="${jes.help.copyright}" />
+    <filter token="copyrighttext"               value="${jes.release.text.copyright}" />
+
+
+    <target name="release-index" depends="release-dir">
+        <copy file="${jes.release.index.src}" todir="${jes.release.products}" filtering="on" />
+    </target>
 
 
     <!-- linux release type: shell script, no embedded Java -->
@@ -299,5 +310,32 @@
 
         <!-- Get rid of the JAR we made -->
         <delete file="${jes.home}/classes.jar" />
+    </target>
+
+
+    <!-- testkit: A set of tests -->
+    <property name="jes.release.testkit.basename" value="${jes.release.basename}-testkit" />
+
+    <property name="jes.release.testkit.zipfile"
+            location="${jes.release.products}/${jes.release.testkit.basename}.zip" />
+
+    <target name="release-testkit" depends="release-dir"
+        description="Creates a package of testing materials">
+        <!-- Reset it -->
+        <delete file="${jes.release.testkit.zipfile}" />
+
+        <!-- Zip it all up -->
+        <zip destfile="${jes.release.testkit.zipfile}">
+            <zipfileset prefix="${jes.release.testkit.basename}"
+                dir="${basedir}">
+                <include name="demos/**/*.py" />
+                <include name="tests/**/*" />
+            </zipfileset>
+
+            <zipfileset prefix="${jes.release.testkit.basename}"
+                dir="${jes.help}">
+                <include name="JESCopyright.txt" />
+            </zipfileset>
+        </zip>
     </target>
 

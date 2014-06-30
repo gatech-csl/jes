@@ -1,0 +1,126 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>JES version @release@ &ndash; Downloads</title>
+
+        <style>
+            table td {
+                border: 1px solid grey;
+                padding: 8px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>JES version @release@ &ndash; Downloads</h1>
+
+        <p>
+            JES is a development environment designed for
+            <a href="http://mediacomputation.org/">Media Computation</a>.
+            It allows students to use the Python programming language
+            (specifically, Jython, which is a version of Python implemented
+            in Java) to manipulate images, sounds, and videos.
+        </p>
+
+        <p>
+            JES is incorporated in &ldquo;Introduction to Computing and
+            Programming in Python: A Multimedia Approach,&rdquo;
+            by Mark Guzdial and Barbara Ericson. Dr. Guzdial
+            is the project leader, and the project has been worked on by
+            many people over the years.
+        </p>
+
+        <h2>Downloads</h2>
+
+        <p>
+            <strong>Release date:</strong> @releasedate@
+        </p>
+
+        <table>
+            <tr>
+                <th>Platform</th>
+                <th>File</th>
+                <th>Includes Java?</th>
+                <th>Requires Administrator?<th>
+            </tr>
+
+            <tr>
+                <td rowspan="3">Windows</td>
+                <td>
+                    <a href="jes-@release@-windows.exe">
+                        jes-@release@-windows.exe
+                    </a>
+                </td>
+                <td>Yes (but won't install unless needed)</td>
+                <td>Yes</td>
+            </tr>
+
+            <tr>
+                <td>
+                    <a href="jes-@release@-windows-java-included.zip">
+                        jes-@release@-windows-java-included.zip
+                    </a>
+                </td>
+                <td>Yes</td>
+                <td>No</td>
+            </tr>
+
+            <tr>
+                <td>
+                    <a href="jes-@release@-windows-java-required.zip">
+                        jes-@release@-windows-java-required.zip
+                    </a>
+                </td>
+                <td>No</td>
+                <td>No</td>
+            </tr>
+
+            <tr>
+                <td>Mac OS X</td>
+                <td>
+                    <a href="jes-@release@-macosx.zip">
+                        jes-@release@-macosx.zip
+                    </a>
+                </td>
+                <td>No</td>
+                <td>No</td>
+            </tr>
+
+            <tr>
+                <td>Linux/UNIX</td>
+                <td>
+                    <a href="jes-@release@-linux.tar.gz">
+                        jes-@release@-linux.tar.gz
+                    </a>
+                </td>
+                <td>No</td>
+                <td>No</td>
+            </tr>
+        </table>
+
+        <p>
+            If Java is not included, consult your system documentation
+            for installation instructions. Any version of Java 1.5.0
+            or higher will suffice.
+        </p>
+
+        <p>
+            While we don't have the resources for extensive compatibility
+            testing, we believe that JES will work on any currently-supported
+            OS release and CPU architecture, as long as Java is available.
+        </p>
+
+        <p>
+            We also provide a testing kit, for testing or debugging JES:
+            <a href="jes-@release@-testkit.zip">jes-@release@-testkit.zip</a>.
+            It includes copies of JES's unit tests, demo scripts,
+            and a test plan. (The testing kit is cross-platform.)
+        </p>
+
+        <h2>Copyright</h2>
+
+        <pre>@copyrighttext@</pre>
+    </body>
+</html>
+
