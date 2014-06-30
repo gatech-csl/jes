@@ -328,13 +328,21 @@
         <zip destfile="${jes.release.testkit.zipfile}">
             <zipfileset prefix="${jes.release.testkit.basename}"
                 dir="${basedir}">
-                <include name="demos/**/*.py" />
+                <include name="demos/**/*" />
                 <include name="tests/**/*" />
+                <exclude name="**/*.pybak" />
+                <exclude name="**/*.pylog" />
+                <exclude name="**/*$py.class" />
             </zipfileset>
 
             <zipfileset prefix="${jes.release.testkit.basename}"
                 dir="${jes.help}">
                 <include name="JESCopyright.txt" />
+            </zipfileset>
+
+            <zipfileset prefix="${jes.release.testkit.basename}"
+                dir="${basedir}/working-on-jes">
+                <include name="ui-test-plan.txt" />
             </zipfileset>
         </zip>
     </target>

@@ -1,0 +1,134 @@
+JES User Interface Testing Plan
+===============================
+JES's user interface is currently not instrumented for being unit tested.
+Therefore, in order to verify a release, it is necessary to carry out a
+manual test plan. Ideally, you should run the test plan on as many different
+systems as you have available.
+
+When running the test plan, follow each step exactly!
+Write down any problems that manifest. You can later decide whether
+the problems are sufficiently serious to block an alpha or beta release,
+but the test plan should always work perfectly on a release candidate or
+final release.
+
+
+## Initialization
+
+1.  Launch JES.
+2.  Verify that the text window is empty.
+3.  Verify that the command window contains only a `>>> `.
+
+
+## Command Window
+
+1.  Type `2 + 2` in the command window, and press ENTER.
+2.  Verify that `4` appears in the command window, followed by a `>>> `.
+3.  Try to backspace over the `>>> `. Verify that you can't.
+4.  Type `for n in range(5, 0, -1):` in the command window, and press ENTER.
+5.  Verify that `... ` appears in the command window, on the next line.
+6.  Try to backspace over the `... `. Verify that you can't.
+7.  Type `  print k` in the command window, then backspace over the `k`
+    and type `n` instead.
+8.  Press ENTER.
+9.  Verify that another `... ` appears, then press ENTER.
+10. Verify that the numbers 5 through 1 are printed on separate lines.
+11. Type `pickAFile()` and press ENTER.
+12. A file chooser box should open. Pick any file.
+13. Verify that the path to the file is printed, enclosed in Unicode
+    string markers (`u''`).
+
+
+## Loading and Stopping a Simple Program
+
+1.  Open the `fib.py` demo program.
+2.  Verify that "UNLOADED" appears next to the "Load Program" button.
+3.  Click "Load Program".
+4.  Verify that `Loading Program` and a new `>>> ` prompt appear in the
+    command window, but nothing else.
+5.  Type `fib(10)` and press ENTER.
+6.  Verify that the output is `89`.
+7.  Type `fib(1000000)` and press ENTER.
+8.  While the program is calculating, click "Stop."
+9.  Verify that it says:
+
+        The error was: java.lang.ThreadDeath
+        The code has been stopped due to you hitting the stop button.
+        Please check line <6, 7, or 8> of <testing kit>/demos/fib.py
+
+
+## Watching a Simple Program
+
+1.  Carry out the steps in "Loading and Stopping a Simple Program."
+2.  Click the "Watcher" button. Verify that the Watcher appears.
+3.  Type `fib(10)` and press ENTER.
+4.  Verify that table rows appear for every line executed,
+    that the line numbers match the code appearing in the `instruction`
+    column, and that the step numbers are increasing monotonically.
+5.  Move the slider to the right (but not all the way).
+    Verify that the table rows appear faster.
+6.  Move the slider to the left (but not all the way).
+    Verify that the table rows appear slower.
+7.  Wait for the program to finish.
+8.  Verify that `89` is printed to the command window, and 36 rows appeared.
+9.  Type `fib(50)` into the command window and press ENTER.
+10. Click "Full Speed." Verify that all the table rows still appear,
+    but they appear really fast.
+11. Verify that `20365011074L` is printed to the command window,
+    and that it took 156 steps.
+12. Move the slider back from the far right to somewhere in the middle.
+    Type `fib(50)` into the command window and press ENTER.
+13. Click "Stop" in the Watcher. Verify that the table rows stop appearing,
+    that the progress indicator stops pulsing, and that the thread-death
+    error message above reappears.
+14. Repeat steps 12 and 13, but click "Stop" above the command window instead
+    of in the Watcher.
+15. Repeat steps 9 and 10.
+16. Click "Watcher". Verify that the watcher disappears.
+17. Type `fib(50)` into the command window and press ENTER.
+18. Verify that the `20365011074L` is printed to the command window, even
+    faster than when the "Full Speed" button was used.
+19. Type `fib(43)` into the command window and press ENTER.
+20. Verify that `701408733` is printed to the command window.
+21. Click "Watcher" again. Verify that the Watcher has 156 rows, and not 135.
+22. Click "Watcher" one more time to close it.
+
+
+## Watching Variables in a Simple Program
+
+1.  Carry out the steps in "Loading and Stopping a Simple Program."
+2.  Click the "Watcher" button. Verify that the Watcher appears.
+3.  Click "Add Variable." Type `count` in the box and click "OK".
+4.  Verify that a column with heading `var: count` appears at the end.
+5.  Click "Add Variable" again, this time entering `x`.
+6.  Verify that a column with heading `var: x` appears after `count`.
+7.  Repeat steps 5 and 6, with the variable names `y` and `z`.
+8.  Click "Remove Variable." Select `x` in the dropdown.
+9.  Verify that the `var: x` column disappears, but that `var: count`,
+    `var: y`, and `var: z` remain.
+10. Carry out steps 3-20 in "Watching a Simple Program."
+    Check that the `count` and `y` columns are filled in a manner consistent
+    with the program's execution, and that `z` contains only `-` throughout.
+11. Click "Watcher" again. Verify that the three columns for variables still
+    exist.
+12. Click "Remove Variable." Select `z` in the dropdown.
+13. Verify that the `var: z` column disappears, but that `var: count` and
+    `var: y` remain.
+14. Likewise remove `count` and `y`.
+15. Click "Remove Variable." Verify that an error message appears.
+
+
+## Running Unit Tests
+
+1.  Open the `TestExecute.py` file in the JES test suite.
+2.  Click "Load Program."
+3.  Verify that `Loading Program` and a new `>>> ` prompt appear in the
+    command window, but nothing else.
+4.  Type `run_tests()` and press ENTER.
+5.  Answer any dialog boxes that appear during the test suite.
+6.  Verify that it prints output like:
+
+        Ran 198 tests in 14.893s
+
+        OK
+        <unittest._TextTestResult run=198 errors=0 failures=0>
+
