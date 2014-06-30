@@ -132,7 +132,7 @@ class JESProgram:
             swing.JOptionPane.showMessageDialog(
                 self.gui,
                 "Your settings were imported from JES 4.3.\n" +
-                "JES doesn't use the JESConfig.txt file in" +
+                "JES doesn't use the JESConfig.txt file in " +
                 "your home directory anymore, so you can delete it.",
                 "JES Configuration",
                 swing.JOptionPane.INFORMATION_MESSAGE
