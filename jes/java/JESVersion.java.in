@@ -12,6 +12,8 @@ public class JESVersion {
 
     public static final String LICENSE = "GNU General Public License";
 
+    public static final String SCM_INFO = "@scminfo@";
+
 
     public static String getVersion () {
         return VERSION;
@@ -31,6 +33,10 @@ public class JESVersion {
 
     public static String getLicense () {
         return LICENSE;
+    }
+
+    public static String getSCMInfo () {
+        return SCM_INFO;
     }
 }
 

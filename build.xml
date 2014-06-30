@@ -113,10 +113,24 @@
     <target name="build" depends="compile, javadoc"
         description="Build everything that needs to be built." />
 
-    <target name="version">
+    <target name="version" depends="scminfo">
         <copy file="${jes.java.src}/JESVersion.java.in"
                 tofile="${jes.java.src}/JESVersion.java"
                 filtering="on" overwrite="true" />
+    </target>
+
+    <target name="scminfo">
+        <exec executable="git"
+            outputproperty="jes.scminfo"
+            failifexecutionfails="false"
+            logError="true">
+            <arg value="log" />
+            <arg value="-n1" />
+            <arg value="--format=Git commit %h (%cD)" />
+        </exec>
+
+        <property name="jes.scminfo" value="Unknown" unless:set="jes.scminfo" />
+        <filter token="scminfo" value="${jes.scminfo}" />
     </target>
 
     <target name="compile" depends="version"
@@ -237,7 +251,7 @@
 
 
     <!-- Debugging the build file -->
-    <target name="antprops" depends="system-paths"
+    <target name="antprops" depends="system-paths, scminfo"
         description="Print Ant properties (for working on the build script).">
         <echoproperties />
     </target>

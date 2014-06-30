@@ -75,8 +75,8 @@
     <filter token="copyrighttext"               value="${jes.release.text.copyright}" />
 
 
-    <target name="release-index" depends="release-dir">
-        <copy file="${jes.release.index.src}" todir="${jes.release.products}" filtering="on" />
+    <target name="release-index" depends="release-dir, scminfo">
+        <copy file="${jes.release.index.src}" todir="${jes.release.products}" filtering="on" overwrite="true" />
     </target>
 
 
