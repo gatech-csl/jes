@@ -425,7 +425,7 @@ public class SimplePicture implements DigitalPicture {
         this.fileName = fileName;
 
         // set the extension
-        int posDot = fileName.indexOf('.');
+        int posDot = fileName.lastIndexOf('.');
         if (posDot >= 0) {
             this.extension = fileName.substring(posDot + 1);
         }
@@ -603,7 +603,7 @@ public class SimplePicture implements DigitalPicture {
         }
 
         // get the extension
-        int posDot = fileName.indexOf('.');
+        int posDot = fileName.lastIndexOf('.');
         if (posDot >= 0) {
             extension = fileName.substring(posDot + 1);
         }
