@@ -8,6 +8,7 @@ import time
 import math
 import JESDBVariableWatcher
 from java.lang import Thread
+from java.lang import ThreadDeath
 from java.lang import Long
 from java.lang import Runnable
 import javax.swing as swing
@@ -102,15 +103,20 @@ class JESDebugger(pdb.Pdb):
             runnableSnapshot.values = values
             swing.SwingUtilities.invokeLater(runnableSnapshot)
 
+            if self.interpreter.jesThread.stopSignal:
+                raise ThreadDeath
+
             if self.speed < self.MAX_SPEED:
                 if self.speed == 0:
                     self.lock.acquire()
                     self.cond.wait()
                     self.lock.release()
-                    pass
                 else:
                     period = SPEED_FACTOR / self.speed
                     time.sleep(period)
+
+            if self.interpreter.jesThread.stopSignal:
+                raise ThreadDeath
 
 
     # Overrides pdb.user_line
@@ -157,7 +163,7 @@ class JESDebugger(pdb.Pdb):
     def stopThread(self):
         self.running = 0
         # self.step()
-        self.interpreter.jesThread.stop()
+        self.interpreter.jesThread.stopThread()
 
     def step(self):
         self.lock.acquire()

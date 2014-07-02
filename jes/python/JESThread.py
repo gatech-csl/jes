@@ -47,6 +47,7 @@ class JESThread(Thread):
         self.outputBuffer = None
         self.errMsg = None
         self.excRecord = None
+        self.stopSignal = False
         self.debugger = interpreter.debugger
 
 ##########################################################################
@@ -171,6 +172,10 @@ class JESThread(Thread):
 
         self.threadCleanup()
 
+    def stopThread(self):
+        self.stopSignal = True
+        self.stop()
+
 ##########################################################################
 # Function name: stopPython
 # Description:
@@ -207,6 +212,7 @@ class JESThread(Thread):
         self.interpreter.program.gui.setRunning(1)
         self.interpreter.program.gui.debuggerButton.enabled = 0
         self.errMsg = ''
+        self.stopSignal = False
 
         self.outputBuffer = JESStdOutputBuffer.JESStdOutputBuffer(sys.stdout,
                                                                   sys.stderr,
@@ -228,6 +234,7 @@ class JESThread(Thread):
                                            self.excRecord,
                                            self.mode)
         self.interpreter.program.gui.swing.SwingUtilities.invokeLater(runnable)
+        self.stopSignal = False
 
         # this if should be gotten rid of
         # if self.interpreter.interpreterCondition._is_owned():

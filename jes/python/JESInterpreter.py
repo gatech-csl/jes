@@ -152,8 +152,7 @@ class JESInterpreter:
 #     Stops a running thread of user code
 ##########################################################################
     def stopThread(self):
-
-        self.jesThread.stop()
+        self.jesThread.stopThread()
 
     def toggle_debug_mode(self):
         self.debug_mode = not self.debug_mode
