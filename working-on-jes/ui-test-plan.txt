@@ -34,8 +34,8 @@ final release.
 10. Verify that the numbers 5 through 1 are printed on separate lines.
 11. Type `pickAFile()` and press ENTER.
 12. A file chooser box should open. Pick any file.
-13. Verify that the path to the file is printed, enclosed in Unicode
-    string markers (`u''`).
+13. Verify that the path to the file is printed, enclosed in single quotes.
+    (On Windows, all backslashes will also be doubled.)
 
 
 ## Loading and Stopping a Simple Program
