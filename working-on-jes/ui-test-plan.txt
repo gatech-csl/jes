@@ -49,11 +49,7 @@ final release.
 6.  Verify that the output is `89`.
 7.  Type `fib(1000000)` and press ENTER.
 8.  While the program is calculating, click "Stop."
-9.  Verify that it says:
-
-        The error was: java.lang.ThreadDeath
-        The code has been stopped due to you hitting the stop button.
-        Please check line <6, 7, or 8> of <testing kit>/demos/fib.py
+9.  Verify that it says `[The program was stopped by the stop button.]`
 
 
 ## Watching a Simple Program
@@ -78,8 +74,9 @@ final release.
 12. Move the slider back from the far right to somewhere in the middle.
     Type `fib(50)` into the command window and press ENTER.
 13. Click "Stop" in the Watcher. Verify that the table rows stop appearing,
-    that the progress indicator stops pulsing, and that the thread-death
-    error message above reappears.
+    that the progress indicator stops pulsing, and that
+    `[The program was stopped by the stop button.]` appears in the
+    command window.
 14. Repeat steps 12 and 13, but click "Stop" above the command window instead
     of in the Watcher.
 15. Repeat steps 9 and 10.

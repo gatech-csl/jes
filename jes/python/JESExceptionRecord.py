@@ -7,9 +7,8 @@
 import JESConfig
 import JESConstants
 import sys
-#import test
-import java.lang as javaLang
 import os
+from java.lang import ThreadDeath
 
 
 class JESExceptionRecord:
@@ -214,7 +213,11 @@ class JESExceptionRecord:
         # if false, the error occured in code defined in the command window
         showStk = self.showStack(txtStack)
 
-        if str(exc_value).find(': '):
+        isThreadDeath = exc_type is ThreadDeath
+
+        if isThreadDeath:
+            pass
+        elif str(exc_value).find(': '):
             print ('The error was: ' + str(exc_value)
                    [(str(exc_value).find(': ') + 1):])
         else:
@@ -225,14 +228,17 @@ class JESExceptionRecord:
         lineNumMsg = ''
         self.line_number = None
 
-        exceptionDesc = self.getExceptionDescription(exc_value)
-        try:
-            nameOfExcMsg = self.getNameOfExcMsg(exc_type, exc_value)
-        except:
-            # some exceptions don't have names
-            pass
+        if isThreadDeath:
+            exceptionDesc = JESConstants.STOP_MESSAGE + '\n'
+        else:
+            exceptionDesc = self.getExceptionDescription(exc_value)
+            try:
+                nameOfExcMsg = self.getNameOfExcMsg(exc_type, exc_value)
+            except:
+                # some exceptions don't have names
+                pass
 
-        if showLineNum:
+        if showLineNum and not isThreadDeath:
             lineNumMsg = self.getLineNumMsgForFile(txtStack)
             self.line_number = self.getLineNum(txtStack)
 

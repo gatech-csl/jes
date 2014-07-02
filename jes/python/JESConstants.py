@@ -142,6 +142,8 @@ EXCEPTION_MESSAGES = {
     'ThreadDeath': 'The code has been stopped due to you hitting the stop button.',
     'TokenError': 'There is something wrong with the text of the file you had me try to load.\nYou may have not have as many closing parenthesis as opening parenthesis, or you may have tried to use a jython keyword (if, def, etc...) as a function. This cannot be done.'}
 
+STOP_MESSAGE = '[The program was stopped by the stop button.]'
+
 # Error messages that we can't actually catch:
 
 #   'MemoryError'          : 'The system does not have enough memory to allocate an object.',
