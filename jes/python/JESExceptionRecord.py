@@ -214,14 +214,14 @@ class JESExceptionRecord:
         showStk = self.showStack(txtStack)
 
         isThreadDeath = exc_type is ThreadDeath
+        asString = str(exc_value)
 
         if isThreadDeath:
-            pass
-        elif str(exc_value).find(': '):
-            print ('The error was: ' + str(exc_value)
-                   [(str(exc_value).find(': ') + 1):])
+            valueMsg = ''
+        elif ': ' in asString:
+            valueMsg = 'The error was: ' + asString[asString.find(': ') + 2:] + '\n'
         else:
-            print ('The error value is: ' + str(exc_value))
+            valueMsg = 'The error value is: ' + asString + '\n'
 
         stackMsg = ''
         nameOfExcMsg = ''
@@ -245,7 +245,7 @@ class JESExceptionRecord:
         if showStk:
             stackMsg = self.getStackMsg(txtStack)
 
-        self.exc_msg = exceptionDesc + stackMsg +\
+        self.exc_msg = valueMsg + exceptionDesc + stackMsg +\
             nameOfExcMsg + lineNumMsg
 
 
