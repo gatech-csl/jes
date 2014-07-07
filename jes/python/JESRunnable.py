@@ -19,15 +19,13 @@ class JESRunnable(Runnable):
     ######################################################################
     # init
     # interpreter: the JESInterpreter object that this runnable updates
-    # output: a string, the output from the user's code
     # errRec: a JESExceptionRecord object, only defined if an excption occured.
     #         created from the exception information and stack trace returned
     #         by sys.exc_info()
     ######################################################################
 
-    def __init__(self, interpreter, output, errRec, mode):
+    def __init__(self, interpreter, errRec, mode):
         self.interpreter = interpreter
-        self.output = output
         self.mode = mode
 
         if errRec != None:
@@ -47,16 +45,16 @@ class JESRunnable(Runnable):
 ######################################################################
 
     def run(self):
-
-        if self.output != '' and self.output != None:
-            self.interpreter.sendOutput(self.output)
         if self.errMsg != '' and self.errMsg != None:
-            self.interpreter.sendOutput(self.errMsg)
+            self.interpreter.program.gui.commandWindow.display(self.errMsg, 'python-traceback')
 
         if self.errLine != None:
             self.interpreter.program.gui.editor.showErrorLine(self.errLine)
 
-        self.interpreter.program.gui.commandWindow.restoreConsole(self.mode)
+        # While the CommandWindow is starting up, we don't
+        # have a CodeManager.
+        if hasattr(self.interpreter.program, 'codeManager'):
+            self.interpreter.program.codeManager.startStatement()
         self.interpreter.program.gui.setRunning(0)
         self.interpreter.program.gui.stopWork()
         self.interpreter.program.gui.editor.document.removeLineHighlighting()

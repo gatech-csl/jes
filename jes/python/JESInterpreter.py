@@ -135,17 +135,6 @@ class JESInterpreter:
         # self.runCommand(fileText,'load')
         self.runFile(fileName, 'load')
 
-
-##########################################################################
-# Function name: sendOutput
-# Parameters:
-#     responseText: the text to be sent
-# Description:
-#     Sends text to the UI where the user can see it
-##########################################################################
-    def sendOutput(self, responseText):
-        self.program.sendTextToCommandWindow(responseText)
-
 ##########################################################################
 # Function name: stopThread
 # Description:

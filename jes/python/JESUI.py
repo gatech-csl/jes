@@ -13,7 +13,6 @@
 
 import JESConfig
 import JESHomeworkTurninThread
-import JESCommandWindow
 import JESConstants
 import JESDebugWindow
 import JESEditor
@@ -25,6 +24,8 @@ import Html_Browser
 import JESGutter
 from JESBugReporter import JESBugReporter
 import media
+
+from jes.gui.commandwindow import CommandWindowController
 
 import java.awt as awt
 import javax.swing as swing
@@ -340,7 +341,7 @@ class JESUI(swing.JFrame):
                                                  preferredSize=(50, 30))
 
             self.editor = JESEditor.JESEditor(self)
-            self.commandWindow = JESCommandWindow.JESCommandWindow(self)
+            self.commandWindow = CommandWindowController()
             self.loadButton = swing.JButton(LOAD_BUTTON_CAPTION,
                                             actionPerformed=self.actionPerformed)
             self.loadButton.enabled = 0
@@ -379,7 +380,7 @@ class JESUI(swing.JFrame):
             splitterPane = swing.JSplitPane()
             editorPane = swing.JScrollPane(self.docpane)
             buttonPane = swing.JPanel()
-            commandPane = swing.JScrollPane(self.commandWindow)
+            commandPane = swing.JScrollPane(self.commandWindow.getTextPane())
             bottomPane = swing.JPanel()
             statusbar = swing.JPanel()
             minSize = awt.Dimension(100, 100)
@@ -605,8 +606,7 @@ class JESUI(swing.JFrame):
             editorDocument = self.editor.getDocument()
             editorDocument.changeFontSize(
                 JESConfig.getInstance().getIntegerProperty(JESConfig.CONFIG_FONT))
-            commandDocument = self.commandWindow.getDocument()
-            commandDocument.changeFontSize(
+            self.commandWindow.setFontSize(
                 JESConfig.getInstance().getIntegerProperty(JESConfig.CONFIG_FONT))
 
         except:
@@ -756,11 +756,6 @@ class JESUI(swing.JFrame):
 
                 JESConfig.getInstance().setStringProperty(
                     JESConfig.CONFIG_SKIN, skin.getName())
-                #self.program.skin = str(skin.getName())
-                # for some reason this is needed or the commandWindow will go dead
-#                self.program.interpreter.runCommand("printNow('')")
-                self.commandWindow.restoreConsole('run')
-                self.commandWindow.setKeymap(self.commandWindow.my_keymap)
                 return None
 
     ##########################################################################
@@ -1107,7 +1102,7 @@ class JESUI(swing.JFrame):
 
         self.setCursor(cursor)
         self.editor.setCursor(textCursor)
-        self.commandWindow.setCursor(textCursor)
+        self.commandWindow.getTextPane().setCursor(textCursor)
 
 ##########################################################################
 # Function name: setFileName
@@ -1895,8 +1890,7 @@ class JESUI(swing.JFrame):
             # change fonts on the fly.
             editorDocument = self.editor.getDocument()
             editorDocument.changeFontSize(chosenFontSize)
-            commandDocument = self.commandWindow.getDocument()
-            commandDocument.changeFontSize(chosenFontSize)
+            self.commandWindow.setFontSize(chosenFontSize)
 
             if JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_BLOCK):
                 self.editor.removeBox()

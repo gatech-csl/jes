@@ -3,9 +3,7 @@
 # See JESCopyright.txt for full licensing information
 # 5/20/03: Added a call to JESProgram's loadSuccess on load success. -AdamW
 
-import JESStdOutputBuffer
 import JESExceptionRecord
-import JESRunnable
 import threading
 import traceback
 import JESDebugger
@@ -15,6 +13,9 @@ from code import compile_command
 import java.lang.System
 from java.lang import Thread
 import javax.swing as swing
+
+from JESRunnable import JESRunnable
+from jes.gui.commandwindow.redirect import RedirectStdio
 
 debug = 0
 
@@ -44,7 +45,7 @@ class JESThread(Thread):
         self.contextForExecution = interpreter.contextForExecution
         if self.mode == 'load':
             self.contextForExecution['__file__'] = self.fileName
-        self.outputBuffer = None
+        self.redirect = RedirectStdio(interpreter.program.gui.commandWindow)
         self.errMsg = None
         self.excRecord = None
         self.stopSignal = False
@@ -177,28 +178,6 @@ class JESThread(Thread):
         self.stop()
 
 ##########################################################################
-# Function name: stopPython
-# Description:
-#     Stops the interpreter (should be used only after the run method is
-#     called).
-##########################################################################
-    def stopPython(self):
-        self.outputBuffer.restoreOutput()
-        outputText = self.outputBuffer.getText()
-
-        runnable = JESRunnable.JESRunnable(self.interpreter,
-                                           outputText,
-                                           '',
-                                           0,
-                                           self.mode)
-
-        self.interpreter.program.gui.swing.SwingUtilities.invokeLater(runnable)
-
-        self.threadCleanup()
-        self.finalize()
-
-
-##########################################################################
 # Function name: initialize
 # Description:
 #  Initializes the stuff to be done at the beginning of a run, and now also at the
@@ -214,9 +193,7 @@ class JESThread(Thread):
         self.errMsg = ''
         self.stopSignal = False
 
-        self.outputBuffer = JESStdOutputBuffer.JESStdOutputBuffer(sys.stdout,
-                                                                  sys.stderr,
-                                                                  self.interpreter)
+        self.redirect.install()
 
 
 ##########################################################################
@@ -226,13 +203,8 @@ class JESThread(Thread):
 #   queues the work that must be done in the main thread
 ##########################################################################
     def threadCleanup(self):
-        self.outputBuffer.restoreOutput()
-        outputText = self.outputBuffer.getText()
-        runnable = None
-        runnable = JESRunnable.JESRunnable(self.interpreter,
-                                           outputText,
-                                           self.excRecord,
-                                           self.mode)
+        self.redirect.uninstall()
+        runnable = JESRunnable(self.interpreter, self.excRecord, self.mode)
         self.interpreter.program.gui.swing.SwingUtilities.invokeLater(runnable)
         self.stopSignal = False
 
@@ -248,7 +220,7 @@ class JESThread(Thread):
         import re
         import string
 
-        self.outputBuffer.restoreOutput()
+        self.redirect.uninstall()
         sys.stdout = sys.__stderr__
 
         # want to use a function defined in that Object

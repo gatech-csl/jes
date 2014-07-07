@@ -100,7 +100,6 @@ import MoviePlayer
 import MovieWriter
 import FileChooser
 import JESConfig
-from JESInputManager import JESInputManager
 
 import org.python.core.PyString as String
 
@@ -1081,13 +1080,15 @@ def requestString(message):
 
 # 5/15/09 Dorn: Updated input and raw_input to read from the console
 def input(message=None):
-    im = JESInputManager()
-    return eval(im.readInput(message))
+    raise NotImplementedError("Just rewrote the command window, this might take a bit...")
+    # im = JESInputManager()
+    # return eval(im.readInput(message))
 
 
 def raw_input(message=None):
-    im = JESInputManager()
-    return im.readInput(message)
+    raise NotImplementedError("Just rewrote the command window, this might take a bit...")
+    # im = JESInputManager()
+    # return im.readInput(message)
 
 
 def showWarning(message):
@@ -1318,7 +1319,7 @@ def getTurtleList(world):
 
 
 def printNow(text):
-    sys.stdout.printNow("%s\n" % text)
+    print text
 
 
 class Movie:
