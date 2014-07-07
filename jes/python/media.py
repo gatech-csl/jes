@@ -1078,17 +1078,14 @@ def requestString(message):
     return str(SimpleInput.getString(message))
 
 
-# 5/15/09 Dorn: Updated input and raw_input to read from the console
 def input(message=None):
-    raise NotImplementedError("Just rewrote the command window, this might take a bit...")
-    # im = JESInputManager()
-    # return eval(im.readInput(message))
+    from jes.gui.commandwindow.prompt import promptService
+    return eval(promptService.requestInput(message))
 
 
 def raw_input(message=None):
-    raise NotImplementedError("Just rewrote the command window, this might take a bit...")
-    # im = JESInputManager()
-    # return im.readInput(message)
+    from jes.gui.commandwindow.prompt import promptService
+    return promptService.requestInput(message)
 
 
 def showWarning(message):

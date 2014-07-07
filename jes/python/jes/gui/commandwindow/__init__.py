@@ -12,6 +12,7 @@ the structure.
 from .document import CommandDocument
 from .history import CommandHistory
 from .pane import CommandWindowPane
+from .prompt import promptService
 from jes.gui.swingutil import threadsafe
 
 class CommandWindowController(object):
@@ -23,6 +24,7 @@ class CommandWindowController(object):
         self._document = CommandDocument(self._history)
         self._textpane = CommandWindowPane(self, self._document)
         self._callback = None
+        promptService.setCommandWindow(self)
 
     def getTextPane(self):
         return self._textpane
