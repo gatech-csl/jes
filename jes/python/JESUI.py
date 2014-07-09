@@ -316,305 +316,297 @@ class JESUI(swing.JFrame):
 ##########################################################################
 
     def __init__(self, program):
-        try:
-            #            media.setColorWrapAround( program.wrapPixelValues )
-            self.soundErrorShown = 0
-            self.FocusOwner = None
-            self.swing = swing
-            self.program = program
-            self.size = JESConstants.INITIAL_WINDOW_SIZE
-            self.windowClosing = self.exit
+        #            media.setColorWrapAround( program.wrapPixelValues )
+        self.soundErrorShown = 0
+        self.FocusOwner = None
+        self.swing = swing
+        self.program = program
+        self.size = JESConstants.INITIAL_WINDOW_SIZE
+        self.windowClosing = self.exit
 
-            self.setLocationRelativeTo(None)
+        self.setLocationRelativeTo(None)
 
-            # line added to allow saving changes before exit. - 29 May 2008 by
-            # Buck Scharfnorth
-            self.setDefaultCloseOperation(
-                swing.WindowConstants.DO_NOTHING_ON_CLOSE)
+        # line added to allow saving changes before exit. - 29 May 2008 by
+        # Buck Scharfnorth
+        self.setDefaultCloseOperation(
+            swing.WindowConstants.DO_NOTHING_ON_CLOSE)
 
-            self.contentPane.setLayout(swing.BoxLayout(self.contentPane,
-                                                       swing.BoxLayout.Y_AXIS))
-            self.setIconImage(
-                JESResources.makeIcon("images/jesicon.gif").getImage())
-            # Create the visual components that will be placed in the UI
-            self.runningBar = swing.JProgressBar(0, 5, string='',
-                                                 preferredSize=(50, 30))
+        self.contentPane.setLayout(swing.BoxLayout(self.contentPane,
+                                                   swing.BoxLayout.Y_AXIS))
+        self.setIconImage(
+            JESResources.makeIcon("images/jesicon.gif").getImage())
+        # Create the visual components that will be placed in the UI
+        self.runningBar = swing.JProgressBar(0, 5, string='',
+                                             preferredSize=(50, 30))
 
-            self.editor = JESEditor.JESEditor(self)
-            self.commandWindow = CommandWindowController()
-            self.loadButton = swing.JButton(LOAD_BUTTON_CAPTION,
+        self.editor = JESEditor.JESEditor(self)
+        self.commandWindow = CommandWindowController()
+        self.loadButton = swing.JButton(LOAD_BUTTON_CAPTION,
+                                        actionPerformed=self.actionPerformed)
+        self.loadButton.enabled = 0
+        self.loadStatus = swing.JLabel()
+        self.stopButton = swing.JButton(STOP_BUTTON_CAPTION,
+                                        actionPerformed=self.actionPerformed)
+        self.debuggerButton = swing.JButton(SHOW_DEBUGGER_CAPTION,
                                             actionPerformed=self.actionPerformed)
-            self.loadButton.enabled = 0
-            self.loadStatus = swing.JLabel()
-            self.stopButton = swing.JButton(STOP_BUTTON_CAPTION,
-                                            actionPerformed=self.actionPerformed)
-            self.debuggerButton = swing.JButton(SHOW_DEBUGGER_CAPTION,
-                                                actionPerformed=self.actionPerformed)
-            self.cursorStatusLabel = swing.JLabel()
-            self.cursorStatusLabel.setBorder(swing.BorderFactory.createEmptyBorder
-                                             (0,
-                                              VISUAL_CONTROL_MARGIN_SIZE,
-                                              0,
-                                              VISUAL_CONTROL_MARGIN_SIZE))
-            self.nameStatusLabel = swing.JLabel()
-            self.nameStatusLabel.setBorder(swing.BorderFactory.createEmptyBorder
-                                           (0,
-                                            VISUAL_CONTROL_MARGIN_SIZE,
-                                            0,
-                                            VISUAL_CONTROL_MARGIN_SIZE))
-            self.docpane = swing.JPanel()
-            self.docpane.setLayout(
-                swing.BoxLayout(self.docpane, swing.BoxLayout.X_AXIS))
-            self.gutter = JESGutter(self.editor, self.editor.getFont())
-            self.gutter.setPreferredSize(awt.Dimension(25, 300))
-            self.gutter.setBorder(swing.BorderFactory.createEtchedBorder())
-            if JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_GUTTER):
-                self.docpane.add(self.gutter)
-            self.docpane.add(self.editor)
+        self.cursorStatusLabel = swing.JLabel()
+        self.cursorStatusLabel.setBorder(swing.BorderFactory.createEmptyBorder
+                                         (0,
+                                          VISUAL_CONTROL_MARGIN_SIZE,
+                                          0,
+                                          VISUAL_CONTROL_MARGIN_SIZE))
+        self.nameStatusLabel = swing.JLabel()
+        self.nameStatusLabel.setBorder(swing.BorderFactory.createEmptyBorder
+                                       (0,
+                                        VISUAL_CONTROL_MARGIN_SIZE,
+                                        0,
+                                        VISUAL_CONTROL_MARGIN_SIZE))
+        self.docpane = swing.JPanel()
+        self.docpane.setLayout(
+            swing.BoxLayout(self.docpane, swing.BoxLayout.X_AXIS))
+        self.gutter = JESGutter(self.editor, self.editor.getFont())
+        self.gutter.setPreferredSize(awt.Dimension(25, 300))
+        self.gutter.setBorder(swing.BorderFactory.createEtchedBorder())
+        if JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_GUTTER):
+            self.docpane.add(self.gutter)
+        self.docpane.add(self.editor)
 
-            # Create and set up the panes that all visual components reside on
-            helpDivider = swing.JSplitPane()
-            helpDivider.setOneTouchExpandable(1)
-            watcherDivider = swing.JSplitPane()
-            watcherDivider.setOneTouchExpandable(1)
-            splitterPane = swing.JSplitPane()
-            editorPane = swing.JScrollPane(self.docpane)
-            buttonPane = swing.JPanel()
-            commandPane = swing.JScrollPane(self.commandWindow.getTextPane())
-            bottomPane = swing.JPanel()
-            statusbar = swing.JPanel()
-            minSize = awt.Dimension(100, 100)
+        # Create and set up the panes that all visual components reside on
+        helpDivider = swing.JSplitPane()
+        helpDivider.setOneTouchExpandable(1)
+        watcherDivider = swing.JSplitPane()
+        watcherDivider.setOneTouchExpandable(1)
+        splitterPane = swing.JSplitPane()
+        editorPane = swing.JScrollPane(self.docpane)
+        buttonPane = swing.JPanel()
+        commandPane = swing.JScrollPane(self.commandWindow.getTextPane())
+        bottomPane = swing.JPanel()
+        statusbar = swing.JPanel()
+        minSize = awt.Dimension(100, 100)
 
-            splitterPane.setPreferredSize(awt.Dimension(400, 400))
+        splitterPane.setPreferredSize(awt.Dimension(400, 400))
 
-            # self.program.wrapPixelValues = 1
-            self.settingsWindow = None
-            self.directoryWindow = None
-            self.errorWindow = None
-            self.turninWindow = None
-            self.namefield = None
-            self.mailfield = None
-            self.gtfield = None
-            self.optionsWindow = None
-            self.listPane = None
-            self.titlefield = swing.JTextField()
-            self.gotoFrame = None
-            self.linefield = swing.JTextField()
-            self.searchFrame = None
-            self.searchfield = swing.JTextField()
-            self.up = swing.JRadioButton("Search Up")
-            self.down = swing.JRadioButton("Search Down", 1)
-            self.attachmentlist = None
-            self.list = None
-            self.notesToTA = swing.JTextArea()
-            self.notesScrollPane = swing.JScrollPane(self.notesToTA)
-            self.notesScrollPane.setVerticalScrollBarPolicy(
-                swing.JScrollPane.VERTICAL_SCROLLBAR_ALWAYS)
+        # self.program.wrapPixelValues = 1
+        self.settingsWindow = None
+        self.directoryWindow = None
+        self.errorWindow = None
+        self.turninWindow = None
+        self.namefield = None
+        self.mailfield = None
+        self.gtfield = None
+        self.optionsWindow = None
+        self.listPane = None
+        self.titlefield = swing.JTextField()
+        self.gotoFrame = None
+        self.linefield = swing.JTextField()
+        self.searchFrame = None
+        self.searchfield = swing.JTextField()
+        self.up = swing.JRadioButton("Search Up")
+        self.down = swing.JRadioButton("Search Down", 1)
+        self.attachmentlist = None
+        self.list = None
+        self.notesToTA = swing.JTextArea()
+        self.notesScrollPane = swing.JScrollPane(self.notesToTA)
+        self.notesScrollPane.setVerticalScrollBarPolicy(
+            swing.JScrollPane.VERTICAL_SCROLLBAR_ALWAYS)
 
-            splitterPane.orientation = swing.JSplitPane.VERTICAL_SPLIT
-            splitterPane.setDividerSize(SPLITTER_SIZE)
-            splitterPane.setDividerLocation(VSPLITTER_LOCATION)
-            splitterPane.setResizeWeight(1.0)
-            splitterPane.setLeftComponent(editorPane)
-            splitterPane.setRightComponent(bottomPane)
+        splitterPane.orientation = swing.JSplitPane.VERTICAL_SPLIT
+        splitterPane.setDividerSize(SPLITTER_SIZE)
+        splitterPane.setDividerLocation(VSPLITTER_LOCATION)
+        splitterPane.setResizeWeight(1.0)
+        splitterPane.setLeftComponent(editorPane)
+        splitterPane.setRightComponent(bottomPane)
 
-            helpDivider.orientation = swing.JSplitPane.HORIZONTAL_SPLIT
-            self.htmlBrowser = Html_Browser.Html_Browser(
-                JESConstants.HELP_START_PAGE)
-            self.htmlBrowser.setMinimumSize(minSize)
-            helpDivider.setDividerSize(SPLITTER_SIZE)
-            helpDivider.setDividerLocation(HELP_HSPLITTER_LOCATION)
-            helpDivider.setResizeWeight(1.0)
-            helpDivider.setLeftComponent(splitterPane)
+        helpDivider.orientation = swing.JSplitPane.HORIZONTAL_SPLIT
+        self.htmlBrowser = Html_Browser.Html_Browser(
+            JESConstants.HELP_START_PAGE)
+        self.htmlBrowser.setMinimumSize(minSize)
+        helpDivider.setDividerSize(SPLITTER_SIZE)
+        helpDivider.setDividerLocation(HELP_HSPLITTER_LOCATION)
+        helpDivider.setResizeWeight(1.0)
+        helpDivider.setLeftComponent(splitterPane)
 
-            # 4 lines added to add a close button to help - 29 May 2008 by Buck
-            # Scharfnorth
-            self.htmlBrowserWithHide = Html_Browser_With_Hide(self.htmlBrowser)
-            self.htmlBrowserWithHide.setLayout(
-                swing.BoxLayout(self.htmlBrowserWithHide, swing.BoxLayout.Y_AXIS))
-            self.htmlBrowserWithHide.add(hideRight(self.actionPerformed))
-            self.htmlBrowserWithHide.add(self.htmlBrowserWithHide.htmlBrowser)
-            # line modified to add a close button to help - 29 May 2008 by Buck
-            # Scharfnorth
-            helpDivider.setRightComponent(self.htmlBrowserWithHide)
+        # 4 lines added to add a close button to help - 29 May 2008 by Buck
+        # Scharfnorth
+        self.htmlBrowserWithHide = Html_Browser_With_Hide(self.htmlBrowser)
+        self.htmlBrowserWithHide.setLayout(
+            swing.BoxLayout(self.htmlBrowserWithHide, swing.BoxLayout.Y_AXIS))
+        self.htmlBrowserWithHide.add(hideRight(self.actionPerformed))
+        self.htmlBrowserWithHide.add(self.htmlBrowserWithHide.htmlBrowser)
+        # line modified to add a close button to help - 29 May 2008 by Buck
+        # Scharfnorth
+        helpDivider.setRightComponent(self.htmlBrowserWithHide)
 
-            watcherDivider.orientation = swing.JSplitPane.HORIZONTAL_SPLIT
-            watcherDivider.leftComponent = splitterPane
-            #self.htmlBrowser = Html_Browser.Html_Browser(JESConstants.HELP_START_PAGE)
+        watcherDivider.orientation = swing.JSplitPane.HORIZONTAL_SPLIT
+        watcherDivider.leftComponent = splitterPane
+        #self.htmlBrowser = Html_Browser.Html_Browser(JESConstants.HELP_START_PAGE)
 
-            # see jesprogram.py, this is initialized later
-            # watcherDivider.rightComponent = self.program.interpreter.debugger.watcher
-            watcherDivider.setDividerSize(SPLITTER_SIZE)
-            watcherDivider.setDividerLocation(WATCHER_HSPLITTER_LOCATION)
-            watcherDivider.setResizeWeight(1.0)
-            watcherDivider.setLeftComponent(splitterPane)
+        # see jesprogram.py, this is initialized later
+        # watcherDivider.rightComponent = self.program.interpreter.debugger.watcher
+        watcherDivider.setDividerSize(SPLITTER_SIZE)
+        watcherDivider.setDividerLocation(WATCHER_HSPLITTER_LOCATION)
+        watcherDivider.setResizeWeight(1.0)
+        watcherDivider.setLeftComponent(splitterPane)
 
-            # 3 lines added to add a close button to debugger - 29 May 2008 by
-            # Buck Scharfnorth
-            self.watcherWithHide = swing.JPanel()
-            self.watcherWithHide.setLayout(
-                swing.BoxLayout(self.watcherWithHide, swing.BoxLayout.Y_AXIS))
-            self.watcherWithHide.add(hideRight(self.actionPerformed))
+        # 3 lines added to add a close button to debugger - 29 May 2008 by
+        # Buck Scharfnorth
+        self.watcherWithHide = swing.JPanel()
+        self.watcherWithHide.setLayout(
+            swing.BoxLayout(self.watcherWithHide, swing.BoxLayout.Y_AXIS))
+        self.watcherWithHide.add(hideRight(self.actionPerformed))
 
-            editorPane.setPreferredSize(awt.Dimension(lang.Short.MAX_VALUE,
-                                                      lang.Short.MAX_VALUE))
-            editorPane.getVerticalScrollBar().setUnitIncrement(14)
+        editorPane.setPreferredSize(awt.Dimension(lang.Short.MAX_VALUE,
+                                                  lang.Short.MAX_VALUE))
+        editorPane.getVerticalScrollBar().setUnitIncrement(14)
 
-            buttonPane.setLayout(awt.BorderLayout())
-            # buttonPane.setBorder(swing.BorderFactory.createEmptyBorder
-            #                                        (VISUAL_CONTROL_MARGIN_SIZE,
-            #                                        VISUAL_CONTROL_MARGIN_SIZE,
-            #                                       VISUAL_CONTROL_MARGIN_SIZE,
-            #                                      VISUAL_CONTROL_MARGIN_SIZE))
-            buttonPane.setMaximumSize(awt.Dimension(lang.Short.MAX_VALUE,
-                                                    BUTTON_PANE_HEIGHT))
+        buttonPane.setLayout(awt.BorderLayout())
+        # buttonPane.setBorder(swing.BorderFactory.createEmptyBorder
+        #                                        (VISUAL_CONTROL_MARGIN_SIZE,
+        #                                        VISUAL_CONTROL_MARGIN_SIZE,
+        #                                       VISUAL_CONTROL_MARGIN_SIZE,
+        #                                      VISUAL_CONTROL_MARGIN_SIZE))
+        buttonPane.setMaximumSize(awt.Dimension(lang.Short.MAX_VALUE,
+                                                BUTTON_PANE_HEIGHT))
 
-            commandPane.setMinimumSize(
-                awt.Dimension(0, MIN_COMMAND_WINDOW_SIZE))
+        commandPane.setMinimumSize(
+            awt.Dimension(0, MIN_COMMAND_WINDOW_SIZE))
 
-            bottomPane.setLayout(swing.BoxLayout(bottomPane,
-                                                 swing.BoxLayout.Y_AXIS))
+        bottomPane.setLayout(swing.BoxLayout(bottomPane,
+                                             swing.BoxLayout.Y_AXIS))
 
-            statusbar.setMinimumSize(awt.Dimension(0, STATUS_BAR_HEIGHT))
-            statusbar.setMaximumSize(awt.Dimension(lang.Short.MAX_VALUE,
-                                                   STATUS_BAR_HEIGHT))
-            statusbar.setLayout(awt.BorderLayout())
-            statusbar.setBorder(swing.BorderFactory.createLoweredBevelBorder())
+        statusbar.setMinimumSize(awt.Dimension(0, STATUS_BAR_HEIGHT))
+        statusbar.setMaximumSize(awt.Dimension(lang.Short.MAX_VALUE,
+                                               STATUS_BAR_HEIGHT))
+        statusbar.setLayout(awt.BorderLayout())
+        statusbar.setBorder(swing.BorderFactory.createLoweredBevelBorder())
 
-            # Add all of the components to the main frame
-            # self.contentPane.add(helpDivider)
-            # self.contentPane.add(statusbar)
+        # Add all of the components to the main frame
+        # self.contentPane.add(helpDivider)
+        # self.contentPane.add(statusbar)
 
-            # export the following for window layouts
-            self.statusbar = statusbar
-            self.helpDivider = helpDivider
-            self.watcherDivider = watcherDivider
-            self.splitterPane = splitterPane
-            self.editorPane = editorPane
-            self.bottomPane = bottomPane
+        # export the following for window layouts
+        self.statusbar = statusbar
+        self.helpDivider = helpDivider
+        self.watcherDivider = watcherDivider
+        self.splitterPane = splitterPane
+        self.editorPane = editorPane
+        self.bottomPane = bottomPane
 
-            eastBar = swing.JPanel()
-            # eastBar.setMaximumSize(awt.Dimension(lang.Short.MAX_VALUE,
-            #                                    BUTTON_PANE_HEIGHT))
-            eastBar.add(self.debuggerButton)
-            eastBar.add(self.stopButton)
-            eastBar.add(self.runningBar)
-            westBar = swing.JPanel()
-            westBar.add(self.loadButton)
-            westBar.add(self.loadStatus)
+        eastBar = swing.JPanel()
+        # eastBar.setMaximumSize(awt.Dimension(lang.Short.MAX_VALUE,
+        #                                    BUTTON_PANE_HEIGHT))
+        eastBar.add(self.debuggerButton)
+        eastBar.add(self.stopButton)
+        eastBar.add(self.runningBar)
+        westBar = swing.JPanel()
+        westBar.add(self.loadButton)
+        westBar.add(self.loadStatus)
 
-            bottomPane.add(buttonPane)
-            bottomPane.add(commandPane)
-            buttonPane.add(westBar, awt.BorderLayout.WEST)
-            #buttonPane.add(self.loadStatus, awt.BorderLayout.CENTER)
-            buttonPane.add(eastBar, awt.BorderLayout.EAST)
+        bottomPane.add(buttonPane)
+        bottomPane.add(commandPane)
+        buttonPane.add(westBar, awt.BorderLayout.WEST)
+        #buttonPane.add(self.loadStatus, awt.BorderLayout.CENTER)
+        buttonPane.add(eastBar, awt.BorderLayout.EAST)
 
-            self.docLabel = swing.JLabel(EXPLAIN_DEFAULT_STATUS)
+        self.docLabel = swing.JLabel(EXPLAIN_DEFAULT_STATUS)
 
-            self.explainButton = swing.JButton(COMMAND_EXPLORE_HELP,
-                                               actionPerformed=self.actionPerformed)
+        self.explainButton = swing.JButton(COMMAND_EXPLORE_HELP,
+                                           actionPerformed=self.actionPerformed)
 
-            cursorAndName = swing.JPanel()
-            cursorAndName.add(self.explainButton)
-            cursorAndName.add(self.cursorStatusLabel)
-            # cursorAndName.add(self.nameStatusLabel)
+        cursorAndName = swing.JPanel()
+        cursorAndName.add(self.explainButton)
+        cursorAndName.add(self.cursorStatusLabel)
+        # cursorAndName.add(self.nameStatusLabel)
 
 #            statusbar.add(self.cursorStatusLabel, awt.BorderLayout.CENTER)
 #            statusbar.add(self.nameStatusLabel, awt.BorderLayout.EAST)
-            statusbar.add(cursorAndName, awt.BorderLayout.EAST)
-            statusbar.add(self.docLabel, awt.BorderLayout.WEST)
+        statusbar.add(cursorAndName, awt.BorderLayout.EAST)
+        statusbar.add(self.docLabel, awt.BorderLayout.WEST)
 
-            self.turninstatuslabel = swing.JLabel("Creating Mail...")
-            self.turninstatuswindow = swing.JFrame("Turnin Status")
+        self.turninstatuslabel = swing.JLabel("Creating Mail...")
+        self.turninstatuswindow = swing.JFrame("Turnin Status")
 
-            # Create the menu bar and menu items
-            self.addmenu()
+        # Create the menu bar and menu items
+        self.addmenu()
 
-            # self.menu = swing.JMenuBar()
-            # self.setJMenuBar(self.menu)
+        # self.menu = swing.JMenuBar()
+        # self.setJMenuBar(self.menu)
 
-            # for eachMenu in MENU_OPTIONS:
-            #     newMenu = swing.JMenu(eachMenu[0], actionPerformed=self.actionPerformed)
-            #     self.menu.add(newMenu)
-            # Create each menu option under the menu
-            #     for eachMenuItem in eachMenu[1]:
-            #         if eachMenuItem[0] == MENU_SEPARATOR:
-            #             newMenu.addSeparator()
-            #         else:
-            #             if len(eachMenuItem) > 3 and eachMenuItem[3] == 1:
-            #                 newMenuItem = swing.JCheckBoxMenuItem(eachMenuItem[0],
-            #                                           actionPerformed = self.actionPerformed)
-            #             else:
-            #                 newMenuItem = swing.JMenuItem(eachMenuItem[0],
-            #                                           actionPerformed = self.actionPerformed)
-            #
-            #             if eachMenuItem[1] <> 0:
-            #                 newMenuItem.setAccelerator(swing.KeyStroke.getKeyStroke
-            #                                                    (eachMenuItem[1],
-            #                                                     eachMenuItem[2],
-            #                                                     0))
-            #             newMenu.add(newMenuItem)
-            # If this is the help menu, store it in the self.helpMenu variable.
-            #     if eachMenu[0] == HELP_TITLE:
-            #         self.helpMenu = newMenu
-            #     if eachMenu[0] == DEBUG_TITLE:
-            #         self.debugMenu = newMenu
-            # print 'length:',len(self.debugMenu.subElements)
-            # print self.debugMenu.subElements[0].subElements
-            #         self.debugMenu.subElements[0].subElements[1].setEnabled(0)
-            #         self.debugMenu.subElements[0].subElements[2].setEnabled(0)
-            #     if eachMenu[0] == API_TITLE:
-            # BUILD API HELP
-            #         for section in API_SECTIONS:
-            #             newMenuSection = swing.JMenu(str(section),
-            #                                          actionPerformed = self.apiHelp)
-            #
-            #             for api_function in getMethodList(section):
-            #                 func_name = str(section)+'.'+api_function
-            #                 newMenuItem = swing.JMenuItem(func_name,
-            #                                               actionPerformed = self.apiHelp)
-            #                 newMenuSection.add(newMenuItem)
-            #             newMenu.add(newMenuSection)
-            #     if eachMenu[0] == JES_API_TITLE:
-            # BUILD JES API HELP
-            #         for (section, api_functions) in JES_API_SECTIONS:
-            #             newMenuSection = swing.JMenu(str(section),
-            #                                          actionPerformed = self.apiHelp)
-            #
-            #             for api_function in api_functions:
-            #                 newMenuItem = swing.JMenuItem(api_function,
-            #                                               actionPerformed = self.apiHelp)
-            #                 newMenuSection.add(newMenuItem)
-            #             newMenu.add(newMenuSection)
+        # for eachMenu in MENU_OPTIONS:
+        #     newMenu = swing.JMenu(eachMenu[0], actionPerformed=self.actionPerformed)
+        #     self.menu.add(newMenu)
+        # Create each menu option under the menu
+        #     for eachMenuItem in eachMenu[1]:
+        #         if eachMenuItem[0] == MENU_SEPARATOR:
+        #             newMenu.addSeparator()
+        #         else:
+        #             if len(eachMenuItem) > 3 and eachMenuItem[3] == 1:
+        #                 newMenuItem = swing.JCheckBoxMenuItem(eachMenuItem[0],
+        #                                           actionPerformed = self.actionPerformed)
+        #             else:
+        #                 newMenuItem = swing.JMenuItem(eachMenuItem[0],
+        #                                           actionPerformed = self.actionPerformed)
+        #
+        #             if eachMenuItem[1] <> 0:
+        #                 newMenuItem.setAccelerator(swing.KeyStroke.getKeyStroke
+        #                                                    (eachMenuItem[1],
+        #                                                     eachMenuItem[2],
+        #                                                     0))
+        #             newMenu.add(newMenuItem)
+        # If this is the help menu, store it in the self.helpMenu variable.
+        #     if eachMenu[0] == HELP_TITLE:
+        #         self.helpMenu = newMenu
+        #     if eachMenu[0] == DEBUG_TITLE:
+        #         self.debugMenu = newMenu
+        # print 'length:',len(self.debugMenu.subElements)
+        # print self.debugMenu.subElements[0].subElements
+        #         self.debugMenu.subElements[0].subElements[1].setEnabled(0)
+        #         self.debugMenu.subElements[0].subElements[2].setEnabled(0)
+        #     if eachMenu[0] == API_TITLE:
+        # BUILD API HELP
+        #         for section in API_SECTIONS:
+        #             newMenuSection = swing.JMenu(str(section),
+        #                                          actionPerformed = self.apiHelp)
+        #
+        #             for api_function in getMethodList(section):
+        #                 func_name = str(section)+'.'+api_function
+        #                 newMenuItem = swing.JMenuItem(func_name,
+        #                                               actionPerformed = self.apiHelp)
+        #                 newMenuSection.add(newMenuItem)
+        #             newMenu.add(newMenuSection)
+        #     if eachMenu[0] == JES_API_TITLE:
+        # BUILD JES API HELP
+        #         for (section, api_functions) in JES_API_SECTIONS:
+        #             newMenuSection = swing.JMenu(str(section),
+        #                                          actionPerformed = self.apiHelp)
+        #
+        #             for api_function in api_functions:
+        #                 newMenuItem = swing.JMenuItem(api_function,
+        #                                               actionPerformed = self.apiHelp)
+        #                 newMenuSection.add(newMenuItem)
+        #             newMenu.add(newMenuSection)
 
-            # if eachMenu[0] == SKINS_TITLE:
-            # BUILD SKINS LIST
-            # for skin in UIManager.getInstalledLookAndFeels():
-            # newMenuSection = swing.JMenuItem(str(skin.getName()),
-            # actionPerformed = self.changeSkin)
-            # newMenu.add(newMenuSection)
+        # if eachMenu[0] == SKINS_TITLE:
+        # BUILD SKINS LIST
+        # for skin in UIManager.getInstalledLookAndFeels():
+        # newMenuSection = swing.JMenuItem(str(skin.getName()),
+        # actionPerformed = self.changeSkin)
+        # newMenu.add(newMenuSection)
 
-            # Set remaining object variables
-            self.heldText = ''
-            self.setRunning(0)
-            self.setFileName('')
-            self.UpdateRowCol(1, 1)
-            self.UpdateName()
-            self.helpFiles = {}
-            self.helplist = []
+        # Set remaining object variables
+        self.heldText = ''
+        self.setRunning(0)
+        self.setFileName('')
+        self.UpdateRowCol(1, 1)
+        self.UpdateName()
+        self.helpFiles = {}
+        self.helplist = []
 
-            editorDocument = self.editor.getDocument()
-            editorDocument.changeFontSize(
-                JESConfig.getInstance().getIntegerProperty(JESConfig.CONFIG_FONT))
-            self.commandWindow.setFontSize(
-                JESConfig.getInstance().getIntegerProperty(JESConfig.CONFIG_FONT))
-
-        except:
-            import traceback
-            import sys
-            a, b, c = sys.exc_info()
-            print "JESUI: WEIRD EXCEPT:"
-            traceback.print_exception(a, b, c)
+        editorDocument = self.editor.getDocument()
+        editorDocument.changeFontSize(
+            JESConfig.getInstance().getIntegerProperty(JESConfig.CONFIG_FONT))
+        self.commandWindow.setFontSize(
+            JESConfig.getInstance().getIntegerProperty(JESConfig.CONFIG_FONT))
 
     def addmenu(self):
         """Regenerates then installs the menu, based on the current state of
