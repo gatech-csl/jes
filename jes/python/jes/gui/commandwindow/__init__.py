@@ -31,7 +31,7 @@ class CommandWindowController(object):
 
     @threadsafe
     def setFontSize(self, size):
-        pass
+        self._document.setFontSize(size)
 
     @threadsafe
     def requestFocus(self):

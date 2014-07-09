@@ -12,8 +12,8 @@ import CommandDocumentListener
 import JESConstants
 from java.awt import Color
 from javax.swing.event import DocumentListener
-from javax.swing.text import DefaultStyledDocument, DocumentFilter, StyleConstants
-from jes.gui.swingutil import debug
+from javax.swing.text import (DefaultStyledDocument, StyleConstants,
+                              SimpleAttributeSet)
 
 class CommandDocument(DefaultStyledDocument):
     """
@@ -60,6 +60,16 @@ class CommandDocument(DefaultStyledDocument):
 
         self.listener = CommandDocumentListener(self.history)
         self.addDocumentListener(self.listener)
+
+    def setFontSize(self, size):
+        # First, we need to resize all the existing text.
+        attr = SimpleAttributeSet()
+        StyleConstants.setFontSize(attr, size)
+        self.setCharacterAttributes(0, self.getLength(), attr, False)
+
+        # Next, ensure that new text is given the proper size.
+        for name in self.getStyleNames():
+            StyleConstants.setFontSize(self.getStyle(name), size)
 
     def append(self, text, style):
         self.insertString(self.getLength(), text, self.getStyle(style))
