@@ -31,6 +31,8 @@ class CommandWindowPane(JTextPane):
         self.standardKeymap = self.getKeymap()
 
     def setKeymap(self, keymap):
+        # Swing keeps jacking up our keymap. This is designed to ensure that
+        # a JES-able keymap always gets set, regardless of who's calling this.
         if keymap is None:
             JTextPane.setKeymap(self, self.standardKeymap)
         elif keymap.getName().endswith("ForJES"):
@@ -52,10 +54,12 @@ class CommandWindowPane(JTextPane):
         newText = doc.history.moveUp()
         if newText is not None:
             doc.setResponseText(newText)
+            self.setCaretPosition(doc.getLength())
 
     def _down(self):
         doc = self.getStyledDocument()
         newText = doc.history.moveDown()
         if newText is not None:
             doc.setResponseText(newText)
+            self.setCaretPosition(doc.getLength())
 

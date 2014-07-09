@@ -47,9 +47,11 @@ class CommandWindowController(object):
         :param style:   The name of the style to print it in.
         """
         if self._document.inputLimit is not None:
+            offset = self._getCursorOffset()
             self._document.suspendPrompt()
             self.display(text, style)
             self._document.resumePrompt()
+            self._restoreCursorOffset(offset)
         else:
             self._document.append(text, style)
 
@@ -88,6 +90,7 @@ class CommandWindowController(object):
         self._history.start(historyGroup)
         self._document.openPrompt(promptText, promptStyle, responseStyle)
         self._textpane.setEditable(True)
+        self._textpane.setCaretPosition(self._document.getLength())
 
     @threadsafe
     def cancelPrompt(self):
@@ -131,9 +134,23 @@ class CommandWindowController(object):
         will be redisplayed after the user has finished entering text.
         """
         if self._document.inputLimit is not None:
+            offset = self._getCursorOffset()
             self._document.suspendPrompt()
             self._document.clear()
             self._document.resumePrompt()
+            self._restoreCursorOffset(offset)
         else:
             self._document.clear()
+
+    def _getCursorOffset(self):
+        return self._document.getLength() - self._textpane.getCaretPosition()
+
+    def _restoreCursorOffset(self, offset):
+        length = self._document.getLength()
+        newPosition = length - offset
+
+        if newPosition >= self._document.inputLimit:
+            self._textpane.setCaretPosition(newPosition)
+        else:
+            self._textpane.setCaretPosition(length)
 
