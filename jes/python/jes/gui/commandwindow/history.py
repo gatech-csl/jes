@@ -7,8 +7,9 @@ This object manages histories of input in the command window.
 :copyright: (C) 2014 Matthew Frazier and Mark Guzdial
 :license:   GNU GPL v2 or later, see jes/help/JESCopyright.txt for details
 """
+import CommandDocumentListener
 
-class CommandHistory(object):
+class CommandHistory(CommandDocumentListener.InputBuffer):
     """
     This holds a set of independent input histories, and manages when commands
     are stored and retrieved.
@@ -40,7 +41,12 @@ class CommandHistory(object):
     """
     def __init__(self):
         self.historyGroups = {}
-        self.close()
+        self.historyGroup = None
+        self.history = None
+
+        self.partialInput = None
+        self.currentIndex = None
+        # self.currentInput is initialized in Java.
 
     def close(self):
         self.historyGroup = None
@@ -76,10 +82,11 @@ class CommandHistory(object):
         return self.moveTo(self.currentIndex + 1)
 
     def moveTo(self, index):
-        if index < 0 or index > len(self.history):
+        if self.history is None or index < 0 or index > len(self.history):
             # Trying to move over the stack boundaries. Return.
             return None
         else:
+            self.savePartial()
             if index == len(self.history):
                 # Moving to the partial-input line.
                 self.currentInput = self.partialInput
@@ -89,15 +96,9 @@ class CommandHistory(object):
             self.currentIndex = index
             return self.currentInput
 
-    def getCurrentInput(self):
-        return self.currentInput
-
-    def setCurrentInput(self, text):
-        if self.currentInput is not None:
-            self.currentInput = text
-            # If we're on the partial-input line, save it.
-            if self.history is not None and self.currentIndex == len(self.history):
-                self.partialInput = text
+    def savePartial(self):
+        if self.currentIndex == len(self.history):
+            self.partialInput = self.currentInput
 
     def commit(self):
         if self.currentInput is not None:

@@ -59,7 +59,7 @@ class CommandWindowController(object):
 
         :return:    `True` or `False`.
         """
-        return self._history.currentInput is not None
+        return self._history.isActive()
 
     @threadsafe
     def prompt(self, promptText, promptStyle, responseCallback, responseStyle, historyGroup=None):
@@ -81,7 +81,7 @@ class CommandWindowController(object):
                                     command will be saved in the history
                                     before the callback is invoked.
         """
-        if self._callback is not None or self._history.currentInput is not None:
+        if self._callback is not None or self._history.isActive():
             raise Exception("A prompt is already activated")
 
         self._callback = responseCallback
@@ -99,7 +99,7 @@ class CommandWindowController(object):
         self._textpane.setEditable(False)
         if self._document.inputLimit is not None:
             self._document.closePrompt()
-        if self._history.currentInput is not None:
+        if self._history.isActive():
             self._history.close()
             if self._callback is not None:
                 self._callback(None)
@@ -118,7 +118,7 @@ class CommandWindowController(object):
         cb = self._callback
         self._callback = None
 
-        if self._history.currentInput is not None:
+        if self._history.isActive():
             text = self._history.commit()
             if cb is not None:
                 cb(text)

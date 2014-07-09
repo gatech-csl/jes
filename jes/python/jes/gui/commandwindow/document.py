@@ -7,6 +7,8 @@ This Document class controls how the text in the command window changes.
 :copyright: (C) 2014 Matthew Frazier and Mark Guzdial
 :license:   GNU GPL v2 or later, see jes/help/JESCopyright.txt for details
 """
+import CommandDocumentFilter
+import CommandDocumentListener
 import JESConstants
 from java.awt import Color
 from javax.swing.event import DocumentListener
@@ -53,10 +55,10 @@ class CommandDocument(DefaultStyledDocument):
             StyleConstants.setFontFamily(style, "Monospaced")
 
         # Install the filter and document listener
-        self.filter = CommandDocumentFilter(self)
+        self.filter = CommandDocumentFilter()
         self.setDocumentFilter(self.filter)
 
-        self.listener = CommandDocumentListener(self)
+        self.listener = CommandDocumentListener(self.history)
         self.addDocumentListener(self.listener)
 
     def append(self, text, style):
@@ -102,6 +104,9 @@ class CommandDocument(DefaultStyledDocument):
         self.append(self.promptText, self.promptStyle)
 
         self.inputLimit = self.getLength()
+        self.filter.enable(self.inputLimit, self.getStyle(self.responseStyle))
+        self.listener.enable(self.inputLimit)
+
         self.setResponseText(self.history.getCurrentInput())
 
     def suspendPrompt(self):
@@ -113,6 +118,8 @@ class CommandDocument(DefaultStyledDocument):
         if self.promptText is None:
             raise Exception("A prompt is not being displayed!")
 
+        self.filter.disable()
+        self.listener.disable()
         self.inputLimit = None
         self.ensureNewline(self.responseStyle)
 
@@ -140,85 +147,4 @@ class CommandDocument(DefaultStyledDocument):
         Erase everything in the document.
         """
         self.remove(0, self.getLength())
-
-
-class CommandDocumentFilter(DocumentFilter):
-    """
-    This protects system-level text from modification.
-    When the document is displaying a prompt, this will protect any text
-    before the prompt from being edited. When the document is not displaying
-    a prompt, any edits are allowed (so find a way to protect it from
-    the user).
-    """
-    def __init__(self, doc):
-        self.doc = doc
-
-    def insertString(self, bypass, offset, string, attr):
-        limit = self.doc.inputLimit
-
-        if limit is None:
-            bypass.insertString(offset, string, attr)
-        elif offset >= limit:
-            responseStyle = self.doc.getStyle(self.doc.responseStyle)
-            string = string.replace('\t', JESConstants.TAB)
-            bypass.insertString(offset, string, responseStyle)
-        else:
-            debug("Inserting %r denied at %r (limit is %r)", string, offset, limit)
-
-    def replace(self, bypass, offset, length, string, attr):
-        limit = self.doc.inputLimit
-        if limit is None:
-            bypass.replace(offset, length, string, attr)
-        else:
-            responseStyle = self.doc.getStyle(self.doc.responseStyle)
-            endOffset = offset + length
-            string = string.replace('\t', JESConstants.TAB)
-
-            if offset >= limit and endOffset >= limit:
-                bypass.replace(offset, length, string, responseStyle)
-            elif offset < limit and endOffset >= limit:
-                bypass.replace(limit, length - (limit - offset), string, responseStyle)
-            else:
-                debug("Replacing %r at %r:%r with %r denied (limit is %r)", self.doc.getText(offset, length), offset, length, string, limit)
-
-    def remove(self, bypass, offset, length):
-        limit = self.doc.inputLimit
-        if limit is None:
-            bypass.remove(offset, length)
-        else:
-            endOffset = offset + length
-
-            if offset >= limit and endOffset >= limit:
-                bypass.remove(offset, length)
-            elif offset < limit and endOffset >= limit:
-                bypass.remove(limit, length - (limit - offset))
-            else:
-                debug("Removing %r at %r:%r denied (limit is %r)", self.doc.getText(offset, length), offset, length, limit)
-
-
-class CommandDocumentListener(DocumentListener):
-    """
-    This listener is responsible for keeping the CommandHistory up to date
-    with the current status. Whenever the document changes, if a prompt is
-    displayed, it grabs the slice after the prompt and tosses it to the
-    document history.
-    """
-    def __init__(self, doc):
-        self.doc = doc
-
-    def update(self, event):
-        limit = self.doc.inputLimit
-        if limit is not None:
-            length = self.doc.getLength()
-            inputText = self.doc.getText(limit, length - limit)
-            self.doc.history.setCurrentInput(inputText.rstrip('\n'))
-
-    def changedUpdate(self, event):
-        self.update(event)
-
-    def insertUpdate(self, event):
-        self.update(event)
-
-    def removeUpdate(self, event):
-        self.update(event)
 
