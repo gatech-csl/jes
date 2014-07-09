@@ -1,13 +1,17 @@
+import java.awt.AWTEvent;
+import java.awt.event.AWTEventListener;
 import java.awt.Frame;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Properties;
+import javax.swing.RepaintManager;
+import javax.swing.SwingUtilities;
 import org.python.util.jython;
-import java.io.File;
 
 /**
  * The main launcher class for JES
@@ -26,8 +30,8 @@ public class JESstartup {
             System.exit(1);
         }
 
-        if (strings.length > 0) {
-            if (strings[0].equals("--properties")) {
+        for (String option : strings) {
+            if (option.equals("--properties")) {
                 Properties props = System.getProperties();
 
                 // Sort the list of properties
@@ -40,10 +44,18 @@ public class JESstartup {
                 }
 
                 System.exit(0);
-            } else if (strings[0].equals("--shell")) {
+            } else if (option.equals("--shell")) {
                 String[] args = new String[] {};
                 jython.main(args);
                 System.exit(0);
+            } else if (option.equals("--debug-keys")) {
+                Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
+                    public void eventDispatched(AWTEvent event) {
+                        System.err.println(event.paramString());
+                    }
+                }, AWTEvent.KEY_EVENT_MASK);
+            } else if (option.equals("--check-threads")) {
+                RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
             }
         }
 
