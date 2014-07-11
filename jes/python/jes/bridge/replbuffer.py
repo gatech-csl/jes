@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
 """
-jes.bridge.codemanager
-=======================
+jes.bridge.replbuffer
+=====================
 Accepts input from the command window, and feeds it into the interpreter
 when appropriate.
 
@@ -10,7 +11,7 @@ when appropriate.
 import re
 from codeop import compile_command
 
-class CodeManager(object):
+class REPLBuffer(object):
     def __init__(self, interpreter, commandWindow):
         self.interpreter = interpreter
         self.commandWindow = commandWindow

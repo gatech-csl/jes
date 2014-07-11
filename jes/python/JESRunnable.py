@@ -52,9 +52,9 @@ class JESRunnable(Runnable):
             self.interpreter.program.gui.editor.showErrorLine(self.errLine)
 
         # While the CommandWindow is starting up, we don't
-        # have a CodeManager.
-        if hasattr(self.interpreter.program, 'codeManager'):
-            self.interpreter.program.codeManager.startStatement()
+        # have a REPLBuffer.
+        if hasattr(self.interpreter.program, 'replBuffer'):
+            self.interpreter.program.replBuffer.startStatement()
         self.interpreter.program.gui.setRunning(0)
         self.interpreter.program.gui.stopWork()
         self.interpreter.program.gui.editor.document.removeLineHighlighting()

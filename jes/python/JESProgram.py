@@ -31,7 +31,7 @@ import JESTabnanny
 import JavaMusic
 from code import compile_command
 from tokenize import TokenError
-from jes.bridge.codemanager import CodeManager
+from jes.bridge.replbuffer import REPLBuffer
 
 FILE_EXISTS_ERROR = 2
 
@@ -108,7 +108,7 @@ class JESProgram:
             self.gui.turnOffGutter()
 
         # Install the bridges.
-        self.codeManager = CodeManager(self.interpreter, self.gui.commandWindow)
+        self.replBuffer = REPLBuffer(self.interpreter, self.gui.commandWindow)
 
         # Show introduction window if settings could not be loaded (Either new
         # JES user or bad write permissions)
@@ -136,7 +136,7 @@ class JESProgram:
             self.openIntroductionWindow()
 
         # Open the first Python prompt!
-        self.codeManager.startStatement()
+        self.replBuffer.startStatement()
 
         # JavaMusic.open()
     def getVarsToHighlight(self):
