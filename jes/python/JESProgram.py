@@ -59,6 +59,7 @@ class JESProgram:
         #        self.webDefinitions = JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_WEB_TURNIN);
         #        self.mediaFolder = JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_MEDIAPATH);
 
+        JESProgram.activeInstance = self
         self.logBuffer = JESLogBuffer.JESLogBuffer(self)
 #        self.logBuffer.saveBoolean = JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_LOGBUFFER);
 

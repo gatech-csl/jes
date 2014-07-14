@@ -26,6 +26,15 @@ from math import tan
 from math import pi
 from os import sep as pathSep
 
+# Provide a hatch into JES for debugging.
+def debugJES():
+    import JESProgram
+    if hasattr(JESProgram.JESProgram, 'activeInstance'):
+        return JESProgram.JESProgram.activeInstance
+    else:
+        raise RuntimeError("JESProgram instance did not register itself")
+
+
 # Override Python's normal exit instructions.
 # This makes exit and exit() both print instructions for exiting.
 
