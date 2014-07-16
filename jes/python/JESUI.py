@@ -27,14 +27,11 @@ import javax.swing as swing
 
 import Html_Browser
 import JESGutter
-import JESAddressFinder
 import JESConfig
-import JESHomeworkTurninThread
 import JESConstants
 import JESDebugWindow
 import JESEditor
 import JESResources
-import JESHomeworkSubmission
 import JESPrintableDocument
 
 from java.awt import Event
@@ -74,8 +71,6 @@ COMMAND_EXPLORE_HELP = 'Explain <click>'
 COMMAND_SOUND_TOOL = 'Sound Tool...'
 COMMAND_PICTURE_TOOL = 'Picture Tool...'
 COMMAND_FRAMESEQUENCER_TOOL = 'Movie Tool...'
-TURNIN_OPTIONS = 'Register...'
-TURNIN_HW = 'Assignment'
 DEBUG_SHOW_DEBUGGER = 'Watcher'
 DEBUG_HIDE_DEBUGGER = 'Watcher'
 DEBUG_WATCH_VAR = 'add Variable...'
@@ -90,7 +85,6 @@ EXPLAIN_DEFAULT_STATUS = 'For help on a particular JES function, move the cursor
 FILE_TITLE = 'File'
 EDIT_TITLE = 'Edit'
 HELP_TITLE = 'Help'
-TURNIN_TITLE = 'Turnin'
 DEBUG_TITLE = 'Watcher'
 PREFERENCES_TITLE = 'Preferences'
 MEDIA_TOOLS_TITLE = 'MediaTools'
@@ -232,7 +226,6 @@ PROMPT_SAVE_CAPTION = 'Save File?'
 # Scharfnorth
 PROMPT_EXIT_MESSAGE = 'Program area has been modified.\n-Would you like to save changes?'
 PROMPT_PRINT_MESSAGE = 'You should save the file that you are working\non before printing it.\n-Would you like to save now?'
-PROMPT_TURNIN_MESSAGE = 'You should save the file that you are working\non before submitting it.\n-Would you like to save now?'
 ERROR_SAVE_FAIL = 'The file could not been saved.'
 ERROR_OP_CANCEL = 'Operation Cancelled.'
 
@@ -333,28 +326,14 @@ class JESUI(swing.JFrame):
         splitterPane.setPreferredSize(awt.Dimension(400, 400))
 
         # self.program.wrapPixelValues = 1
-        self.settingsWindow = None
         self.directoryWindow = None
-        self.errorWindow = None
-        self.turninWindow = None
-        self.namefield = None
-        self.mailfield = None
-        self.gtfield = None
         self.optionsWindow = None
-        self.listPane = None
-        self.titlefield = swing.JTextField()
         self.gotoFrame = None
         self.linefield = swing.JTextField()
         self.searchFrame = None
         self.searchfield = swing.JTextField()
         self.up = swing.JRadioButton("Search Up")
         self.down = swing.JRadioButton("Search Down", 1)
-        self.attachmentlist = None
-        self.list = None
-        self.notesToTA = swing.JTextArea()
-        self.notesScrollPane = swing.JScrollPane(self.notesToTA)
-        self.notesScrollPane.setVerticalScrollBarPolicy(
-            swing.JScrollPane.VERTICAL_SCROLLBAR_ALWAYS)
 
         splitterPane.orientation = swing.JSplitPane.VERTICAL_SPLIT
         splitterPane.setDividerSize(SPLITTER_SIZE)
@@ -472,9 +451,6 @@ class JESUI(swing.JFrame):
         statusbar.add(cursorAndName, awt.BorderLayout.EAST)
         statusbar.add(self.docLabel, awt.BorderLayout.WEST)
 
-        self.turninstatuslabel = swing.JLabel("Creating Mail...")
-        self.turninstatuswindow = swing.JFrame("Turnin Status")
-
         # Create the menu bar and menu items
         self.rebuildMenu()
 
@@ -495,8 +471,7 @@ class JESUI(swing.JFrame):
 
     def rebuildMenu(self):
         """Regenerates then installs the menu, based on the current state of
-        the world; this doesn't change often, and currently we only have to
-        decide whether to include the 'turnin' menu."""
+        the world; this doesn't change often."""
 
         self.menu, self.menus = self.buildMenu()
         self.setJMenuBar(self.menu)
@@ -529,11 +504,6 @@ class JESUI(swing.JFrame):
                 [COMMAND_SEARCH,    KeyEvent.VK_F,      CONTROL_KEY],
                 MENU_SEPARATOR,
                 [COMMAND_OPTIONS,   0,                  0]
-            ]],
-
-            [TURNIN_TITLE, [
-                [TURNIN_HW, 0, 0],
-                [TURNIN_OPTIONS, 0, 0]
             ]],
 
             [DEBUG_TITLE, [
@@ -570,9 +540,6 @@ class JESUI(swing.JFrame):
         menuDict = {}
 
         for menuTitle, menuEntries in menuOptions:
-            if menuTitle == TURNIN_TITLE and not JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_SHOWTURNIN):
-                continue
-
             newMenu = swing.JMenu(menuTitle, actionPerformed=self.actionPerformed)
             output.add(newMenu)
             menuDict[menuTitle] = newMenu
@@ -763,10 +730,6 @@ class JESUI(swing.JFrame):
         elif actionCommand == COMMAND_HELP:
             self.openBrowser(self, HELP_URL)
             self.windowSetting(COMMAND_WINDOW_3HELP)
-        elif actionCommand == TURNIN_OPTIONS:
-            self.openSettings()
-        elif actionCommand == TURNIN_HW:
-            self.openTurnin(TURNIN_HW)
         elif actionCommand == COMMAND_ABOUT:
             self.program.openAboutWindow()
         elif actionCommand == COMMAND_BUGREPORT:
@@ -949,7 +912,7 @@ class JESUI(swing.JFrame):
 #     Prompts the user whether they want to save the currently loaded file.
 # Revisions:
 #     Modified to give the user an option to cancel the operation which
-#     triggered promptSave. (Exit JES, New/Open/Load Program, Turnin, Print).
+#     triggered promptSave. (Exit JES, New/Open/Load Program, Print).
 #     MODIFIED RETURNS 1 if save is a success and the operation will continue.
 #     0 if user chooses not to save and the operation will continue using
 #     the previous saved version of the file (when available & necessary).
@@ -1227,61 +1190,6 @@ class JESUI(swing.JFrame):
             return 0
 
 ##########################################################################
-# Function name: openSettings
-# Description:
-#     Opens up a JES settings dialog.  If the window has not been created, it is
-#     created.  If the config file does not exist, the string in it are set to
-#     empty strings.  Once everything is created, it is made visible.  If the
-#     window already exists, but it is hidden, it is just made visible.
-##########################################################################
-    def openSettings(self):
-        if self.settingsWindow == None:
-            self.settingsWindow = swing.JFrame("JES Settings")
-            self.settingsWindow.contentPane.layout = awt.GridLayout(0, 2)
-            self.settingsWindow.size = (250, 150)
-            savebutton = swing.JButton("Save Changes", preferredSize=(100, 20),
-                                       actionPerformed=self.settingsButtonPressed)
-            cancelbutton = swing.JButton("Cancel", preferredSize=(100, 20),
-                                         actionPerformed=self.settingsButtonPressed)
-            self.namefield = swing.JTextField(JESConfig.getInstance().getStringProperty(
-                JESConfig.CONFIG_NAME), preferredSize=(200, 20))
-            namelabel = swing.JLabel("Name:")
-            self.gtfield = swing.JTextField(JESConfig.getInstance().getStringProperty(
-                JESConfig.CONFIG_GT), preferredSize=(200, 20))
-            gtlabel = swing.JLabel("Student #:")
-            self.mailaddrfield = swing.JTextField(JESConfig.getInstance().getStringProperty(
-                JESConfig.CONFIG_EMAIL_ADDR), preferredSize=(200, 20))
-            mailaddrlabel = swing.JLabel("Email Address:")
-            self.mailfield = swing.JTextField(JESConfig.getInstance().getStringProperty(
-                JESConfig.CONFIG_MAIL), preferredSize=(200, 20))
-            maillabel = swing.JLabel("Mail Server:")
-            self.webDefsField = swing.JTextField(JESConfig.getInstance().getStringProperty(
-                JESConfig.CONFIG_WEB_TURNIN), preferredSize=(200, 20))
-            webDefslabel = swing.JLabel("Turnin Definitions:")
-            self.settingsWindow.contentPane.add(namelabel)
-            self.settingsWindow.contentPane.add(self.namefield)
-            self.settingsWindow.contentPane.add(gtlabel)
-            self.settingsWindow.contentPane.add(self.gtfield)
-            # RJC - always display if using coweb dynamic turnin type table
-            if JESConstants.EMAIL_TURNIN or JESConstants.TURNIN_TYPE_TABLE:
-                self.settingsWindow.contentPane.add(mailaddrlabel)
-                self.settingsWindow.contentPane.add(self.mailaddrfield)
-                self.settingsWindow.contentPane.add(maillabel)
-                self.settingsWindow.contentPane.add(self.mailfield)
-            if JESConstants.COWEB_TURNIN:
-                pass
-                # self.settingsWindow.contentPane.add(webDefslabel)
-                # self.settingsWindow.contentPane.add(self.webDefsField)
-            self.settingsWindow.contentPane.add(cancelbutton)
-            self.settingsWindow.contentPane.add(savebutton)
-            self.settingsWindow.pack()
-            self.settingsWindow.setLocationRelativeTo(None)
-            self.settingsWindow.show()
-        else:
-            self.settingsWindow.show()
-
-
-##########################################################################
 # Function name: openDirectoryChooser
 # Description:
 #     Opens up a JES directory dialog.  If the window has not been created, it is
@@ -1318,22 +1226,6 @@ class JESUI(swing.JFrame):
 #            self.directoryWindow.show()
 
     ##########################################################################
-    # Function name: settingsButtonPressed
-    # Parameters: event
-    # Description:
-    #     Handles events thrown from the settings dialog window.
-    ##########################################################################
-
-    def settingsButtonPressed(self, event):
-        if event.source.text == 'Cancel':
-            pass
-            self.settingsWindow.hide()
-        else:
-            JESConfig.getInstance().writeConfig()
-            self.UpdateName()
-            self.settingsWindow.hide()
-
-    ##########################################################################
     # Function name: directoryButtonPressed
     # Parameters: event
     # Description:
@@ -1359,296 +1251,7 @@ class JESUI(swing.JFrame):
 #           self.directoryWindow.hide()
 # print 'save'
 
-    ##########################################################################
-    # Function name: openTurnin
-    # Description:
-    #     Opens up a JES Turnin dialog.
-    ##########################################################################
-    def openTurnin(self, toTurnin):
-            # decides what you are turning in.
-        self.turninWindow = swing.JFrame('Assignment Submission')
-        self.turninWindow.contentPane.layout = awt.GridLayout(3, 1)
-        self.turninWindow.size = (300, 400)
-        self.notesToTA.setText('')
-        self.notesToTA.setLineWrap(1)
-        self.notesToTA.setWrapStyleWord(1)
-        notesLabel = swing.JLabel("Notes to TA:")
-        self.notesScrollPane.size = (240, 200)
-        toSubmitLabel = swing.JLabel("Submitting file:")
-        fileNameLabel = swing.JLabel(os.path.basename(self.program.filename))
-        titlelabel = swing.JLabel('Assignment to submit:   ')
-        turninbutton = swing.JButton(
-            "Turnin", preferredSize=(100, 20), actionPerformed=self.turninButtonPressed)
-        cancelbutton = swing.JButton(
-            "Cancel", preferredSize=(100, 20), actionPerformed=self.turninButtonPressed)
-        addbutton = swing.JButton(
-            "Add File", preferredSize=(120, 20), actionPerformed=self.turninButtonPressed)
-        removebutton = swing.JButton("Remove File", preferredSize=(
-            120, 20), actionPerformed=self.turninButtonPressed)
-        assignmentStrings = self.grabAssignmentList()
-        self.titlefield = swing.JComboBox(assignmentStrings)
-        self.attachmentlist = util.Vector()
-        self.list = swing.JList(self.attachmentlist)
-        self.listPane = swing.JScrollPane(self.list)
-        self.listPane.preferredSize = (100, 100)
-        try:
-            namelabel = swing.JLabel(
-                "Name: " + JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_NAME))
-            maillabel = swing.JLabel("Media Files Attached: ")
-            gtlabel = swing.JLabel(
-                "Student ID#: " + JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_GT))
-            blanklabel = swing.JLabel("")
-
-            # Layout the components
-            turninProperties = swing.JPanel()
-            turninProperties.size = (150, 50)
-            turninProperties.layout = awt.GridLayout(4, 2)
-            turninProperties.add(namelabel)
-            turninProperties.add(gtlabel)
-            turninProperties.add(toSubmitLabel)
-            turninProperties.add(fileNameLabel)
-            turninProperties.add(titlelabel)
-            turninProperties.add(self.titlefield)
-            turninProperties.add(blanklabel)
-            self.turninWindow.contentPane.add(
-                turninProperties, awt.BorderLayout.NORTH)
-
-            attachPane = swing.JPanel()
-            attachPane.layout = awt.BorderLayout()
-            attachPane.add(maillabel, awt.BorderLayout.NORTH)
-            attachPane.add(self.listPane, awt.BorderLayout.CENTER)
-            buttonPane = swing.JPanel()
-            buttonPane.layout = awt.GridLayout(1, 2)
-            buttonPane.add(removebutton)
-            buttonPane.add(addbutton)
-            attachPane.add(buttonPane, awt.BorderLayout.SOUTH)
-            self.turninWindow.contentPane.add(
-                attachPane, awt.BorderLayout.CENTER)
-
-            notesPane = swing.JPanel()
-            notesPane.layout = awt.BorderLayout()
-            notesPane.add(notesLabel, awt.BorderLayout.NORTH)
-            notesPane.add(self.notesScrollPane, awt.BorderLayout.CENTER)
-            sendPane = swing.JPanel()
-            sendPane.layout = awt.GridLayout(1, 2)
-            sendPane.add(cancelbutton)
-            sendPane.add(turninbutton)
-            notesPane.add(sendPane, awt.BorderLayout.SOUTH)
-            notesPane.size = (200, 300)
-            self.turninWindow.contentPane.add(
-                notesPane, awt.BorderLayout.SOUTH)
-
-            # self.turninWindow.contentPane.add(toSubmitLabel)
-            # self.turninWindow.contentPane.add(fileNameLabel)
-            # self.turninWindow.contentPane.add(titlelabel)
-            # self.turninWindow.contentPane.add(self.titlefield)
-            # self.turninWindow.contentPane.add(namelabel)
-            # self.turninWindow.contentPane.add(gtlabel)
-            # self.turninWindow.contentPane.add(maillabel)
-            # self.turninWindow.contentPane.add(self.listPane)
-            # self.turninWindow.contentPane.add(removebutton)
-            # self.turninWindow.contentPane.add(addbutton)
-            # self.turninWindow.contentPane.add(notesLabel)
-            # self.turninWindow.contentPane.add(self.notesScrollPane)
-            # self.turninWindow.contentPane.add(cancelbutton)
-            # self.turninWindow.contentPane.add(turninbutton)
-            self.turninWindow.pack()
-            self.turninWindow.setLocationRelativeTo(None)
-            self.turninWindow.show()
-        except:
-            a = "JES needs to know who you are to turn in something.  \n"
-            b = "Please choose Register from the Turnin menu to set JES's\n preferences.  "
-            c = "When you are done you can try to turn this \nassignment in again."
-            self.errorWindow = swing.JFrame()
-            swing.JOptionPane.showMessageDialog(self.errorWindow,
-                                                a + b + c,
-                                                "Error - JES properties have not been set",
-                                                swing.JOptionPane.WARNING_MESSAGE)
-
-    ##########################################################################
-    # Function name: turninButtonPressed
-    # Description:
-    #     Handles events from turnin dialog
-    ##########################################################################
-    def turninButtonPressed(self, event):
-        if event.source.text == 'Turnin':
-            try:
-                isSaved = 1
-#                array=self.program.readFromConfigFile()
-
-                title = self.titlefield.getSelectedItem()
-                if self.editor.modified:
-                    # modified for promptSave cancel button - Buck Scharfnorth
-                    # 29 May 2008
-                    isSaved = self.promptSave(PROMPT_TURNIN_MESSAGE)
-                if not os.path.isfile(self.program.filename):
-                    isSaved = 0
-                # modified for promptSave cancel button - Buck Scharfnorth 29
-                # May 2008
-                if isSaved > 0:
-                    if JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_GT) == '':
-                        self.turninWindow.dispose()
-                        self.errorWindow = swing.JFrame()
-                        swing.JOptionPane.showMessageDialog(self,
-                                                            'You must have a student your student number.',
-                                                            'Turnin cannot complete.',
-                                                            swing.JOptionPane.WARNING_MESSAGE)
-                        self.openSettings()
-                    elif JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_EMAIL_ADDR) == '':
-                        self.turninWindow.dispose()
-                        self.errorWindow = swing.JFrame()
-                        swing.JOptionPane.showMessageDialog(self,
-                                                            'You must enter an e-mail address.',
-                                                            'Turnin cannot complete.',
-                                                            swing.JOptionPane.WARNING_MESSAGE)
-                        self.openSettings()
-                    elif JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_NAME) == '':
-                        self.turninWindow.dispose()
-                        self.errorWindow = swing.JFrame()
-                        swing.JOptionPane.showMessageDialog(self,
-                                                            'You must enter a name.',
-                                                            'Turnin cannot complete.',
-                                                            swing.JOptionPane.WARNING_MESSAGE)
-                        self.openSettings()
-                    else:
-                        if title != 'Assignments':
-                            filename = self.program.filename
-                            zip = self.buildFileArchive(gt, title, filename)
-                            j = JESHomeworkSubmission.JESHomeworkSubmission(
-                                title, filename, zip)
-                            thread = JESHomeworkTurninThread.JESHomeworkTurninThread(
-                                j, self, zip)
-                            self.turninstatuswindow = swing.JFrame(
-                                "Turnin Status")
-                            self.turninstatuswindow.contentPane.layout = awt.GridLayout(
-                                1, 2)
-                            self.turninstatuswindow.contentPane.add(
-                                swing.JLabel(JESResources.makeIcon("images/Thinking.gif")))
-                            self.turninstatuswindow.contentPane.add(
-                                self.turninstatuslabel)
-                            self.turninstatuswindow.setSize(400, 150)
-                            self.turninstatuswindow.show()
-                            thread.start()
-                            self.turninWindow.dispose()
-                        else:
-                            self.turninWindow.dispose()
-                            self.errorWindow = swing.JFrame()
-                            swing.JOptionPane.showMessageDialog(self,
-                                                                'You must select an assignment from the list to submit.',
-                                                                'Turnin cannot complete.',
-                                                                swing.JOptionPane.WARNING_MESSAGE)
-                # modified for promptSave cancel button - Buck Scharfnorth 29
-                # May 2008
-                elif isSaved == 0:
-                    self.turninWindow.dispose()
-                    self.errorWindow = swing.JFrame()
-                    swing.JOptionPane.showMessageDialog(self,
-                                                        'There is no file open to submit, or the current file has not been saved.',
-                                                        'Turnin cannot complete.',
-                                                        swing.JOptionPane.WARNING_MESSAGE)
-                # modified for promptSave cancel button - Buck Scharfnorth 29
-                # May 2008
-                else:
-                    self.turninWindow.dispose()
-
-            except Exception, string:
-                self.turninWindow.dispose()
-                a = "An error has occurred in the turnin process. "
-                b = "It is likely\nthat the program turnin has failed.  Please "
-                c = "check JES's settings and\nresubmit the assignment."
-                try:
-                    d = "\n   Error:  " + str(string)
-                except:
-                    d = ""
-                self.errorWindow = swing.JFrame()
-                swing.JOptionPane.showMessageDialog(self,
-                                                    a + b + c + d,
-                                                    "Error - Turnin has failed",
-                                                    swing.JOptionPane.WARNING_MESSAGE)
-        elif event.source.text == "Add File":
-            chooser = swing.JFileChooser()
-            chooser.setApproveButtonText("Attach File")
-            returnVal = chooser.showOpenDialog(self.turninWindow)
-            # User has chosen a file, so now it can be opened
-            if returnVal == 0:
-                self.attachmentlist.add(chooser.getSelectedFile().getPath())
-                self.list.setListData(self.attachmentlist)
-        elif event.source.text == "Remove File":
-            self.attachmentlist.remove(self.list.getSelectedValue())
-            self.list.setListData(self.attachmentlist)
-
-        else:
-            self.turninWindow.dispose()
-
-
 ########################################################################
-# Method: buildFileArchive
-# Parameters:
-#     -gt: The GT number of the student
-#     -title: The title of the homework
-#     -The working file to zip up.  Is actually the contents of the Editor
-# Description:
-#     Constructs a zip file of all the submission materials for a CS1315
-#     assigment.  The file title will be of the form: gtXXXX-<ASSGN
-#     Title>.zip.  Will also include any added files and notes from the
-#     turnin dialog.
-########################################################################
-    def buildFileArchive(self, gt, title, fileToSend):
-        import zipfile
-        import user
-        filenames = self.attachmentlist
-        writename = gt + '-' + title + '.zip'
-        writename = writename.strip()
-        writename = string.replace(writename, " ", "_")
-        # if we are on a Mac
-        if System.getProperty('os.name').find('Mac') <> -1:
-            writename = user.home + os.sep + writename
-        # open the zipfile for writing
-        file = zipfile.ZipFile(writename, "w")
-        for name in filenames:
-            if name.strip() != fileToSend.strip():
-                file.write(name, os.path.basename(name), zipfile.ZIP_DEFLATED)
-        file.write(
-            fileToSend, os.path.basename(fileToSend), zipfile.ZIP_DEFLATED)
-        if JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_LOGBUFFER):
-            file.write(
-                fileToSend + 'log', os.path.basename(fileToSend + 'log'), zipfile.ZIP_DEFLATED)
-        # Create and add a text file with the notes to the TA:
-        notesTA = open(".notesTA.txt", "w")
-        notesTA.write(self.notesToTA.getText())
-        notesTA.close()
-        file.write(".notesTA.txt", "notesTA.txt", zipfile.ZIP_DEFLATED)
-        file.close()
-        return writename
-
-
-########################################################################
-    def grabAssignmentList(self):
-        try:
-            ret = ['Assignments']
-            url = net.URL(JESConstants.ASSIGNMENT_URL)
-            h = httplib.HTTP(url.getHost())
-            h.putrequest('GET', url.getFile())
-            h.putheader('Accept', 'text/html')
-            h.putheader('Accept', 'text/plain')
-            h.endheaders()
-            errcode, errmsg, headers = h.getreply()
-            f = h.getfile()
-            data = f.read()  # Get the raw HTML
-            f.close()
-            # Remove #BEGIN and #END from file
-            tempArr = string.split(data, '#BEGIN')
-            data = tempArr[1]
-            tempArr = string.split(data, '#END')
-            data = tempArr[0]
-            data = data.split("|")
-            for x in data:
-                arr = x.strip()
-                ret.append(arr)
-            return ret
-        except:
-            print "Error reading assignment list from network"
-            return ['Assignments']
 
     ##########################################################################
     # Function name: openOptions
@@ -1677,7 +1280,6 @@ class JESUI(swing.JFrame):
         wrappixellabel = swing.JLabel(
             "<html>Modulo pixel color values by 256<br><center>(356 mod 256 = 100)</center></html>")
         skinlabel = swing.JLabel("Skin:")
-        showturninlabel = swing.JLabel("Show Turnin Menu")
 
         self.autosaveBox = swing.JCheckBox(
             "", JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_AUTOSAVEONRUN))
@@ -1687,8 +1289,6 @@ class JESUI(swing.JFrame):
             "", JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_WRAPPIXELVALUES))
         self.gutterBox = swing.JCheckBox(
             "", JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_GUTTER))
-        self.showTurninBox = swing.JCheckBox(
-            "", JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_SHOWTURNIN))
         # alexr flopped the sense of this checkbox
         self.blockBox = swing.JCheckBox(
             "", not JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_BLOCK))
@@ -1738,9 +1338,6 @@ class JESUI(swing.JFrame):
         self.optionsWindow.contentPane.add(self.gutterBox)
         self.optionsWindow.contentPane.add(blocklabel)
         self.optionsWindow.contentPane.add(self.blockBox)
-
-        self.optionsWindow.contentPane.add(showturninlabel)
-        self.optionsWindow.contentPane.add(self.showTurninBox)
 
         self.optionsWindow.contentPane.add(logginglabel)
         self.optionsWindow.contentPane.add(self.loggerBox)
@@ -1797,12 +1394,6 @@ class JESUI(swing.JFrame):
                 JESConfig.CONFIG_WRAPPIXELVALUES, self.wrappixelBox.isSelected())
             JESConfig.getInstance().setSessionWrapAround(
                 self.wrappixelBox.isSelected())
-            if(JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_SHOWTURNIN) != self.showTurninBox.isSelected()):
-                JESConfig.getInstance().setBooleanProperty(
-                    JESConfig.CONFIG_SHOWTURNIN, self.showTurninBox.isSelected())
-                self.rebuildMenu()
-                self.pack()
-                # self.update(self.getGraphics())
 
             JESConfig.getInstance().writeConfig()
 
@@ -1916,9 +1507,6 @@ class JESUI(swing.JFrame):
         else:
             self.searchfield.text = ''
             self.searchFrame.hide()
-
-    def errorWindowClose(self, event):
-        self.errorWindow.dispose()
 
     def startWork(self):
         self.runningBar.indeterminate = 1

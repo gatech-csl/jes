@@ -49,26 +49,6 @@ public class JESConfig {
     public static final String CONFIG_LOGBUFFER = "save.logs";
 
 
-    /** Whether to show the turnin menu or not. */
-    public static final String CONFIG_SHOWTURNIN = "turnin.enabled";
-
-    /** The mail server to send assignment submissions to. */
-    public static final String CONFIG_MAIL = "turnin.mail.server";
-
-    /** The CoWeb server that the user can turn things into. */
-    public static final String CONFIG_WEB_TURNIN = "turnin.coweb.server";
-
-
-    /** The user's name. */
-    public static final String CONFIG_NAME = "user.name";
-
-    /** The user's GTID number. */
-    public static final String CONFIG_GT = "user.gtid";
-
-    /** The user's email address. */
-    public static final String CONFIG_EMAIL_ADDR = "user.email";
-
-
     /**
      * This Properties object contains properties which are used to "fill in"
      * a Properties file after it's loaded, when properties are absent.
@@ -88,14 +68,6 @@ public class JESConfig {
         defaults.setProperty(CONFIG_AUTOSAVEONRUN,      "0");
         defaults.setProperty(CONFIG_BACKUPSAVE,         "1");
         defaults.setProperty(CONFIG_LOGBUFFER,          "1");
-
-        defaults.setProperty(CONFIG_SHOWTURNIN,         "0");
-        defaults.setProperty(CONFIG_MAIL,               "");
-        defaults.setProperty(CONFIG_WEB_TURNIN,         "");
-
-        defaults.setProperty(CONFIG_NAME,               "");
-        defaults.setProperty(CONFIG_GT,                 "");
-        defaults.setProperty(CONFIG_EMAIL_ADDR,         "");
     };
 
 
@@ -129,22 +101,23 @@ public class JESConfig {
 
     /**
      * The order in which properties appeared in legacy configuration files.
+     * null is for properties which are no longer used in JES 5.
      */
     private static final String[] MIGRATION_ORDER = {
-        CONFIG_NAME,
-        CONFIG_GT,
-        CONFIG_MAIL,
+        null,
+        null,
+        null,
         CONFIG_MODE,
         CONFIG_FONT,
-        CONFIG_EMAIL_ADDR,
+        null,
         CONFIG_GUTTER,
         CONFIG_BLOCK,
-        CONFIG_WEB_TURNIN,
+        null,
         CONFIG_AUTOSAVEONRUN,
         null,
         CONFIG_WRAPPIXELVALUES,
         CONFIG_SKIN,
-        CONFIG_SHOWTURNIN,
+        null,
         CONFIG_BACKUPSAVE,
         CONFIG_LOGBUFFER,
         CONFIG_MEDIAPATH

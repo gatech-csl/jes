@@ -7,9 +7,6 @@ import java.awt as awt
 BEGINNER_MODE = 'Normal'
 EXPERT_MODE = 'Expert'
 
-MAIL_SERVER = 'smtp.mail.gatech.edu'
-WEB_DEFINITIONS = '127.0.0.1:8080/Test/7'
-
 LOW_FONT = 8
 MID_FONT = 32
 HIGH_FONT = 72
@@ -21,62 +18,6 @@ FONT_MODE_HIGH = [HIGH_FONT, MID_FONT, LOW_FONT]
 
 USER_MODES = [BEGINNER_MODE, EXPERT_MODE]
 USER_MODES_2 = [EXPERT_MODE, BEGINNER_MODE]
-
-TO_ADDR = 'csltestaccount@yahoo.com'
-
-# The turnin types for the class.  You can turn the methods on and off by
-# assigning 1 for on, and 0 for off.
-EMAIL_TURNIN = 0
-COWEB_TURNIN = 0
-
-# Using the CoWeb Table - automatically assigns turnin type per assignment basis
-# Ignores EMAIL_TURNIN and COWEB_TURNIN constants
-TURNIN_TYPE_TABLE = 1
-# This URL should be a link to the table containg file turnin types for EACH
-# assignment.
-HW_TABLE_LINK = 'http://coweb.cc.gatech.edu/mediaComp-plan/109'
-
-# This URL should be a link TO the table containing the URL for the email HW
-# submission information.  The file should be of the following format:
-# Any stuff here will be ignored by the parser
-# BEGIN
-# studentGT#|HW#|TARGET_MAIL_ADDRESS
-# END
-# Anything here or after will also be thrown away by the parser
-# Important, HW# must exactly match a HW# from the ASSIGNMENT_URL or the
-# program will not know where to turn the file in to.  Also, the target email
-# must be complete and exact.
-#HW_ADDRESS_URL = 'http://coweb.cc.gatech.edu/mediaComp-plan/33'
-HW_ADDRESS_URL = 'http://coweb.cc.gatech.edu/mediaComp-plan/111'  # DEBUG
-
-# This URL will contain the file which contains the list of possible assignments
-# that the student will be able to turn in.  It will look like:
-# Stuff here gets ignored
-# BEGIN
-# HW#|HW#|HW#
-# END
-# Stuff here gets ignored
-# ASSIGNMENT_URL='http://coweb.cc.gatech.edu/mediaComp-plan/32'
-ASSIGNMENT_URL = 'http://coweb.cc.gatech.edu/mediaComp-plan/112'  # DEBUG
-
-# This URL will contain the file which contains the Web turnin
-# Address definitions.  It should look like this:
-# BEGIN_TA_ASSIGNMENTS
-# STUDENT_GT_NUM|TA_GT_NUM
-# ...
-# END_TA_ASSIGNMENTS
-# BEGIN_TURNIN_LOCATIONS
-# TA_GT_NUM|ASSIGNMENT_NAME|TARGET_COWEB_ADDRESS
-# ...
-# END_TURNIN_LOCATIONS
-#HW_COWEB_ADDRESS_URL = 'http://coweb.cc.gatech.edu:8080/mediaComp-plan/81'
-# DEBUG
-HW_COWEB_ADDRESS_URL = 'http://coweb.cc.gatech.edu:8080/mediaComp-plan/113'
-HW_COWEB_PORT = 8080
-HW_COWEB_ATTACH_SUFFIX = '.attach'
-
-COWEB_HOST = 'coweb.cc.gatech.edu:8080'
-BUG_COWEB_ADDRESS = '/mediaComp-plan/124.append'
 
 TAB = '  '
 APPLICATION_TITLE = 'JES - Jython Environment for Students - %s'
@@ -150,3 +91,4 @@ STOP_MESSAGE = '[The program was stopped by the stop button.]'
 
 GENERIC_EXCEPTION_MESSAGE = 'A Python %s happened while running your program, so it stopped.'
 TAB_ERROR_MESSAGE = "There was a spacing error in the program.\nIt might be from a previous line, but I think the error is in line "
+
