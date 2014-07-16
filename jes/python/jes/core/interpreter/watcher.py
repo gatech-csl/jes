@@ -30,7 +30,7 @@ class Record(object):
 
     def getVariable(self, var):
         if var in self.variables:
-            return self.variables
+            return self.variables[var]
         else:
             return MISSING
 

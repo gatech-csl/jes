@@ -28,6 +28,7 @@ import JavaMusic
 from code import compile_command
 from tokenize import TokenError
 from jes.bridge.replbuffer import REPLBuffer
+from jes.bridge.terpactions import addInterpreterActions
 from jes.bridge.terpcontrol import InterpreterControl
 from jes.core.interpreter import Interpreter
 from jes.core.interpreter.watcher import Watcher
@@ -50,6 +51,8 @@ class JESProgram:
         self.interpreter = terp = Interpreter()
         self.debugger = terp.debugger
         self.watcher = Watcher(self.debugger)
+
+        addInterpreterActions(terp)
 
         terp.initialize(self.initializeInterpreter)
 

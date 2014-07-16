@@ -17,6 +17,12 @@ class Debugger(Pdb, object):
     #: half this is a statement every 2 seconds.
     UNIT_SPEED = 20.0
 
+    #: The lowest speed you (should) be able to set the debugger to.
+    #: You can technically set it to any nonnegative integral speed,
+    #: but sticking above this is preferred.
+    #: (A speed setting of 2 is a statement every 10 seconds.)
+    MIN_SPEED = 2
+
     #: When the debugger's speed is set to this, the speed is ignored.
     #: Statements are simply run as fast as possible.
     MAX_SPEED = int(3 * UNIT_SPEED)
@@ -60,8 +66,8 @@ class Debugger(Pdb, object):
         Sets a new speed for the debugger. This fires onSpeedSet.
         """
         speed = int(speed)
-        if speed > MAX_SPEED:
-            speed = MAX_SPEED
+        if speed > self.MAX_SPEED:
+            speed = self.MAX_SPEED
         elif speed <= 0:
             raise ValueError("Speed must be a positive integer")
 
