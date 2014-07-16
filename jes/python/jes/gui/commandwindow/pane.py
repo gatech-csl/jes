@@ -8,7 +8,7 @@ system on top of the command window.
 :copyright: (C) 2014 Matthew Frazier and Mark Guzdial
 :license:   GNU GPL v2 or later, see jes/help/JESCopyright.txt for details
 """
-from jes.gui.swingutil import makeAction
+from jes.gui.swingutil import PythonAction
 from java.awt import Color
 from javax.swing import JTextPane, KeyStroke
 from javax.swing.event import DocumentListener
@@ -40,9 +40,9 @@ class CommandWindowPane(JTextPane):
         else:
             commandKeymap = self.addKeymap(keymap.getName() + "ForJES", keymap)
 
-            commandKeymap.addActionForKeyStroke(key('ENTER'), makeAction(self._enter))
-            commandKeymap.addActionForKeyStroke(key('UP'), makeAction(self._up))
-            commandKeymap.addActionForKeyStroke(key('DOWN'), makeAction(self._down))
+            commandKeymap.addActionForKeyStroke(key('ENTER'), PythonAction(self._enter))
+            commandKeymap.addActionForKeyStroke(key('UP'), PythonAction(self._up))
+            commandKeymap.addActionForKeyStroke(key('DOWN'), PythonAction(self._down))
 
             JTextPane.setKeymap(self, commandKeymap)
 

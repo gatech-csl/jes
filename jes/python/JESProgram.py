@@ -2,8 +2,6 @@
 # Copyright (C) 2002  Jason Ergle, Claire Bailey, David Raines, Joshua Sklare
 # See JESCopyright.txt for full licensing information
 # 5/16/03: updated save() and saveAs() to return success booleans. -AdamW
-# 5/20/03: added loadSuccess to be called when a JESThread has successfully loaded
-#         code. - AdamW
 # 18 Jul 2007: Added option for backup save.
 # 5/13/09: Changes for redesigning configuration writing from python to
 # java -Buck
@@ -12,10 +10,8 @@ import JESConfig
 import JESAbout
 import JESIntroduction
 import JESExceptionRecord
-import JESRunnable
 import JESConstants
 import JESResources
-import JESInterpreter
 import JESFileChooser
 import JESLogBuffer
 import JESUI
@@ -32,6 +28,9 @@ import JavaMusic
 from code import compile_command
 from tokenize import TokenError
 from jes.bridge.replbuffer import REPLBuffer
+from jes.bridge.terpcontrol import InterpreterControl
+from jes.core.interpreter import Interpreter
+from jes.core.interpreter.watcher import Watcher
 
 FILE_EXISTS_ERROR = 2
 
@@ -45,54 +44,31 @@ class JESProgram:
     ##########################################################################
 
     def __init__(self):
-        #"@sig public JESProgram()"
-       # swing.UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
-        #        self.userExperience = JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_MODE);
-        #        self.gutterOn = JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_GUTTER);
-        #        self.blockBoxOff = JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_BLOCK);
-        #        self.autoSaveOnRun = JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_AUTOSAVEONRUN);
-        #        self.backupSave = JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_BACKUPSAVE);
-        #        self.wrapPixelValues = JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_WRAPPIXELVALUES);
-        #        self.userFont = JESConfig.getInstance().getIntegerProperty(JESConfig.CONFIG_FONT);
-        #        self.showTurnin = JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_SHOWTURNIN);
-        #        self.skin = JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_SKIN);
-        #        self.webDefinitions = JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_WEB_TURNIN);
-        #        self.mediaFolder = JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_MEDIAPATH);
-
         JESProgram.activeInstance = self
         self.logBuffer = JESLogBuffer.JESLogBuffer(self)
-#        self.logBuffer.saveBoolean = JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_LOGBUFFER);
 
-        # let's just read the config file once, and if
-        # it's no there, we'll handle it right now.
-        # self.preCheckForConfigFile()
-        # self.getSettingsLater = 0
-        # self.loadConfigFile()
+        self.interpreter = terp = Interpreter()
+        self.debugger = terp.debugger
+        self.watcher = Watcher(self.debugger)
+
+        terp.initialize(self.initializeInterpreter)
 
         self.textForCommandWindow = ''
         self.aboutWindow = None
         self.introWindow = None
 
         self.gui = JESUI.JESUI(self)
-        self.filename = ' '
-        self.settingsFileName = ''
-        self.interpreter = JESInterpreter.JESInterpreter(self)
-        # a gross hack?, see JESUI.py on why it's commentted out there
-        self.interpreter.debugger.watcher.setMinimumSize(
-            awt.Dimension(500, 400))
-        self.interpreter.debugger.watcher.setPreferredSize(
-            awt.Dimension(600, 400))
-
         self.gui.windowSetting(None)
 
-        self.varsToHighlight = self.interpreter.getVarsToHighlight()
+        self.varsToHighlight = list(terp.initialNames)
+
+        self.filename = ' '
+        self.settingsFileName = ''
 
         self.chooser = JESFileChooser.JESFileChooser()
         self.defaultPath = io.File(
             JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_MEDIAPATH))
         self.setHelpArray()
-        # self.loadSuccess(), 5/15/09 Dorn: removed as unnecessary and breaks
-        # due to needed code in loadSuccess for input
 
         self.gui.changeSkin(
             JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_SKIN))
@@ -109,6 +85,7 @@ class JESProgram:
             self.gui.turnOffGutter()
 
         # Install the bridges.
+        self.terpControl = InterpreterControl(self.gui, self.interpreter)
         self.replBuffer = REPLBuffer(self.interpreter, self.gui.commandWindow)
 
         # Show introduction window if settings could not be loaded (Either new
@@ -149,6 +126,10 @@ class JESProgram:
         "@sig public static void main(String args[])"
         self.__init__()
         return self
+
+    def initializeInterpreter(self, terp):
+        preproc = JESResources.getPathTo('python/JESPreprocessing.py')
+        terp.runFile(preproc, False)
 
 ##########################################################################
 # Function name: newFile
@@ -293,7 +274,7 @@ class JESProgram:
 
 ##########################################################################
 # Function name: loadFile
-# Description: checks for possible errors, then calls JESInterpreter's load file
+# Description: checks for possible errors, then calls the interpreter's load file
 #              function
 #
 #              the errors are:
@@ -304,8 +285,8 @@ class JESProgram:
 #              3) JESTabnanny throws a Token Error - some kind of problem parsing
 #                 the file.  has something to do with unbalanced parenthesis
 #              4) The file contains ambigious indentation
-#        If any of these errors are present, a JESExceptionRecord is created,
-#        and a JESRunnable is called and the code is not loaded by the interpreter
+#        If any of these errors are present, a JESExceptionRecord is created
+#        and the code is not loaded by the interpreter
 #       Otherwise, the code is loaded.
 ##########################################################################
     def loadFile(self):
@@ -351,7 +332,8 @@ class JESProgram:
                 self.gui.commandWindow.cancelPrompt()
                 self.gui.commandWindow.display(
                     "======= Loading Program =======", 'system-message')
-                self.interpreter.load(self.filename)
+                self.interpreter.runFile(self.filename)
+                self.interpreter.debugger.setTargetFilenames([self.filename])
                 self.gui.commandWindow.requestFocus()
                 self.gui.editor.getDocument().removeErrorHighlighting()
 
@@ -364,14 +346,18 @@ class JESProgram:
                                 '%d\n' % lineNumber,
                                 lineNumber
                                 )
-        runnable = JESRunnable.JESRunnable(self.interpreter, excRecord, 'run')
-        runnable.run()
+
+        self._sendFakeError(excRecord)
 
     def setErrorFromUserCode(self, type, value, trace):
         excRecord = JESExceptionRecord.JESExceptionRecord(self.filename, self)
         excRecord.setFromUserCode(type, value, trace)
-        runnable = JESRunnable.JESRunnable(self.interpreter, excRecord, 'run')
-        runnable.run()
+
+        self._sendFakeError(excRecord)
+
+    def _sendFakeError(self, excRecord):
+        terp = self.interpreter
+        terp.onException.send(terp, mode='execfile', excRecord=excRecord)
 
 
 ##########################################################################
@@ -394,16 +380,6 @@ class JESProgram:
 
     def editorLoaded(self):
         return self.gui.loadButton.getForeground() == JESConstants.LOAD_BUTTON_DIFF_COLOR
-
-##########################################################################
-# Function name: loadSuccess
-# Description:
-#     Called whenever the interpreter successfully loads a Editor Document.
-#     5/20/03 AdamW: Used for recoloring the Load Button on load success
-##########################################################################
-    def loadSuccess(self):
-        # self.gui.refreshDebugMenu()
-        self.gui.loadCurrent()
 
 
 ##########################################################################

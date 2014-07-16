@@ -181,7 +181,7 @@ class JESEditorDocument(HighlightingStyledDocument):
     def insertString(self, offset, str, a, addUndoEvent=1):
         if self.needToSetEnvironment:
             # Give the environment and key words to the Highlighting Document
-            self.setEnvironmentWords(self.editor.program.getVarsToHighlight().keys())
+            self.setEnvironmentWords(self.editor.program.getVarsToHighlight())
             self.setKeywords(keyword.kwlist)
             self.needToSetEnvironment = 0
         if self.errorLineStart >= 0:

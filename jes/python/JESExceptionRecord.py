@@ -12,11 +12,8 @@ from java.lang import ThreadDeath
 
 
 class JESExceptionRecord:
-
-    def __init__(self, programFileName, programObj):
-
+    def __init__(self, programFileName):
         self.programFileName = programFileName
-        self.programObj = programObj
 
     def getExceptionMsg(self):
         return self.exc_msg
@@ -159,12 +156,12 @@ class JESExceptionRecord:
             # if filename equals '<input>', then the message was typed from the command
             # line
 
-            if filename == self.programObj.filename:
+            if filename == self.programFileName:
 
                 self.line_number = lineno
 
             if (not self.line_number is None) and (self.line_number != 0):
-                if (filename == self.programObj.filename):
+                if (filename == self.programFileName):
                     self.exc_msg += "The error is on line %d.\n" % self.line_number
                 else:
                     (filename, lineno) = (lastFileName, lastNum)
@@ -262,7 +259,7 @@ class JESExceptionRecord:
 
         # error is from a single line if stack is one long
         for frame in txtStack:
-            if frame[0] == self.programObj.filename:
+            if frame[0] == self.programFileName:
                 return not None
 
         return None

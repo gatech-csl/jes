@@ -19,13 +19,13 @@ import JESEditor
 import JESProgram
 import JESResources
 import JESHomeworkSubmission
-import JESDBVariableWatcher
 import Html_Browser
 import JESGutter
 from JESBugReporter import JESBugReporter
 import media
 
 from jes.gui.commandwindow import CommandWindowController
+from jes.gui.debugger import DebugPanel
 
 import java.awt as awt
 import javax.swing as swing
@@ -437,12 +437,15 @@ class JESUI(swing.JFrame):
         # Scharfnorth
         helpDivider.setRightComponent(self.htmlBrowserWithHide)
 
+        self.debugPanel = DebugPanel(self, self.program.debugger, self.program.watcher)
+        self.program.interpreter.onDebugSet.connect(self.refreshDebugState)
+
         watcherDivider.orientation = swing.JSplitPane.HORIZONTAL_SPLIT
         watcherDivider.leftComponent = splitterPane
         #self.htmlBrowser = Html_Browser.Html_Browser(JESConstants.HELP_START_PAGE)
 
         # see jesprogram.py, this is initialized later
-        # watcherDivider.rightComponent = self.program.interpreter.debugger.watcher
+        watcherDivider.rightComponent = self.debugPanel
         watcherDivider.setDividerSize(SPLITTER_SIZE)
         watcherDivider.setDividerLocation(WATCHER_HSPLITTER_LOCATION)
         watcherDivider.setResizeWeight(1.0)
@@ -454,6 +457,9 @@ class JESUI(swing.JFrame):
         self.watcherWithHide.setLayout(
             swing.BoxLayout(self.watcherWithHide, swing.BoxLayout.Y_AXIS))
         self.watcherWithHide.add(hideRight(self.actionPerformed))
+
+        self.watcherWithHide.setMinimumSize(awt.Dimension(500, 400))
+        self.watcherWithHide.setPreferredSize(awt.Dimension(600, 400))
 
         editorPane.setPreferredSize(awt.Dimension(lang.Short.MAX_VALUE,
                                                   lang.Short.MAX_VALUE))
@@ -830,7 +836,7 @@ class JESUI(swing.JFrame):
         elif actionCommand == TURNIN_HW:
             self.openTurnin(TURNIN_HW)
         elif actionCommand == DEBUG_SHOW_DEBUGGER or actionCommand == DEBUG_HIDE_DEBUGGER:
-            self.program.interpreter.toggle_debug_mode()
+            self.program.interpreter.toggleDebugMode()
         elif actionCommand == DEBUG_WATCH_VAR:
             self.watchVariable()
         elif actionCommand == DEBUG_UNWATCH_VAR:
@@ -855,7 +861,7 @@ class JESUI(swing.JFrame):
         elif actionCommand == STOP_BUTTON_CAPTION:
             self.program.stopThread()
         elif actionCommand == SHOW_DEBUGGER_CAPTION or actionCommand == HIDE_DEBUGGER_CAPTION:
-            self.program.interpreter.toggle_debug_mode()
+            self.program.interpreter.toggleDebugMode()
         elif actionCommand == COMMAND_EDITOR:
             self.editor.requestFocus()
         elif actionCommand == COMMAND_COMMAND:
@@ -871,9 +877,9 @@ class JESUI(swing.JFrame):
             self.windowSetting(COMMAND_WINDOW_2)
         elif actionCommand == COMMAND_WINDOW_3HELP:
             self.windowSetting(COMMAND_WINDOW_3HELP)
-        elif actionCommand == COMMAND_WINDOW_3DEBUG and not self.program.interpreter.debug_mode:
+        elif actionCommand == COMMAND_WINDOW_3DEBUG and not self.program.interpreter.debugMode:
             # this will call window setting by itself
-            self.program.interpreter.toggle_debug_mode()
+            self.program.interpreter.toggleDebugMode()
 
         elif actionCommand == AUTOSAVE:
             JESConfig.getInstance().setBooleanProperty(JESConfig.CONFIG_AUTOSAVEONRUN,
@@ -939,19 +945,16 @@ class JESUI(swing.JFrame):
 #     Updates the UI to the new window setting
 ###############################################################################
     def disableDebugger(self):
-        if self.program.interpreter.debug_mode:
-            self.program.interpreter.toggle_debug_mode()
+        if self.program.interpreter.debugMode:
+            self.program.interpreter.toggleDebugMode()
 
     def windowSetting(self, setting):
-
         self.contentPane.removeAll()
 #        self.setContentPane(swing.JPanel())
 
         if setting == COMMAND_WINDOW_3HELP:
             self.disableDebugger()
             self.helpDivider.setLeftComponent(self.splitterPane)
-            # line modified to add a close button to help - 29 May 2008 by Buck
-            # Scharfnorth
             self.helpDivider.setRightComponent(self.htmlBrowserWithHide)
             self.contentPane.add(self.helpDivider)
             self.contentPane.add(self.statusbar)
@@ -961,12 +964,8 @@ class JESUI(swing.JFrame):
 
         # do not call this one explicitly!!
         elif setting == COMMAND_WINDOW_3DEBUG:
-            # line added to add a close button to debugger - 29 May 2008 by
-            # Buck Scharfnorth
-            self.watcherWithHide.add(self.program.interpreter.debugger.watcher)
+            self.watcherWithHide.add(self.debugPanel)
             self.watcherDivider.setLeftComponent(self.splitterPane)
-            # line modified to add a close button to debugger - 29 May 2008 by
-            # Buck Scharfnorth
             self.watcherDivider.setRightComponent(self.watcherWithHide)
             self.contentPane.add(self.watcherDivider)
             self.contentPane.add(self.statusbar)
@@ -2004,17 +2003,6 @@ class JESUI(swing.JFrame):
             self.program.filename, lineno)
         # should contact the gutter here
 
-    def watchVariable(self):
-        var = JESDBVariableWatcher.variableDialog(self)
-        if var:
-            self.program.interpreter.debugger.addVariable(var)
-
-    def unwatchVariable(self):
-        var = JESDBVariableWatcher.pickVariable(self,
-                                                self.program.interpreter.debugger.watcher.getVariables())
-        if var:
-            self.program.interpreter.debugger.removeVariable(var)
-
 ######################################################################
 # Function name: editorChanged()
 # Description:
@@ -2025,15 +2013,11 @@ class JESUI(swing.JFrame):
     def editorChanged(self):
         self.loadDifferent()
 
-    def refreshDebugState(self):
-        # and self.program.editorLoaded()
-        enabled = self.program.interpreter.debug_mode
-        # print self.program.interpreter.debug_mode ,
-        # self.program.editorLoaded()
+    def refreshDebugState(self, debugger, debugMode):
+        enabled = debugMode
         self.debugMenu.subElements[0].subElements[0].setSelected(enabled)
         self.debugMenu.subElements[0].subElements[1].setEnabled(enabled)
         self.debugMenu.subElements[0].subElements[2].setEnabled(enabled)
-        self.program.interpreter.debugger.watcher.setVisible(enabled)
         if not enabled:
             self.debuggerButton.text = SHOW_DEBUGGER_CAPTION
             self.debugMenu.subElements[0].subElements[

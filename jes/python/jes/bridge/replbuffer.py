@@ -25,6 +25,13 @@ class REPLBuffer(object):
         # errors for now and keep reading.
         self.incompleteRegex = re.compile(r'[^#]+:\s*(?:#.*)?$')
 
+        interpreter.afterRun.connect(self.onInterpreterReady)
+
+    def onInterpreterReady(self, terp, **_):
+        if self.commandWindow.isInPrompt():
+            self.commandWindow.cancelPrompt()
+        self.startStatement()
+
     def startStatement(self):
         self.bufferedStatements = []
         self.commandWindow.prompt(
@@ -78,5 +85,5 @@ class REPLBuffer(object):
     def finishStatement(self, line):
         self.bufferedStatements.append(line)
         fragment = '\n'.join(self.bufferedStatements)
-        self.interpreter.runCommand(fragment)
+        self.interpreter.runCodeFragment(fragment)
 
