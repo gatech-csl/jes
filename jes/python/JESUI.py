@@ -11,44 +11,40 @@
 # 5/13/09: Changes for redesigning configuration writing from python to
 # java -Buck
 
+import media
+
+import httplib
+import os
+import re
+import string
+
+import java.awt as awt
+import java.awt.print as printer
+import java.lang as lang
+import java.net as net
+import java.util as util
+import javax.swing as swing
+
+import Html_Browser
+import JESGutter
+import JESAddressFinder
 import JESConfig
 import JESHomeworkTurninThread
 import JESConstants
 import JESDebugWindow
 import JESEditor
-import JESProgram
 import JESResources
 import JESHomeworkSubmission
-import Html_Browser
-import JESGutter
-from JESBugReporter import JESBugReporter
-import media
+import JESPrintableDocument
+
+from java.awt import Event
+from java.awt.event import ActionListener, KeyEvent
+from java.lang import System, Thread
+from javax.swing import Action, UIManager, SwingUtilities
 
 from jes.gui.commandwindow import CommandWindowController
 from jes.gui.debugger import DebugPanel
-
-import java.awt as awt
-import javax.swing as swing
-import java.util as util
-import java.awt.Event as Event
-import java.awt.event.KeyEvent as KeyEvent
-import java.lang as lang
-import httplib
-import java.net as net
-import os
-import re
-import string
-import JESAddressFinder
-from java.awt.event import ActionListener
-#from pawt import swing
-import javax.swing as swing
-import java.awt.print as printer
-import JESPrintableDocument
-import java.lang.System as System
-#import org.flexdock.docking
-import javax.swing.UIManager as UIManager
-import javax.swing.SwingUtilities as SwingUtilities
-from java.lang import Thread
+from JESBugReporter import JESBugReporter
 
 
 MENU_SEPARATOR = '-'
@@ -204,59 +200,6 @@ else:
 # The following is an array that is used to build the main menu bar.  The
 # information stored in here is the high level menu item names, the menu bar
 # option names, and the accelerator keys for those menu options.
-MENU_OPTIONS = [
-    [FILE_TITLE,
-     [[COMMAND_NEW,    KeyEvent.VK_N,  CONTROL_KEY],
-      [COMMAND_OPEN,   KeyEvent.VK_O,  CONTROL_KEY],
-      [COMMAND_SAVE,   KeyEvent.VK_S,  CONTROL_KEY],
-      [COMMAND_SAVEAS, KeyEvent.VK_S,  CONTROL_KEY + Event.SHIFT_MASK],
-      [COMMAND_LOAD,   KeyEvent.VK_L,  CONTROL_KEY],
-      [PRINT, KeyEvent.VK_P,  CONTROL_KEY],
-      [MENU_SEPARATOR, 0,              0],
-      [COMMAND_EXIT,   KeyEvent.VK_Q,  CONTROL_KEY]]],
-    [EDIT_TITLE,
-     [[COMMAND_EDITOR, KeyEvent.VK_UP, CONTROL_KEY],
-      [COMMAND_COMMAND, KeyEvent.VK_DOWN, CONTROL_KEY],
-      [MENU_SEPARATOR, 0,              0],
-      [COMMAND_UNDO,  KeyEvent.VK_Z,  CONTROL_KEY],
-      [COMMAND_REDO,  KeyEvent.VK_Y,  CONTROL_KEY],
-      [COMMAND_CUT,    KeyEvent.VK_X,  CONTROL_KEY],
-      [COMMAND_COPY,   KeyEvent.VK_C,  CONTROL_KEY],
-      [COMMAND_PASTE,  KeyEvent.VK_V,  CONTROL_KEY],
-      [MENU_SEPARATOR, 0,              0],
-      [COMMAND_GOTO,  KeyEvent.VK_G,  CONTROL_KEY],
-      [COMMAND_SEARCH,  KeyEvent.VK_F,  CONTROL_KEY],
-      [MENU_SEPARATOR, 0,              0],
-      [COMMAND_OPTIONS,   0,  0]]],
-    [TURNIN_TITLE,
-     [[TURNIN_HW, 0, 0],
-      [TURNIN_OPTIONS, 0, 0]]],
-    [DEBUG_TITLE,
-     [[DEBUG_SHOW_DEBUGGER, 0, 0, 1],  # this is a checkBoxMenuItem
-      #[DEBUG_BREAK,0,0],
-      [DEBUG_WATCH_VAR, 0, 0],
-      [DEBUG_UNWATCH_VAR, 0, 0]]],
-
-    [MEDIA_TOOLS_TITLE,
-     [[COMMAND_SOUND_TOOL, 0, 0],
-      [COMMAND_PICTURE_TOOL, 0, 0],
-      [COMMAND_FRAMESEQUENCER_TOOL, 0, 0]]],
-    [JES_API_TITLE, []
-     ],
-    # uncomment the following two to put the Java api menu in
-    #    [API_TITLE, []
-    #      ],
-    [WINDOW_TITLE,
-     [[COMMAND_WINDOW_2, KeyEvent.VK_R,  CONTROL_KEY],
-      [COMMAND_WINDOW_3HELP, KeyEvent.VK_H,  CONTROL_KEY],
-      [COMMAND_WINDOW_3DEBUG, 0, 0]
-      ]],
-    # [SKINS_TITLE, [] ],
-
-    [HELP_TITLE,
-     [[COMMAND_ABOUT,  0,              0],
-      [COMMAND_BUGREPORT, 0, 0],
-      [COMMAND_EXPLORE, KeyEvent.VK_E,  CONTROL_KEY]]]]
 
 LOAD_BUTTON_CAPTION = 'Load Program'
 STOP_BUTTON_CAPTION = 'Stop'
@@ -331,6 +274,9 @@ class JESUI(swing.JFrame):
         self.setDefaultCloseOperation(
             swing.WindowConstants.DO_NOTHING_ON_CLOSE)
 
+        self.debugPanel = DebugPanel(self, self.program.debugger, self.program.watcher)
+        self.program.interpreter.onDebugSet.connect(self.refreshDebugState)
+
         self.contentPane.setLayout(swing.BoxLayout(self.contentPane,
                                                    swing.BoxLayout.Y_AXIS))
         self.setIconImage(
@@ -345,10 +291,10 @@ class JESUI(swing.JFrame):
                                         actionPerformed=self.actionPerformed)
         self.loadButton.enabled = 0
         self.loadStatus = swing.JLabel()
-        self.stopButton = swing.JButton(STOP_BUTTON_CAPTION,
-                                        actionPerformed=self.actionPerformed)
-        self.debuggerButton = swing.JButton(SHOW_DEBUGGER_CAPTION,
-                                            actionPerformed=self.actionPerformed)
+
+        self.stopButton = swing.JButton(self.program.interpreter.stopAction)
+        self.debuggerButton = swing.JButton(self.program.interpreter.toggleDebuggerAction)
+
         self.cursorStatusLabel = swing.JLabel()
         self.cursorStatusLabel.setBorder(swing.BorderFactory.createEmptyBorder
                                          (0,
@@ -436,9 +382,6 @@ class JESUI(swing.JFrame):
         # line modified to add a close button to help - 29 May 2008 by Buck
         # Scharfnorth
         helpDivider.setRightComponent(self.htmlBrowserWithHide)
-
-        self.debugPanel = DebugPanel(self, self.program.debugger, self.program.watcher)
-        self.program.interpreter.onDebugSet.connect(self.refreshDebugState)
 
         watcherDivider.orientation = swing.JSplitPane.HORIZONTAL_SPLIT
         watcherDivider.leftComponent = splitterPane
@@ -533,71 +476,7 @@ class JESUI(swing.JFrame):
         self.turninstatuswindow = swing.JFrame("Turnin Status")
 
         # Create the menu bar and menu items
-        self.addmenu()
-
-        # self.menu = swing.JMenuBar()
-        # self.setJMenuBar(self.menu)
-
-        # for eachMenu in MENU_OPTIONS:
-        #     newMenu = swing.JMenu(eachMenu[0], actionPerformed=self.actionPerformed)
-        #     self.menu.add(newMenu)
-        # Create each menu option under the menu
-        #     for eachMenuItem in eachMenu[1]:
-        #         if eachMenuItem[0] == MENU_SEPARATOR:
-        #             newMenu.addSeparator()
-        #         else:
-        #             if len(eachMenuItem) > 3 and eachMenuItem[3] == 1:
-        #                 newMenuItem = swing.JCheckBoxMenuItem(eachMenuItem[0],
-        #                                           actionPerformed = self.actionPerformed)
-        #             else:
-        #                 newMenuItem = swing.JMenuItem(eachMenuItem[0],
-        #                                           actionPerformed = self.actionPerformed)
-        #
-        #             if eachMenuItem[1] <> 0:
-        #                 newMenuItem.setAccelerator(swing.KeyStroke.getKeyStroke
-        #                                                    (eachMenuItem[1],
-        #                                                     eachMenuItem[2],
-        #                                                     0))
-        #             newMenu.add(newMenuItem)
-        # If this is the help menu, store it in the self.helpMenu variable.
-        #     if eachMenu[0] == HELP_TITLE:
-        #         self.helpMenu = newMenu
-        #     if eachMenu[0] == DEBUG_TITLE:
-        #         self.debugMenu = newMenu
-        # print 'length:',len(self.debugMenu.subElements)
-        # print self.debugMenu.subElements[0].subElements
-        #         self.debugMenu.subElements[0].subElements[1].setEnabled(0)
-        #         self.debugMenu.subElements[0].subElements[2].setEnabled(0)
-        #     if eachMenu[0] == API_TITLE:
-        # BUILD API HELP
-        #         for section in API_SECTIONS:
-        #             newMenuSection = swing.JMenu(str(section),
-        #                                          actionPerformed = self.apiHelp)
-        #
-        #             for api_function in getMethodList(section):
-        #                 func_name = str(section)+'.'+api_function
-        #                 newMenuItem = swing.JMenuItem(func_name,
-        #                                               actionPerformed = self.apiHelp)
-        #                 newMenuSection.add(newMenuItem)
-        #             newMenu.add(newMenuSection)
-        #     if eachMenu[0] == JES_API_TITLE:
-        # BUILD JES API HELP
-        #         for (section, api_functions) in JES_API_SECTIONS:
-        #             newMenuSection = swing.JMenu(str(section),
-        #                                          actionPerformed = self.apiHelp)
-        #
-        #             for api_function in api_functions:
-        #                 newMenuItem = swing.JMenuItem(api_function,
-        #                                               actionPerformed = self.apiHelp)
-        #                 newMenuSection.add(newMenuItem)
-        #             newMenu.add(newMenuSection)
-
-        # if eachMenu[0] == SKINS_TITLE:
-        # BUILD SKINS LIST
-        # for skin in UIManager.getInstalledLookAndFeels():
-        # newMenuSection = swing.JMenuItem(str(skin.getName()),
-        # actionPerformed = self.changeSkin)
-        # newMenu.add(newMenuSection)
+        self.rebuildMenu()
 
         # Set remaining object variables
         self.heldText = ''
@@ -614,55 +493,107 @@ class JESUI(swing.JFrame):
         self.commandWindow.setFontSize(
             JESConfig.getInstance().getIntegerProperty(JESConfig.CONFIG_FONT))
 
-    def addmenu(self):
+    def rebuildMenu(self):
         """Regenerates then installs the menu, based on the current state of
         the world; this doesn't change often, and currently we only have to
         decide whether to include the 'turnin' menu."""
 
-        self.menu = self.buildmenu()
+        self.menu, self.menus = self.buildMenu()
         self.setJMenuBar(self.menu)
 
-    def buildmenu(self):
+    def buildMenu(self):
         """Regenerate and return an apropos menu."""
+        menuOptions = [
+            [FILE_TITLE, [
+                [COMMAND_NEW,       KeyEvent.VK_N,      CONTROL_KEY],
+                [COMMAND_OPEN,      KeyEvent.VK_O,      CONTROL_KEY],
+                [COMMAND_SAVE,      KeyEvent.VK_S,      CONTROL_KEY],
+                [COMMAND_SAVEAS,    KeyEvent.VK_S,      CONTROL_KEY + Event.SHIFT_MASK],
+                [COMMAND_LOAD,      KeyEvent.VK_L,      CONTROL_KEY],
+                [PRINT,             KeyEvent.VK_P,      CONTROL_KEY],
+                MENU_SEPARATOR,
+                [COMMAND_EXIT,      KeyEvent.VK_Q,      CONTROL_KEY]
+            ]],
+
+            [EDIT_TITLE, [
+                [COMMAND_EDITOR,    KeyEvent.VK_UP,     CONTROL_KEY],
+                [COMMAND_COMMAND,   KeyEvent.VK_DOWN,   CONTROL_KEY],
+                MENU_SEPARATOR,
+                [COMMAND_UNDO,      KeyEvent.VK_Z,      CONTROL_KEY],
+                [COMMAND_REDO,      KeyEvent.VK_Y,      CONTROL_KEY],
+                [COMMAND_CUT,       KeyEvent.VK_X,      CONTROL_KEY],
+                [COMMAND_COPY,      KeyEvent.VK_C,      CONTROL_KEY],
+                [COMMAND_PASTE,     KeyEvent.VK_V,      CONTROL_KEY],
+                MENU_SEPARATOR,
+                [COMMAND_GOTO,      KeyEvent.VK_G,      CONTROL_KEY],
+                [COMMAND_SEARCH,    KeyEvent.VK_F,      CONTROL_KEY],
+                MENU_SEPARATOR,
+                [COMMAND_OPTIONS,   0,                  0]
+            ]],
+
+            [TURNIN_TITLE, [
+                [TURNIN_HW, 0, 0],
+                [TURNIN_OPTIONS, 0, 0]
+            ]],
+
+            [DEBUG_TITLE, [
+                self.program.interpreter.toggleDebuggerAction,
+                self.debugPanel.watchVariable,
+                self.debugPanel.unwatchVariable
+            ]],
+
+            [MEDIA_TOOLS_TITLE, [
+                [COMMAND_SOUND_TOOL, 0, 0],
+                [COMMAND_PICTURE_TOOL, 0, 0],
+                [COMMAND_FRAMESEQUENCER_TOOL, 0, 0]
+            ]],
+
+            [JES_API_TITLE, []],
+
+            # uncomment the following line to put the Java api menu in
+            # [API_TITLE, []],
+
+            [WINDOW_TITLE, [
+                [COMMAND_WINDOW_2,      KeyEvent.VK_R,  CONTROL_KEY],
+                [COMMAND_WINDOW_3HELP,  KeyEvent.VK_H,  CONTROL_KEY],
+                [COMMAND_WINDOW_3DEBUG, 0, 0]
+            ]],
+
+            [HELP_TITLE, [
+                [COMMAND_ABOUT,         0, 0],
+                [COMMAND_BUGREPORT,     0, 0],
+                [COMMAND_EXPLORE,       KeyEvent.VK_E,  CONTROL_KEY]
+            ]]
+        ]
 
         output = swing.JMenuBar()
+        menuDict = {}
 
-        for eachMenu in MENU_OPTIONS:
-
-            if eachMenu[0] == TURNIN_TITLE and not JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_SHOWTURNIN):
+        for menuTitle, menuEntries in menuOptions:
+            if menuTitle == TURNIN_TITLE and not JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_SHOWTURNIN):
                 continue
 
-            newMenu = swing.JMenu(
-                eachMenu[0], actionPerformed=self.actionPerformed)
+            newMenu = swing.JMenu(menuTitle, actionPerformed=self.actionPerformed)
             output.add(newMenu)
-            # Create each menu option under the menu
-            for eachMenuItem in eachMenu[1]:
-                if eachMenuItem[0] == MENU_SEPARATOR:
-                    newMenu.addSeparator()
-                else:
-                    if len(eachMenuItem) > 3 and eachMenuItem[3] == 1:
-                        newMenuItem = swing.JCheckBoxMenuItem(eachMenuItem[0],
-                                                              actionPerformed=self.actionPerformed)
-                    else:
-                        newMenuItem = swing.JMenuItem(eachMenuItem[0],
-                                                      actionPerformed=self.actionPerformed)
+            menuDict[menuTitle] = newMenu
 
-                    if eachMenuItem[1] <> 0:
-                        newMenuItem.setAccelerator(swing.KeyStroke.getKeyStroke
-                                                   (eachMenuItem[1],
-                                                    eachMenuItem[2],
-                                                    0))
+            # Create each menu option under the menu
+            for entry in menuEntries:
+                if entry == MENU_SEPARATOR:
+                    newMenu.addSeparator()
+                elif isinstance(entry, Action):
+                    newMenu.add(swing.JMenuItem(entry))
+                else:
+                    newMenuItem = swing.JMenuItem(entry[0],
+                                                  actionPerformed=self.actionPerformed)
+                    if entry[1] != 0:
+                        stroke = swing.KeyStroke.getKeyStroke(
+                            entry[1], entry[2], 0
+                        )
+                        newMenuItem.setAccelerator(stroke)
                     newMenu.add(newMenuItem)
-            # If this is the help menu, store it in the self.helpMenu variable.
-            if eachMenu[0] == HELP_TITLE:
-                self.helpMenu = newMenu
-            if eachMenu[0] == DEBUG_TITLE:
-                self.debugMenu = newMenu
-                # print 'length:',len(self.debugMenu.subElements)
-                # print self.debugMenu.subElements[0].subElements
-                self.debugMenu.subElements[0].subElements[1].setEnabled(0)
-                self.debugMenu.subElements[0].subElements[2].setEnabled(0)
-            if eachMenu[0] == API_TITLE:
+
+            if menuTitle == API_TITLE:
                 # BUILD API HELP
                 for section in API_SECTIONS:
                     newMenuSection = swing.JMenu(str(section),
@@ -674,7 +605,8 @@ class JESUI(swing.JFrame):
                                                       actionPerformed=self.apiHelp)
                         newMenuSection.add(newMenuItem)
                     newMenu.add(newMenuSection)
-            if eachMenu[0] == JES_API_TITLE:
+
+            if menuTitle == JES_API_TITLE:
                 # BUILD JES API HELP
                 for (section, api_functions) in JES_API_SECTIONS:
                     newMenuSection = swing.JMenu(str(section),
@@ -686,7 +618,7 @@ class JESUI(swing.JFrame):
                         newMenuSection.add(newMenuItem)
                     newMenu.add(newMenuSection)
 
-        return output
+        return output, menuDict
 
     ##########################################################################
     # Function name: apiHelp
@@ -835,12 +767,6 @@ class JESUI(swing.JFrame):
             self.openSettings()
         elif actionCommand == TURNIN_HW:
             self.openTurnin(TURNIN_HW)
-        elif actionCommand == DEBUG_SHOW_DEBUGGER or actionCommand == DEBUG_HIDE_DEBUGGER:
-            self.program.interpreter.toggleDebugMode()
-        elif actionCommand == DEBUG_WATCH_VAR:
-            self.watchVariable()
-        elif actionCommand == DEBUG_UNWATCH_VAR:
-            self.unwatchVariable()
         elif actionCommand == COMMAND_ABOUT:
             self.program.openAboutWindow()
         elif actionCommand == COMMAND_BUGREPORT:
@@ -1082,7 +1008,6 @@ class JESUI(swing.JFrame):
     def setRunning(self, runBool):
         self.running = runBool
         self.loadButton.enabled = not runBool
-        self.stopButton.enabled = runBool
 
         if runBool:
             cursor = awt.Cursor(awt.Cursor.DEFAULT_CURSOR)
@@ -1259,8 +1184,11 @@ class JESUI(swing.JFrame):
 #     Adds the help files specified in the helpFiles parameter to the help menu.
 ##########################################################################
     def SetHelpFiles(self, helpFiles):
+        helpMenu = self.menus[HELP_TITLE]
+
         self.helpFiles = {}
-        self.helpMenu.addSeparator()
+        helpMenu.addSeparator()
+
         for eachHelpFilePath in helpFiles:
             fileName = os.path.basename(eachHelpFilePath)
             fileName = fileName.replace(HELP_FILE_EXTENTION, '')
@@ -1268,7 +1196,8 @@ class JESUI(swing.JFrame):
             self.helpFiles[fileName] = eachHelpFilePath
             newMenuItem = swing.JMenuItem(fileName,
                                           actionPerformed=self.actionPerformed)
-            self.helpMenu.add(newMenuItem)
+            helpMenu.add(newMenuItem)
+
         # Set up contextual help list
         helpfile = open(JESResources.getPathTo("help/JESAPIHelp.html"), 'r')
         helpcontents = helpfile.read()
@@ -1871,7 +1800,7 @@ class JESUI(swing.JFrame):
             if(JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_SHOWTURNIN) != self.showTurninBox.isSelected()):
                 JESConfig.getInstance().setBooleanProperty(
                     JESConfig.CONFIG_SHOWTURNIN, self.showTurninBox.isSelected())
-                self.addmenu()
+                self.rebuildMenu()
                 self.pack()
                 # self.update(self.getGraphics())
 
@@ -2014,22 +1943,10 @@ class JESUI(swing.JFrame):
         self.loadDifferent()
 
     def refreshDebugState(self, debugger, debugMode):
-        enabled = debugMode
-        self.debugMenu.subElements[0].subElements[0].setSelected(enabled)
-        self.debugMenu.subElements[0].subElements[1].setEnabled(enabled)
-        self.debugMenu.subElements[0].subElements[2].setEnabled(enabled)
-        if not enabled:
-            self.debuggerButton.text = SHOW_DEBUGGER_CAPTION
-            self.debugMenu.subElements[0].subElements[
-                0].text = DEBUG_SHOW_DEBUGGER
-            # line added to add a close button to debugger - 29 May 2008 by
-            # Buck Scharfnorth
+        if not debugMode:
             self.windowSetting(COMMAND_WINDOW_2)
         else:
             self.windowSetting(COMMAND_WINDOW_3DEBUG)
-            self.debuggerButton.text = HIDE_DEBUGGER_CAPTION
-            self.debugMenu.subElements[0].subElements[
-                0].text = DEBUG_HIDE_DEBUGGER
 
 
 ######################################################################
