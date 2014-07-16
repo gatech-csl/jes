@@ -30,7 +30,7 @@ def addInterpreterActions(terp):
         name="Stop", enabled=False
     )
     terp.toggleDebuggerAction = PythonAction(terp.toggleDebugMode,
-        name="Show watcher", enabled=True
+        name="Watcher", enabled=True
     )
     terp.enableDebuggerAction = PythonAction(terp.setDebugMode, True,
         name="Show watcher", enabled=True
@@ -65,11 +65,9 @@ def unlockControls(terp, **_):
 
 def updateDebugSettings(terp, debugMode, **_):
     if debugMode:
-        terp.toggleDebuggerAction.name = "Hide watcher"
         terp.enableDebuggerAction.enabled = False
         terp.disableDebuggerAction.enabled = True
     else:
-        terp.toggleDebuggerAction.name = "Show watcher"
         terp.enableDebuggerAction.enabled = True
         terp.disableDebuggerAction.enabled = False
 
