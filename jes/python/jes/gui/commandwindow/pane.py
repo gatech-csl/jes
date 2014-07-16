@@ -8,7 +8,7 @@ system on top of the command window.
 :copyright: (C) 2014 Matthew Frazier and Mark Guzdial
 :license:   GNU GPL v2 or later, see jes/help/JESCopyright.txt for details
 """
-from jes.gui.swingutil import PythonAction
+from jes.gui.components.actions import PythonAction
 from java.awt import Color
 from javax.swing import JTextPane, KeyStroke
 from javax.swing.event import DocumentListener

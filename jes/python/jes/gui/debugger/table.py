@@ -12,7 +12,7 @@ from java.awt import Color
 from java.lang import Object
 from javax.swing import JLabel, JTable, JScrollPane
 from javax.swing.table import AbstractTableModel, TableCellRenderer
-from jes.gui.swingutil import threadsafe
+from jes.gui.components.threading import threadsafe
 
 class WatcherTable(JTable):
     def __init__(self, watcher):

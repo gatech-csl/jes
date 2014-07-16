@@ -13,7 +13,7 @@ state information.
 from .table import WatcherTable, AutoScrollPane
 from java.awt import BorderLayout
 from javax.swing import JPanel
-from jes.gui.swingutil import methodAction
+from jes.gui.components.actions import methodAction
 
 class DebugPanel(JPanel):
     def __init__(self, gui, debugger, watcher):

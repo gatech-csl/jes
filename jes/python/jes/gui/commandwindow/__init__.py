@@ -13,7 +13,7 @@ from .document import CommandDocument
 from .history import CommandHistory
 from .pane import CommandWindowPane
 from .prompt import promptService
-from jes.gui.swingutil import threadsafe
+from jes.gui.components.threading import threadsafe
 
 class CommandWindowController(object):
     """

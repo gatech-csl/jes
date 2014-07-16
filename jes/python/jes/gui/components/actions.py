@@ -1,32 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-jes.gui.swingutil
-=================
-Utilities for dealing Swing and its many problems, such as event listeners
-and threading.
+jes.gui.components.actions
+==========================
+Utilities for creating and working with Swing actions.
 
 :copyright: (C) 2014 Matthew Frazier and Mark Guzdial
 :license:   GNU GPL v2 or later, see jes/help/JESCopyright.txt for details
 """
-import sys
-import traceback
-from functools import wraps
-from java.lang import Runnable
-from javax.swing import Action, AbstractAction, SwingUtilities
-
-def debug(text, *formats):
-    if formats:
-        text = text % formats
-    elif not isinstance(text, basestring):
-        text = str(text)
-    print >>sys.__stderr__, "#", text
-    if text.endswith("!"):
-        traceback.print_stack()
-
-
-###
-### SWING ACTION MANAGEMENT
-###
+from javax.swing import Action, AbstractAction
 
 ACTION_VALUES = {
     'accelerator':      Action.ACCELERATOR_KEY,
@@ -156,68 +137,4 @@ def methodAction(fn=None, **properties):
         return MethodAction(fn, properties)
     else:
         return lambda f: MethodAction(f, properties)
-
-
-###
-### SWING THREADING
-###
-
-class FunctionCall(Runnable):
-    def __init__(self, fn, args, kwargs):
-        self.fn = fn
-        self.args = args
-        self.kwargs = kwargs
-        self.started = False
-        self.done = False
-        self.rv = None
-        self.exc = None
-
-    def run(self):
-        if self.started:
-            raise RuntimeException("Task was already started once")
-
-        self.started = True
-        try:
-            self.rv = self.fn(*self.args, **self.kwargs)
-        except object, exc:
-            self.exc = exc
-        finally:
-            self.done = True
-
-    def getResult(self):
-        if not self.done:
-            raise RuntimeException("Task has not yet finished")
-        elif self.exc:
-            raise self.exc
-        else:
-            return self.rv
-
-
-def threadCheck(fn):
-    @wraps(fn)
-    def decorated(*args, **kwargs):
-        if not SwingUtilities.isEventDispatchThread():
-            raise RuntimeError("Not on the AWT event dispatch thread")
-        return fn(*args, **kwargs)
-
-    return decorated
-
-
-def threadsafe(fn):
-    @wraps(fn)
-    def decorated(*args, **kwargs):
-        if SwingUtilities.isEventDispatchThread():
-            return fn(*args, **kwargs)
-        else:
-            task = FunctionCall(fn, args, kwargs)
-            SwingUtilities.invokeAndWait(task)
-            return task.getResult()
-    return decorated
-
-
-def runnable(fn):
-    @wraps(fn)
-    def decorated(*args, **kwargs):
-        return FunctionCall(fn, args, kwargs)
-    return decorated
 

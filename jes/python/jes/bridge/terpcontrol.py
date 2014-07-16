@@ -11,7 +11,7 @@ the interpreter runs.
 :license:   GNU GPL v2 or later, see jes/help/JESCopyright.txt for details
 """
 from jes.gui.commandwindow.redirect import RedirectStdio
-from jes.gui.swingutil import threadsafe
+from jes.gui.components.threading import threadsafe
 
 class InterpreterControl(object):
     def __init__(self, gui, interpreter):
