@@ -25,10 +25,23 @@ class CommandWindowPane(JTextPane):
     def __init__(self, controller, doc):
         self.controller = controller
         self.setStyledDocument(doc)
-        self.setBackground(Color.BLACK)
-        self.setCaretColor(Color.WHITE)
+        self.updateTheme(doc)
+        doc.onThemeSet.connect(self.updateTheme)
 
         self.standardKeymap = self.getKeymap()
+
+    def updateUI(self):
+        # Update the default font, if necessary,
+        # when the look and feel changes.
+        JTextPane.updateUI(self)
+        doc = self.getStyledDocument()
+        if hasattr(doc, 'setTheme'):
+            # Sometimes, we don't have a CommandWindowDocument here.
+            doc.setTheme(doc.themeName)
+
+    def updateTheme(self, doc, **_):
+        self.setBackground(doc.getBackgroundColor())
+        self.setCaretColor(doc.getDefaultTextColor())
 
     def setKeymap(self, keymap):
         # Swing keeps jacking up our keymap. This is designed to ensure that

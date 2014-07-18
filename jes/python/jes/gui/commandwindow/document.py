@@ -10,10 +10,17 @@ This Document class controls how the text in the command window changes.
 import CommandDocumentFilter
 import CommandDocumentListener
 import JESConstants
+from .themes import THEMES, DEFAULT_THEME_NAME, ALL_STYLES, MONOSPACE, NO_STYLES
+from blinker import NamedSignal
+from collections import namedtuple
 from java.awt import Color
+from javax.swing import UIManager
 from javax.swing.event import DocumentListener
 from javax.swing.text import (DefaultStyledDocument, StyleConstants,
                               SimpleAttributeSet)
+
+TranscriptLine = namedtuple('TranscriptLine', ['style', 'text'])
+
 
 class CommandDocument(DefaultStyledDocument):
     """
@@ -22,7 +29,7 @@ class CommandDocument(DefaultStyledDocument):
     everything written by the program up to the last prompt, and keeping
     the History up to date with what the current prompt text is.
     """
-    def __init__(self, history):
+    def __init__(self, history, themeName=DEFAULT_THEME_NAME):
         self.history = history
 
         self.promptText = None
@@ -31,28 +38,13 @@ class CommandDocument(DefaultStyledDocument):
 
         self.inputLimit = None
 
-        # Set the default style
-        baseStyle = self.getStyle('default')
-        StyleConstants.setFontFamily(baseStyle, "Monospaced")
-        StyleConstants.setBackground(baseStyle, Color.BLACK)
-        StyleConstants.setForeground(baseStyle, Color(0xeeeecc))
+        # Initialize the transcripts
+        self.transcripts = [[]]
+        self.transcript = self.transcripts[0]
 
-        # Set the pretty text styles
-        styleColors = {
-            'python-code':      Color(0xaacdf3),    # Light blue
-            'python-prompt':    Color(0x729fcf),    # Slightly darker blue
-            'python-return':    Color(0xedd400),    # Gold
-            'python-traceback': Color(0xff5c58),    # Red
-            'standard-input':   Color(0x8ae234),    # Green
-            'standard-output':  Color(0xffffff),    # White
-            'standard-error':   Color(0xfe8df2),    # Pink
-            'system-message':   Color(0xff9b41),    # Orange
-        }
-
-        for name, color in styleColors.items():
-            style = self.addStyle(name, baseStyle)
-            StyleConstants.setForeground(style, color)
-            StyleConstants.setFontFamily(style, "Monospaced")
+        # Set the themes
+        self.onThemeSet = NamedSignal('onThemeSet')
+        self.setTheme(themeName)
 
         # Install the filter and document listener
         self.filter = CommandDocumentFilter()
@@ -61,7 +53,85 @@ class CommandDocument(DefaultStyledDocument):
         self.listener = CommandDocumentListener(self.history)
         self.addDocumentListener(self.listener)
 
+    def setTheme(self, themeName):
+        """
+        Updates all the existing styles, and recolors the command window
+        to match the new styles if any text is present.
+        """
+        # Pick our fonts!
+        self.defaultFontFamily = \
+            UIManager.getDefaults().getFont("EditorPane.font").getFamily()
+        self.monoFontFamily = 'Monospaced'
+
+        # Check that the theme exists
+        if themeName not in THEMES:
+            themeName = DEFAULT_THEME_NAME
+
+        self.themeName = themeName
+        self.theme = theme = THEMES[themeName]
+
+        # Set the default style
+        baseStyle = self.getStyle('default')
+        StyleConstants.setBackground(baseStyle, theme.backgroundColor)
+        self._setStyle(baseStyle, theme.defaultStyle)
+
+        # Set the pretty text styles
+        existingStyles = set(self.getStyleNames())
+        for name in ALL_STYLES:
+            if name in existingStyles:
+                style = self.getStyle(name)
+            else:
+                style = self.addStyle(name, baseStyle)
+            styleSpec = theme.styles.get(name, (NO_STYLES, None))
+            self._setStyle(style, styleSpec)
+
+        self._recolorDocument()
+        self.onThemeSet.send(self)
+
+    def _recolorDocument(self):
+        # Reapply character styles to the text in the transcript
+        offset = 0
+        for styleName, text in self.transcript:
+            length = len(text)
+            self.setCharacterAttributes(offset, length,
+                                        self.getStyle(styleName), False)
+            offset += length
+
+        # Reapply character styles to the user input
+        if self.responseStyle:
+            self.setCharacterAttributes(offset, self.getLength() - offset,
+                                        self.getStyle(self.responseStyle),
+                                        False)
+
+    def _setStyle(self, attrSet, styleSpec):
+        flags, color = styleSpec
+
+        if color is None:
+            color = self.getDefaultTextColor()
+        StyleConstants.setForeground(attrSet, color)
+
+        if flags & MONOSPACE:
+            StyleConstants.setFontFamily(attrSet, self.monoFontFamily)
+        else:
+            StyleConstants.setFontFamily(attrSet, self.defaultFontFamily)
+
+    def getBackgroundColor(self):
+        """
+        Returns the background color that this document's editor window
+        should have.
+        """
+        return self.theme.backgroundColor
+
+    def getDefaultTextColor(self):
+        """
+        Returns the default text color. (The theme really should specify one!)
+        """
+        return self.theme.defaultStyle[1]
+
     def setFontSize(self, size):
+        """
+        Updates the document to have the provided font size.
+        """
         # First, we need to resize all the existing text.
         attr = SimpleAttributeSet()
         StyleConstants.setFontSize(attr, size)
@@ -72,6 +142,10 @@ class CommandDocument(DefaultStyledDocument):
             StyleConstants.setFontSize(self.getStyle(name), size)
 
     def append(self, text, style):
+        """
+        Writes text at the end of the document, in a specific style.
+        """
+        self.transcript.append(TranscriptLine(style, text))
         self.insertString(self.getLength(), text, self.getStyle(style))
 
     def openPrompt(self, promptText, promptStyle, responseStyle):
@@ -128,6 +202,10 @@ class CommandDocument(DefaultStyledDocument):
         if self.promptText is None:
             raise Exception("A prompt is not being displayed!")
 
+        inputLength = self.getLength() - self.inputLimit
+        text = self.getText(self.inputLimit, inputLength)
+        self.transcript.append(TranscriptLine(self.responseStyle, text))
+
         self.filter.disable()
         self.listener.disable()
         self.inputLimit = None
@@ -156,5 +234,7 @@ class CommandDocument(DefaultStyledDocument):
         """
         Erase everything in the document.
         """
+        self.transcripts.append([])
+        self.transcript = self.transcripts[-1]
         self.remove(0, self.getLength())
 
