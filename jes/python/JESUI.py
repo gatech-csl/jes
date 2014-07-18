@@ -493,6 +493,7 @@ class JESUI(swing.JFrame, FocusListener):
             [EDIT_TITLE, [
                 [COMMAND_EDITOR,    KeyEvent.VK_UP,     CONTROL_KEY],
                 [COMMAND_COMMAND,   KeyEvent.VK_DOWN,   CONTROL_KEY],
+                self.commandWindow.clearScreen,
                 MENU_SEPARATOR,
                 [COMMAND_UNDO,      KeyEvent.VK_Z,      CONTROL_KEY],
                 [COMMAND_REDO,      KeyEvent.VK_Y,      CONTROL_KEY],

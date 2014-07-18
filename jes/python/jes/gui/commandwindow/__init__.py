@@ -13,6 +13,7 @@ from .document import CommandDocument
 from .history import CommandHistory
 from .pane import CommandWindowPane
 from .prompt import promptService
+from jes.gui.components.actions import methodAction
 from jes.gui.components.threading import threadsafe
 
 class CommandWindowController(object):
@@ -126,6 +127,7 @@ class CommandWindowController(object):
             if cb is not None:
                 cb(text)
 
+    @methodAction(name="Clear command window")
     @threadsafe
     def clearScreen(self):
         """
