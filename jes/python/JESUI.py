@@ -459,7 +459,6 @@ class JESUI(swing.JFrame, FocusListener):
         self.setRunning(0)
         self.setFileName('')
         self.UpdateRowCol(1, 1)
-        self.UpdateName()
         self.helpFiles = {}
         self.helplist = []
 
@@ -1075,7 +1074,7 @@ class JESUI(swing.JFrame, FocusListener):
 #     Prints the current Document contained in JES
 ##########################################################################
     def printCommand(self):
-        name = JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_NAME)
+        name = "(Unknown)"
         isSaved = 1
         if self.editor.modified:
             # modified for promptSave cancel button - Buck Scharfnorth 29 May
@@ -1126,11 +1125,6 @@ class JESUI(swing.JFrame, FocusListener):
             self.docLabel.text = str(EXPLAIN_DEFAULT_STATUS)
             self.cursorStatusLabel.setForeground(awt.Color.black)
             self.explainButton.text = COMMAND_EXPLORE_HELP
-
-    def UpdateName(self):
-        self.nameStatusLabel.text = 'Current User: ' + \
-            JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_NAME)
-        self.nameStatusLabel.setForeground(awt.Color.black)
 
 ##########################################################################
 # Function name: SetHelpFiles
