@@ -10,10 +10,11 @@ state information.
 :license:   GNU GPL v2 or later, see jes/help/JESCopyright.txt for details
 """
 from .cpanel import DebugControlPanel
-from .table import WatcherTable, AutoScrollPane
+from .table import WatcherTable
 from java.awt import BorderLayout
 from javax.swing import JPanel, JOptionPane
 from jes.gui.components.actions import methodAction
+from jes.gui.components.panels import AutoScrollPane
 
 class DebugPanel(JPanel):
     def __init__(self, gui, debugger, watcher):

@@ -40,6 +40,7 @@ from java.lang import System, Thread
 from javax.swing import Action, UIManager, SwingUtilities
 
 from jes.gui.commandwindow import CommandWindowController
+from jes.gui.components.panels import AutoScrollPane
 from jes.gui.debugger import DebugPanel
 from JESBugReporter import JESBugReporter
 
@@ -318,7 +319,7 @@ class JESUI(swing.JFrame, FocusListener):
         splitterPane = swing.JSplitPane()
         editorPane = swing.JScrollPane(self.docpane)
         buttonPane = swing.JPanel()
-        commandPane = swing.JScrollPane(self.commandWindow.getTextPane())
+        commandPane = AutoScrollPane(self.commandWindow.getTextPane())
         bottomPane = swing.JPanel()
         statusbar = swing.JPanel()
         minSize = awt.Dimension(100, 100)

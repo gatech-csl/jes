@@ -10,7 +10,7 @@ execution.
 """
 from java.awt import Color
 from java.lang import Object
-from javax.swing import JLabel, JTable, JScrollPane
+from javax.swing import JLabel, JTable
 from javax.swing.table import AbstractTableModel, TableCellRenderer
 from jes.gui.components.threading import threadsafe
 
@@ -22,19 +22,6 @@ class WatcherTable(JTable):
         model = self.watcherModel = WatcherTableModel(watcher)
         super(WatcherTable, self).__init__(model)
         self.setDefaultRenderer(Object, WatcherCellRenderer(Color.green))
-
-
-class AutoScrollPane(JScrollPane):
-    def __init__(self, component):
-        super(AutoScrollPane, self).__init__(component)
-        self.lastMaximum = None
-        self.verticalScrollBar.model.stateChanged = self.stateChanged
-
-    def stateChanged(self, event):
-        brmodel = event.source
-        if brmodel.maximum != self.lastMaximum:
-            brmodel.value = brmodel.maximum
-            self.lastMaximum = brmodel.maximum
 
 
 def wrapInAutoScrollPane(table):
