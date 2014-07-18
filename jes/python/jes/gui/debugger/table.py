@@ -14,6 +14,9 @@ from javax.swing import JLabel, JTable, JScrollPane
 from javax.swing.table import AbstractTableModel, TableCellRenderer
 from jes.gui.components.threading import threadsafe
 
+CROP_MESSAGE = "# only the last %d steps are displayed"
+
+
 class WatcherTable(JTable):
     def __init__(self, watcher):
         model = self.watcherModel = WatcherTableModel(watcher)
@@ -50,6 +53,8 @@ class WatcherTableModel(AbstractTableModel):
         self.fixedColumns = ['step', 'line', 'instruction']
         self.fixedCount = len(self.fixedColumns)
 
+        self.displayedCropNotification = False
+
         watcher.onAddedVariable.connect(self._varsChanged)
         watcher.onRemovedVariable.connect(self._varsChanged)
 
@@ -57,7 +62,8 @@ class WatcherTableModel(AbstractTableModel):
         watcher.onReset.connect(self._framesCleared)
 
     def getRowCount(self):
-        return len(self.watcher.records)
+        return (len(self.watcher.records) +
+                (1 if self.displayedCropNotification else 0))
 
     def getColumnCount(self):
         return self.fixedCount + len(self.watcher.variablesToTrack)
@@ -69,11 +75,19 @@ class WatcherTableModel(AbstractTableModel):
             return "var: " + self._getVariableForColumn(col)
 
     def getValueAt(self, row, col):
+        if self.displayedCropNotification:
+            if row == 0 and col == 2:
+                return CROP_MESSAGE % self.watcher.MAX_RECORDS
+            elif row == 0:
+                return ""
+            else:
+                row = row - 1
+
         count = len(self.watcher.records)
         if row >= 0 and row < count:
             rec = self.watcher.records[row]
             if col == 0:
-                return row + 1
+                return rec.counter
             elif col == 1:
                 return rec.lineno
             elif col == 2:
@@ -98,12 +112,29 @@ class WatcherTableModel(AbstractTableModel):
         self.fireTableStructureChanged()
 
     @threadsafe
-    def _frameAdded(self, watcher, record, **_):
+    def _frameAdded(self, watcher, record, cropped, **_):
+        if cropped:
+            if not self.displayedCropNotification:
+                self.displayedCropNotification = True
+                if cropped == 1:
+                    # Equivalent to inserting and deleting the first row.
+                    self.fireTableRowsUpdated(0, 0)
+                else:
+                    self.fireTableRowsUpdated(0, 0)
+                    self.fireTableRowsDeleted(1, cropped - 1)
+            else:
+                # These ranges are inclusive.
+                # If 1 was cropped, we get 1, 1. 2 gives us 1, 2, and so on.
+                self.fireTableRowsDeleted(1, cropped)
+
         lastIndex = len(watcher.records) - 1
+        if self.displayedCropNotification:
+            lastIndex = lastIndex + 1
         self.fireTableRowsInserted(lastIndex, lastIndex)
 
     @threadsafe
     def _framesCleared(self, watcher, **_):
+        self.displayedCropNotification = False
         self.fireTableDataChanged()
 
 

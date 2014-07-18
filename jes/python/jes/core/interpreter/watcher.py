@@ -10,6 +10,7 @@ step.
 """
 import linecache
 from blinker import NamedSignal
+from collections import deque
 
 class _Missing(object):
     def __str__(self):
@@ -22,7 +23,8 @@ MISSING = _Missing()
 
 
 class Record(object):
-    def __init__(self, filename, lineno):
+    def __init__(self, counter, filename, lineno):
+        self.counter = counter
         self.filename = filename
         self.lineno = lineno
         self.line = linecache.getline(filename, lineno)
@@ -39,9 +41,14 @@ class Record(object):
 
 
 class Watcher(object):
+    MAX_RECORDS = 200
+
     def __init__(self, debugger):
         self.variablesToTrack = []
-        self.records = []
+
+        self.counter = 0
+        self.records = deque()
+        self.recordsCropped = False
 
         debugger.onStart.connect(self._start)
         debugger.onFrame.connect(self.recordFrame)
@@ -52,7 +59,9 @@ class Watcher(object):
         self.onReset = NamedSignal('onReset')
 
     def reset(self):
-        self.records = []
+        self.counter = 0
+        self.records = deque()
+        self.recordsCropped = False
         self.onReset.send(self)
 
     def addVariable(self, name):
@@ -67,13 +76,25 @@ class Watcher(object):
         self.reset()
 
     def recordFrame(self, debugger, filename, lineno, frame, **_):
-        record = Record(filename, lineno)
+        self.counter += 1
+        record = Record(self.counter, filename, lineno)
+
         for var in self.variablesToTrack:
             try:
                 value = eval(var, frame.f_locals, frame.f_globals)
                 record.variables[var] = value
             except:
                 pass
+
+        cropCount = 0
+        if len(self.records) >= self.MAX_RECORDS:
+            # Drop a bunch of records.
+            while len(self.records) >= self.MAX_RECORDS:
+                self.records.popleft()
+                cropCount += 1
+
+            self.recordsCropped = True
+
         self.records.append(record)
-        self.onRecorded.send(self, record=record)
+        self.onRecorded.send(self, record=record, cropped=cropCount)
 
