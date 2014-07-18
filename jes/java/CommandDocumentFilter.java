@@ -31,7 +31,7 @@ public class CommandDocumentFilter extends DocumentFilter {
         try {
             if (!enabled) {
                 bypass.insertString(offset, string, attr);
-            } else if (offset > inputLimit) {
+            } else if (offset >= inputLimit) {
                 string = string.replace("\t", "  ");
                 if (overrideAttr != null) {
                     attr = overrideAttr;

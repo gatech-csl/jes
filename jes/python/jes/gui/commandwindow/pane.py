@@ -9,7 +9,8 @@ system on top of the command window.
 :license:   GNU GPL v2 or later, see jes/help/JESCopyright.txt for details
 """
 from jes.gui.components.actions import PythonAction
-from java.awt import Color
+from java.awt import Color, Toolkit
+from java.awt.datatransfer import DataFlavor
 from javax.swing import JTextPane, KeyStroke
 from javax.swing.event import DocumentListener
 from javax.swing.text import Utilities
@@ -96,4 +97,43 @@ class CommandWindowPane(JTextPane):
         if newText is not None:
             doc.setResponseText(newText)
             self.setCaretPosition(doc.getLength())
+
+    def paste(self):
+        # Should we even try to paste?
+        doc = self.getStyledDocument()
+        if doc.inputLimit is None:
+            return
+
+        textToPaste = getContentToPaste(self)
+
+        if not textToPaste:
+            return
+
+        # Grab the first line of the text, if there's multiple lines.
+        index = textToPaste.find('\n')
+        if index != -1:
+            textToPaste = textToPaste[:index]
+
+        if not textToPaste:
+            return
+
+        # Determine where to put the text, and type!
+        # (We let the DocumentFilter determine the final location.)
+        start, end = self.getSelectionStart(), self.getSelectionEnd()
+
+        if start == end:
+            doc.insertString(self.getCaretPosition(), textToPaste, None)
+        elif end > start:
+            self.replaceSelection(textToPaste)
+
+
+def getContentToPaste(forComponent):
+    clipboard = Toolkit.getDefaultToolkit().getSystemClipboard()
+    clipContents = clipboard.getContents(forComponent)
+
+    for flavor in clipContents.getTransferDataFlavors():
+        if DataFlavor.stringFlavor.equals(flavor):
+            return clipContents.getTransferData(flavor)
+
+    return None
 
