@@ -12,6 +12,7 @@ from jes.gui.components.actions import PythonAction
 from java.awt import Color
 from javax.swing import JTextPane, KeyStroke
 from javax.swing.event import DocumentListener
+from javax.swing.text import Utilities
 
 key = KeyStroke.getKeyStroke
 
@@ -53,11 +54,31 @@ class CommandWindowPane(JTextPane):
         else:
             commandKeymap = self.addKeymap(keymap.getName() + "ForJES", keymap)
 
+            commandKeymap.addActionForKeyStroke(key('HOME'), PythonAction(self._home))
+            commandKeymap.addActionForKeyStroke(key('shift HOME'), PythonAction(self._shifthome))
             commandKeymap.addActionForKeyStroke(key('ENTER'), PythonAction(self._enter))
             commandKeymap.addActionForKeyStroke(key('UP'), PythonAction(self._up))
             commandKeymap.addActionForKeyStroke(key('DOWN'), PythonAction(self._down))
 
             JTextPane.setKeymap(self, commandKeymap)
+
+    def _home(self):
+        doc = self.getStyledDocument()
+        caret = self.getCaretPosition()
+        if doc.inputLimit is not None and caret >= doc.inputLimit:
+            self.setCaretPosition(doc.inputLimit)
+        else:
+            pos = Utilities.getRowStart(self, caret)
+            self.setCaretPosition(pos)
+
+    def _shifthome(self):
+        doc = self.getStyledDocument()
+        caret = self.getCaretPosition()
+        if doc.inputLimit is not None and caret >= doc.inputLimit:
+            self.moveCaretPosition(doc.inputLimit)
+        else:
+            pos = Utilities.getRowStart(self, caret)
+            self.moveCaretPosition(pos)
 
     def _enter(self):
         self.controller.submit()
