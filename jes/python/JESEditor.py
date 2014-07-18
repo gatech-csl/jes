@@ -17,8 +17,7 @@ import java.lang.Character as Character
 
 class JESEditor(swing.JTextPane,
                 swing.event.DocumentListener,
-                swing.event.CaretListener,
-                awt.event.FocusListener):
+                swing.event.CaretListener):
     ##########################################################################
     # Function name: __init__
     # Parameters:
@@ -40,13 +39,6 @@ class JESEditor(swing.JTextPane,
         self.boxY = 0
         self.boxWidth = 0
         self.boxHeight = 0
-        self.addFocusListener(self)
-
-    def focusGained(self, e):
-        self.gui.FocusOwner = self
-
-    def focusLost(self, e):
-        pass
 
 
 ##########################################################################

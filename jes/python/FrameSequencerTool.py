@@ -30,11 +30,8 @@ VSPLITTER_LOCATION = 300
 
 class FrameSequencerTool(swing.JFrame):
 
-    FocusOwner = None
-
     def __init__(self, movie):
         try:
-            self.FocusOwner = None
             self.size = (600, 400)
             self.movie = movie
             self.fps = 30

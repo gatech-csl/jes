@@ -35,7 +35,7 @@ import JESResources
 import JESPrintableDocument
 
 from java.awt import Event
-from java.awt.event import ActionListener, KeyEvent
+from java.awt.event import ActionListener, FocusListener, KeyEvent
 from java.lang import System, Thread
 from javax.swing import Action, UIManager, SwingUtilities
 
@@ -229,8 +229,6 @@ PROMPT_PRINT_MESSAGE = 'You should save the file that you are working\non before
 ERROR_SAVE_FAIL = 'The file could not been saved.'
 ERROR_OP_CANCEL = 'Operation Cancelled.'
 
-FocusOwner = None
-
 
 def getMethodList(klass):
     ret = []
@@ -240,9 +238,7 @@ def getMethodList(klass):
     return ret
 
 
-class JESUI(swing.JFrame):
-
-    FocusOwner = None
+class JESUI(swing.JFrame, FocusListener):
 ##########################################################################
 # Function name: __init__
 # Return:
@@ -254,7 +250,7 @@ class JESUI(swing.JFrame):
     def __init__(self, program):
         #            media.setColorWrapAround( program.wrapPixelValues )
         self.soundErrorShown = 0
-        self.FocusOwner = None
+        self.focusedEditor = None
         self.swing = swing
         self.program = program
         self.size = JESConstants.INITIAL_WINDOW_SIZE
@@ -279,7 +275,11 @@ class JESUI(swing.JFrame):
                                              preferredSize=(50, 30))
 
         self.editor = JESEditor.JESEditor(self)
+        self.trackEditorFocus(self.editor)
+
         self.commandWindow = CommandWindowController()
+        self.trackEditorFocus(self.commandWindow.getTextPane())
+
         self.loadButton = swing.JButton(LOAD_BUTTON_CAPTION,
                                         actionPerformed=self.actionPerformed)
         self.loadButton.enabled = 0
@@ -612,7 +612,7 @@ class JESUI(swing.JFrame):
         if actionCommand.find('.') == -1:
             # JES SECTION HELP
 
-            focusedComponent = self.FocusOwner
+            focusedComponent = self.focusedEditor
             if isinstance(focusedComponent, swing.JTextPane):
                 focusedComponent.replaceSelection(actionCommand + '(')
 
@@ -626,7 +626,7 @@ class JESUI(swing.JFrame):
                 JESResources.getPathTo(
                     'javadoc') + '/' + section + '.html#method_summary'
 
-            focusedComponent = self.FocusOwner
+            focusedComponent = self.focusedEditor
             if isinstance(focusedComponent, swing.JTextPane):
                 focusedComponent.replaceSelection('my' + actionCommand + '(')
 
@@ -756,7 +756,7 @@ class JESUI(swing.JFrame):
         elif actionCommand == COMMAND_COMMAND:
             self.commandWindow.requestFocus()
         elif actionCommand == COMMAND_EXPLORE:
-            self.openExploreWindow(self.FocusOwner.getSelectedText())
+            self.openExploreWindow(self.focusedEditor.getSelectedText())
         elif actionCommand[:len(EXPLAIN_PREFIX)] == EXPLAIN_PREFIX:
             self.openExploreWindow(actionCommand[len(EXPLAIN_PREFIX):])
 
@@ -1005,8 +1005,7 @@ class JESUI(swing.JFrame):
 #     depending on which one has the focus.
 ##########################################################################
     def callTextEditFunction(self, function):
-        #global FocusOwner
-        focusedComponent = self.FocusOwner  # self.getFocusOwner()
+        focusedComponent = self.focusedEditor
 
         if isinstance(focusedComponent, swing.JTextPane):
             focusedComponent.function()
@@ -1018,9 +1017,7 @@ class JESUI(swing.JFrame):
 #     depending on which one has the focus.
 ##########################################################################
     def cut(self):
-        #global FocusOwner
-        #focusedComponent = self.getFocusOwner()
-        focusedComponent = self.FocusOwner
+        focusedComponent = self.focusedEditor
         if isinstance(focusedComponent, swing.JTextPane):
             focusedComponent.cut()
 
@@ -1031,8 +1028,7 @@ class JESUI(swing.JFrame):
 #     depending on which one has the focus.
 ##########################################################################
     def copy(self):
-        #global FocusOwner
-        focusedComponent = self.FocusOwner  # self.getFocusOwner()
+        focusedComponent = self.focusedEditor
 
         if isinstance(focusedComponent, swing.JTextPane):
             focusedComponent.copy()
@@ -1044,8 +1040,7 @@ class JESUI(swing.JFrame):
 #     depending on which one has the focus.
 ##########################################################################
     def paste(self):
-        #global FocusOwner
-        focusedComponent = self.FocusOwner  # self.getFocusOwner()
+        focusedComponent = self.focusedEditor
         if isinstance(focusedComponent, swing.JTextPane):
             focusedComponent.paste()
 
@@ -1056,8 +1051,7 @@ class JESUI(swing.JFrame):
 #     depending on which one has the focus.
 ##########################################################################
     def undo(self):
-        #global FocusOwner
-        focusedComponent = self.FocusOwner  # self.getFocusOwner()
+        focusedComponent = self.focusedEditor
 
         if isinstance(focusedComponent, swing.JTextPane):
             focusedComponent.undo()
@@ -1069,8 +1063,7 @@ class JESUI(swing.JFrame):
 #     depending on which one has the focus.
 ##########################################################################
     def redo(self):
-        #global FocusOwner
-        focusedComponent = self.FocusOwner  # self.getFocusOwner()
+        focusedComponent = self.focusedEditor
 
         if isinstance(focusedComponent, swing.JTextPane):
             focusedComponent.redo()
@@ -1638,6 +1631,15 @@ class JESUI(swing.JFrame):
             swing.JOptionPane.showMessageDialog(self, "There are no movies to examine.",
                                                 "No movies",
                                                 swing.JOptionPane.ERROR_MESSAGE)
+
+    def trackEditorFocus(self, component):
+        component.addFocusListener(self)
+
+    def focusGained(self, event):
+        self.focusedEditor = event.getComponent()
+
+    def focusLost(self, event):
+        pass
 
 
 # little utility bits added for making skin changing easier.
