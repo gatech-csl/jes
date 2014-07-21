@@ -38,8 +38,9 @@ def debugJES():
 # Override Python's normal exit instructions.
 # This makes exit and exit() both print instructions for exiting.
 
-class NotExiter():
-    message = 'Press Ctrl + Q or select "Exit" from the "File" menu to exit JES'
+class SystemMessage():
+    def __init__(self, message):
+        self.message = message
 
     def __repr__(self):
         return self.message
@@ -47,8 +48,18 @@ class NotExiter():
     def __call__(self):
         return self
 
+import JESVersion
+from java.lang import System
 
-quit = exit = NotExiter()
+if System.getProperty('os.name').find('Mac') != -1:
+    quit = exit = SystemMessage('Press Command + Q or select "Exit" from the "File" menu to exit JES')
+else:
+    quit = exit = SystemMessage('Press Ctrl + Q or select "Exit" from the "File" menu to exit JES')
+
+version = SystemMessage(JESVersion.getMessage())
+
+del JESVersion
+del System
 
 
 global __debugSystem__

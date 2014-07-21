@@ -38,5 +38,20 @@ public class JESVersion {
     public static String getSCMInfo () {
         return SCM_INFO;
     }
+
+    public static String getMessage () {
+        return String.format(
+            "JES version %s\n" +
+            "Release date:   %s\n" +
+            "Source control: %s\n" +
+            "Java version:   %s (%s/%s)\n" +
+            "Jython version: %s (build %s)\n",
+            RELEASE, RELEASE_DATE, SCM_INFO,
+            System.getProperty("java.version"),
+            System.getProperty("java.runtime.name"),
+            System.getProperty("java.vm.name"),
+            org.python.Version.PY_VERSION, org.python.Version.getBuildInfo()
+        );
+    }
 }
 
