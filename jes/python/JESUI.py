@@ -281,6 +281,9 @@ class JESUI(swing.JFrame, FocusListener):
 
         self.commandWindow = CommandWindowController()
         self.trackEditorFocus(self.commandWindow.getTextPane())
+        self.commandWindow.setTheme(JESConfig.getInstance().getStringProperty(
+            JESConfig.CONFIG_COMMAND_WINDOW_THEME
+        ))
 
         self.loadButton = swing.JButton(LOAD_BUTTON_CAPTION,
                                         actionPerformed=self.actionPerformed)
