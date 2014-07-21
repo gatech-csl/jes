@@ -18,13 +18,17 @@ set java_exe=java.exe
 
 set java_bundled=%jes_base%\dependencies\jre-win32
 
-if EXIST "%java_bundled%" (
-    set java=%java_bundled%\bin\%java_exe%
+if DEFINED JES_JAVA_HOME (
+    set java=%JES_JAVA_HOME%\bin\%java_exe%
 ) else (
-    if DEFINED JAVA_HOME (
-        set java=%JAVA_HOME%\bin\%java_exe%
+    if EXIST "%java_bundled%" (
+        set java=%java_bundled%\bin\%java_exe%
     ) else (
-        set java=%java_exe%
+        if DEFINED JAVA_HOME (
+            set java=%JAVA_HOME%\bin\%java_exe%
+        ) else (
+            set java=%java_exe%
+        )
     )
 )
 
@@ -65,14 +69,16 @@ if NOT EXIST %APPDATA%\JES (
 
 rem All right, time to actually run it!
 
-if NOT DEFINED JAVA_MEMORY (
-    set JAVA_MEMORY=-Xmx512m
+if NOT DEFINED JES_JAVA_MEMORY (
+    set JES_JAVA_MEMORY=-Xmx512m
 )
 
-"%java%" -classpath "%classpath%" %JAVA_MEMORY% ^
+"%java%" -classpath "%classpath%" ^
     -Djes.home="%jes_home%" ^
     -Djes.configfile="%jesconfig%" ^
     -Dpython.home="%pythonhome%" ^
     -Dpython.path="%pythonpath%" ^
     -Dpython.cachedir="%pythoncache%" ^
+    %JES_JAVA_MEMORY% %JES_JAVA_OPTIONS% ^
     JESstartup %*
+

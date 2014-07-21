@@ -56,6 +56,8 @@ public class JESstartup {
                 }, AWTEvent.KEY_EVENT_MASK);
             } else if (option.equals("--check-threads")) {
                 RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
+            } else if (option.startsWith("--python-verbose=")) {
+                System.setProperty("python.verbose", option.substring(17));
             }
         }
 

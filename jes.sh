@@ -7,10 +7,12 @@ JES_HOME="$JES_BASE/jes"
 
 
 # What Java should we use?
-if test -z "$JAVA_HOME"; then
-    JAVA=java
+if ! test -z "$JES_JAVA_HOME"; then
+    JAVA="$JES_JAVA_HOME/bin/java"
+elif ! test -z "$JAVA_HOME"; then
+    JAVA="$JAVA_HOME/bin/java"
 else
-    JAVA="$JAVA_HOME/java"
+    JAVA=java
 fi
 
 
@@ -56,13 +58,13 @@ mkdir -p "$(dirname "$JESCONFIG")"
 
 # All right, time to actually run it!
 
-java -classpath "$CLASSPATH" \
-    ${JAVA_MEMORY:--Xmx512m} \
+"$JAVA" -classpath "$CLASSPATH" \
     -Djes.home="$JES_HOME" \
     -Djes.configfile="$JESCONFIG" \
     -Dpython.home="$PYTHONHOME" \
     -Dpython.path="$PYTHONPATH" \
     -Dpython.cachedir="$PYTHONCACHE" \
     -Dapple.laf.useScreenMenuBar=true \
+    ${JES_JAVA_MEMORY:--Xmx512m} ${JES_JAVA_OPTIONS} \
     JESstartup "$@"
 

@@ -101,8 +101,12 @@ mkdir -p "$(dirname "$JESCONFIG")"
 
 # Discover Java.
 
-# first check system variable "$JAVA_HOME"
-if [ -n "$JAVA_HOME" ]; then
+# first check environment variable "$JES_JAVA_HOME"
+if [ -n "$JES_JAVA_HOME" ]; then
+    JAVACMD="$JES_JAVA_HOME/bin/java"
+
+# then check system variable "$JAVA_HOME"
+elif [ -n "$JAVA_HOME" ]; then
 	JAVACMD="$JAVA_HOME/bin/java"
 
 # otherwise check "/usr/libexec/java_home" symlinks
@@ -135,14 +139,14 @@ if [ -x "$JAVACMD" ]; then
     exec "$JAVACMD" \
         -classpath "$CLASSPATH" \
 	    -Xdock:icon="$CONTENTS/Resources/${CFBundleIconFile}" \
-	    -Dapple.laf.useScreenMenuBar=true \
 	    -Xdock:name="${CFBundleName}" \
-        ${JAVA_MEMORY:--Xmx512m} \
+	    -Dapple.laf.useScreenMenuBar=true \
         -Djes.home="$JES_HOME" \
         -Djes.configfile="$JESCONFIG" \
         -Dpython.home="$PYTHONHOME" \
         -Dpython.path="$PYTHONPATH" \
         -Dpython.cachedir="$PYTHONCACHE" \
+        ${JES_JAVA_MEMORY:--Xmx512m} ${JES_JAVA_OPTIONS} \
         JESstartup "$@"
 
 else
