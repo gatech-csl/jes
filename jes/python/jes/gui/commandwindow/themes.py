@@ -9,6 +9,7 @@ This contains the list of themes for the command window.
 """
 from collections import namedtuple
 from java.awt import Color
+from jes.util.collections import OrderedDict
 
 ###
 ### STYLE FLAGS
@@ -20,7 +21,7 @@ NO_STYLES = 0
 #: Sets the text to monospace instead of the default proportional font.
 MONOSPACE = 1 << 0
 
-Theme = namedtuple('Theme', ('description', 'backgroundColor', 'defaultStyle', 'styles'))
+Theme = namedtuple('Theme', ('backgroundColor', 'defaultStyle', 'styles'))
 
 
 ###
@@ -43,14 +44,11 @@ ALL_STYLES = set([
 ### THEME DEFINITIONS
 ###
 
-THEMES = {}
+THEMES = OrderedDict()
 
-DEFAULT_THEME_NAME = 'Modern'
-
-THEMES['Modern'] = Theme(
-    "different colors on black",
+THEMES['Standard Dark'] = Theme(
     Color.BLACK,
-    (MONOSPACE, Color(0xffffff)),
+    (MONOSPACE, Color.WHITE),
     {
         'python-code':      (MONOSPACE,         Color(0xaacdf3)),   # Light blue
         'python-prompt':    (MONOSPACE,         Color(0x729fcf)),   # Darker blue
@@ -65,7 +63,6 @@ THEMES['Modern'] = Theme(
 
 
 THEMES['JES 4.3'] = Theme(
-    "yellow on black",
     Color.BLACK,
     (NO_STYLES, Color.YELLOW),
     {
@@ -74,6 +71,54 @@ THEMES['JES 4.3'] = Theme(
 )
 
 
+THEMES['White on Black'] = Theme(
+    Color.BLACK,
+    (MONOSPACE, Color.WHITE),
+    {}
+)
+
+
+THEMES['Black on White'] = Theme(
+    Color.WHITE,
+    (MONOSPACE, Color.BLACK),
+    {}
+)
+
+
+# See http://www.sron.nl/~pault/colourschemes.pdf
+
+THEMES['Colorblind Light'] = Theme(
+    Color.WHITE,
+    (MONOSPACE, Color.BLACK),
+    {
+        'python-code':      (MONOSPACE,         Color(0x114477)),   # Blue
+        'python-prompt':    (MONOSPACE,         Color(0x117777)),   # Teal
+        'python-return':    (MONOSPACE,         Color(0x777711)),   # Gold
+        'python-traceback': (MONOSPACE,         Color(0x771122)),   # Red
+        'standard-input':   (MONOSPACE,         Color(0x117744)),   # Green
+        'standard-output':  (MONOSPACE,         Color(0x000000)),   # Black
+        'standard-error':   (MONOSPACE,         Color(0x771155)),   # Purple
+        'system-message':   (MONOSPACE,         Color(0x774411)),   # Orange
+    }
+)
+
+
+THEMES['Colorblind Dark'] = Theme(
+    Color.BLACK,
+    (MONOSPACE, Color.WHITE),
+    {
+        'python-code':      (MONOSPACE,         Color(0x77AADD)),   # Blue
+        'python-prompt':    (MONOSPACE,         Color(0x77CCCC)),   # Teal
+        'python-return':    (MONOSPACE,         Color(0xDDDD77)),   # Gold
+        'python-traceback': (MONOSPACE,         Color(0xDD7788)),   # Red
+        'standard-input':   (MONOSPACE,         Color(0x88CCAA)),   # Green
+        'standard-output':  (MONOSPACE,         Color(0xFFFFFF)),   # White
+        'standard-error':   (MONOSPACE,         Color(0xCC99BB)),   # Purple
+        'system-message':   (MONOSPACE,         Color(0xDDAA77)),   # Orange
+    }
+)
+
+
 THEME_NAMES = THEMES.keys()
-THEME_NAMES.sort()
+DEFAULT_THEME_NAME = THEME_NAMES[0]
 

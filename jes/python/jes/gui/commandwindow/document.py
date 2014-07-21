@@ -82,7 +82,12 @@ class CommandDocument(DefaultStyledDocument):
                 style = self.getStyle(name)
             else:
                 style = self.addStyle(name, baseStyle)
-            styleSpec = theme.styles.get(name, (NO_STYLES, None))
+
+            styleSpec = theme.styles.get(name, (None, None))
+            styleSpec = (
+                (theme.defaultStyle[0] if styleSpec[0] is None else styleSpec[0]),
+                (theme.defaultStyle[1] if styleSpec[1] is None else styleSpec[1])
+            )
             self._setStyle(style, styleSpec)
 
         self._recolorDocument()
@@ -106,8 +111,6 @@ class CommandDocument(DefaultStyledDocument):
     def _setStyle(self, attrSet, styleSpec):
         flags, color = styleSpec
 
-        if color is None:
-            color = self.getDefaultTextColor()
         StyleConstants.setForeground(attrSet, color)
 
         if flags & MONOSPACE:

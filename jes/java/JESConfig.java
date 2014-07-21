@@ -29,6 +29,9 @@ public class JESConfig {
     /** The Java UI skin. */
     public static final String CONFIG_SKIN = "interface.skin";
 
+    /** The command-window color scheme. */
+    public static final String CONFIG_COMMAND_WINDOW_THEME = "interface.commandwindow.theme";
+
     /** The interface font size. */
     public static final String CONFIG_FONT = "interface.fontsize";
 
@@ -56,18 +59,19 @@ public class JESConfig {
     private static final Properties defaults = new Properties();
 
     static {
-        defaults.setProperty(CONFIG_WRAPPIXELVALUES,    "0");
-        defaults.setProperty(CONFIG_MEDIAPATH,          "");
+        defaults.setProperty(CONFIG_WRAPPIXELVALUES,        "0");
+        defaults.setProperty(CONFIG_MEDIAPATH,              "");
 
-        defaults.setProperty(CONFIG_MODE,               "Normal");
-        defaults.setProperty(CONFIG_SKIN,               "");
-        defaults.setProperty(CONFIG_FONT,               "12");
-        defaults.setProperty(CONFIG_GUTTER,             "1");
-        defaults.setProperty(CONFIG_BLOCK,              "0");
+        defaults.setProperty(CONFIG_MODE,                   "Normal");
+        defaults.setProperty(CONFIG_SKIN,                   "");
+        defaults.setProperty(CONFIG_FONT,                   "12");
+        defaults.setProperty(CONFIG_COMMAND_WINDOW_THEME,   "JES 4.3");
+        defaults.setProperty(CONFIG_GUTTER,                 "1");
+        defaults.setProperty(CONFIG_BLOCK,                  "0");
 
-        defaults.setProperty(CONFIG_AUTOSAVEONRUN,      "0");
-        defaults.setProperty(CONFIG_BACKUPSAVE,         "1");
-        defaults.setProperty(CONFIG_LOGBUFFER,          "1");
+        defaults.setProperty(CONFIG_AUTOSAVEONRUN,          "0");
+        defaults.setProperty(CONFIG_BACKUPSAVE,             "1");
+        defaults.setProperty(CONFIG_LOGBUFFER,              "1");
     };
 
 

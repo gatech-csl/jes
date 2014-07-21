@@ -35,6 +35,10 @@ class CommandWindowController(object):
         self._document.setFontSize(size)
 
     @threadsafe
+    def setTheme(self, name):
+        self._document.setTheme(name)
+
+    @threadsafe
     def requestFocus(self):
         self._textpane.requestFocus()
 

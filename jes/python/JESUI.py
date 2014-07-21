@@ -40,6 +40,7 @@ from java.lang import System, Thread
 from javax.swing import Action, UIManager, SwingUtilities
 
 from jes.gui.commandwindow import CommandWindowController
+from jes.gui.commandwindow.themes import THEME_NAMES
 from jes.gui.components.panels import AutoScrollPane
 from jes.gui.debugger import DebugPanel
 from JESBugReporter import JESBugReporter
@@ -1260,15 +1261,16 @@ class JESUI(swing.JFrame, FocusListener):
 
         modelabel = swing.JLabel("Mode:")
         fontlabel = swing.JLabel(
-            "Font Size (1-" + str(JESConstants.HIGH_FONT) + "):")
-        gutterlabel = swing.JLabel("Line Numbers:")
-        blocklabel = swing.JLabel("Show Indentation Help:")
+            "Font size (1-" + str(JESConstants.HIGH_FONT) + "):")
+        gutterlabel = swing.JLabel("Show line numbers:")
+        blocklabel = swing.JLabel("Show indentation help:")
         logginglabel = swing.JLabel("Logging:")
-        autosavelabel = swing.JLabel("Auto save on load:")
+        autosavelabel = swing.JLabel("Automatically save before loading:")
         backupsavelabel = swing.JLabel("Save a backup copy on save:")
         wrappixellabel = swing.JLabel(
             "<html>Modulo pixel color values by 256<br><center>(356 mod 256 = 100)</center></html>")
-        skinlabel = swing.JLabel("Skin:")
+        skinlabel = swing.JLabel("User interface skin:")
+        cmdWindowThemeLabel = swing.JLabel("Command window theme:")
 
         self.autosaveBox = swing.JCheckBox(
             "", JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_AUTOSAVEONRUN))
@@ -1319,6 +1321,12 @@ class JESUI(swing.JFrame, FocusListener):
             if(str(item).startswith(cur) or cur.startswith(str(item))):
                 self.skinField.setSelectedItem(item)
 
+        self.cmdWindowThemeField = swing.JComboBox(THEME_NAMES,
+            actionListener=themeActionListener(self),
+            selectedItem=JESConfig.getInstance().getStringProperty(
+                JESConfig.CONFIG_COMMAND_WINDOW_THEME
+            ))
+
         self.optionsWindow.contentPane.add(modelabel)
         self.optionsWindow.contentPane.add(self.userExperienceField)
         self.optionsWindow.contentPane.add(fontlabel)
@@ -1343,6 +1351,9 @@ class JESUI(swing.JFrame, FocusListener):
 
         self.optionsWindow.contentPane.add(skinlabel)
         self.optionsWindow.contentPane.add(self.skinField)
+
+        self.optionsWindow.contentPane.add(cmdWindowThemeLabel)
+        self.optionsWindow.contentPane.add(self.cmdWindowThemeField)
 
         self.optionsWindow.contentPane.add(cancelbutton)
         self.optionsWindow.contentPane.add(donebutton)
@@ -1404,6 +1415,15 @@ class JESUI(swing.JFrame, FocusListener):
 
         else:
             self.optionsWindow.dispose()
+
+    def updateCommandWindowTheme(self, event):
+        comboBox = event.getSource()
+        theme = str(comboBox.getSelectedItem())
+        self.commandWindow.setTheme(theme)
+
+        JESConfig.getInstance().setStringProperty(
+            JESConfig.CONFIG_COMMAND_WINDOW_THEME, theme
+        )
 
 ######################################################################
 # Function name: turnOffGutter
@@ -1650,12 +1670,19 @@ def currentskin():
 
 
 class skinActionListener(awt.event.ActionListener):
-
     def __init__(self, ui):
         self.ui = ui
 
     def actionPerformed(self, e):
         self.ui.changeSkin(e)
+
+
+class themeActionListener(awt.event.ActionListener):
+    def __init__(self, ui):
+        self.ui = ui
+
+    def actionPerformed(self, e):
+        self.ui.updateCommandWindowTheme(e)
 
 ####################################################################
 ####################################################################
