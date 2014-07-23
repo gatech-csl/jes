@@ -91,7 +91,7 @@
             location="${jes.release.products}/${jes.release.linux.basename}.tar.gz" />
 
     <target name="release-linux" depends="build, release-dir"
-        description="Build a release for Linux and other UNIX systems">
+        description="Build a release for Linux and other UNIX systems.">
         <!-- Create and clean the stage directory -->
         <mkdir dir="${jes.release.linux.stage}" />
         <delete includeemptydirs="true">
@@ -140,10 +140,10 @@
 
     <target name="release-windows-all"
         depends="release-windows-zip-nojava, release-windows-zip-java, release-windows-installer"
-        description="Builds all available Windows release types" />
+        description="Build all available Windows release types." />
 
     <target name="release-windows-contents" depends="build"
-        description="Builds the release contents for Windows, but not an actual release">
+        description="Build the release contents for Windows, but not an actual release.">
         <!-- Create and clean the stage directory -->
         <mkdir dir="${jes.release.windows.stage}" />
         <delete includeemptydirs="true">
@@ -178,7 +178,7 @@
             location="${jes.release.products}/${jes.release.windows.basename}-java-included.zip" />
 
     <target name="release-windows-zip-nojava" depends="release-windows-contents, release-dir"
-        description="Builds a ZIP file for Windows (with no JRE)">
+        description="Build a ZIP file for Windows (with no JRE).">
         <!-- Reset the ZIP -->
         <delete file="${jes.release.windows.zip-nojava.zipfile}" />
         <!-- Build our readme...we're doing this slightly weirdly -->
@@ -195,7 +195,7 @@
     </target>
 
     <target name="release-windows-zip-java" depends="release-windows-contents, release-dir"
-        description="Builds a ZIP file for Windows (including a JRE)">
+        description="Build a ZIP file for Windows (including a JRE).">
         <!-- Reset the ZIP -->
         <delete file="${jes.release.windows.zip-java.zipfile}" />
         <!-- Build our readme...we're doing this slightly weirdly -->
@@ -228,7 +228,7 @@
             location="${jes.release.products}/${jes.release.windows.installer.filename}" />
 
     <target name="release-windows-installer" depends="release-windows-contents, release-dir" if="makensis"
-        description="Builds an EXE installer for Windows">
+        description="Build an EXE installer for Windows. (pass -Dmakensis=path to makensis.exe)">
         <!-- Reset the installer -->
         <delete file="${jes.release.windows.installer.stage}" />
 
@@ -263,7 +263,8 @@
              classname="net.sourceforge.jarbundler.JarBundler"
              classpath="${jes.release.macosx.resources}/jarbundler-2.3.1.jar" />
 
-    <target name="release-macosx" depends="build, release-dir">
+    <target name="release-macosx" depends="build, release-dir"
+        description="Build an .app package for Mac OS X.">
         <!-- Pack the JES classes into a JAR -->
         <jar destfile="${jes.home}/classes.jar" basedir="${jes.java.class}" />
 
@@ -320,7 +321,7 @@
             location="${jes.release.products}/${jes.release.testkit.basename}.zip" />
 
     <target name="release-testkit" depends="release-dir"
-        description="Creates a package of testing materials">
+        description="Build a package of testing materials.">
         <!-- Reset it -->
         <delete file="${jes.release.testkit.zipfile}" />
 

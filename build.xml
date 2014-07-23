@@ -228,7 +228,7 @@
     </target>
 
     <target name="clean-python"
-        description="Remove the cached Python classes.">
+        description="Remove the cached Python bytecode.">
         <delete>
             <fileset dir="${jes.python.src}" includes="**/*$py.class" />
         </delete>
