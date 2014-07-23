@@ -1,5 +1,6 @@
 # Compiled Java files
 *.class
+jes/classes.jar
 jes/javadoc/
 
 # Generated Java files

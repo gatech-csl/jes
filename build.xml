@@ -37,6 +37,7 @@
     <property name="jes.python.src"     location="${jes.home}/python" />
     <property name="jes.java.src"       location="${jes.home}/java" />
     <property name="jes.java.class"     location="${jes.home}/classes" />
+    <property name="jes.java.jar"       location="${jes.home}/classes.jar" />
     <property name="jes.javadoc"        location="${jes.home}/javadoc" />
 
     <property name="jes.main"           value="JESstartup" />
@@ -86,7 +87,7 @@
     </fileset>
 
     <path id="jes.classpath">
-        <pathelement path="${jes.java.class}" />
+        <pathelement path="${jes.java.jar}" />
         <fileset refid="jes.deps.jars" />
     </path>
 
@@ -134,7 +135,7 @@
     </target>
 
     <target name="compile" depends="version"
-        description="Build the Java class files.">
+        description="Build the Java class files and JAR.">
         <mkdir dir="${jes.java.class}" />
         <javac srcdir="${jes.java.src}" destdir="${jes.java.class}"
                source="${jes.target-java}" target="${jes.target-java}"
@@ -142,6 +143,7 @@
                includeantruntime="false">
             <classpath refid="jes.classpath" />
         </javac>
+        <jar destfile="${jes.java.jar}" basedir="${jes.java.class}" />
     </target>
 
     <uptodate property="jes.javadoc.uptodate" targetfile="${jes.javadoc}/index-all.html">
@@ -215,6 +217,7 @@
 
     <target name="clean-java-classes"
         description="Remove the compiled Java classes.">
+        <delete file="${jes.java.jar}" />
         <delete includeemptydirs="true">
             <fileset dir="${jes.java.class}" includes="**/*" />
         </delete>

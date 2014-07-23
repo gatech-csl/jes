@@ -14,6 +14,16 @@
     <property name="jes.release.index.src"  location="${jes.release.resources}/index.html" />
 
 
+    <!-- Properties for signatures -->
+    <property name="signing.keystore"       location="${jes.release.dir}/keystore.jks" />
+    <property name="signing.tsaurl"         value="http://timestamp.comodoca.com/rfc3161" />
+
+    <property name="jes.release.jars"       location="${basedir}"
+                                            unless:set="signing.key" />
+    <property name="jes.release.jars"       location="${jes.release.products}/${jes.release.basename}-jars"
+                                            if:set="signing.key" />
+
+
     <!-- Master "release" target -->
     <target name="release" depends="release-index, release-testkit, release-linux, release-windows-all, release-macosx"
         description="Build all the releases we can make on the current platform." />
@@ -27,6 +37,7 @@
         <delete includeemptydirs="true">
             <fileset dir="${jes.release.dir}">
                 <include name="**/*" />
+                <exclude name="keystore.jks" />
                 <exclude name="build-releases.xml" />
                 <exclude name="resources/**/*" />
             </fileset>
@@ -49,8 +60,8 @@
         <include name="jes/java/**/*.java" />
     </fileset>
 
-    <fileset id="jes.release.contents.java-built" dir="${basedir}">
-        <include name="jes/classes/**/*.class" />
+    <fileset id="jes.release.contents.jars" dir="${jes.release.jars}">
+        <include name="jes/classes.jar" />
         <include name="dependencies/jars/**/*.jar" />
     </fileset>
 
@@ -80,6 +91,44 @@
     </target>
 
 
+    <!-- Signing jars -->
+    <target name="signed-jars" depends="compile, release-dir" if="sign"
+        description="Create signed copies of all the JARs. (pass -Dsign=true -Dsigning.key=key alias)">
+        <!-- Get the passwords -->
+        <input addproperty="signing.storepass"
+               message="Enter the keystore password: ">
+            <handler type="secure" />
+        </input>
+
+        <input addproperty="signing.keypass.input"
+               message="Enter the private key password (hit ENTER for same): ">
+            <handler type="secure" />
+        </input>
+
+        <property name="signing.keypass" value="${signing.storepass}"
+                  if:blank="signing.keypass.input" />
+        <property name="signing.keypass" value="${signing.keypass.input}"
+                  unless:blank="signing.keypass.input" />
+
+        <!-- OK, now actually sign them -->
+        <mkdir dir="${jes.release.jars}/jes" />
+        <mkdir dir="${jes.release.jars}/dependencies/jars" />
+
+        <signjar destDir="${jes.release.jars}"
+            keystore="${signing.keystore}" alias="${signing.key}"
+            storepass="${signing.storepass}" keypass="${signing.keypass}"
+            tsaurl="${signing.tsaurl}">
+
+            <path>
+                <fileset dir="${basedir}">
+                    <include name="jes/classes.jar" />
+                    <include name="dependencies/jars/**/*.jar" />
+                </fileset>
+            </path>
+        </signjar>
+    </target>
+
+
     <!-- linux release type: shell script, no embedded Java -->
     <property name="jes.release.linux.resources"    location="${jes.release.resources}/linux" />
     <property name="jes.release.linux.readme"       location="${jes.release.linux.resources}/JESReadme.txt" />
@@ -90,7 +139,7 @@
     <property name="jes.release.linux.tarball"
             location="${jes.release.products}/${jes.release.linux.basename}.tar.gz" />
 
-    <target name="release-linux" depends="build, release-dir"
+    <target name="release-linux" depends="build, release-dir, signed-jars"
         description="Build a release for Linux and other UNIX systems.">
         <!-- Create and clean the stage directory -->
         <mkdir dir="${jes.release.linux.stage}" />
@@ -101,7 +150,7 @@
         <!-- Copy everything JES needs into the stage directory -->
         <copy todir="${jes.release.linux.stage}">
             <fileset refid="jes.release.contents.python" />
-            <fileset refid="jes.release.contents.java-built" />
+            <fileset refid="jes.release.contents.jars" />
             <fileset refid="jes.release.contents.java-src" />
             <fileset refid="jes.release.contents.static" />
             <fileset refid="jes.release.extras" />
@@ -142,7 +191,7 @@
         depends="release-windows-zip-nojava, release-windows-zip-java, release-windows-installer"
         description="Build all available Windows release types." />
 
-    <target name="release-windows-contents" depends="build"
+    <target name="release-windows-contents" depends="build, signed-jars"
         description="Build the release contents for Windows, but not an actual release.">
         <!-- Create and clean the stage directory -->
         <mkdir dir="${jes.release.windows.stage}" />
@@ -153,7 +202,7 @@
         <!-- Copy everything JES needs into the stage directory -->
         <copy todir="${jes.release.windows.stage}">
             <fileset refid="jes.release.contents.python" />
-            <fileset refid="jes.release.contents.java-built" />
+            <fileset refid="jes.release.contents.jars" />
             <fileset refid="jes.release.contents.java-src" />
             <fileset refid="jes.release.contents.static" />
             <fileset refid="jes.release.extras" />
@@ -263,11 +312,8 @@
              classname="net.sourceforge.jarbundler.JarBundler"
              classpath="${jes.release.macosx.resources}/jarbundler-2.3.1.jar" />
 
-    <target name="release-macosx" depends="build, release-dir"
+    <target name="release-macosx" depends="build, release-dir, signed-jars"
         description="Build an .app package for Mac OS X.">
-        <!-- Pack the JES classes into a JAR -->
-        <jar destfile="${jes.home}/classes.jar" basedir="${jes.java.class}" />
-
         <!-- Build the JES.app skeleton -->
         <delete dir="${jes.release.macosx.bundle}" />
         <delete file="${jes.release.macosx.zipfile}" />
@@ -285,7 +331,7 @@
             jvmversion="${jes.target-java}+"
             verbose="true">
 
-            <jarfileset dir="${basedir}">
+            <jarfileset dir="${jes.release.jars}">
                 <include name="jes/classes.jar" />
                 <include name="dependencies/jars/*.jar" />
             </jarfileset>
@@ -308,9 +354,6 @@
                 <include name="JES.app/Contents/MacOS/jes-launcher.sh" />
             </zipfileset>
         </zip>
-
-        <!-- Get rid of the JAR we made -->
-        <delete file="${jes.home}/classes.jar" />
     </target>
 
 

@@ -19,7 +19,7 @@ fi
 # Where's our Java code?
 JARS="$JES_BASE/dependencies/jars"
 
-CLASSPATH="$JES_HOME/classes"
+CLASSPATH="$JES_HOME/classes.jar"
 
 CLASSPATH="$CLASSPATH:$JARS/jython-2.5.3.jar"
 CLASSPATH="$CLASSPATH:$JARS/junit.jar"

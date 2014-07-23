@@ -36,7 +36,7 @@ if DEFINED JES_JAVA_HOME (
 rem Where's our Java code?
 set jars=%jes_base%\dependencies\jars
 
-set classpath=%jes_home%\classes
+set classpath=%jes_home%\classes.jar
 
 set classpath=%classpath%;%jars%\jython-2.5.3.jar
 set classpath=%classpath%;%jars%\junit.jar
