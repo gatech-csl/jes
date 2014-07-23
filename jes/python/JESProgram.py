@@ -339,6 +339,7 @@ class JESProgram:
                 self.interpreter.debugger.setTargetFilenames([self.filename])
                 self.gui.commandWindow.requestFocus()
                 self.gui.editor.getDocument().removeErrorHighlighting()
+                self.gui.loadCurrent()
 
     def setErrorByHand(self, message, lineNumber):
         excRecord = JESExceptionRecord.JESExceptionRecord(self.filename, self)
