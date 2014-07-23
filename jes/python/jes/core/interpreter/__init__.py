@@ -14,7 +14,7 @@ from .debugger import Debugger
 from blinker import NamedSignal
 from codeop import compile_command
 from java.lang import Thread
-from threading import Lock
+from threading import Lock, Semaphore
 from JESExceptionRecord import JESExceptionRecord
 
 class Interpreter(object):
@@ -26,6 +26,7 @@ class Interpreter(object):
         self.lock = Lock()
         self.isRunning = False
         self.runningThread = None
+        self._threadLaunched = Semaphore(0)
 
         self.debugger = Debugger(self)
         self.debugMode = False
@@ -70,8 +71,11 @@ class Interpreter(object):
         initCode(self)
 
         # Capture the variables from the function.
-        self.initialNamespace = self.namespace.copy()
-        self.initialNames = set(self.initialNamespace.keys())
+        # (Lock to ensure that all the threads launched by initCode
+        # have finished.)
+        with self.lock:
+            self.initialNamespace = self.namespace.copy()
+            self.initialNames = set(self.initialNamespace.keys())
 
     def quickReset(self):
         """
@@ -88,8 +92,7 @@ class Interpreter(object):
         """
         extraVars = {'__file__': filename} if setDunderFile else {}
         thread = ExecFileThread(self, filename, extraVars)
-        thread.start()
-        return thread
+        return self._launchThread(thread)
 
     def runCodeFragment(self, fragment):
         """
@@ -106,15 +109,22 @@ class Interpreter(object):
         the debugger if it's enabled.
         """
         thread = ExecThread(self, fragment, {})
-        thread.start()
-        return thread
+        return self._launchThread(thread)
 
     def debugCodeFragment(self, fragment):
         """
         Executes some code in the debugger, even if debug mode is disabled.
         """
         thread = DebugThread(self, fragment, {})
+        return self._launchThread(thread)
+
+    def _launchThread(self, thread):
+        """
+        Fires off a thread, and waits for it to acquire the interpreter
+        lock before returning. This is used to serialize execution.
+        """
         thread.start()
+        self._threadLaunched.acquire()
         return thread
 
     def stopThread(self):
@@ -137,6 +147,7 @@ class InterpreterThread(Thread):
 
         with terp.lock:
             terp.runningThread = self
+            terp._threadLaunched.release()
 
             excRecord = None
             terp.namespace.update(self.extraVars)
