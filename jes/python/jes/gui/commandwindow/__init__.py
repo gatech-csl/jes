@@ -41,6 +41,9 @@ class CommandWindowController(object):
     @threadsafe
     def requestFocus(self):
         self._textpane.requestFocus()
+        # After requesting focus, the caret turns invisible sometimes.
+        # Fortunately, this call makes it visible again.
+        self._textpane.getCaret().setVisible(True)
 
     @threadsafe
     def display(self, text, style):
