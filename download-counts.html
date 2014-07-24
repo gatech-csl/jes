@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>JES Download Counts</title>
+    </head>
+
+    <body>
+        <h1 id="main">JES Download Counts</h1>
+
+        <p>
+            These download counts are retrieved directly from the GitHub API,
+            for the <a href="https://github.com/gatech-csl/jes">gatech-csl/jes</a>
+            repository.
+        </p>
+
+        <p>
+            * indicates prereleases.
+        </p>
+
+        <script type="text/javascript">
+            var allReleases = null;
+
+            HTMLElement.prototype.appendText = function (text) {
+                this.appendChild(document.createTextNode(text));
+            };
+
+            function showList (response) {
+                console.log(response.meta);
+                allReleases = response.data;
+
+                var body = document.getElementsByTagName('body')[0];
+
+                allReleases.forEach(function (release) {
+                    var div = document.createElement('div');
+                    div.className = 'release';
+
+                    var heading = document.createElement('h2');
+
+                    var releaseLink = document.createElement('a');
+                    releaseLink.href = release.html_url;
+                    releaseLink.appendText(release.name);
+
+                    var suffix = release.prerelease ? " *" : "";
+
+                    heading.appendChild(releaseLink);
+                    heading.appendText(" (tag " + release.tag_name + ")" + suffix);
+
+                    var releaseList = document.createElement('ul');
+
+                    release.assets.forEach(function (asset) {
+                        var li = document.createElement('li');
+
+                        var downloadLink = document.createElement('a');
+                        downloadLink.href = asset.browser_download_url;
+                        downloadLink.appendText(asset.name);
+
+                        li.appendChild(downloadLink);
+                        li.appendText(": " + asset.download_count + " downloads");
+
+                        releaseList.appendChild(li);
+                    });
+
+                    div.appendChild(heading);
+                    div.appendChild(releaseList);
+
+                    body.appendChild(div);
+                });
+            }
+
+            var script = document.createElement('script');
+            script.src = 'https://api.github.com/repos/gatech-csl/jes/releases?callback=showList';
+            document.getElementsByTagName('head')[0].appendChild(script);
+        </script>
+    </body>
+</html>
+
