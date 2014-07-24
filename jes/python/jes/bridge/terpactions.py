@@ -15,6 +15,7 @@ GUI needs the interpreter actions.
 :license:   GNU GPL v2 or later, see jes/help/JESCopyright.txt for details
 """
 from jes.gui.components.actions import PythonAction
+from jes.gui.components.threading import threadsafe
 
 
 def addInterpreterActions(terp):
@@ -51,18 +52,21 @@ def addInterpreterActions(terp):
     updateDebugSettings(terp, debugMode=terp.debugMode)
 
 
+@threadsafe
 def lockControls(terp, **_):
     terp.stopAction.enabled = True
     for act in terp.debuggerActions:
         act.enabled = False
 
 
+@threadsafe
 def unlockControls(terp, **_):
     terp.stopAction.enabled = False
     for act in terp.debuggerActions:
         act.enabled = True
 
 
+@threadsafe
 def updateDebugSettings(terp, debugMode, **_):
     if debugMode:
         terp.enableDebuggerAction.enabled = False
