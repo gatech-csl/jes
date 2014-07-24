@@ -50,7 +50,7 @@ class RedirectStdio(object):
         if value is None:
             return
 
-        self.commandWindow.display(repr(value), 'python-return')
+        self.commandWindow.display(repr(value) + '\n', 'python-return')
         sys.builtins['_'] = value
 
     def __enter__(self):
