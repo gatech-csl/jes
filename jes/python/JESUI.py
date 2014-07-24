@@ -650,6 +650,7 @@ class JESUI(swing.JFrame, FocusListener):
 
                 UIManager.setLookAndFeel(skin.getClassName())
                 SwingUtilities.updateComponentTreeUI(self)
+                self.updateChildrenUI()
                 # self.pack()
 
                 if(self.optionsWindow):
@@ -659,6 +660,14 @@ class JESUI(swing.JFrame, FocusListener):
                 JESConfig.getInstance().setStringProperty(
                     JESConfig.CONFIG_SKIN, skin.getName())
                 return None
+
+    def updateChildrenUI(self):
+        # If these components aren't onscreen right now, they may not pick up
+        # on the theme change.
+        components = [self.helpDivider, self.htmlBrowserWithHide,
+                      self.watcherDivider, self.watcherWithHide]
+        for component in components:
+            SwingUtilities.updateComponentTreeUI(component)
 
     ##########################################################################
     # Function name: actionPerformed

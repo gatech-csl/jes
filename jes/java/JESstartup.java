@@ -65,6 +65,9 @@ public class JESstartup {
         setOSXDockIcon();
         Frame frame = JESSplashWindow.splash();
 
+        // Force reading the config file now, before we start threading
+        JESConfig.getInstance();
+
         // Actually boot Jython
         String[] args = {"-c", "import JESProgram; mainJESProgram = JESProgram.JESProgram()"};
         try {
@@ -75,9 +78,6 @@ public class JESstartup {
             System.err.flush();
             System.exit(1);
         }
-
-        // Force reading the config file now
-        JESConfig.getInstance();
 
         try {
             Thread.sleep(1000);
