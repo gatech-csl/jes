@@ -1,0 +1,107 @@
+JES Changelog
+=============
+This changelog only covers changes in JES versions 5.0 and later.
+Our records of what changed in version 4.3 and earlier are fragmentary.
+
+
+JES 5.0
+-------
+Release Date: Pending (expected in August 2014)
+
+Supervisor: Mark Guzdial
+
+Primary Developer: Matthew Frazier
+
+Contributors: Christine Alvarado
+
+### User Interface Improvements
+
+*   Allow the color scheme of the command window to be switched.
+    Several new themes are included, many which print function return
+    values in a different color than `print` output.
+    The yellow-on-black JES 4.3 theme remains the default, however.
+
+*   Instead of displaying `java.lang.ThreadDeath`, stopping the program
+    while it's running displays a simple message,
+    `[The program was stopped by the stop button.]`
+
+*   Moved settings into a `.properties` file, which is stored in the
+    user's platform-specific preferences directory.
+    (Previously, settings were stored in a delicately-formatted `.txt`
+    file stored in the root of the user's home directory.)
+
+*   Made version information available in the Command Window:
+    type `version` to print out the JES, Java, and Jython versions.
+
+### Interpreter Improvements
+
+*   Upgraded to Jython 2.5, granting access to new Python language
+    features and providing a significant speedup for many programs.
+
+*   Rewrote the interpreter threading code to avoid race conditions
+    and provide better isolation from the GUI.
+
+*   Displayed printed messages on the command window immediately,
+    thus making the `printNow` function unnecessary.
+    (It has not been removed, however.)
+
+*   Cleaned up exception display and message extraction.
+
+*   Added the `__file__` variable to the interpreter context,
+    allowing the JES test suite to be executed from within JES.
+
+### Development Workflow Improvements
+
+*   Reorganized the JES repository layout, to separate the Java code,
+    Python code, static resources, and unit tests into separate
+    directories.
+
+*   Created an Ant Buildfile to fully automate the build and release
+    process, including the construction of Windows installers and
+    Mac OS X .app packages.
+
+*   Added debugging switches for testing JES and reporting system
+    information. (See `working-on-jes/launching-jes.md` for details.)
+
+*   Added a `debugJES()` function that, when called, returns the
+    instance of `JESProgram` for debugging purposes.
+
+*   Created a "testing kit" which users can download to run JES tests
+    and demo programs on a release version of JES.
+
+*   Started signing released JAR files.
+
+*   Added Jason Kirtland's "Blinker" library for internal use.
+
+### Bug Fixes
+
+*   Corrected the spelling of "Loading Program."
+    (Previously, it was "Loading Progam.")
+
+*   Fixed the Watcher's speed slider and stop buttons.
+    Now, they function as intended on all platforms.
+
+*   Fixed the "Remove Variable" button in the Watcher.
+
+*   Fixed `SimplePicture`'s extension-detecting code to split on the
+    last dot in the filename instead of the first.
+
+*   Corrected SimpleTurtle to use 0.5-based rounding instead of
+    truncation. (Thanks to Christine Alvarado from UC San Diego for
+    discovering this bug and contributing a patch!)
+
+*   Removed the occasional duplicate `>>>` prompts in the Command
+    Window.
+
+*   Prevented `...` prompts in the Command Window from being
+    backspaced over.
+
+*   Deleted unnecessary `print` statements.
+
+### Removed Functionality
+
+*   Removed the Turnin system. User surveys revealed that it is no
+    longer in use, and it may not have functioned to begin with.
+    The Web-CAT submission engine may be integrated in the future to
+    provide a replacement.
+

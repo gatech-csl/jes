@@ -91,17 +91,10 @@ You can see a list of available resources by running `ant -p`.
 * The `releases/stage` folder is used by Ant to arrange all the files for the
   releases before it actually zips them all up.
 
-* The releases are normally named `jes-5.0-snapshot-platform.zip`.
-  When you're building an actual release, you need to use `-Drelease=`
-  for a final release (like `jes-5.0-platform.zip`), or `-Drelease=a1` or
-  something similar for alpha/beta releases (like `jes-5.0a1-platform.zip`).
-  But make sure you update the author list in `JESCopyright.txt` first!
-
-* If you want to build Windows installers, you'll need to install NSIS
-  (http://nsis.sourceforge.net/Main_Page). It runs on both Windows and Linux.
-  Then, when running Ant, add `-Dmakensis=<the path to makensis.exe>`.
-  Otherwise, Ant won't know how to find NSIS, and it won't make the
-  installers. (You can still make ZIP files for Windows without having NSIS.)
+If you just run `ant release`, it generates a "snapshot release" suitable
+for testing. If you want to build proper releases, build Windows installers,
+or sign the released JAR files, there are instructions in
+`working-on-jes/building-releases.md`.
 
 The `demos` folder contains programs you can run to try out JES.
 
