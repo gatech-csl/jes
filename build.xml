@@ -6,6 +6,15 @@
 
 <project name="jes" basedir="." default="build"
     xmlns:if="ant:if" xmlns:unless="ant:unless">
+    <!-- Load a property file -->
+    <condition property="build.properties.exists">
+        <resourceexists>
+            <file file="${basedir}/build.properties" />
+        </resourceexists>
+    </condition>
+
+    <property file="${basedir}/build.properties" if:set="build.properties.exists" />
+
     <!-- Project metadata -->
     <property name="release"            value="-snapshot" unless:set="release" />
 

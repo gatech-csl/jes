@@ -7,6 +7,7 @@ jes/javadoc/
 jes/java/JESVersion.java
 
 # Built releases
+build.properties
 releases/*.*
 releases/stage
 !releases/build-releases.xml

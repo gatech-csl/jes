@@ -96,12 +96,14 @@
         description="Create signed copies of all the JARs. (pass -Dsign=true -Dsigning.key=key alias)">
         <!-- Get the passwords -->
         <input addproperty="signing.storepass"
-               message="Enter the keystore password: ">
+               message="Enter the keystore password: "
+               unless:set="signing.storepass">
             <handler type="secure" />
         </input>
 
         <input addproperty="signing.keypass.input"
-               message="Enter the private key password (hit ENTER for same): ">
+               message="Enter the private key password (hit ENTER for same): "
+               unless:set="signing.keypass">
             <handler type="secure" />
         </input>
 
