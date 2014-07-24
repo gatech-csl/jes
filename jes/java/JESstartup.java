@@ -63,7 +63,7 @@ public class JESstartup {
 
         // Set the dock icon and show the splash window
         setOSXDockIcon();
-        Frame frame = JESSplashWindow.splash();
+        SplashWindow splashWindow = JESSplashWindow.splash();
 
         // Force reading the config file now, before we start threading
         JESConfig.getInstance();
@@ -85,9 +85,7 @@ public class JESstartup {
             System.err.println("timeout exception, eep?");
         }
 
-        if (frame != null) {
-            frame.dispose();
-        }
+        splashWindow.done();
     }
 
     static Class class$(String string) {

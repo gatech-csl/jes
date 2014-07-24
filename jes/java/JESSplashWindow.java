@@ -8,8 +8,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import javax.swing.SwingUtilities;
 
-class JESSplashWindow extends SplashWindow {
+public class JESSplashWindow {
     private static final String SPLASH_FILE = "images/JESsplash.png";
     private static final int SPLASH_TEXT_X = 30;
     private static final int SPLASH_TEXT_Y = 222;
@@ -19,7 +20,7 @@ class JESSplashWindow extends SplashWindow {
     private static final int SPLASH_FONT_LINE_HEIGHT = 17;
     private static final int SPLASH_FONT_STYLE = Font.PLAIN;
 
-    public static Frame splash () {
+    public static SplashWindow splash () {
         BufferedImage image = null;
         File splashFile = JESResources.getFileFor("images/JESsplash.png");
 
@@ -54,13 +55,7 @@ class JESSplashWindow extends SplashWindow {
             y += SPLASH_FONT_LINE_HEIGHT;
         }
 
-        Frame frame = new Frame();
-        JESSplashWindow splash = new JESSplashWindow(image, frame);
-        return frame;
-    }
-
-    public JESSplashWindow (Image image, Frame frame) {
-        super(image, frame);
+        return new SplashWindow(image);
     }
 }
 

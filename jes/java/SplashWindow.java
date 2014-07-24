@@ -1,38 +1,75 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.lang.reflect.InvocationTargetException;
 import javax.swing.*;
 
 /**
- * A class to display the JES splash screen
+ * A class to control a splash screen.
  */
-class SplashWindow extends JWindow {
+public class SplashWindow {
+    private Image image;
+    private JWindow window;
+    private Frame frame;
+
     /**
      * Creates and shows a SplashWindow with a particular image.
      *
      * @param image The image to include.
      * @param frame The Frame to use.
      */
-    public SplashWindow (Image image, Frame f) {
-        super(f);
+    public SplashWindow (Image image) {
+        this.image = image;
+
+        SwingUtilities.invokeLater(new Runnable () {
+            public void run () {
+                show();
+            }
+        });
+    }
+
+    private synchronized void show () {
+        frame = new Frame();
+        window = new JWindow(frame);
 
         JLabel l = new JLabel(new ImageIcon(image));
-        getContentPane().add(l, BorderLayout.CENTER);
-        pack();
+        window.getContentPane().add(l, BorderLayout.CENTER);
+        window.pack();
 
         Dimension screenSize =
             Toolkit.getDefaultToolkit().getScreenSize();
         Dimension labelSize = l.getPreferredSize();
-        setLocation(screenSize.width / 2 - (labelSize.width / 2),
-                    screenSize.height / 2 - (labelSize.height / 2));
+        window.setLocation(screenSize.width / 2 - (labelSize.width / 2),
+                           screenSize.height / 2 - (labelSize.height / 2));
 
-        addMouseListener(new MouseAdapter() {
+        window.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
-                setVisible(false);
                 dispose();
             }
         });
 
-        setVisible(true);
+        window.setVisible(true);
+    }
+
+    /**
+     * Closes the SplashWindow in another thread.
+     */
+    public void done () {
+        try {
+            SwingUtilities.invokeAndWait(new Runnable () {
+                public void run () {
+                    dispose();
+                }
+            });
+        } catch (InvocationTargetException exc) {
+            throw new RuntimeException("SplashWindow could not be closed");
+        } catch (InterruptedException exc) {
+            throw new RuntimeException("SplashWindow could not be closed");
+        }
+    }
+
+    private synchronized void dispose () {
+        window.dispose();
+        frame.dispose();
     }
 }
 
