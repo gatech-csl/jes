@@ -10,6 +10,7 @@ debugger's speed, and stop it if you need to.
 :license:   GNU GPL v2 or later, see jes/help/JESCopyright.txt for details
 """
 import JESResources
+from java.awt import Insets
 from java.util import Hashtable
 from javax.swing import JPanel, BoxLayout, JSlider, JButton, JLabel
 
@@ -35,6 +36,7 @@ class DebugControlPanel(JPanel):
         self.slider.paintLabels = True
 
         # Build some buttons!
+        self.buttonInsets = Insets(0, 0, 0, 0)
         self.watchButton = self.makeDebuggerButton(
             self.debugPanel.watchVariable, 'images/plus.jpg'
         )
@@ -63,8 +65,7 @@ class DebugControlPanel(JPanel):
 
     def makeDebuggerButton(self, action, icon):
         imageIcon = JESResources.makeIcon(icon)
-        return JButton(action, text=None, icon=imageIcon,
-                       preferredSize=self.BUTTON_SIZE)
+        return JButton(action, text=None, icon=imageIcon, margin=self.buttonInsets)
 
     def _sliderSpeedChanged(self, event):
         # These two event listeners could hypothetically go into

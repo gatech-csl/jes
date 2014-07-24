@@ -83,6 +83,8 @@ Contributors: Christine Alvarado
 
 *   Fixed the "Remove Variable" button in the Watcher.
 
+*   Made the Watcher change UI skins with the rest of the application.
+
 *   Fixed `SimplePicture`'s extension-detecting code to split on the
     last dot in the filename instead of the first.
 

@@ -647,8 +647,12 @@ class JESUI(swing.JFrame, FocusListener):
 
         for skin in UIManager.getInstalledLookAndFeels():
             if str(skin.getName()) == actionCommand:
-
                 UIManager.setLookAndFeel(skin.getClassName())
+
+                # This prevents the GTK+ Slider from showing the integer
+                # speed value over itself on the watcher control pnael.
+                UIManager.put("Slider.paintValue", False)
+
                 SwingUtilities.updateComponentTreeUI(self)
                 self.updateChildrenUI()
                 # self.pack()
