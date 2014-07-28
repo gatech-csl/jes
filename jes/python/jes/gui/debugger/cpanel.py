@@ -13,6 +13,7 @@ import JESResources
 from java.awt import Insets
 from java.util import Hashtable
 from javax.swing import JPanel, BoxLayout, JSlider, JButton, JLabel
+from jes.gui.components.threading import threadsafe
 
 class DebugControlPanel(JPanel):
     BUTTON_SIZE = (50, 50)
@@ -67,6 +68,7 @@ class DebugControlPanel(JPanel):
         imageIcon = JESResources.makeIcon(icon)
         return JButton(action, text=None, icon=imageIcon, margin=self.buttonInsets)
 
+    @threadsafe
     def _sliderSpeedChanged(self, event):
         # These two event listeners could hypothetically go into
         # mutual recursion. To keep them from doing so, neither of them
@@ -76,15 +78,18 @@ class DebugControlPanel(JPanel):
         if self.debugger.speed != value:
             self.debugger.setSpeed(value)
 
+    @threadsafe
     def _showSpeedSetting(self, debugger, newSpeed, **_):
         if self.slider.getValue() != newSpeed:
             self.slider.setValue(newSpeed)
 
+    @threadsafe
     def _lockControls(self, debugger, **_):
         self.debugPanel.watchVariable.enabled = False
         self.debugPanel.unwatchVariable.enabled = False
         self.debugPanel.fullSpeed.enabled = True
 
+    @threadsafe
     def _unlockControls(self, debugger, **_):
         self.debugPanel.watchVariable.enabled = True
         self.debugPanel.unwatchVariable.enabled = True

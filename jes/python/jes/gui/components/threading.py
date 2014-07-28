@@ -52,15 +52,19 @@ def threadCheck(fn):
     return decorated
 
 
+def invokeThreadsafe(fn, *args, **kwargs):
+    if SwingUtilities.isEventDispatchThread():
+        return fn(*args, **kwargs)
+    else:
+        task = FunctionCall(fn, args, kwargs)
+        SwingUtilities.invokeAndWait(task)
+        return task.getResult()
+
+
 def threadsafe(fn):
     @wraps(fn)
     def decorated(*args, **kwargs):
-        if SwingUtilities.isEventDispatchThread():
-            return fn(*args, **kwargs)
-        else:
-            task = FunctionCall(fn, args, kwargs)
-            SwingUtilities.invokeAndWait(task)
-            return task.getResult()
+        return invokeThreadsafe(fn, *args, **kwargs)
 
     return decorated
 

@@ -32,6 +32,7 @@ from jes.bridge.terpactions import addInterpreterActions
 from jes.bridge.terpcontrol import InterpreterControl
 from jes.core.interpreter import Interpreter
 from jes.core.interpreter.watcher import Watcher
+from jes.gui.components.threading import threadsafe
 
 FILE_EXISTS_ERROR = 2
 
@@ -55,15 +56,20 @@ class JESProgram:
         addInterpreterActions(terp)
 
         terp.initialize(self.initializeInterpreter)
+        self.varsToHighlight = list(terp.initialNames)
 
-        self.textForCommandWindow = ''
         self.aboutWindow = None
         self.introWindow = None
 
+        self.setupGUI()
+
+        # Open the first Python prompt!
+        self.replBuffer.startStatement()
+
+    @threadsafe
+    def setupGUI(self):
         self.gui = JESUI.JESUI(self)
         self.gui.windowSetting(None)
-
-        self.varsToHighlight = list(terp.initialNames)
 
         self.filename = ' '
         self.settingsFileName = ''
@@ -116,19 +122,9 @@ class JESProgram:
         elif not config.wasLoaded():
             self.openIntroductionWindow()
 
-        # Open the first Python prompt!
-        self.replBuffer.startStatement()
-
         # JavaMusic.open()
     def getVarsToHighlight(self):
         return self.varsToHighlight
-
-
-# main
-    def main(self, args):
-        "@sig public static void main(String args[])"
-        self.__init__()
-        return self
 
     def initializeInterpreter(self, terp):
         preproc = JESResources.getPathTo('python/JESPreprocessing.py')
