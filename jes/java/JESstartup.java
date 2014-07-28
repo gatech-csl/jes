@@ -30,7 +30,9 @@ public class JESstartup {
             System.exit(1);
         }
 
-        for (String option : strings) {
+        for (int optIndex = 0; optIndex < strings.length; optIndex++) {
+            String option = strings[optIndex];
+
             if (option.equals("--properties")) {
                 Properties props = System.getProperties();
 
@@ -44,8 +46,14 @@ public class JESstartup {
                 }
 
                 System.exit(0);
-            } else if (option.equals("--shell")) {
-                String[] args = new String[] {};
+            } else if (option.equals("--shell") || option.equals("--run")) {
+                int firstArg = optIndex + 1;
+
+                String[] args = new String[strings.length - firstArg];
+                for (int i = 0; i < args.length; i++) {
+                    args[i] = strings[firstArg + i];
+                }
+
                 jython.main(args);
                 System.exit(0);
             } else if (option.equals("--debug-keys")) {

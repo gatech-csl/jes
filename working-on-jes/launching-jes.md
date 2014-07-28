@@ -62,6 +62,10 @@ or the standard launchers.
   instead of starting JES.
 * Pass `--shell` to open a Python interactive prompt in your
   console instead of starting JES.
+* Pass `--run`, and everything afterwards will be interpreted as options
+  and arguments for Jython, like `jes.sh --run my-script.py`.
+  This lets you specify a program to run instead of the normal JES editor
+  (such as the test script).
 * Pass `--debug-keys` to print debugging information each keypress
   as it is delivered to Java.
 * Pass `--check-threads` to print a stack trace whenever a thread other than
