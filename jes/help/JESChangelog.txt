@@ -25,6 +25,10 @@ Contributors: Christine Alvarado
     while it's running displays a simple message,
     `[The program was stopped by the stop button.]`
 
+*   Added a `Clear command window` option to the `Edit` menu, which
+    empties the command window of all text (but preserves history and defined
+    variables).
+
 *   Moved settings into a `.properties` file, which is stored in the
     user's platform-specific preferences directory.
     (Previously, settings were stored in a delicately-formatted `.txt`
@@ -32,6 +36,8 @@ Contributors: Christine Alvarado
 
 *   Made version information available in the Command Window:
     type `version` to print out the JES, Java, and Jython versions.
+    More detailed version information is also provided on the splash
+    screen.
 
 ### Interpreter Improvements
 
@@ -73,6 +79,8 @@ Contributors: Christine Alvarado
 
 *   Added Jason Kirtland's "Blinker" library for internal use.
 
+*   Deleted massive quantities of unused code.
+
 ### Bug Fixes
 
 *   Corrected the spelling of "Loading Program."
@@ -83,7 +91,11 @@ Contributors: Christine Alvarado
 
 *   Fixed the "Remove Variable" button in the Watcher.
 
-*   Made the Watcher change UI skins with the rest of the application.
+*   Made the Watcher change UI skins with the rest of the application,
+    and corrected the appearance of the buttons on non-Metal skins.
+
+*   Moved all GUI-construction code in the startup phase to the Event
+    Dispatch Thread, eliminating at least one random crash bug.
 
 *   Fixed `SimplePicture`'s extension-detecting code to split on the
     last dot in the filename instead of the first.
