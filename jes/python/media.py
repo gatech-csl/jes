@@ -101,6 +101,7 @@ import MovieWriter
 import FileChooser
 import JESConfig
 
+import java.lang.System as _System
 import org.python.core.PyString as String
 
 # Support a media shortcut
@@ -1313,6 +1314,33 @@ def getTurtleList(world):
 # end of stuff imported for worlds and turtles
 
 # used in the book
+
+
+def callAndTime(function, *args, **kwargs):
+    if not callable(function):
+        print "callAndTime(function[, arguments...]): Input is not a function"
+
+    name = getattr(function, '__name__', 'The function')
+    def showElapsedTime(start, end):
+        return "%d.%06d milliseconds" % divmod(end - start, 1000000)
+
+    startTime = _System.nanoTime()
+    try:
+        rv = function(*args, **kwargs)
+    except:
+        endTime = _System.nanoTime()
+
+        print >>sys.stderr, "%s ran for %s and crashed" % (
+            name, showElapsedTime(startTime, endTime)
+        )
+        raise
+    else:
+        endTime = _System.nanoTime()
+
+        print >>sys.stderr, "%s ran in %s" % (
+            name, showElapsedTime(startTime, endTime)
+        )
+        return rv
 
 
 def printNow(text):
