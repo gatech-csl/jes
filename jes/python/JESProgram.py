@@ -338,7 +338,7 @@ class JESProgram:
                 self.gui.loadCurrent()
 
     def setErrorByHand(self, message, lineNumber):
-        excRecord = JESExceptionRecord.JESExceptionRecord(self.filename, self)
+        excRecord = JESExceptionRecord.JESExceptionRecord(self.filename)
         if message == JESConstants.JESPROGRAM_NO_FILE:
             excRecord.setByHand(message)
         else:
@@ -350,7 +350,7 @@ class JESProgram:
         self._sendFakeError(excRecord)
 
     def setErrorFromUserCode(self, type, value, trace):
-        excRecord = JESExceptionRecord.JESExceptionRecord(self.filename, self)
+        excRecord = JESExceptionRecord.JESExceptionRecord(self.filename)
         excRecord.setFromUserCode(type, value, trace)
 
         self._sendFakeError(excRecord)
