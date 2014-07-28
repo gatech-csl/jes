@@ -68,8 +68,8 @@ public class JESstartup {
         // Force reading the config file now, before we start threading
         JESConfig.getInstance();
 
-        // Actually boot Jython
-        String[] args = {"-c", "import JESProgram; mainJESProgram = JESProgram.JESProgram()"};
+        // Actually boot Jython, and have it run jes/python/jes/__main__.py
+        String[] args = {"-m", "jes.__main__"};
         try {
             jython.main(args);
         } catch (Throwable throwable) {
