@@ -11,6 +11,7 @@ system on top of the command window.
 from jes.gui.components.actions import PythonAction
 from java.awt import Color, Toolkit
 from java.awt.datatransfer import DataFlavor
+from java.awt.event import FocusListener
 from javax.swing import JTextPane, KeyStroke
 from javax.swing.event import DocumentListener
 from javax.swing.text import Utilities
@@ -18,7 +19,7 @@ from javax.swing.text import Utilities
 key = KeyStroke.getKeyStroke
 
 
-class CommandWindowPane(JTextPane):
+class CommandWindowPane(JTextPane, FocusListener):
     """
     The pane has two responsibilities in the editing system: to interpret
     line-editing keystrokes, and to allow the controller to lock the
@@ -29,6 +30,7 @@ class CommandWindowPane(JTextPane):
         self.setStyledDocument(doc)
         self.updateTheme(doc)
         doc.onThemeSet.connect(self.updateTheme)
+        self.addFocusListener(self)
 
         self.standardKeymap = self.getKeymap()
 
@@ -125,6 +127,12 @@ class CommandWindowPane(JTextPane):
             doc.insertString(self.getCaretPosition(), textToPaste, None)
         elif end > start:
             self.replaceSelection(textToPaste)
+
+    def focusGained(self, event):
+        self.caret.visible = True
+
+    def focusLost(self, event):
+        self.caret.visible = False
 
 
 def getContentToPaste(forComponent):

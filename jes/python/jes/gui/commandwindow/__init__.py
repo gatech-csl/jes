@@ -41,9 +41,6 @@ class CommandWindowController(object):
     @threadsafe
     def requestFocus(self):
         self._textpane.requestFocus()
-        # After requesting focus, the caret turns invisible sometimes.
-        # Fortunately, this call makes it visible again.
-        self._textpane.getCaret().setVisible(True)
 
     @threadsafe
     def display(self, text, style):
@@ -99,9 +96,6 @@ class CommandWindowController(object):
         self._document.openPrompt(promptText, promptStyle, responseStyle)
         self._textpane.setEditable(True)
         self._textpane.setCaretPosition(self._document.getLength())
-        # The caret turns invisible sometimes.
-        # This call makes it visible again.
-        self._textpane.getCaret().setVisible(True)
 
     @threadsafe
     def cancelPrompt(self):
