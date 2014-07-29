@@ -195,6 +195,8 @@ class ExecThread(InterpreterThread):
 
     def execute(self):
         code = compile_command(self.fragment)
+        if code is None:
+            raise SyntaxError("You can only run one statement at once")
         exec code in self.interpreter.namespace
 
 
@@ -207,6 +209,8 @@ class DebugThread(InterpreterThread):
 
     def execute(self):
         code = compile_command(self.fragment)
+        if code is None:
+            raise SyntaxError("You can only run one statement at once")
         self.interpreter.debugger.starting()
         self.interpreter.debugger.run(code, self.interpreter.namespace)
 
