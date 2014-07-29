@@ -2,6 +2,7 @@
 # Runs a bunch of tests involving pixels,
 # so you can gauge the speed of user code.
 import sys
+from jes.extras import callAndTime
 from media import *
 from os.path import basename
 
@@ -101,6 +102,14 @@ def loopManuallyScaleThreeChannels(pic):
 
 
 @benchmark
+def loopManuallyLighten(pic):
+    for y in range(getHeight(pic)):
+        for x in range(getWidth(pic)):
+            pix = getPixel(pic, x, y)
+            setColor(pix, makeLighter(getColor(pix)))
+
+
+@benchmark
 def loopOverPixArrayNop(pic):
     for pix in getPixels(pic):
         pass
@@ -169,6 +178,12 @@ def loopOverPixArrayScaleThreeChannels(pic):
         setBlue(pix, getBlue(pix) / 2)
 
 
+@benchmark
+def loopOverPixArrayLightenColor(pic):
+    for pix in getPixels(pic):
+        setColor(pix, makeLighter(getColor(pix)))
+
+
 def runBenchmarks(filenames):
     warmedUp = False
 
@@ -182,7 +197,7 @@ def runBenchmarks(filenames):
         if not warmedUp:
             # Warm up. On the first round, some Java classes still haven't been
             # loaded, so the first benchmark takes a hit.
-            loopManuallyNop(pic)
+            loopManuallyGetColor(pic)
             warmedUp = True
 
         for benchmark in benchmarks:

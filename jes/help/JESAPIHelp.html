@@ -236,28 +236,6 @@ def playSoundTwice():
 </pre>
 This will play the preamble.wav twice, back-to-back.
 _
-callAndTime|<b>callAndTime</b>(function[, arguments...]):<br>
-<font color=blue>function</font>: the function to call<br>
-<font color=blue>arguments</font>: if function should be called with
-arguments, pass them to callAndTime instead<br>
-Calls a function, and keeps track of how much time it takes.
-After the function runs, it prints out the amount of time it spent running.
-If the function returns anything, callAndTime will return it,
-and if the function raises an exception, callAndTime will raise it.<br>
-<b>Example:</b>
-<pre>
-pic = makePicture(pickAFile())
-callAndTime(setAllPixelsToAColor, pic, blue)
-</pre>
-This will create a picture, then print out how long it takes to turn the
-entire picture blue.
-<pre>
-setAllPixelsToAColor ran in 1.219998 milliseconds
-</pre>
-(The time it takes for a function to run, even on the same computer
-with the same arguments, will not be the same all the time.
-It depends a lot on what the other programs on your computer are doing.)
-_
 copyInto|<b>copyInto</b>(smallPicture, bigPicture, startX, startY):<br>
 <font color=blue>smallPicture</font>: the picture to paste into the big picture<br>
 <font color=blue>bigPicture</font>: the picture to be modified<br>
