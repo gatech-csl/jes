@@ -38,7 +38,7 @@
 ##################################################################################
 
 
-# Resolve symlinks.
+# Where are we?
 
 PRG=$0
 
@@ -70,7 +70,51 @@ CFBundleName=`/usr/libexec/PlistBuddy -c "print :CFBundleName" ${InfoPlistFile}`
 CFBundleIconFile=`/usr/libexec/PlistBuddy -c "print :CFBundleIconFile" ${InfoPlistFile}`
 
 
-# Identify our code.
+# See if there's a user configuration file...
+
+JESCONFIGDIR="$HOME/Library/Application Support/JES"
+
+if test -f "$JESCONFIGDIR/JESEnvironment.sh"; then
+    source "$JESCONFIGDIR/JESEnvironment.sh"
+fi
+
+
+# Find the Java to use.
+
+# first check environment variable "$JES_JAVA_HOME"
+if [ -n "$JES_JAVA_HOME" ]; then
+    JAVA="$JES_JAVA_HOME/bin/java"
+
+# then check system variable "$JAVA_HOME"
+elif [ -n "$JAVA_HOME" ]; then
+    JAVA="$JAVA_HOME/bin/java"
+
+# otherwise check "/usr/libexec/java_home" symlinks
+elif [ -x /usr/libexec/java_home ]; then
+    JAVA="`/usr/libexec/java_home`/bin/java"
+
+# otherwise check Java standard symlink (old Apple Java)
+elif test -h /Library/Java/Home; then
+    JAVA="/Library/Java/Home/bin/java"
+
+# fallback: public JRE plugin (Oracle Java)
+else
+    JAVA="/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home/bin/java"
+fi
+
+
+# ...Did we find one?
+
+if [ ! -x "$JAVA" ]; then
+    # display error message with applescript
+    osascript -e "tell application \"System Events\" to display dialog \"Error launching ${CFBundleName}!\n\nYou need to have Java installed on your Mac!\nVisit http://java.com for more information.\" with title \"${CFBundleName}\" buttons {\"OK\"} default button 1 with icon path to resource \"${CFBundleIconFile}\" in bundle (path to me)"
+
+    # exit with error
+    exit 1
+fi
+
+
+# Where's our Java code?
 
 JARS="$JES_BASE/dependencies/jars"
 
@@ -82,6 +126,9 @@ CLASSPATH="$CLASSPATH:$JARS/jmf.jar"
 CLASSPATH="$CLASSPATH:$JARS/jl1.0.jar"
 CLASSPATH="$CLASSPATH:$JARS/AVIDemo.jar"
 
+
+# Where's our Python code?
+
 PYTHONHOME="$JES_BASE/dependencies/jython"
 
 PYTHONPATH="$JES_HOME/python"
@@ -89,71 +136,35 @@ PYTHONPATH="$JES_HOME/python"
 
 # Where should the Jython cache live?
 
-PYTHONCACHE="$HOME/.cache/jes/jython-cache"
+PYTHONCACHE="$HOME/Library/Caches/JES/jython-cache"
+
 mkdir -p $PYTHONCACHE
 
 
 # What about JESConfig.properties?
 
-JESCONFIG="$HOME/Library/Application Support/JES/JESConfig.properties"
-mkdir -p "$(dirname "$JESCONFIG")"
+JESCONFIG=$JESCONFIGDIR/JESConfig.properties
+
+mkdir -p "$JESCONFIGDIR"
 
 
-# Discover Java.
+# Enable drag & drop to the dock icon.
 
-# first check environment variable "$JES_JAVA_HOME"
-if [ -n "$JES_JAVA_HOME" ]; then
-    JAVACMD="$JES_JAVA_HOME/bin/java"
-
-# then check system variable "$JAVA_HOME"
-elif [ -n "$JAVA_HOME" ]; then
-	JAVACMD="$JAVA_HOME/bin/java"
-
-# otherwise check "/usr/libexec/java_home" symlinks
-elif [ -x /usr/libexec/java_home ]; then
-	JAVACMD="`/usr/libexec/java_home`/bin/java"
-
-# otherwise check Java standard symlink (old Apple Java)
-elif test -h /Library/Java/Home; then
-	JAVACMD="/Library/Java/Home/bin/java"
-
-# fallback: public JRE plugin (Oracle Java)
-else
-	JAVACMD="/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home/bin/java"
-fi
+export CFProcessPath="$0"
 
 
-# Launch Java.
-if [ -x "$JAVACMD" ]; then
-	# enable drag & drop to the dock icon
-	export CFProcessPath="$0"
+# All right, time to actually run it!
 
-	# execute Java and set
-	#	- classpath
-	#	- dock icon
-	#	- application name
-	#	- JVM options
-	#	- JVM default options
-	#	- main class
-	#	- JVM arguments
-    exec "$JAVACMD" \
-        -classpath "$CLASSPATH" \
-	    -Xdock:icon="$CONTENTS/Resources/${CFBundleIconFile}" \
-	    -Xdock:name="${CFBundleName}" \
-	    -Dapple.laf.useScreenMenuBar=true \
-        -Djes.home="$JES_HOME" \
-        -Djes.configfile="$JESCONFIG" \
-        -Dpython.home="$PYTHONHOME" \
-        -Dpython.path="$PYTHONPATH" \
-        -Dpython.cachedir="$PYTHONCACHE" \
-        ${JES_JAVA_MEMORY:--Xmx512m} ${JES_JAVA_OPTIONS} \
-        JESstartup "$@"
-
-else
-	# display error message with applescript
-	osascript -e "tell application \"System Events\" to display dialog \"Error launching ${CFBundleName}!\n\nYou need to have Java installed on your Mac!\nVisit http://java.com for more information.\" with title \"${CFBundleName}\" buttons {\"OK\"} default button 1 with icon path to resource \"${CFBundleIconFile}\" in bundle (path to me)"
-
-	# exit with error
-	exit 1
-fi
+exec "$JAVA" \
+    -classpath "$CLASSPATH" \
+    -Xdock:icon="$CONTENTS/Resources/${CFBundleIconFile}" \
+    -Xdock:name="${CFBundleName}" \
+    -Djes.home="$JES_HOME" \
+    -Djes.configfile="$JESCONFIG" \
+    -Dpython.home="$PYTHONHOME" \
+    -Dpython.path="$PYTHONPATH" \
+    -Dpython.cachedir="$PYTHONCACHE" \
+    -Dapple.laf.useScreenMenuBar=true \
+    ${JES_JAVA_MEMORY:--Xmx512m} ${JES_JAVA_OPTIONS} \
+    JESstartup "$@"
 

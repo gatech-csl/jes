@@ -8,12 +8,21 @@ rem JES.exe just launches this file without the Command Prompt,
 rem so end users should use that file.
 
 rem Where are we?
+
 set jes_base=%~dp0
 set jes_base=%jes_base:~0,-1%
 set jes_home=%jes_base%\jes
 
 
+rem Is there a user configuration file?
+
+if EXIST "%APPDATA%\JES\JESEnvironment.bat" (
+    call "%APPDATA%\JES\JESEnvironment.bat"
+)
+
+
 rem What Java should we use?
+
 set java_exe=java.exe
 
 set java_bundled=%jes_base%\dependencies\jre-win32
@@ -34,6 +43,7 @@ if DEFINED JES_JAVA_HOME (
 
 
 rem Where's our Java code?
+
 set jars=%jes_base%\dependencies\jars
 
 set classpath=%jes_home%\classes.jar
@@ -46,24 +56,27 @@ set classpath=%classpath%;%jars%\AVIDemo.jar
 
 
 rem Where's our Python code?
+
 set pythonhome=%jes_base%\dependencies\jython
 
 set pythonpath=%jes_home%\python
 
 
 rem Where should the Jython cache live?
+
 set pythoncache=%LOCALAPPDATA%\JES\jython-cache
 
-if NOT EXIST %pythoncache% (
-    md %pythoncache%
+if NOT EXIST "%pythoncache%" (
+    md "%pythoncache%"
 )
 
 
 rem What about JESConfig.properties?
+
 set jesconfig=%APPDATA%\JES\JESConfig.properties
 
-if NOT EXIST %APPDATA%\JES (
-    md %APPDATA%\JES
+if NOT EXIST "%APPDATA%\JES" (
+    md "%APPDATA%\JES"
 )
 
 

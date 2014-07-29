@@ -52,6 +52,9 @@ by setting the `JES_JAVA_HOME` environment variable.
 but `JES_JAVA_HOME` will only apply to JES, *and* it will override the
 bundled JRE on Windows if necessary.)
 
+Just a warning: `JAVA_HOME` should be set to the directory where Java is
+installed, *not* the actual Java executable!
+
 By default, JES will only allocate 512 MB of heap. This is controlled by the
 `JES_JAVA_MEMORY` environment variable, which contains JVM memory options
 (`-Xmx512m` by default.) You can override this.
@@ -59,6 +62,21 @@ By default, JES will only allocate 512 MB of heap. This is controlled by the
 If you need to define system properties or otherwise customize Java,
 you can provide additional options to pass to Java using the
 `JES_JAVA_OPTIONS` environment variable.
+
+If you want an easy way to set these environment variables for JES
+without having to deal with your system configuration, you can create
+a `JESEnvironment.sh` or `JESEnvironment.bat` file, that sets environment
+variables. This file lives in the same directory as `JESConfig.properties`.
+
+On Linux or Mac, a `JESEnvironment.sh` file might look like:
+
+    JES_JAVA_HOME=/usr/lib/custom-java
+    JES_JAVA_MEMORY=-Xmx2048m
+
+On Windows, a `JESEnvironment.bat` file might look like:
+
+    set JES_JAVA_HOME=C:\Program Files\Super Java
+    set JES_JAVA_MEMORY=-Xmx2048m
 
 
 ## Debugging Options for JESstartup
