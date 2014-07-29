@@ -1,15 +1,23 @@
 # Launching JES
 
-Launching JES is a somewhat involved process. While it boils down to
-"launch the `JESstartup` class," many Java system properties need to be set
-in order for Jython and JES to find everything they need.
-So, JES has several launcher scripts that set up the necessary environment
-before booting Java.
+The JES startup process actually operates in three stages.
+
+1.  The "launcher" is a platform-dependent shell script that sets up the
+    Java environment (including system properties and the classpath).
+
+2.  The `JESstartup` class is launched as soon as the environment is
+    available. It processes "debugging-type" command line arguments,
+    such as `--help`, `--version`, `--jython`, and `--check-threads`.
+    It also displays the splash screen.
+
+3.  The `jes/__main__.py` Python module is responsible for creating the JES
+    user interface and related stuff. It can also interpret some command-line
+    arguments.
 
 
 ## Standard Launchers
 
-Right now, there are three:
+Right now, there are three standard launchers:
 
 * The Windows generic launcher (`jes.bat` in the repository base)
 * The Linux/Mac OS X generic launcher (`jes.sh` in the repository base)
@@ -55,22 +63,27 @@ you can provide additional options to pass to Java using the
 
 ## Debugging Options for JESstartup
 
-There are a couple of options you can pass to the JESstartup class,
-or the standard launchers.
+There are a couple of options you can pass to the launchers, which will be
+interpreted by the `JESstartup` class.
+
+* Pass `--help` to print a list of options instead of starting JES.
+
+* Pass `--version` to print version information instead of starting JES.
 
 * Pass `--properties` to print all the system properties
   instead of starting JES.
-* Pass `--shell` to open a Python interactive prompt in your
-  console instead of starting JES.
-* Pass `--run`, and everything afterwards will be interpreted as options
-  and arguments for Jython, like `jes.sh --run my-script.py`.
-  This lets you specify a program to run instead of the normal JES editor
-  (such as the test script).
+
+* Pass `--jython` to start a Jython process instead of JES.
+  All arguments after the `--jython` (such as a `-c PYTHON` option or
+  a script filename) are used as Jython options.
+
 * Pass `--debug-keys` to print debugging information each keypress
   as it is delivered to Java.
+
 * Pass `--check-threads` to print a stack trace whenever a thread other than
   the Event Dispatch Thread causes the GUI to change.
   (This won't catch all threading bugs, but it will catch many of them.)
+
 * Pass `--python-verbose=<level>` to set the Jython verbosity level.
   This can be `error`, `warning`, `message`, `comment`, or `debug`
   (for example, `--python-verbose=comment`).

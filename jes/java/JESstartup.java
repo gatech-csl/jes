@@ -20,6 +20,18 @@ public class JESstartup {
     /*synthetic*/ static Class class$JESstartup;
     /*synthetic*/ static Class array$Ljava$lang$String;
 
+    private static void showHelp () {
+        System.out.println("JES launcher - available options");
+        System.out.println();
+        System.out.println("--version:          Print JES version information");
+        System.out.println("--properties:       Print Java system properties");
+        System.out.println("--jython [args]:    Run JES's copy of Jython with all provided arguments");
+        System.out.println("                    (use --jython --help for details)");
+        System.out.println();
+        System.out.println("Additional debugging options are available.");
+        System.out.println("View the source of JESstartup.java for details.");
+    }
+
     /**
     * The main method which launches JES
     */
@@ -30,10 +42,20 @@ public class JESstartup {
             System.exit(1);
         }
 
-        for (int optIndex = 0; optIndex < strings.length; optIndex++) {
+        boolean showSplash = true;
+        int optIndex = 0;
+
+        for (optIndex = 0; optIndex < strings.length; optIndex++) {
             String option = strings[optIndex];
 
-            if (option.equals("--properties")) {
+            if (option.equals("--help")) {
+                showHelp();
+                System.exit(0);
+            } else if (option.equals("--version")) {
+                System.out.println(JESVersion.getMessage());
+                System.exit(0);
+            } else if (option.equals("--properties")) {
+                // Print all the properties, and exit
                 Properties props = System.getProperties();
 
                 // Sort the list of properties
@@ -46,38 +68,62 @@ public class JESstartup {
                 }
 
                 System.exit(0);
-            } else if (option.equals("--shell") || option.equals("--run")) {
+            } else if (option.equals("--jython")) {
+                // Interpret everything else on the command line
+                // as a Jython option
                 int firstArg = optIndex + 1;
+                int argCount = strings.length - firstArg;
 
-                String[] args = new String[strings.length - firstArg];
-                for (int i = 0; i < args.length; i++) {
-                    args[i] = strings[firstArg + i];
-                }
+                String[] args = new String[argCount];
+                System.arraycopy(strings, firstArg, args, 0, argCount);
 
                 jython.main(args);
                 System.exit(0);
             } else if (option.equals("--debug-keys")) {
+                // Install an AWT event handler
                 Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
                     public void eventDispatched(AWTEvent event) {
                         System.err.println(event.paramString());
                     }
                 }, AWTEvent.KEY_EVENT_MASK);
             } else if (option.equals("--check-threads")) {
+                // Install a thread-checking repaint manager
                 RepaintManager.setCurrentManager(new ThreadCheckingRepaintManager());
             } else if (option.startsWith("--python-verbose=")) {
+                // Set the Python verbosity level
                 System.setProperty("python.verbose", option.substring(17));
+            } else {
+                // All remaining arguments should get copied into the
+                // Jython arguments array for jes.__main__
+                if (option.equals("--run") || option.equals("--shell")) {
+                    showSplash = false;
+                }
+                break;
             }
         }
 
+        // Okay...we're actually going to boot the JES Python code
+        // Figure out what arguments to pass it
+        int firstArg = optIndex;
+        int argCount = strings.length - firstArg;
+
+        String[] args = new String[2 + argCount];
+        args[0] = "-m";
+        args[1] = "jes.__main__";
+        System.arraycopy(strings, firstArg, args, 2, argCount);
+
         // Set the dock icon and show the splash window
         setOSXDockIcon();
-        SplashWindow splashWindow = JESSplashWindow.splash();
+        SplashWindow splashWindow = null;
+
+        if (showSplash) {
+            splashWindow = JESSplashWindow.splash();
+        }
 
         // Force reading the config file now, before we start threading
         JESConfig.getInstance();
 
         // Actually boot Jython, and have it run jes/python/jes/__main__.py
-        String[] args = {"-m", "jes.__main__"};
         try {
             jython.main(args);
         } catch (Throwable throwable) {
@@ -87,13 +133,17 @@ public class JESstartup {
             System.exit(1);
         }
 
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException ie) {
-            System.err.println("timeout exception, eep?");
-        }
+        // Once the UI finishes building, give some time to settle,
+        // then close the splash window
+        if (splashWindow != null) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ie) {
+                System.err.println("timeout exception, eep?");
+            }
 
-        splashWindow.done();
+            splashWindow.done();
+        }
     }
 
     static Class class$(String string) {

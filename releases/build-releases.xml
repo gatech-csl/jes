@@ -323,7 +323,7 @@
         <mkdir dir="${jes.release.macosx.stage}" />
 
         <jarbundler dir="${jes.release.macosx.stage}"
-            mainclass="JESstartup"
+            mainclass="${jes.main}"
             name="JES"
             bundleid="edu.gatech.cc.csl.JES"
             version="${jes.release}"

@@ -45,7 +45,7 @@ public class JESVersion {
             "Release date:   %s\n" +
             "Source control: %s\n" +
             "Java version:   %s (%s/%s)\n" +
-            "Jython version: %s (build %s)\n",
+            "Jython version: %s (build %s)",
             RELEASE, RELEASE_DATE, SCM_INFO,
             System.getProperty("java.version"),
             System.getProperty("java.runtime.name"),
