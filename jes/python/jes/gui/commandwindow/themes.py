@@ -46,12 +46,12 @@ ALL_STYLES = set([
 
 THEMES = OrderedDict()
 
-THEMES['Standard Dark'] = Theme(
+THEMES['Standard on Black'] = Theme(
     Color.BLACK,
     (MONOSPACE, Color.WHITE),
     {
         'python-code':      (MONOSPACE,         Color(0xaacdf3)),   # Light blue
-        'python-prompt':    (MONOSPACE,         Color(0x729fcf)),   # Darker blue
+        'python-prompt':    (MONOSPACE,         Color(0x27d3c7)),   # Teal
         'python-return':    (MONOSPACE,         Color(0xedd400)),   # Gold
         'python-traceback': (MONOSPACE,         Color(0xff5c58)),   # Red
         'standard-input':   (MONOSPACE,         Color(0x8ae234)),   # Green
@@ -61,8 +61,23 @@ THEMES['Standard Dark'] = Theme(
     }
 )
 
+THEMES['Standard on White'] = Theme(
+    Color.WHITE,
+    (MONOSPACE, Color.BLACK),
+    {
+        'python-code':      (MONOSPACE,         Color(0x204a87)),   # Dark blue
+        'python-prompt':    (MONOSPACE,         Color(0x158ba0)),   # Teal
+        'python-return':    (MONOSPACE,         Color(0xa98b07)),   # Spicy brown mustard
+        'python-traceback': (MONOSPACE,         Color(0xcc0000)),   # NC State red (Go Wolfpack!)
+        'standard-input':   (MONOSPACE,         Color(0x11aa00)),   # Green
+        'standard-output':  (MONOSPACE,         Color(0x000000)),   # Black
+        'standard-error':   (MONOSPACE,         Color(0xb31296)),   # Fuschia
+        'system-message':   (MONOSPACE,         Color(0xcf5101)),   # Burnt orange
+    }
+)
 
-THEMES['JES 4.3'] = Theme(
+
+THEMES['Old JES (Yellow on Black)'] = Theme(
     Color.BLACK,
     (NO_STYLES, Color.YELLOW),
     {
@@ -87,7 +102,7 @@ THEMES['Black on White'] = Theme(
 
 # See http://www.sron.nl/~pault/colourschemes.pdf
 
-THEMES['Colorblind Light'] = Theme(
+THEMES['Colorblind-Friendly on White'] = Theme(
     Color.WHITE,
     (MONOSPACE, Color.BLACK),
     {
@@ -103,7 +118,7 @@ THEMES['Colorblind Light'] = Theme(
 )
 
 
-THEMES['Colorblind Dark'] = Theme(
+THEMES['Colorblind-Friendly on Black'] = Theme(
     Color.BLACK,
     (MONOSPACE, Color.WHITE),
     {

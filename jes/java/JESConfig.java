@@ -65,7 +65,7 @@ public class JESConfig {
         defaults.setProperty(CONFIG_MODE,                   "Normal");
         defaults.setProperty(CONFIG_SKIN,                   "");
         defaults.setProperty(CONFIG_FONT,                   "12");
-        defaults.setProperty(CONFIG_COMMAND_WINDOW_THEME,   "JES 4.3");
+        defaults.setProperty(CONFIG_COMMAND_WINDOW_THEME,   "Old JES (Yellow on Black)");
         defaults.setProperty(CONFIG_GUTTER,                 "1");
         defaults.setProperty(CONFIG_BLOCK,                  "0");
 
