@@ -57,6 +57,18 @@ def addFileToMovie(movie):
 </pre>
 This will allow the user to choose the filename of a picture, and add that picture as the last frame in the specified movie.
 _
+addLibPath|<b>addLibPath</b>([directory]):<br>
+<font color=blue>directory</font>: a string path to a directory.
+(optional) If you leave this out, JES will open up a file chooser for you to select a directory yourself.<br>
+Adds a directory where JES will look for modules that you want to be able to import.<br>
+(This function used to be called setLibPath.)<br>
+<b>Example:</b>
+<pre>
+def addMediaPathAsLibPath():
+  addLibPath(getMediaPath())
+</pre>
+This will allow you to import .py files in the current media path.
+_
 addLine|<b>addLine</b>(picture, startX, startY, endX, endY[, color]):<br>
 <font color=blue>picture</font>: the picture you want to draw the line on<br>
 <font color=blue>startX</font>: the x position you want the line to start<br>
@@ -1234,15 +1246,16 @@ def zeroGreen(pixel):
 </pre>
 This will take in a pixel and set its amount of green to 0.
 _
-setLibPath|<b>setLibPath</b>([directory]):<br>
-<font color=blue>directory</font>: a string path to a directory. (optional) If leave this out. If you do, JES will open up a file chooser for you to select a directory yourself.<br>
-Allows you to add a directory where JES can look for modules that you want to be able to import.<br>
+setLibPath|<b>setLibPath</b>([directory]) is now called addLibPath:<br>
+<font color=blue>directory</font>: a string path to a directory.
+(optional) If you leave this out, JES will open up a file chooser for you to select a directory yourself.<br>
+Adds a directory where JES will look for modules that you want to be able to import.<br>
 <b>Example:</b>
 <pre>
-def setLibToMediaPath():
-  setLibPath(getMediaPath())
+def addMediaPathAsLibPath():
+  addLibPath(getMediaPath())
 </pre>
-This will set the library path to the same directory as the current media path
+This will allow you to import .py files in the current media path.
 _
 setMediaFolder|<b>setMediaFolder</b>:(directory)<br>
 <font color=blue>directory</font>: The directory you want to set as the media folder.<br>

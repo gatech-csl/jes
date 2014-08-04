@@ -157,15 +157,19 @@ def getShortPath(filename):
         return str(dirs[len(dirs) - 2] + os.sep + dirs[len(dirs) - 1])
 
 
-def setLibPath(directory=None):
-    if(directory == None):
+def addLibPath(directory=None):
+    if directory is None:
         directory = pickAFolder()
-    if(os.path.isdir(directory)):
-        sys.path.append(directory)
-    else:
-        print "Note: There is no directory at ", directory
-        raise ValueError
+
+    if os.path.isdir(directory):
+        sys.path.insert(0, directory)
+    elif directory is not None:
+        raise ValueError("There is no directory at " + directory)
+
     return directory
+
+setLibPath = addLibPath
+
 
 ##
 # Global sound functions

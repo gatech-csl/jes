@@ -39,6 +39,11 @@ Contributors: Christine Alvarado
     More detailed version information is also provided on the splash
     screen.
 
+### Media API Improvements
+
+*   Renamed `setLibPath` to `addLibPath`, since there can be more than one
+    library path. (The old name still works.)
+
 ### Interpreter Improvements
 
 *   Upgraded to Jython 2.5, granting access to new Python language
