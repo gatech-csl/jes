@@ -17,6 +17,50 @@ import java.awt.Color;
  * Kalamazoo additional methods merged by Buck Scharfnorth 22 May 2008
  */
 public class Pixel {
+    /////////////////////// configuration ///////////////////////////////
+
+    private static boolean wrapLevels = false;
+
+    /**
+     * Indicates whether levels outside the range 0-255 are clamped
+     * or wrapped around (saturating or modular arithmetic).
+     *
+     * @return False to clamp levels, true to modulo them.
+     */
+    public static boolean getWrapLevels () {
+        return wrapLevels;
+    }
+
+    /**
+     * Changes Pixel's behavior for dealing with levels outside the range
+     * 0-255.
+     *
+     * @param wrap If true, values will be wrapped (modular arithmetic).
+     * If false, values will be clamped (saturating arithmetic).
+     */
+    public static void setWrapLevels (boolean wrap) {
+        wrapLevels = wrap;
+    }
+
+    /**
+     * Correct a color level to be within 0 and 255,
+     * according to the current wrapLevels setting.
+     *
+     * @param level The user-provided level.
+     * @return A value within 0 and 255.
+     */
+    public static int correctLevel (int level) {
+        if (wrapLevels) {
+            return level % 256;
+        } else if (level < 0) {
+            return 0;
+        } else if (level > 255) {
+            return 255;
+        } else {
+            return level;
+        }
+    }
+
 
     ////////////////////////// fields ///////////////////////////////////
 
@@ -190,31 +234,12 @@ public class Pixel {
     }
 
     /**
-     * Method to correct a color value to be within 0 and 255
-     * @param the value to use
-     * @return a value within 0 and 255
-     */
-    private static int correctValue(int value) {
-        if (JESConfig.getInstance().getSessionWrapAround()) {
-            value = (value % 256);
-        } else {
-            if (value < 0) {
-                value = 0;
-            }
-            if (value > 255) {
-                value = 255;
-            }
-        }
-        return value;
-    }
-
-    /**
      * Method to set the red to a new red value
      * @param value the new value to use
      */
     public void setRed(int value) {
         // set the red value to the corrected value
-        int red = correctValue(value);
+        int red = correctLevel(value);
 
 
         // update the pixel value in the picture
@@ -228,7 +253,7 @@ public class Pixel {
      */
     public void setGreen(int value) {
         // set the green value to the corrected value
-        int green = correctValue(value);
+        int green = correctLevel(value);
 
         // update the pixel value in the picture
         //updatePicture(getAlpha(), getRed(), green, getBlue());
@@ -241,7 +266,7 @@ public class Pixel {
      */
     public void setBlue(int value) {
         // set the blue value to the corrected value
-        int blue = correctValue(value);
+        int blue = correctLevel(value);
 
         // update the pixel value in the picture
         //updatePicture(getAlpha(), getRed(), getGreen(), blue);
@@ -254,7 +279,7 @@ public class Pixel {
      */
     public void setAlpha(int value) {
         // make sure that the alpha is from 0 to 255
-        int alpha = correctValue(value);
+        int alpha = correctLevel(value);
 
         // update the associated picture
         //updatePicture(alpha, getRed(), getGreen(), getBlue());

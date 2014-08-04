@@ -202,7 +202,6 @@ public class JESConfig {
         if (!(new File(getStringProperty(CONFIG_MEDIAPATH))).exists()) {
             setStringProperty(CONFIG_MEDIAPATH, System.getProperty("user.home"));
         }
-        wrapRGB = getBooleanProperty(CONFIG_WRAPPIXELVALUES);
     }
 
     // FILE HANDLING
@@ -418,27 +417,6 @@ public class JESConfig {
                 props.setProperty(MIGRATION_ORDER[line], lines[line]);
             }
         }
-    }
-
-
-    // WRAPAROUND OVERRIDE
-
-    private boolean wrapRGB = false;
-
-    /**
-     * Returns whether to wrap RGB values within the range 0-255.
-     * (This is independent of the user's actual config file setting.)
-     */
-    public boolean getSessionWrapAround () {
-        return wrapRGB;
-    }
-
-    /**
-     * Alters whether to wrap RGB values within the range 0-255,
-     * without changing the user's setting in the config file.
-     */
-    public void setSessionWrapAround (boolean value) {
-        wrapRGB = value;
     }
 }
 

@@ -99,13 +99,11 @@ import Samples
 import MoviePlayer
 import MovieWriter
 import FileChooser
-import JESConfig
 
 import org.python.core.PyString as String
 
 # Support a media shortcut
 
-#mediaFolder = JESConfig.getMediaPath()
 # if ( mediaFolder == "" ):
 mediaFolder = os.getcwd() + os.sep
 
@@ -454,29 +452,12 @@ plain = awt.Font.PLAIN
 # the value in the JES options menu.
 
 
-def setColorWrapAround(bool):
-    JESConfig.getInstance().setSessionWrapAround(bool)
-
-# Buck Scharfnorth (28 May 2008): Gets the current ColorWrapAround Value
-
+def setColorWrapAround(setting):
+    Pixel.setWrapLevels(bool(setting))
 
 def getColorWrapAround():
-    return JESConfig.getInstance().getSessionWrapAround()
+    return Pixel.getWrapLevels()
 
-# Buck Scharfnorth (28 May 2008): Modified to no longer assume the value
-# is 0-255
-
-
-def _checkPixel(raw):
-    value = int(raw)
-    if getColorWrapAround():
-        value = (value % 256)
-    else:
-        if value < 0:
-            value = 0
-        if value > 255:
-            value = 255
-    return value
 
 # this class is solely for the purpose of
 # making makeLighter makeDarker work.
@@ -488,7 +469,6 @@ def _checkPixel(raw):
 # and the gray Color constructor to allow only 1 color parameter (will
 # take 2, but ignores the second)
 
-
 class Color:
 
     def __init__(self, r, g=None, b=None):
@@ -496,12 +476,11 @@ class Color:
             if isinstance(r, awt.Color) or isinstance(r, Color):
                 self.color = r
             else:
-                val = _checkPixel(r)
+                val = Pixel.correctLevel(r)
                 self.color = awt.Color(val, val, val)
         else:
-            # self.color = awt.Color(r,g,b)
             self.color = awt.Color(
-                _checkPixel(r), _checkPixel(g), _checkPixel(b))
+                Pixel.correctLevel(r), Pixel.correctLevel(g), Pixel.correctLevel(b))
 
     def __str__(self):
         return "color r=" + str(self.getRed()) + " g=" + str(self.getGreen()) + " b=" + str(self.getBlue())
@@ -527,13 +506,7 @@ class Color:
         g = self.getGreen() + other.getGreen()
         b = self.getBlue() + other.getBlue()
 
-        # if(wrapAroundPixelValues):
-        #    r = r % 256
-        #    g = g % 256
-        #    b = b % 256
-
-        # return Color(r,g,b)
-        return Color(_checkPixel(r), _checkPixel(g), _checkPixel(b))
+        return Color(Pixel.correctLevel(r), Pixel.correctLevel(g), Pixel.correctLevel(b))
 
     # Added by BrianO
     def __sub__(self, other):
@@ -541,17 +514,10 @@ class Color:
         g = self.getGreen() - other.getGreen()
         b = self.getBlue() - other.getBlue()
 
-        # if(wrapAroundPixelValues):
-        #    r = r % 256
-        #    g = g % 256
-        #    b = b % 256
-
-        # return Color(r,g,b)
-        return Color(_checkPixel(r), _checkPixel(g), _checkPixel(b))
+        return Color(Pixel.correctLevel(r), Pixel.correctLevel(g), Pixel.correctLevel(b))
 
     def setRGB(self, r, g, b):
-        # self.color = awt.Color(r,g,b)
-        self.color = awt.Color(_checkPixel(r), _checkPixel(g), _checkPixel(b))
+        self.color = awt.Color(Pixel.correctLevel(r), Pixel.correctLevel(g), Pixel.correctLevel(b))
 
     def getRed(self):
         return self.color.getRed()
@@ -831,7 +797,7 @@ def getPixelAt(picture, x, y):
 
 
 def setRed(pixel, value):
-    value = _checkPixel(value)
+    value = Pixel.correctLevel(value)
     if not isinstance(pixel, Pixel):
         print "setRed(pixel,value): Input is not a pixel"
         raise ValueError
@@ -846,7 +812,7 @@ def getRed(pixel):
 
 
 def setBlue(pixel, value):
-    value = _checkPixel(value)
+    value = Pixel.correctLevel(value)
     if not isinstance(pixel, Pixel):
         print "setBlue(pixel,value): Input is not a pixel"
         raise ValueError
@@ -861,7 +827,7 @@ def getBlue(pixel):
 
 
 def setGreen(pixel, value):
-    value = _checkPixel(value)
+    value = Pixel.correctLevel(value)
     if not isinstance(pixel, Pixel):
         print "setGreen(pixel,value): Input is not a pixel"
         raise ValueError

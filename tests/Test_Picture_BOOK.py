@@ -2,7 +2,6 @@ import unittest
 import Picture
 import Pixel
 import os.path
-import JESConfig
 from java.awt import Color
 from java.lang import ArrayIndexOutOfBoundsException, System
 import javax.swing as swing
@@ -53,7 +52,7 @@ class Test_Picture_BOOK(unittest.TestCase):
 
     def testDecreaseRed(self):
         '''Test BOOK - Decrease red (by 50%)'''
-        JESConfig.getInstance().setSessionWrapAround(0)
+        Pixel.setWrapLevels(False)
         self.pict = Picture(PICTURES + "barbara.jpg")
         for p in self.pict.getPixels():
             value = p.getRed()
@@ -72,7 +71,7 @@ class Test_Picture_BOOK(unittest.TestCase):
 
     def testIncreaseRed(self):
         '''Test BOOK - Increase red (by 20%)'''
-        JESConfig.getInstance().setSessionWrapAround(0)
+        Pixel.setWrapLevels(False)
         self.pict = Picture(PICTURES + "barbara.jpg")
         for p in self.pict.getPixels():
             value = p.getRed()
@@ -108,7 +107,7 @@ class Test_Picture_BOOK(unittest.TestCase):
 
     def testLighten(self):
         '''Test BOOK - Lighten'''
-        JESConfig.getInstance().setSessionWrapAround(0)
+        Pixel.setWrapLevels(False)
         self.pict = Picture(PICTURES + "barbara.jpg")
         for p in self.pict.getPixels():
             color = p.getColor()
@@ -127,7 +126,7 @@ class Test_Picture_BOOK(unittest.TestCase):
 
     def testDarken(self):
         '''Test BOOK - Darken'''
-        JESConfig.getInstance().setSessionWrapAround(0)
+        Pixel.setWrapLevels(False)
         self.pict = Picture(PICTURES + "barbara.jpg")
         for p in self.pict.getPixels():
             color = p.getColor()
@@ -146,7 +145,7 @@ class Test_Picture_BOOK(unittest.TestCase):
 
     def testNegative(self):
         '''Test BOOK - Negative'''
-        JESConfig.getInstance().setSessionWrapAround(0)
+        Pixel.setWrapLevels(False)
         self.pict = Picture(PICTURES + "barbara.jpg")
         for p in self.pict.getPixels():
             red = p.getRed()
@@ -168,7 +167,7 @@ class Test_Picture_BOOK(unittest.TestCase):
 
     def testGreyScale(self):
         '''Test BOOK - GreyScale'''
-        JESConfig.getInstance().setSessionWrapAround(0)
+        Pixel.setWrapLevels(False)
         self.pict = Picture(PICTURES + "barbara.jpg")
         for p in self.pict.getPixels():
             newRed = p.getRed() * 0.299

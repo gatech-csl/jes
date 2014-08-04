@@ -1406,10 +1406,7 @@ class JESUI(swing.JFrame, FocusListener):
                 JESConfig.CONFIG_BACKUPSAVE, self.backupSaveBox.isSelected())
             JESConfig.getInstance().setBooleanProperty(
                 JESConfig.CONFIG_WRAPPIXELVALUES, self.wrappixelBox.isSelected())
-            JESConfig.getInstance().setBooleanProperty(
-                JESConfig.CONFIG_WRAPPIXELVALUES, self.wrappixelBox.isSelected())
-            JESConfig.getInstance().setSessionWrapAround(
-                self.wrappixelBox.isSelected())
+            Pixel.setWrapLevels(self.wrappixelBox.isSelected())
 
             JESConfig.getInstance().writeConfig()
 
