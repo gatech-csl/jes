@@ -377,24 +377,6 @@ class JESProgram:
     def editorLoaded(self):
         return self.gui.loadButton.getForeground() == JESConstants.LOAD_BUTTON_DIFF_COLOR
 
-
-##########################################################################
-# Function name: checkTabs
-# Description:
-#
-##########################################################################
-    def checkTabs(self):
-
-        if self.filename != '':
-            # tabnanny sends the response to stdout, this redirects that output
-
-            badLine = JESTabnanny.check(self.filename)
-            # tabnanny calls tokenizer.tokenize, which can
-            # throw a TokenError exception
-            # we catch it when we call checkTabs
-
-            return badLine
-        return ''
 ##########################################################################
 # Function name: closeProgram
 # Description:
