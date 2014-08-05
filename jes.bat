@@ -25,18 +25,18 @@ rem What Java should we use?
 
 set java_exe=java.exe
 
-set java_bundled=%jes_base%\dependencies\jre-win32
+set "java_bundled=%jes_base%\dependencies\jre-win32"
 
 if DEFINED JES_JAVA_HOME (
-    set java=%JES_JAVA_HOME%\bin\%java_exe%
+    set "java=%JES_JAVA_HOME%\bin\%java_exe%"
 ) else (
     if EXIST "%java_bundled%" (
-        set java=%java_bundled%\bin\%java_exe%
+        set "java=%java_bundled%\bin\%java_exe%"
     ) else (
         if DEFINED JAVA_HOME (
-            set java=%JAVA_HOME%\bin\%java_exe%
+            set "java=%JAVA_HOME%\bin\%java_exe%"
         ) else (
-            set java=%java_exe%
+            set "java=%java_exe%"
         )
     )
 )
