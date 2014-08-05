@@ -43,6 +43,8 @@ from jes.gui.commandwindow import CommandWindowController
 from jes.gui.commandwindow.themes import THEME_NAMES
 from jes.gui.components.panels import AutoScrollPane
 from jes.gui.debugger import DebugPanel
+from jes.gui.dialogs.about import aboutController
+
 from JESBugReporter import JESBugReporter
 
 
@@ -62,7 +64,6 @@ COMMAND_GOTO = 'Goto Line ...'
 COMMAND_OPTIONS = 'Options'
 #COMMAND_DIRECTORY = 'Change Default Directory...'
 COMMAND_HELP = 'Help'
-COMMAND_ABOUT = 'About JES'
 COMMAND_BUGREPORT = 'Report a problem in JES!'
 COMMAND_SEARCH = 'Search'
 COMMAND_LOAD = 'Load Program'
@@ -535,7 +536,7 @@ class JESUI(swing.JFrame, FocusListener):
             ]],
 
             [HELP_TITLE, [
-                [COMMAND_ABOUT,         0, 0],
+                aboutController.show,
                 [COMMAND_BUGREPORT,     0, 0],
                 [COMMAND_EXPLORE,       KeyEvent.VK_E,  CONTROL_KEY]
             ]]
@@ -748,10 +749,7 @@ class JESUI(swing.JFrame, FocusListener):
         elif actionCommand == COMMAND_HELP:
             self.openBrowser(self, HELP_URL)
             self.windowSetting(COMMAND_WINDOW_3HELP)
-        elif actionCommand == COMMAND_ABOUT:
-            self.program.openAboutWindow()
         elif actionCommand == COMMAND_BUGREPORT:
-            # self.program.openAboutWindow()
             bugreporter = JESBugReporter()
         elif (actionCommand == LOAD_BUTTON_CAPTION) or (actionCommand == COMMAND_LOAD):
             if self.editor.modified:

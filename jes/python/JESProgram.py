@@ -7,7 +7,6 @@
 # java -Buck
 
 import JESConfig
-import JESAbout
 import JESIntroduction
 import JESExceptionRecord
 import JESConstants
@@ -58,7 +57,6 @@ class JESProgram:
         terp.initialize(self.initializeInterpreter)
         self.varsToHighlight = list(terp.initialNames)
 
-        self.aboutWindow = None
         self.introWindow = None
 
         self.setupGUI()
@@ -415,16 +413,6 @@ class JESProgram:
 ##########################################################################
     def stopThread(self):
         self.interpreter.stopThread()
-
-##########################################################################
-# Function name: openAboutWindow
-# Description:
-#     Opens up a JESAboutWindow.
-##########################################################################
-    def openAboutWindow(self):
-        if self.aboutWindow == None:
-            aboutWindow = JESAbout.JESAbout()
-        aboutWindow.show()
 
 ##########################################################################
 # Function name: openIntroductionWindow
