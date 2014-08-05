@@ -39,6 +39,22 @@ public class JESVersion {
         return SCM_INFO;
     }
 
+    public static String getOSVersion () {
+        String name = System.getProperty("os.name");
+
+        // Windows includes the version the user would know in os.name.
+        // The os.version property doesn't include anything useful.
+        // (For example, os.name is "Windows 7" and os.version is "6.1"
+        // on my Windows 7 laptop.)
+        // So, on Windows platforms, we only return the name.
+        // It is more useful on OS X and Linux.
+        if (name.startsWith("Windows ")) {
+            return name;
+        } else {
+            return name + " " + System.getProperty("os.version");
+        }
+    }
+
     public static String getMessage () {
         return String.format(
             "JES version %s\n" +
@@ -46,14 +62,13 @@ public class JESVersion {
             "Source control: %s\n" +
             "Java version:   %s (%s/%s)\n" +
             "Jython version: %s (build %s)\n" +
-            "Computer OS:    %s %s (%s architecture)",
+            "Computer OS:    %s (%s architecture)",
             RELEASE, RELEASE_DATE, SCM_INFO,
             System.getProperty("java.version"),
             System.getProperty("java.runtime.name"),
             System.getProperty("java.vm.name"),
             org.python.Version.PY_VERSION, org.python.Version.getBuildInfo(),
-            System.getProperty("os.name"), System.getProperty("os.version"),
-            System.getProperty("os.arch")
+            getOSVersion(), System.getProperty("os.arch")
         );
     }
 }
