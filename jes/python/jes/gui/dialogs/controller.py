@@ -11,12 +11,12 @@ from java.awt import BorderLayout
 from javax.swing import JFrame, JPanel
 from jes.gui.components.actions import methodAction
 
-class SimpleDialog(JFrame):
+class BasicDialog(JFrame):
     WINDOW_TITLE = "Dialog Box"
     WINDOW_SIZE = (600, 600)
 
     def __init__(self):
-        super(AboutDialog, self).__init__()
+        super(BasicDialog, self).__init__()
 
         self.setLocationRelativeTo(None)
         self.title = self.WINDOW_TITLE

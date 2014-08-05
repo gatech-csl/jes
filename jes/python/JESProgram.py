@@ -7,7 +7,6 @@
 # java -Buck
 
 import JESConfig
-import JESIntroduction
 import JESExceptionRecord
 import JESConstants
 import JESResources
@@ -32,6 +31,7 @@ from jes.bridge.terpcontrol import InterpreterControl
 from jes.core.interpreter import Interpreter
 from jes.core.interpreter.watcher import Watcher
 from jes.gui.components.threading import threadsafe
+from jes.gui.dialogs.intro import introController
 
 FILE_EXISTS_ERROR = 2
 
@@ -56,8 +56,6 @@ class JESProgram:
 
         terp.initialize(self.initializeInterpreter)
         self.varsToHighlight = list(terp.initialNames)
-
-        self.introWindow = None
 
         self.setupGUI()
 
@@ -118,7 +116,7 @@ class JESProgram:
                 swing.JOptionPane.INFORMATION_MESSAGE
             )
         elif not config.wasLoaded():
-            self.openIntroductionWindow()
+            introController.show()
 
         # JavaMusic.open()
     def getVarsToHighlight(self):
@@ -413,16 +411,6 @@ class JESProgram:
 ##########################################################################
     def stopThread(self):
         self.interpreter.stopThread()
-
-##########################################################################
-# Function name: openIntroductionWindow
-# Description:
-#     Opens up a JESIntroductionWindow.
-##########################################################################
-    def openIntroductionWindow(self):
-        if self.introWindow == None:
-            introWindow = JESIntroduction.JESIntroduction()
-        introWindow.show()
 
 ##########################################################################
 # Function name: openSettingsGUI
