@@ -45,12 +45,15 @@ public class JESVersion {
             "Release date:   %s\n" +
             "Source control: %s\n" +
             "Java version:   %s (%s/%s)\n" +
-            "Jython version: %s (build %s)",
+            "Jython version: %s (build %s)\n" +
+            "Computer OS:    %s %s (%s architecture)",
             RELEASE, RELEASE_DATE, SCM_INFO,
             System.getProperty("java.version"),
             System.getProperty("java.runtime.name"),
             System.getProperty("java.vm.name"),
-            org.python.Version.PY_VERSION, org.python.Version.getBuildInfo()
+            org.python.Version.PY_VERSION, org.python.Version.getBuildInfo(),
+            System.getProperty("os.name"), System.getProperty("os.version"),
+            System.getProperty("os.arch")
         );
     }
 }
