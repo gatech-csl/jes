@@ -11,8 +11,10 @@ files.
 from __future__ import with_statement
 
 import JESResources
-from java.awt import BorderLayout
-from javax.swing import JTabbedPane, JTextPane, JScrollPane, JButton
+import JESVersion
+from java.awt import BorderLayout, Component
+from javax.swing import (JTabbedPane, JTextPane, JScrollPane, JButton,
+                         JLabel, JPanel)
 from jes.gui.components.actions import methodAction
 from .controller import BasicDialog, DialogController
 
@@ -46,6 +48,14 @@ class AboutDialog(BasicDialog):
 
         # Load this tabbed pane into the layout
         self.add(tabs, BorderLayout.CENTER)
+
+        # Add a label at the top
+        versionLabel = JLabel("JES version " + JESVersion.RELEASE)
+        versionLabel.alignmentX = Component.CENTER_ALIGNMENT
+
+        versionPanel = JPanel()
+        versionPanel.add(versionLabel)
+        self.add(versionPanel, BorderLayout.PAGE_START)
 
         # Make an OK button
         self.okButton = JButton(self.ok)
