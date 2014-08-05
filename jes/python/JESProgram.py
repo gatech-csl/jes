@@ -326,7 +326,7 @@ class JESProgram:
                 # anyway
                 self.gui.commandWindow.cancelPrompt()
                 self.gui.commandWindow.display(
-                    "======= Loading Program =======", 'system-message')
+                    "======= Loading Program =======\n", 'system-message')
                 self.interpreter.runFile(self.filename)
                 self.interpreter.debugger.setTargetFilenames([self.filename])
                 self.gui.commandWindow.requestFocus()

@@ -81,7 +81,7 @@ EXCEPTION_MESSAGES = {
     'WindowsError': 'An error occurred while making a Windows system call. Please let your TA know what you were doing when this happened, so we can fix it.',
     'ZeroDivisionError': 'You have attempted to divide a number by zero. In mathematics (and in computing), this gives an undefined result. JES cannot deal with this and you should never be attempting to do it.',
     'ThreadDeath': 'The code has been stopped due to you hitting the stop button.',
-    'TokenError': 'There is something wrong with the text of the file you had me try to load.\nYou may have not have as many closing parenthesis as opening parenthesis, or you may have tried to use a jython keyword (if, def, etc...) as a function. This cannot be done.'}
+    'TokenError': 'There is something wrong with the text of the file you had me try to load.\nYou may have not have as many closing parentheses as opening parentheses, left the ending quote off of a string, or tried to use a Jython keyword (if, def, etc...) as a function.'}
 
 STOP_MESSAGE = '[The program was stopped by the stop button.]'
 
