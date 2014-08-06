@@ -20,8 +20,12 @@ public class JESstartup {
     /*synthetic*/ static Class class$JESstartup;
     /*synthetic*/ static Class array$Ljava$lang$String;
 
-    private static void showHelp () {
-        System.out.println("JES launcher - available options");
+    public static void showHelp () {
+        System.out.printf("JES %s Launcher\n", JESVersion.getRelease());
+        System.out.println("- Pass no arguments to open a new file in the editor");
+        System.out.println("- Pass a filename to open that file in the editor");
+        System.out.println();
+        System.out.println("Available options:");
         System.out.println();
         System.out.println("--version:          Print JES version information");
         System.out.println("--properties:       Print Java system properties");

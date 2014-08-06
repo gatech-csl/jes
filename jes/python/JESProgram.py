@@ -14,6 +14,7 @@ import JESFileChooser
 import JESLogBuffer
 import JESUI
 import os
+import os.path
 import java.io as io
 import java.lang as lang
 import javax.swing as swing
@@ -23,8 +24,10 @@ import string
 import sys
 import JESTabnanny
 import JavaMusic
+
 from code import compile_command
 from tokenize import TokenError
+from javax.swing import JOptionPane
 from jes.bridge.replbuffer import REPLBuffer
 from jes.bridge.terpactions import addInterpreterActions
 from jes.bridge.terpcontrol import InterpreterControl
@@ -44,7 +47,7 @@ class JESProgram:
     #
     ##########################################################################
 
-    def __init__(self):
+    def __init__(self, initialFilename=None):
         JESProgram.activeInstance = self
         self.logBuffer = JESLogBuffer.JESLogBuffer(self)
 
@@ -57,13 +60,13 @@ class JESProgram:
         terp.initialize(self.initializeInterpreter)
         self.varsToHighlight = list(terp.initialNames)
 
-        self.setupGUI()
+        self.setupGUI(initialFilename)
 
         # Open the first Python prompt!
         self.replBuffer.startStatement()
 
     @threadsafe
-    def setupGUI(self):
+    def setupGUI(self, initialFilename):
         self.gui = JESUI.JESUI(self)
         self.gui.windowSetting(None)
 
@@ -92,6 +95,10 @@ class JESProgram:
         # Install the bridges.
         self.terpControl = InterpreterControl(self.gui, self.interpreter)
         self.replBuffer = REPLBuffer(self.interpreter, self.gui.commandWindow)
+
+        # Load the file?
+        if initialFilename is not None:
+            self.readFile(initialFilename)
 
         # Show introduction window if settings could not be loaded (Either new
         # JES user or bad write permissions)
@@ -149,15 +156,40 @@ class JESProgram:
         self.chooser.setApproveButtonText("Open File")
         returnVal = self.chooser.showOpenDialog(self.gui)
         if returnVal == 0:  # User has chosen a file, so now it can be opened
-            file = open(self.chooser.getSelectedFile().getPath(), 'r')
-            self.filename = file.name
-            self.gui.setFileName(self.chooser.getSelectedFile().getName())
+            self.readFile(self.chooser.getSelectedFile().getPath())
+
+##########################################################################
+# Function name: readFile
+# Description:
+#     This function reads the file with a given path directly into the
+#     editor, without opening a dialog or whatever.
+##########################################################################
+    def readFile(self, path):
+        path = os.path.normpath(path)
+
+        try:
+            file = open(path, 'r')
+            self.filename = path
+            self.gui.setFileName(os.path.basename(path))
             self.gui.editor.setText(file.read())
             self.gui.editor.modified = 0
             self.gui.loadDifferent()
             file.close()
-            self.defaultPath = self.chooser.getCurrentDirectory()
+
+            self.defaultPath = io.File(os.path.dirname(path))
+            # If we load a file directly, there won't be a chooser.
+            if self.chooser is None:
+                self.chooser = swing.JFileChooser(self.defaultPath)
+
             self.logBuffer.openLogFile(file.name)
+        except EnvironmentError, exc:
+            message = "Could not open the file %s:\n%s" % (
+                os.path.basename(path),
+                getattr(exc, 'strerror', str(exc))
+            )
+            JOptionPane.showMessageDialog(self.gui, message,
+                                          'Error opening file',
+                                          JOptionPane.ERROR_MESSAGE)
 
 ##########################################################################
 # Function name: saveFile
@@ -172,20 +204,7 @@ class JESProgram:
         try:
             if self.filename != '':
                 text = self.gui.editor.getText()
-                # self.chooser.setCurrentDirectory(self.defaultPath)
-                #file = open(self.chooser.getSelectedFile().getPath(),'w+')
-                # David - testing something out
-                #text = text.splitlines(1)
-                # file.writelines(text)
-                #self.filename = file.name
-                # file.close()
-                # Commented out by AW: Trying to see if using java instead of jython
-                # gets rid of the newline errors
-
-                filePath = self.chooser.getSelectedFile().getPath()
-                self.filename = os.path.normpath(filePath)
-
-                fileWriter = io.FileWriter(filePath, 0)
+                fileWriter = io.FileWriter(self.filename, 0)
                 fileWriter.write(text)
                 fileWriter.close()
 
@@ -196,7 +215,7 @@ class JESProgram:
 
                 # Now write the backup
                 if JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_BACKUPSAVE):
-                    backupPath = filePath + "bak"
+                    backupPath = self.filename + "bak"
                     fileWriter = io.FileWriter(backupPath, 0)
                     fileWriter.write(text)
                     fileWriter.close()
@@ -204,7 +223,8 @@ class JESProgram:
             else:
                 return self.saveAs()
         except:
-            # Error handling for saveFile
+            # Error "handling" for saveFile
+            # TODO: make this actually handle errors
             return self.saveAs()
 
 ##########################################################################

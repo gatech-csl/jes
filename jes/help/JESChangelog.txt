@@ -39,6 +39,12 @@ Contributors: Christine Alvarado
     More detailed version information is also provided on the splash
     screen.
 
+*   Allowed the name of a script file to edit to be passed on JES's
+    command line.
+
+*   Added code to handle I/O errors that happen while opening files
+    (such as insufficient access).
+
 ### Media API Improvements
 
 *   Renamed `setLibPath` to `addLibPath`, since there can be more than one
