@@ -74,6 +74,7 @@ mkdir -p "$JESCONFIGDIR"
 
 exec "$JAVA" \
     -classpath "$CLASSPATH" \
+    -Dfile.encoding="UTF-8"
     -Djes.home="$JES_HOME" \
     -Djes.configfile="$JESCONFIG" \
     -Dpython.home="$PYTHONHOME" \

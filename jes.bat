@@ -87,6 +87,7 @@ if NOT DEFINED JES_JAVA_MEMORY (
 )
 
 "%java%" -classpath "%classpath%" ^
+    -Dfile.encoding="UTF-8" ^
     -Djes.home="%jes_home%" ^
     -Djes.configfile="%jesconfig%" ^
     -Dpython.home="%pythonhome%" ^

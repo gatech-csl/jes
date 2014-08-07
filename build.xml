@@ -43,6 +43,8 @@
     <!-- Paths to things in the repository -->
     <property name="jes.home"           location="jes" />
 
+    <property name="jes.encoding"       value="UTF-8" />
+
     <property name="jes.python.src"     location="${jes.home}/python" />
     <property name="jes.java.src"       location="${jes.home}/java" />
     <property name="jes.java.class"     location="${jes.home}/classes" />
@@ -126,7 +128,7 @@
         <mkdir dir="${jes.java.class}" />
         <javac srcdir="${jes.java.src}" destdir="${jes.java.class}"
                source="${jes.target-java}" target="${jes.target-java}"
-               debug="on"
+               debug="on" encoding="${jes.encoding}"
                includeantruntime="false">
             <classpath refid="jes.classpath" />
         </javac>

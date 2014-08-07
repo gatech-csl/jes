@@ -159,6 +159,7 @@ exec "$JAVA" \
     -classpath "$CLASSPATH" \
     -Xdock:icon="$CONTENTS/Resources/${CFBundleIconFile}" \
     -Xdock:name="${CFBundleName}" \
+    -Dfile.encoding="UTF-8" \
     -Djes.home="$JES_HOME" \
     -Djes.configfile="$JESCONFIG" \
     -Dpython.home="$PYTHONHOME" \

@@ -213,7 +213,8 @@
 
         <copy file="${jes.launcher.bat}" todir="${jes.release.windows.stage}" />
         <copy file="${jes.release.windows.exe}" todir="${jes.release.windows.stage}" />
-        <copy file="${jes.help.copyright}" todir="${jes.release.windows.stage}" />
+        <copy file="${jes.help.copyright}" todir="${jes.release.windows.stage}"
+            encoding="${jes.encoding}" outputencoding="Cp1252" />
     </target>
 
     <fileset id="jes.release.windows.stage.contents" dir="${jes.release.windows.stage}">
@@ -237,6 +238,7 @@
         <mkdir dir="${jes.release.windows.stage.readmes}/zip-nojava" />
         <copy file="${jes.release.windows.resources}/zip-nojava-readme.txt"
                 tofile="${jes.release.windows.stage.readmes}/zip-nojava/JESReadme.txt"
+                encoding="${jes.encoding}" outputencoding="Cp1252"
                 filtering="on" />
 
         <!-- ZIP it all up -->
@@ -254,6 +256,7 @@
         <mkdir dir="${jes.release.windows.stage.readmes}/zip-java" />
         <copy file="${jes.release.windows.resources}/zip-java-readme.txt"
                 tofile="${jes.release.windows.stage.readmes}/zip-java/JESReadme.txt"
+                encoding="${jes.encoding}" outputencoding="Cp1252"
                 filtering="on" />
         <copy file="${jes.release.windows.resources}/jre-win32-readme.txt"
                 tofile="${jes.release.windows.stage.readmes}/zip-java/JavaReadme.txt"
