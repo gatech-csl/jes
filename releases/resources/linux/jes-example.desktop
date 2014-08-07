@@ -1,0 +1,18 @@
+[Desktop Entry]
+# If you're installing JES for an entire system,
+# copy this .desktop file, and use it as a base.
+# Make sure you change the /opt/jes path!
+Type=Application
+Version=1.0
+
+Name=JES
+Comment=Write Python programs to work with pictures, sounds, and videos
+Icon=/opt/jes/jes/images/jesicon.png
+Categories=Development;Education
+Keywords=Jython;Environment;Students
+
+TryExec=/opt/jes/jes.sh
+Exec="/opt/jes/jes.sh" %f
+
+MimeType=application/x-python;text/x-python
+

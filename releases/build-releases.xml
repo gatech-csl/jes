@@ -162,6 +162,9 @@
         <copy file="${jes.launcher.sh}" todir="${jes.release.linux.stage}" />
         <chmod file="${jes.release.linux.stage}/jes.sh" perm="755" />
 
+        <copy file="${jes.release.linux.resources}/add-to-menu.sh" todir="${jes.release.linux.stage}" />
+        <chmod file="${jes.release.linux.stage}/add-to-menu.sh" perm="755" />
+
         <copy file="${jes.help.copyright}" todir="${jes.release.linux.stage}" />
         <copy file="${jes.release.linux.readme}" todir="${jes.release.linux.stage}" filtering="on" />
 
@@ -171,7 +174,7 @@
                 includes="${jes.release.linux.basename}/**/*"
                 excludes="${jes.release.linux.basename}/jes.sh" />
             <tarfileset dir="${jes.release.stage}" filemode="755"
-                includes="${jes.release.linux.basename}/jes.sh" />
+                includes="${jes.release.linux.basename}/*.sh" />
         </tar>
     </target>
 

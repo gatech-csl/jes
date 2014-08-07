@@ -46,6 +46,25 @@ Then, you can run the shell script with:
     sh jes.sh
 
 
+Adding JES to Your Menu
+-----------------------
+If you use a desktop environment like GNOME or KDE, you can put JES in your
+applications menu by running the `add-to-menu.sh` shell script file.
+You run it just like `jes.sh`, either by double-clicking it or by calling it
+in your Terminal.
+
+You won't see anything happen, but if you open your applications menu,
+JES should appear in the "Education" and "Development" categories.
+As a bonus, you'll be able to double-click .py files, and they'll open in JES.
+(Your file manager has an option to change this, if you'd rather open
+Python programs in another editor.)
+
+When you delete JES, the menu entry *should* disappear on its own.
+If not, run this command in your Terminal:
+
+    rm ${XDG_DATA_HOME:-$HOME/.local/share}/applications/jes.desktop
+
+
 JES Development
 ---------------
 JES's homepage is on @homepagehost@, at <@homepage@>.
