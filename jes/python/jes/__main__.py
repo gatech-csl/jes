@@ -7,6 +7,15 @@ Powers up JES.
 :copyright: (C) 2014 Matthew Frazier and Mark Guzdial
 :license:   GNU GPL v2 or later, see jes/help/JESCopyright.txt for details
 """
+
+# Super early startup
+
+from jes.platform.macosx import installOpenHandler, setDockIcon
+setDockIcon()
+
+
+# Now, actually start loading stuff
+
 import JESstartup
 import sys
 from JESProgram import JESProgram
@@ -31,4 +40,5 @@ else:
 # Start it!
 
 mainJESProgram = JESProgram(filename)
+installOpenHandler(mainJESProgram)
 

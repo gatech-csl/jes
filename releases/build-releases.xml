@@ -303,13 +303,19 @@
 
     <!-- Mac OS X release -->
     <property name="jes.release.macosx.basename" value="${jes.release.basename}-macosx" />
-    <property name="jes.release.macosx.resources"  location="${jes.release.resources}/macosx" />
+    <property name="jes.release.macosx.resources" location="${jes.release.resources}/macosx" />
     <property name="jes.release.macosx.stage"
             location="${jes.release.stage}/${jes.release.macosx.basename}" />
 
     <property name="jes.release.macosx.bundle" location="${jes.release.macosx.stage}/JES.app" />
     <property name="jes.release.macosx.bundle.contents"
             location="${jes.release.macosx.bundle}/Contents/Resources/Java" />
+    <property name="jes.release.macosx.bundle.infoplist"
+            location="${jes.release.macosx.bundle}/Contents/Info.plist" />
+
+    <property name="jes.release.macosx.typescript"
+            location="${jes.release.macosx.resources}/add-type-info.py" />
+
     <property name="jes.release.macosx.zipfile"
             location="${jes.release.products}/${jes.release.macosx.basename}.zip" />
 
@@ -349,6 +355,15 @@
             <fileset refid="jes.release.contents.java-src" />
             <fileset refid="jes.release.contents.static" />
         </copy>
+
+        <!-- Patch the Info.plist file -->
+        <java classname="${python.main}" failonerror="true">
+            <classpath refid="jes.classpath" />
+            <sysproperty key="python.home" value="${python.home}" />
+
+            <arg file="${jes.release.macosx.typescript}" />
+            <arg file="${jes.release.macosx.bundle.infoplist}" />
+        </java>
 
         <!-- Zip it all up -->
         <zip destfile="${jes.release.macosx.zipfile}">

@@ -52,6 +52,11 @@ def threadCheck(fn):
     return decorated
 
 
+def invokeLater(fn, *args, **kwargs):
+    task = FunctionCall(fn, args, kwargs)
+    SwingUtilities.invokeLater(task)
+
+
 def invokeThreadsafe(fn, *args, **kwargs):
     if SwingUtilities.isEventDispatchThread():
         return fn(*args, **kwargs)

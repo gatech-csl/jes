@@ -1,16 +1,10 @@
 import java.awt.AWTEvent;
 import java.awt.event.AWTEventListener;
-import java.awt.Frame;
-import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.Properties;
 import javax.swing.RepaintManager;
-import javax.swing.SwingUtilities;
 import org.python.util.jython;
 
 /**
@@ -96,6 +90,12 @@ public class JESstartup {
             } else if (option.startsWith("--python-verbose=")) {
                 // Set the Python verbosity level
                 System.setProperty("python.verbose", option.substring(17));
+            } else if (option.startsWith("-psn")) {
+                // Apple passes every process a Process Serial Number
+                // We don't really need it for anything, but if we don't
+                // recognize it _somehow_, the main code will think it's
+                // a filename and try to open it
+                System.setProperty("apple.psn", option);
             } else {
                 // All remaining arguments should get copied into the
                 // Jython arguments array for jes.__main__
@@ -116,8 +116,7 @@ public class JESstartup {
         args[1] = "jes.__main__";
         System.arraycopy(strings, firstArg, args, 2, argCount);
 
-        // Set the dock icon and show the splash window
-        setOSXDockIcon();
+        // Show the splash window
         SplashWindow splashWindow = null;
 
         if (showSplash) {
@@ -159,40 +158,6 @@ public class JESstartup {
                                            .getMessage());
         }
         return var_class;
-    }
-
-    private static void setOSXDockIcon () {
-        // This attempts to access the Apple eAWT toolkit using reflection.
-        // This means we don't need to get a stub JAR and worry about
-        // compiling it.
-        // https://gist.github.com/bchapuis/1562406
-        try {
-            // Get the class.
-            Class util = Class.forName("com.apple.eawt.Application");
-            Method getApplication = util.getMethod("getApplication", new Class[0]);
-            Object application = getApplication.invoke(util);
-
-            // Get the setDockIconImage method.
-            Class params[] = new Class[1];
-            params[0] = Image.class;
-            Method setDockIconImage = util.getMethod("setDockIconImage", params);
-
-            // Actually set the image.
-            // I don't know _why_ passing null here works.
-            // My guess is that Apple somehow elects an image based on the
-            // first window created, and setting it to null means
-            // "use the default." Then the -Xdock:icon JVM option sets
-            // the default.
-            setDockIconImage.invoke(application, (Object) null);
-        } catch (ClassNotFoundException e) {
-            // Probably not on Apple.
-        } catch (NoSuchMethodException e) {
-            // Whatever...
-        } catch (InvocationTargetException e) {
-            // Whatever...
-        } catch (IllegalAccessException e) {
-            // Whatever...
-        }
     }
 }
 

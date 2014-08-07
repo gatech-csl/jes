@@ -916,6 +916,23 @@ class JESUI(swing.JFrame, FocusListener):
             self.program.closeProgram()
 
 ##########################################################################
+# Function name: requestReadFile
+# Parameters:
+#     -filename: the file to open
+# Description:
+#     This function is called when the OS (and by "the OS" I mean "OS X,"
+#     because it's a special snowflake) instructs JES to open a new file.
+#     It asks the user to save first if necessary.
+##########################################################################
+    def requestReadFile(self, filename):
+        if self.editor.modified:
+            isSaved = self.promptSave(PROMPT_EXIT_MESSAGE)
+            if isSaved > -1:
+                self.program.readFile(filename)
+        else:
+            self.program.readFile(filename)
+
+##########################################################################
 # Function name: promptSave
 # Return:
 #     TRUE if the file was saved successfully, FALSE if the save failed or the

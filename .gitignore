@@ -17,7 +17,7 @@ tests/test-output/*
 !tests/test-output/README
 
 # Jython cache
-jython-cache/
+dependencies/jython/cachedir/
 
 # JES-generated backup and log files
 *.pybak
