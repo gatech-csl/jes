@@ -22,14 +22,18 @@ file.
 Running JES
 -----------
 The easiest way to run JES is with a downloadable package,
-but unfortunately those haven't been built for JES 5 yet.
+which you can find at <https://github.com/gatech-csl/jes/releases>.
 Each of them includes its own `JESReadme.txt` with instructions.
 
 If you're working on JES, or you just want to run the latest development
-version, you will need to download a Java Development Kit and Apache Ant.
-The first step is to build JES: just run `ant`.
-Then, you can run the `jes.sh` shell script on Mac or Linux,
-or `jes.bat` on Windows.
+version:
+
+1.  Download a Java Development Kit and Apache Ant.
+2.  Use Git to clone the JES repository, or download a .zip file of the
+    repository.
+3.  Build JES by running `ant`.
+4.  Run the `jes.sh` shell script if you're on Mac or Linux,
+    or the `jes.bat` batch file if you're on Windows.
 
 
 What's in the repository
@@ -79,7 +83,6 @@ but it's much easier to just use `ant test`.
 The `releases` folder is where JES releases (like ZIP files, Windows
 installers, or Mac applications) are built. You can build them by running
 `ant release`, and they appear directly inside the `releases` folder.
-You can see a list of available resources by running `ant -p`.
 
 * The `releases/build-releases.xml` file contains the Ant instructions for
   building each kind of release. (Ant considers it part of `build.xml`,

@@ -39,6 +39,9 @@ Contributors: Christine Alvarado, Stephen Bryant
     More detailed version information is also provided on the splash
     screen.
 
+*   All the platform-specific installers now register JES as a handler
+    for .py files, so students can open JES just by double-clicking a file.
+
 *   Allowed the name of a script file to edit to be passed on JES's
     command line. (Windows support for this is thanks to Stephen Bryant,
     who created a new `JES.exe` that supports command-line arguments.)
