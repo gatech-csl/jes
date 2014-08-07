@@ -12,7 +12,7 @@ JES_HOME="$JES_BASE/jes"
 if test -d "$HOME/Library/Application Support"; then
     JESCONFIGDIR="$HOME/Library/Application Support/JES"
 else
-    JESCONFIGDIR="$HOME/.config/jes"
+    JESCONFIGDIR="${XDG_CONFIG_HOME:-$HOME/.config}/jes"
 fi
 
 if test -f "$JESCONFIGDIR/JESEnvironment.sh"; then
@@ -57,7 +57,7 @@ PYTHONPATH="$JES_HOME/python"
 if test -d "$HOME/Library/Caches"; then
     PYTHONCACHE="$HOME/Library/Caches/JES/jython-cache"
 else
-    PYTHONCACHE="$HOME/.cache/jes/jython-cache"
+    PYTHONCACHE="${XDG_CACHE_HOME:-$HOME/.cache}/jes/jython-cache"
 fi
 
 mkdir -p $PYTHONCACHE
