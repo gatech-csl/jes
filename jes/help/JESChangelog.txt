@@ -12,7 +12,7 @@ Supervisor: Mark Guzdial
 
 Primary Developer: Matthew Frazier
 
-Contributors: Christine Alvarado
+Contributors: Christine Alvarado, Stephen Bryant
 
 ### User Interface Improvements
 
@@ -40,7 +40,8 @@ Contributors: Christine Alvarado
     screen.
 
 *   Allowed the name of a script file to edit to be passed on JES's
-    command line.
+    command line. (Windows support for this is thanks to Stephen Bryant,
+    who created a new `JES.exe` that supports command-line arguments.)
 
 *   Added code to handle I/O errors that happen while opening files
     (such as insufficient access).

@@ -35,6 +35,8 @@
 !define UNINSTALLNAME "Uninstall JES"
 !define UNINSTALLREGKEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPGUID}"
 
+!define PYTHONCLASS "GATech.JES.Python"
+
 Name "${APPNAME}"
 OutFile "jes-@release@-windows.exe"
 
@@ -133,6 +135,26 @@ Section -JES SecJES
   # Add an uninstaller
   WriteUninstaller "$INSTDIR\${UNINSTALLNAME}.exe"
 
+  # Add an optional file type association
+  # First off...do they know what .py files are?
+  ClearErrors
+  ReadRegStr $1 HKCR ".py" ""
+  IfErrors InstallContentType DontInstallContentType
+
+  # If they don't, we'll set ourselves as the default and tell them
+  InstallContentType:
+    WriteRegStr HKCR ".py" "" "${PYTHONCLASS}"
+    WriteRegStr HKCR ".py" "Content Type" "application/x-python"
+    WriteRegStr HKCR ".py" "PerceivedType" "Text"
+  DontInstallContentType:
+
+  # Write our class information
+  WriteRegStr HKCR ".py\OpenWithProgids" "${PYTHONCLASS}" ""
+  WriteRegStr HKCR "${PYTHONCLASS}" "" "Python program"
+  WriteRegStr HKCR "${PYTHONCLASS}\shell\open" "" "Open in JES"
+  WriteRegStr HKCR "${PYTHONCLASS}\shell\open\command" "" "$\"$INSTDIR\JES.exe$\" $\"%1$\""
+  Call RefreshShellIcons
+
   # Provide an entry in Add/Remove Programs
   WriteRegStr HKLM "${UNINSTALLREGKEY}" "DisplayName" "${APPFULLNAME}"
   WriteRegStr HKLM "${UNINSTALLREGKEY}" "DisplayVersion" "${APPVERSION}"
@@ -207,6 +229,20 @@ Section "Uninstall" UnsecJES
   Delete "$INSTDIR\${UNINSTALLNAME}.exe"
 
   RMDir "$INSTDIR"
+
+  # Remove assocation info from the registry
+  DeleteRegKey HKCR "${PYTHONCLASS}"
+  DeleteRegValue HKCR ".py\OpenWithProgids" "${PYTHONCLASS}"
+
+  # Maybe we should delete the file type too?
+  ReadRegStr $1 HKCR ".py" ""
+  StrCmp $1 "${PYTHONCLASS}" DeleteFileType DontDeleteFileType
+  
+  DeleteFileType:
+    DeleteRegKey HKCR ".py"
+  DontDeleteFileType:
+
+  Call un.RefreshShellIcons
 
   # Remove the uninstaller registry key
   DeleteRegKey HKLM "${UNINSTALLREGKEY}"
@@ -336,4 +372,20 @@ Function ComputeTotalInstalledSize
   Pop $1
   Pop $0
   Return
+FunctionEnd
+
+
+!define SHCNE_ASSOCCHANGED 0x08000000
+!define SHCNF_IDLIST 0
+ 
+Function RefreshShellIcons
+  ; By Jerome Tremblay - april 2003
+  ; http://nsis.sourceforge.net/Refresh_shell_icons
+  System::Call 'shell32.dll::SHChangeNotify(i, i, i, i) v \
+  (${SHCNE_ASSOCCHANGED}, ${SHCNF_IDLIST}, 0, 0)'
+FunctionEnd
+ 
+Function un.RefreshShellIcons
+  System::Call 'shell32.dll::SHChangeNotify(i, i, i, i) v \
+  (${SHCNE_ASSOCCHANGED}, ${SHCNF_IDLIST}, 0, 0)'
 FunctionEnd

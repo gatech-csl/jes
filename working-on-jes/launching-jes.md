@@ -30,7 +30,11 @@ release process makes sure that Windows and Linux builds have a compatible
 structure.
 
 (As an aside, the `JES.exe` file included in the Windows build just calls
-`jes.bat` and exits.)
+`jes.bat` with any command line arguments it was provided. It mostly exists
+so that we can have a pretty icon and not have a Command Prompt window appear
+every time the user starts JES. However, it makes all the standard output and
+error disappear, so if you need to debug JES, you'll need to invoke `jes.bat`
+specifically.)
 
 The .app launcher is only used in `JES.app` bundles for OS X. It operates
 slightly differently than the rest because it has to work with the `.app`
