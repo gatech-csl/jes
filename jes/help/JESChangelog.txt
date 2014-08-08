@@ -21,13 +21,13 @@ Contributors: Christine Alvarado, Stephen Bryant
     values in a different color than `print` output.
     The yellow-on-black JES 4.3 theme remains the default, however.
 
-*   Instead of displaying `java.lang.ThreadDeath`, stopping the program
-    while it's running displays a simple message,
+*   Instead of displaying `java.lang.ThreadDeath`, stopping the
+    program while it's running displays a simple message,
     `[The program was stopped by the stop button.]`
 
 *   Added a `Clear command window` option to the `Edit` menu, which
-    empties the command window of all text (but preserves history and defined
-    variables).
+    empties the command window of all text (but preserves history and
+    defined variables).
 
 *   Moved settings into a `.properties` file, which is stored in the
     user's platform-specific preferences directory.
@@ -36,14 +36,16 @@ Contributors: Christine Alvarado, Stephen Bryant
 
 *   Made version information available in the Command Window:
     type `version` to print out the JES, Java, and Jython versions.
-    More detailed version information is also provided on the splash
-    screen.
+    More detailed version information is also provided on the
+    splash screen.
 
 *   All the platform-specific installers now register JES as a handler
-    for .py files, so students can open JES just by double-clicking a file.
+    for .py files, so students can open JES just by double-clicking
+    a file.
 
 *   Allowed the name of a script file to edit to be passed on JES's
-    command line. (Windows support for this is thanks to Stephen Bryant,
+    command line.
+    (Windows support for this is thanks to Stephen Bryant,
     who created a new `JES.exe` that supports command-line arguments.)
 
 *   Added code to handle I/O errors that happen while opening files
@@ -51,8 +53,8 @@ Contributors: Christine Alvarado, Stephen Bryant
 
 ### Media API Improvements
 
-*   Renamed `setLibPath` to `addLibPath`, since there can be more than one
-    library path. (The old name still works.)
+*   Renamed `setLibPath` to `addLibPath`, since there can be more than
+    one library path. (The old name still works.)
 
 *   Added a version of the Turtle `getDistance` method that accepts
     another turtle, and computes the distance to its x and y
@@ -123,8 +125,8 @@ Contributors: Christine Alvarado, Stephen Bryant
     truncation. (Thanks to Christine Alvarado from UC San Diego for
     discovering this bug and contributing a patch!)
 
-*   Removed the occasional duplicate `>>>` prompts in the Command
-    Window.
+*   Removed the occasional duplicate `>>>` prompts in the
+    Command Window.
 
 *   Prevented `...` prompts in the Command Window from being
     backspaced over.
