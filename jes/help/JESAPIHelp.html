@@ -1092,14 +1092,20 @@ This will play a scale with one second notes and default intensity.
 _
 printNow|<b>printNow</b>(output):<br>
 <font color=blue>output</font>: What we want to print<br>
-Prints the specified output to the JES command area right now, without waiting for buffering. Helpful for debugging, if your program is throwing an exception!<br>
+Prints the specified output to the JES command area.<br>
+In older versions of JES, if you wanted output to appear before the program finished running, you had to use printNow. But in JES 5 and later, printNow is no longer necessary &ndash; you can just use the normal print statement, and the message will appear as soon as possible.<br>
 <b>Example:</b>
 <pre>
+import time
+
 def lineByLine():
-  for x in range(1, 101)
+  for x in range(1, 11, 2):
     printNow(x)
+    time.sleep(0.5)
+    print x + 1
+    time.sleep(0.5)
 </pre>
-This will print the numbers 1 to 100 in order. Compare with using "print".
+This will print the numbers 1 to 10 in order, with a half-second wait in between each. (So, you can see that printNow and print do the same thing now.)
 _
 quit|<b>quit</b>():<br>
 Forces JES to stop running the current program.<br>
