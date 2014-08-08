@@ -145,6 +145,15 @@ public class SimpleTurtle {
     //////////////////// methods /////////////////////////
 
     /**
+      * Get the distance from this turtle to another.
+      *
+      * @param turtle The turtle to compute the distance betwen.
+      */
+    public double getDistance(SimpleTurtle turtle) {
+        return getDistance(turtle.xPos, turtle.yPos);
+    }
+
+    /**
      * Get the distance from the passed x and y location
      * @param x the x location
      * @param y the y location
