@@ -15,7 +15,6 @@ public class SplashWindow {
      * Creates and shows a SplashWindow with a particular image.
      *
      * @param image The image to include.
-     * @param frame The Frame to use.
      */
     public SplashWindow (Image image) {
         this.image = image;
