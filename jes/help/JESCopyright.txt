@@ -22,6 +22,20 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 
+This program includes a copy of jMusic version 1.6.4, which is
+copyright © 2000 Andrew Sorensen & Andrew Brown.
+
+jMusic 1.6.4 is also free software, which can be redistributed
+and/or modified under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+jMusic 1.6.4 is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+
                     GNU GENERAL PUBLIC LICENSE
                        Version 2, June 1991
 

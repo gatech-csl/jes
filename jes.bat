@@ -53,6 +53,8 @@ set classpath=%classpath%;%jars%\junit.jar
 set classpath=%classpath%;%jars%\jmf.jar
 set classpath=%classpath%;%jars%\jl1.0.jar
 set classpath=%classpath%;%jars%\AVIDemo.jar
+set classpath=%classpath%;%jars%\jMusic1.6.4.jar
+set classpath=%classpath%;%jars%\jmusic-instruments.jar
 
 
 rem Where's our Python code?

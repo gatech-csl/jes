@@ -75,6 +75,10 @@ JES in the `dependencies` folder:
   We need to keep this around because the Jython JAR doesn't have the
   standard library.
 
+* `dependencies/jmusic-instruments`: Instrument classes to use with the
+  bundled copy of jMusic. This contains the Java source files and class files,
+  but JES actually imports them from a JAR file in `dependencies/jars`.
+
 The `tests` folder contains Python programs that test different parts of JES
 to make sure we wrote them according to the specifications.
 You can run these from inside JES by opening the `TestExecute.py` file,

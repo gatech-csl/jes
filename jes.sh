@@ -43,6 +43,8 @@ CLASSPATH="$CLASSPATH:$JARS/junit.jar"
 CLASSPATH="$CLASSPATH:$JARS/jmf.jar"
 CLASSPATH="$CLASSPATH:$JARS/jl1.0.jar"
 CLASSPATH="$CLASSPATH:$JARS/AVIDemo.jar"
+CLASSPATH="$CLASSPATH:$JARS/jMusic1.6.4.jar"
+CLASSPATH="$CLASSPATH:$JARS/jmusic-instruments.jar"
 
 
 # Where's our Python code?

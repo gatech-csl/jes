@@ -60,6 +60,12 @@ Contributors: Christine Alvarado, Stephen Bryant
     another turtle, and computes the distance to its x and y
     coordinates.
 
+*   Bundled a copy of jMusic. It's not officially integrated into the
+    media API, but the `jm` package is available for import.
+    (All of the instruments from the jMusic instruments Web page are
+    included, but they must be imported from the `instruments`
+    package - for example, `from instruments import SineInst`.)
+
 ### Interpreter Improvements
 
 *   Upgraded to Jython 2.5, granting access to new Python language

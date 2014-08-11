@@ -2,6 +2,7 @@
 *.class
 jes/classes.jar
 jes/javadoc/
+dependencies/jars/jmusic-instruments.jar
 
 # Generated Java files
 jes/java/JESVersion.java
@@ -20,6 +21,7 @@ tests/test-output/*
 dependencies/jython/cachedir/
 
 # JES-generated backup and log files
+jmusic.tmp
 *.pybak
 *.pylog
 

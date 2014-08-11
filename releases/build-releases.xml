@@ -19,9 +19,9 @@
     <property name="signing.tsaurl"         value="http://timestamp.comodoca.com/rfc3161" />
 
     <property name="jes.release.jars"       location="${basedir}"
-                                            unless:set="signing.key" />
+                                            unless:set="sign" />
     <property name="jes.release.jars"       location="${jes.release.products}/${jes.release.basename}-jars"
-                                            if:set="signing.key" />
+                                            if:set="sign" />
 
 
     <!-- Master "release" target -->
@@ -59,6 +59,7 @@
 
     <fileset id="jes.release.contents.java-src" dir="${basedir}">
         <include name="jes/java/**/*.java" />
+        <include name="dependencies/jmusic-instruments/java/**/*.java" />
     </fileset>
 
     <fileset id="jes.release.contents.jars" dir="${jes.release.jars}">

@@ -51,11 +51,17 @@
     <property name="jes.java.jar"       location="${jes.home}/classes.jar" />
     <property name="jes.javadoc"        location="${jes.home}/javadoc" />
 
-    <property name="jes.main"           value="JESstartup" />
-    <property name="jes.configfile.name" value="JESConfig.properties" />
+    <property name="jes.main"               value="JESstartup" />
+    <property name="jes.configfile.name"    value="JESConfig.properties" />
 
-    <property name="jes.deps"           location="dependencies" />
-    <property name="jes.deps.jardir"    location="${jes.deps}/jars" />
+    <property name="jes.deps"               location="dependencies" />
+    <property name="jes.deps.jardir"        location="${jes.deps}/jars" />
+    <property name="jes.deps.jmusic.jar"    location="${jes.deps.jardir}/jMusic1.6.4.jar" />
+
+    <property name="jes.instruments"        location="${jes.deps}/jmusic-instruments" />
+    <property name="jes.instruments.src"    location="${jes.instruments}/java" />
+    <property name="jes.instruments.class"  location="${jes.instruments}/classes" />
+    <property name="jes.instruments.jar"    location="${jes.deps.jardir}/jmusic-instruments.jar" />
 
     <property name="python.home"        location="${jes.deps}/jython" />
     <property name="python.main"        value="org.python.util.jython" />
@@ -93,8 +99,27 @@
 
     <path id="jes.classpath">
         <pathelement path="${jes.java.jar}" />
+        <pathelement path="${jes.instruments.jar}" />
         <fileset refid="jes.deps.jars" />
     </path>
+
+
+    <!-- Building the instruments -->
+    <path id="jes.instruments.classpath">
+        <pathelement path="${jes.deps.jmusic.jar}" />
+    </path>
+
+    <target name="instruments"
+        description="Assemble the JAR of jMusic instruments.">
+        <mkdir dir="${jes.instruments.class}" />
+        <javac srcdir="${jes.instruments.src}" destdir="${jes.instruments.class}"
+               source="${jes.target-java}" target="${jes.target-java}"
+               debug="on"
+               includeantruntime="false">
+            <classpath refid="jes.instruments.classpath" />
+        </javac>
+        <jar destfile="${jes.instruments.jar}" basedir="${jes.instruments.class}" />
+    </target>
 
 
     <!-- Building JES -->
@@ -123,7 +148,7 @@
 
 
     <!-- The Java code -->
-    <target name="compile" depends="version"
+    <target name="compile" depends="version, instruments"
         description="Build the Java class files and JAR.">
         <mkdir dir="${jes.java.class}" />
         <javac srcdir="${jes.java.src}" destdir="${jes.java.class}"
@@ -169,7 +194,7 @@
     <target name="clean" depends="clean-java, clean-python, clean-test, clean-release-stage"
         description="CLEAN ALL THE THINGS! (Except release packages.)" />
 
-    <target name="clean-java" depends="clean-java-classes, clean-javadoc"
+    <target name="clean-java" depends="clean-java-classes, clean-instruments, clean-javadoc"
         description="Remove the built classes and Javadoc." />
 
     <target name="clean-java-classes"
@@ -177,6 +202,14 @@
         <delete file="${jes.java.jar}" />
         <delete includeemptydirs="true">
             <fileset dir="${jes.java.class}" includes="**/*" />
+        </delete>
+    </target>
+
+    <target name="clean-instruments"
+        description="Remove the compiled instrument classes.">
+        <delete file="${jes.instruments.jar}" />
+        <delete includeemptydirs="true">
+            <fileset dir="${jes.instruments.class}" includes="**/*" />
         </delete>
     </target>
 
