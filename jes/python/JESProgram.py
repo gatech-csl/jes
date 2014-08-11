@@ -70,7 +70,7 @@ class JESProgram:
         self.gui = JESUI.JESUI(self)
         self.gui.windowSetting(None)
 
-        self.filename = ' '
+        self.filename = ''
         self.settingsFileName = ''
 
         self.chooser = JESFileChooser.JESFileChooser()
@@ -305,7 +305,7 @@ class JESProgram:
 #       Otherwise, the code is loaded.
 ##########################################################################
     def loadFile(self):
-        if self.filename == ' ':
+        if self.filename == '':
             self.setErrorByHand(JESConstants.JESPROGRAM_NO_FILE, 0)
         else:  # error 1. didn't occur
 
