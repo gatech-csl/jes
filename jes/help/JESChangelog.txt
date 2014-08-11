@@ -121,6 +121,12 @@ Contributors: Christine Alvarado, Stephen Bryant
 *   Fixed `SimplePicture`'s extension-detecting code to split on the
     last dot in the filename instead of the first.
 
+*   Limited font sizes to the range 8 -- 72, inclusive.
+    (While JES's UI would not display font sizes outside this range in
+    previous versions, if one ended up in the configuration file,
+    it would be used even if it made the display unreadably
+    small or large.)
+
 *   Corrected SimpleTurtle to use 0.5-based rounding instead of
     truncation. (Thanks to Christine Alvarado from UC San Diego for
     discovering this bug and contributing a patch!)

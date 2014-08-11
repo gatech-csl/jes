@@ -202,6 +202,19 @@ public class JESConfig {
         if (!(new File(getStringProperty(CONFIG_MEDIAPATH))).exists()) {
             setStringProperty(CONFIG_MEDIAPATH, System.getProperty("user.home"));
         }
+
+        // Copied from JESConstants because that code is written in Python.
+        int fontSize = getIntegerProperty(CONFIG_FONT);
+        if (fontSize == 0) {
+            // Reset it to the default.
+            setIntegerProperty(CONFIG_FONT, 12);
+        } else if (fontSize < 8) {
+            // Clamp it to 8 (the safe minimum).
+            setIntegerProperty(CONFIG_FONT, 8);
+        } else if (fontSize > 72) {
+            // Clamp it to 72 (the sane maximum).
+            setIntegerProperty(CONFIG_FONT, 72);
+        }
     }
 
     // FILE HANDLING
@@ -357,7 +370,11 @@ public class JESConfig {
     public int getIntegerProperty (String property) {
         String val = getStringProperty(property);
         if (!val.equals("")) {
-            return Integer.parseInt(val);
+            try {
+                return Integer.parseInt(val);
+            } catch (NumberFormatException exc) {
+                return 0;
+            }
         } else {
             return 0;
         }
