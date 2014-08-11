@@ -1137,6 +1137,9 @@ requestInteger|<b>requestInteger</b>(message):<br>
 <font color=blue>message</font>: the message to display to the user in the dialog<br>
 <font color=blue>returns</font>: the number as an integer
 This will allow the user to input an integer. The dialog will keep appearing until a valid integer is entered.<br>
+The dialog box has a Cancel button. If the user clicks it, the function will return None.<br>
+The dialog box also has a Stop button, which stops the program.
+(You can use this if you accidentally make an infinite loop.)
 <b>Example:</b>
 <pre>
 def printAge():
@@ -1150,6 +1153,9 @@ requestIntegerInRange|<b>requestIntegerInRange</b>(message, min, max):<br>
 <font color=blue>min</font>: the smallest integer allowed<br>
 <font color=blue>max</font>: the largest integer allowed<br>
 Opens a message dialog to the user asking for an integer between a minimum and maximum (inclusive). The dialog will keep appearing until a valid integer is entered.<br>
+The dialog box has a Cancel button. If the user clicks it, the function will return None.<br>
+The dialog box also has a Stop button, which stops the program.
+(You can use this if you accidentally make an infinite loop.)
 <b>Example:</b>
 <pre>
 def guessingGame():
@@ -1167,6 +1173,9 @@ requestNumber|<b>requestNumber</b>(message):<br>
 <font color=blue>message</font>: the message to display to the user in the dialog<br>
 <font color=blue>returns</font>: the number as a double<br>
 This will allow the user to input a number with a decimal. The dialog will keep appearing until a valid number is entered.<br>
+The dialog box has a Cancel button. If the user clicks it, the function will return None.<br>
+The dialog box also has a Stop button, which stops the program.
+(You can use this if you accidentally make an infinite loop.)
 <b>Example:</b>
 <pre>
 def printHeight():
@@ -1181,13 +1190,16 @@ requestString|<b>requestString</b>(message):<br>
 <font color=blue>message</font>: the message to display to the user in the dialog<br>
 <font color=blue>returns</font>: the input string<br>
 This will allow the user to input any string.<br>
+The dialog box has a Cancel button. If the user clicks it, the function will return None.<br>
+The dialog box also has a Stop button, which stops the program.
+(You can use this if you accidentally make an infinite loop.)
 <b>Example:</b>
 <pre>
 def printName():
   name = requestString("What is your name?")
   print "Hello " + name + "!"
 </pre>
-This will open a dialog box asking the user's name and then print it back out.
+This will open a dialog box asking the user's name and then print it back out.<br>
 _
 setAllPixelsToAColor|<b>setAllPixelsToAColor</b>(picture, color):<br>
 <font color=blue>picture</font>: the picture to change the pixels of<br>

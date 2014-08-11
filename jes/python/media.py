@@ -92,8 +92,8 @@ import Picture
 import Pixel
 import Sound
 import FrameSequencerTool
-import SimpleInput
-import SimpleOutput
+import StoppableInput
+import StoppableOutput
 import Sample
 import Samples
 import MoviePlayer
@@ -1020,20 +1020,17 @@ def duplicatePicture(picture):
 # Input and Output interfaces
 #
 # Note: These calls must be done in a threadsafe manner since the JESThread will be
-# executing them rather than the GUI's event dispatch thread.  See SimpleInput/Output.java
-# for the threadsafe execution.
+# executing them rather than the GUI's event dispatch thread.
+# See {Simple,Stoppable}{Input,Output}.java for the threadsafe execution.
 ##
-
-#  radius = SimpleInput.getNumber("Enter the radius of the cylinder")
-#  SimpleOutput.showInformation("The volume of the cylinder is %.02f " % volume)
 
 
 def requestNumber(message):
-    return SimpleInput.getNumber(message)
+    return StoppableInput.getNumber(message)
 
 
 def requestInteger(message):
-    return SimpleInput.getIntNumber(message)
+    return StoppableInput.getIntNumber(message)
 
 
 def requestIntegerInRange(message, min, max):
@@ -1041,11 +1038,11 @@ def requestIntegerInRange(message, min, max):
         print "requestIntegerInRange(message, min, max): min >= max not allowed"
         raise ValueError
 
-    return SimpleInput.getIntNumber(message, min, max)
+    return StoppableInput.getIntNumber(message, min, max)
 
 
 def requestString(message):
-    return str(SimpleInput.getString(message))
+    return StoppableInput.getString(message)
 
 
 def input(message=None):
@@ -1059,15 +1056,15 @@ def raw_input(message=None):
 
 
 def showWarning(message):
-    return SimpleOutput.showWarning(message)
+    return StoppableOutput.showWarning(message)
 
 
 def showInformation(message):
-    return SimpleOutput.showInformation(message)
+    return StoppableOutput.showInformation(message)
 
 
 def showError(message):
-    return SimpleOutput.showError(message)
+    return StoppableOutput.showError(message)
 
 
 ##
