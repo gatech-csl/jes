@@ -8,7 +8,6 @@ This tries to keep as much of the fancy Apple magic in one file as possible.
 :license:   GNU GPL v2 or later, see jes/help/JESCopyright.txt for details
 """
 import os.path
-from JESUI import PROMPT_OPEN_MESSAGE
 from jes.gui.components.threading import invokeLater
 
 try:
@@ -36,7 +35,7 @@ class JESApplicationAdapter(ApplicationAdapter):
         self.program.gui.exit(event)
 
     def handleOpenFile(self, event):
-        invokeLater(self.program.gui.requestReadFile, event.getFilename())
+        invokeLater(self.program.gui.readAction, event.getFilename())
 
 
 def installOpenHandler(program):

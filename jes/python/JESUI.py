@@ -49,10 +49,6 @@ from jes.gui.dialogs.bugreport import bugReportController
 
 MENU_SEPARATOR = '-'
 EXPLAIN_PREFIX = 'Explain '
-COMMAND_NEW = 'New Program'
-COMMAND_OPEN = 'Open Program'
-COMMAND_SAVE = 'Save Program'
-COMMAND_SAVEAS = 'Save Program As...'
 COMMAND_EXIT = 'Exit'
 COMMAND_CUT = 'Cut'
 COMMAND_COPY = 'Copy'
@@ -214,22 +210,11 @@ VSPLITTER_LOCATION = 320
 BUTTON_PANE_HEIGHT = 15
 STATUS_BAR_HEIGHT = 30
 
-#PROMPT_SAVE_MESSAGE = 'You should save the file that you are working\non before loading or submitting it.\n-Would you like to save now?'
+PROMPT_LOAD_MESSAGE = 'You must save the file that you are working\non before loading it.\nWould you like to save now?'
 
-# Added by Adam Poncz
-PROMPT_NEW_MESSAGE = 'You are about to open a new program area\n-Would you like to save your old program area?'
-PROMPT_OPEN_MESSAGE = 'You are about to open a file.\n-Would you like to save the existing program area?'
-PROMPT_LOAD_MESSAGE = 'You must save the file that you are working\non before loading it.\n-Would you like to save now?'
-# end add
+PROMPT_EXIT_MESSAGE = 'Would you like to save your program before you exit?'
 
-PROMPT_SAVE_CAPTION = 'Save File?'
-# 5 lines added to allow saving changes before exit. - 29 May 2008 by Buck
-# Scharfnorth
-PROMPT_EXIT_MESSAGE = 'Program area has been modified.\n-Would you like to save changes?'
-PROMPT_PRINT_MESSAGE = 'You should save the file that you are working\non before printing it.\n-Would you like to save now?'
-ERROR_SAVE_FAIL = 'The file could not been saved.'
-ERROR_OP_CANCEL = 'Operation Cancelled.'
-
+PROMPT_PRINT_MESSAGE = 'You should save the file that you are working\non before printing it.\nWould you like to save now?'
 
 def getMethodList(klass):
     ret = []
@@ -313,6 +298,14 @@ class JESUI(swing.JFrame, FocusListener):
         if JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_GUTTER):
             self.docpane.add(self.gutter)
         self.docpane.add(self.editor)
+
+        # Link in the fileManager
+        self.program.fileManager.setParentWindow(self)
+        self.program.fileManager.setEditor(self.editor)
+        self.program.fileManager.onNew.connect(self.updateFilename)
+        self.program.fileManager.onRead.connect(self.updateFilename)
+        self.program.fileManager.onRead.connect(self.resetLoadState)
+        self.program.fileManager.onWrite.connect(self.updateFilename)
 
         # Create and set up the panes that all visual components reside on
         helpDivider = swing.JSplitPane()
@@ -483,10 +476,11 @@ class JESUI(swing.JFrame, FocusListener):
         """Regenerate and return an apropos menu."""
         menuOptions = [
             [FILE_TITLE, [
-                [COMMAND_NEW,       KeyEvent.VK_N,      CONTROL_KEY],
-                [COMMAND_OPEN,      KeyEvent.VK_O,      CONTROL_KEY],
-                [COMMAND_SAVE,      KeyEvent.VK_S,      CONTROL_KEY],
-                [COMMAND_SAVEAS,    KeyEvent.VK_S,      CONTROL_KEY + Event.SHIFT_MASK],
+                self.program.fileManager.newAction,
+                self.program.fileManager.openAction,
+                self.program.fileManager.saveAction,
+                self.program.fileManager.saveAsAction,
+                MENU_SEPARATOR,
                 [COMMAND_LOAD,      KeyEvent.VK_L,      CONTROL_KEY],
                 [PRINT,             KeyEvent.VK_P,      CONTROL_KEY],
                 MENU_SEPARATOR,
@@ -679,39 +673,7 @@ class JESUI(swing.JFrame, FocusListener):
 
         # print actionCommand
 
-        if actionCommand == COMMAND_NEW:
-            # MODIFIED by Adam Poncz
-            if self.editor.modified:
-                                # modified for promptSave cancel button - Buck
-                                # Scharfnorth 29 May 2008
-                isSaved = self.promptSave(PROMPT_NEW_MESSAGE)
-                if isSaved > -1:
-                    self.editor.document.removeErrorHighlighting()
-                    self.program.newFile()
-           # inserted for promptSave cancel button - Buck Scharfnorth 29 May
-           # 2008
-            else:
-                self.program.newFile()
-            # END MOD
-        elif actionCommand == COMMAND_OPEN:
-            # MODIFIED by Patrick Carnahan
-            if self.editor.modified:
-                                # modified for promptSave cancel button - Buck
-                                # Scharfnorth 29 May 2008
-                isSaved = self.promptSave(PROMPT_OPEN_MESSAGE)
-                if isSaved > -1:
-                    self.editor.document.removeErrorHighlighting()
-                    self.program.openFile()
-            # inserted for promptSave cancel button - Buck Scharfnorth 29 May
-            # 2008
-            else:
-                self.program.openFile()
-            # END MOD
-        elif actionCommand == COMMAND_SAVE:
-            self.program.saveFile()
-        elif actionCommand == COMMAND_SAVEAS:
-            self.program.saveAs()
-        elif actionCommand == COMMAND_EXIT:
+        if actionCommand == COMMAND_EXIT:
             # line modified to allow saving changes before exit. - Buck
             # Scharfnorth 29 May 2008
             self.exit(actionCommand)
@@ -741,11 +703,10 @@ class JESUI(swing.JFrame, FocusListener):
         elif (actionCommand == LOAD_BUTTON_CAPTION) or (actionCommand == COMMAND_LOAD):
             if self.editor.modified:
                 if JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_AUTOSAVEONRUN):
-                    self.program.saveFile()
+                    self.program.fileManager.saveFile()
+                    self.editor.document.removeErrorHighlighting()
                     self.program.loadFile()
-                # modified for promptSave cancel button - Buck Scharfnorth 29
-                # May 2008
-                elif self.promptSave(PROMPT_LOAD_MESSAGE) > 0:
+                elif self.program.fileManager.continueAfterSaving(PROMPT_LOAD_MESSAGE):
                     self.editor.document.removeErrorHighlighting()
                     self.program.loadFile()
             else:
@@ -785,6 +746,11 @@ class JESUI(swing.JFrame, FocusListener):
         else:
             self.CheckIfHelpTopic(actionCommand)
 
+    def updateFilename(self, fileManager, filename='', **_):
+        self.setFileName(filename)
+
+    def resetLoadState(self, fileManager, filename, **_):
+        self.loadDifferent()
 
 ###############################################################################
 # Function: openExploreWindow
@@ -897,69 +863,9 @@ class JESUI(swing.JFrame, FocusListener):
 #     Modified to prompt for save on exit - 29 May 2008 by Buck Scharfnorth
 ##########################################################################
     def exit(self, event):
-        if self.editor.modified:
-            isSaved = self.promptSave(PROMPT_EXIT_MESSAGE)
-            if isSaved > -1:
-                JESConfig.getInstance().writeConfig()
-                self.program.closeProgram()
-        else:
+        if self.program.fileManager.continueAfterSaving(PROMPT_EXIT_MESSAGE):
             JESConfig.getInstance().writeConfig()
             self.program.closeProgram()
-
-##########################################################################
-# Function name: requestReadFile
-# Parameters:
-#     -filename: the file to open
-# Description:
-#     This function is called when the OS (and by "the OS" I mean "OS X,"
-#     because it's a special snowflake) instructs JES to open a new file.
-#     It asks the user to save first if necessary.
-##########################################################################
-    def requestReadFile(self, filename):
-        if self.editor.modified:
-            isSaved = self.promptSave(PROMPT_EXIT_MESSAGE)
-            if isSaved > -1:
-                self.program.readFile(filename)
-        else:
-            self.program.readFile(filename)
-
-##########################################################################
-# Function name: promptSave
-# Return:
-#     TRUE if the file was saved successfully, FALSE if the save failed or the
-#     user decided not to save the file.
-# Description:
-#     Prompts the user whether they want to save the currently loaded file.
-# Revisions:
-#     Modified to give the user an option to cancel the operation which
-#     triggered promptSave. (Exit JES, New/Open/Load Program, Print).
-#     MODIFIED RETURNS 1 if save is a success and the operation will continue.
-#     0 if user chooses not to save and the operation will continue using
-#     the previous saved version of the file (when available & necessary).
-#     -1 if user cancels or if save fails (such as on a read only drive).
-##########################################################################
-    def promptSave(self, prompt):
-        promptResult = swing.JOptionPane.showConfirmDialog(
-            self,
-            prompt,
-            PROMPT_SAVE_CAPTION,
-            swing.JOptionPane.YES_NO_CANCEL_OPTION)
-
-        if promptResult == swing.JOptionPane.YES_OPTION:
-            isSaved = self.program.saveFile()
-            if isSaved != 1:
-                swing.JOptionPane.showMessageDialog(self,
-                                                    ERROR_SAVE_FAIL + '\n-' +
-                                                    ERROR_OP_CANCEL,
-                                                    ERROR_OP_CANCEL,
-                                                    swing.JOptionPane.WARNING_MESSAGE)
-                return -1
-            else:
-                return 1
-        elif promptResult == swing.JOptionPane.NO_OPTION:
-            return 0
-        else:
-            return -1
 
 ##########################################################################
 # Function name: openBrowser
@@ -1095,12 +1001,7 @@ class JESUI(swing.JFrame, FocusListener):
 ##########################################################################
     def printCommand(self):
         name = "(Unknown)"
-        isSaved = 1
-        if self.editor.modified:
-            # modified for promptSave cancel button - Buck Scharfnorth 29 May
-            # 2008
-            isSaved = self.promptSave(PROMPT_PRINT_MESSAGE)
-        if isSaved > -1:
+        if self.program.fileManager.continueAfterSaving(PROMPT_PRINT_MESSAGE):
             printerJob = printer.PrinterJob.getPrinterJob()
             printerJob.setPrintable(
                 JESPrintableDocument.JESPrintableDocument(self.program.filename, name))

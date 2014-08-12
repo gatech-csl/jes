@@ -7,7 +7,9 @@ Utilities for creating and working with Swing actions.
 :copyright: (C) 2014 Matthew Frazier and Mark Guzdial
 :license:   GNU GPL v2 or later, see jes/help/JESCopyright.txt for details
 """
-from javax.swing import Action, AbstractAction
+from java.awt.event import KeyEvent, InputEvent
+from java.lang import System
+from javax.swing import Action, AbstractAction, KeyStroke
 
 ACTION_VALUES = {
     'accelerator':      Action.ACCELERATOR_KEY,
@@ -18,6 +20,32 @@ ACTION_VALUES = {
     'shortDescription': Action.SHORT_DESCRIPTION,
     'smallIcon':        Action.SMALL_ICON
 }
+
+
+if System.getProperty('os.name').startswith("Mac "):  # if we are on a Mac
+    CONTROL_MASK = InputEvent.META_MASK
+else:
+    CONTROL_MASK = InputEvent.CTRL_MASK
+
+
+def keyCode(key):
+    code = getattr(KeyEvent, 'VK_' + key.upper())
+    if code is None:
+        raise ValueError("Invalid VK event")
+    return code
+
+
+def keyStroke(key):
+    return KeyStroke.getKeyStroke(keyCode(key), 0)
+
+
+def control(key):
+    return KeyStroke.getKeyStroke(keyCode(key), CONTROL_MASK)
+
+
+def controlShift(key):
+    return KeyStroke.getKeyStroke(keyCode(key), CONTROL_MASK + InputEvent.SHIFT_MASK)
+
 
 class PythonAction(AbstractAction):
     """

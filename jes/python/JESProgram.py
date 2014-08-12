@@ -35,6 +35,7 @@ from jes.core.interpreter import Interpreter
 from jes.core.interpreter.watcher import Watcher
 from jes.gui.components.threading import threadsafe
 from jes.gui.dialogs.intro import introController
+from jes.gui.filemanager import FileManager
 
 FILE_EXISTS_ERROR = 2
 
@@ -62,6 +63,9 @@ class JESProgram:
         terp.initialize(self.initializeInterpreter)
         self.varsToHighlight = list(terp.initialNames)
 
+        # Install the file manager.
+        self.fileManager = FileManager(self.logBuffer)
+
         self.setupGUI(initialFilename)
 
         # Open the first Python prompt!
@@ -71,9 +75,6 @@ class JESProgram:
     def setupGUI(self, initialFilename):
         self.gui = JESUI.JESUI(self)
         self.gui.windowSetting(None)
-
-        self.filename = ''
-        self.settingsFileName = ''
 
         self.chooser = JESFileChooser.JESFileChooser()
         self.defaultPath = io.File(
@@ -98,9 +99,11 @@ class JESProgram:
         self.terpControl = InterpreterControl(self.gui, self.interpreter)
         self.replBuffer = REPLBuffer(self.interpreter, self.gui.commandWindow)
 
-        # Load the file?
-        if initialFilename is not None:
-            self.readFile(initialFilename)
+        # Open or create the file.
+        if initialFilename is None:
+            self.fileManager.newFile()
+        else:
+            self.fileManager.readFile(initialFilename)
 
         # Startup complete!
         startTimeNS = lang.System.getProperty("jes.starttimens")
@@ -143,160 +146,6 @@ class JESProgram:
         terp.runFile(preproc, False)
 
 ##########################################################################
-# Function name: newFile
-# Description:
-#     Blanks outthe fileName and the text in the editor window.
-##########################################################################
-    def newFile(self):
-        self.gui.editor.setText('')
-        self.gui.setFileName('')
-        self.logBuffer.resetBuffer()
-        self.chooser = swing.JFileChooser()  # reset the filechooser to keep
-
-##########################################################################
-# Function name: openFile
-# Description:
-#     This function will open a dialog window allowing the user to select a
-#     file.  If the user selects a file, it is opened, and its contents are
-#     place into the text editor.
-##########################################################################
-    def openFile(self):
-        self.chooser = swing.JFileChooser(self.defaultPath)
-        self.chooser.setApproveButtonText("Open File")
-        returnVal = self.chooser.showOpenDialog(self.gui)
-        if returnVal == 0:  # User has chosen a file, so now it can be opened
-            self.readFile(self.chooser.getSelectedFile().getPath())
-
-##########################################################################
-# Function name: readFile
-# Description:
-#     This function reads the file with a given path directly into the
-#     editor, without opening a dialog or whatever.
-##########################################################################
-    def readFile(self, path):
-        path = os.path.normpath(path)
-
-        try:
-            file = open(path, 'r')
-            self.filename = path
-            self.gui.setFileName(os.path.basename(path))
-            self.gui.editor.setText(file.read())
-            self.gui.editor.modified = 0
-            self.gui.loadDifferent()
-            file.close()
-
-            self.defaultPath = io.File(os.path.dirname(path))
-            # If we load a file directly, there won't be a chooser.
-            if self.chooser is None:
-                self.chooser = swing.JFileChooser(self.defaultPath)
-
-            self.logBuffer.openLogFile(file.name)
-        except EnvironmentError, exc:
-            message = "Could not open the file %s:\n%s" % (
-                os.path.basename(path),
-                getattr(exc, 'strerror', str(exc))
-            )
-            JOptionPane.showMessageDialog(self.gui, message,
-                                          'Error opening file',
-                                          JOptionPane.ERROR_MESSAGE)
-
-##########################################################################
-# Function name: saveFile
-# Description:
-#     This function is called when the user selects the save file option from
-#     the user menu.  If there is no file opened yet, the function will do
-#     nothing.  If the file has no name, the function will call saveAs.  Else,
-#     it will write the contents of the text editor to the file of the current
-#     name.
-##########################################################################
-    def saveFile(self):
-        try:
-            if self.filename != '':
-                text = self.gui.editor.getText()
-                fileWriter = io.FileWriter(self.filename, 0)
-                fileWriter.write(text)
-                fileWriter.close()
-
-                self.defaultPath = self.chooser.getCurrentDirectory()
-                self.logBuffer.saveLogFile(self.filename)
-                self.gui.editor.modified = 0
-                self.gui.setFileName(os.path.basename(self.filename))
-
-                # Now write the backup
-                if JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_BACKUPSAVE):
-                    backupPath = self.filename + "bak"
-                    fileWriter = io.FileWriter(backupPath, 0)
-                    fileWriter.write(text)
-                    fileWriter.close()
-                return 1
-            else:
-                return self.saveAs()
-        except:
-            # Error "handling" for saveFile
-            # TODO: make this actually handle errors
-            return self.saveAs()
-
-##########################################################################
-# Function name: saveAs
-# Description:
-#     Opens a dialog and allows users to select or either type in a filename to
-#     save the file as.  If the user selects cancel, nothing happens.
-##########################################################################
-    def saveAs(self):
-        try:
-            self.chooser.setCurrentDirectory(self.defaultPath)
-            text = self.gui.editor.getText()
-            self.chooser.setApproveButtonText("Save File")
-
-            returnVal = self.chooser.showSaveDialog(self.gui)
-            # User has chosen a file, so now it can be saved
-            if returnVal == 0:
-                # DNR
-                #file = open(self.chooser.getSelectedFile().getPath(),'w+')
-                # self.gui.setFileName(self.chooser.getSelectedFile().getName())
-                #text = text.splitlines(1)
-                # file.writelines(text)
-                #self.filename = file.name
-                # file.close()
-                # Commented out by AW: Trying to see if using java instead of jython
-                # gets rid of the newline errors
-
-                filePath = self.chooser.getSelectedFile().getPath()
-                self.filename = os.path.normpath(filePath)
-
-                fileWriter = io.FileWriter(filePath, 0)
-                fileWriter.write(text)
-                fileWriter.close()
-
-                self.defaultPath = self.chooser.getCurrentDirectory()
-                self.gui.editor.modified = 0
-                self.gui.setFileName(os.path.basename(self.filename))
-                self.logBuffer.saveLogFile(self.filename)
-
-                # Now write the backup
-                if JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_BACKUPSAVE):
-                    backupPath = filePath + "bak"
-                    fileWriter = io.FileWriter(backupPath, 0)
-                    fileWriter.write(text)
-                    fileWriter.close()
-
-            return 1
-
-        except lang.Exception, e:
-            #TODO - fix
-            # Error handling for saveAs
-            e.printStackTrace()
-            return 0
-
-##########################################################################
-# Function name: checkForSave
-# Description:
-#
-##########################################################################
-    def checkForSave(self):
-        pass
-
-##########################################################################
 # Function name: loadFile
 # Description: checks for possible errors, then calls the interpreter's load file
 #              function
@@ -314,21 +163,21 @@ class JESProgram:
 #       Otherwise, the code is loaded.
 ##########################################################################
     def loadFile(self):
-        if self.filename == '':
+        if self.fileManager.filename is None:
             self.setErrorByHand(JESConstants.JESPROGRAM_NO_FILE, 0)
         else:  # error 1. didn't occur
 
             try:
-                file = open(self.filename, 'r')
+                file = open(self.fileManager.filename, 'r')
                 fileText = file.read()
                 file.close()
             except:
                 self.setErrorByHand(
-                    JESConstants.JESPROGRAM_ERROR_LOADING_FILE + self.filename + '\n', 0)
+                    JESConstants.JESPROGRAM_ERROR_LOADING_FILE + self.fileManager.filename + '\n', 0)
 
             else:  # error 2. didn't occur
                 try:
-                    lineWithError = JESTabnanny.check(self.filename)
+                    lineWithError = JESTabnanny.check(self.fileManager.filename)
 
                 except:
 
@@ -356,14 +205,14 @@ class JESProgram:
                 self.gui.commandWindow.cancelPrompt()
                 self.gui.commandWindow.display(
                     "======= Loading Program =======\n", 'system-message')
-                self.interpreter.runFile(self.filename)
-                self.interpreter.debugger.setTargetFilenames([self.filename])
+                self.interpreter.runFile(self.fileManager.filename)
+                self.interpreter.debugger.setTargetFilenames([self.fileManager.filename])
                 self.gui.commandWindow.requestFocus()
                 self.gui.editor.getDocument().removeErrorHighlighting()
                 self.gui.loadCurrent()
 
     def setErrorByHand(self, message, lineNumber):
-        excRecord = JESExceptionRecord.JESExceptionRecord(self.filename)
+        excRecord = JESExceptionRecord.JESExceptionRecord(self.fileManager.filename)
         if message == JESConstants.JESPROGRAM_NO_FILE:
             excRecord.setByHand(message)
         else:
@@ -375,7 +224,7 @@ class JESProgram:
         self._sendFakeError(excRecord)
 
     def setErrorFromUserCode(self, type, value, trace):
-        excRecord = JESExceptionRecord.JESExceptionRecord(self.filename)
+        excRecord = JESExceptionRecord.JESExceptionRecord(self.fileManager.filename)
         excRecord.setFromUserCode(type, value, trace)
 
         self._sendFakeError(excRecord)
