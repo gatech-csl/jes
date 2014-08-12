@@ -615,11 +615,6 @@ class JESUI(swing.JFrame, FocusListener):
 
         if actionCommand.find('.') == -1:
             # JES SECTION HELP
-
-            focusedComponent = self.focusedEditor
-            if isinstance(focusedComponent, swing.JTextPane):
-                focusedComponent.replaceSelection(actionCommand + '(')
-
             self.openExploreWindow(actionCommand)
 
         else:
@@ -629,10 +624,6 @@ class JESUI(swing.JFrame, FocusListener):
             html_page = 'file://' + \
                 JESResources.getPathTo(
                     'javadoc') + '/' + section + '.html#method_summary'
-
-            focusedComponent = self.focusedEditor
-            if isinstance(focusedComponent, swing.JTextPane):
-                focusedComponent.replaceSelection('my' + actionCommand + '(')
 
     def changeSkin(self, event):
         try:

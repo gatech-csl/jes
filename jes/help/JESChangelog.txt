@@ -36,6 +36,11 @@ Contributors: Christine Alvarado, Stephen Bryant
     (They can't use the main window's "Stop" buttons because the
     dialog boxes lock up the main window.)
 
+*   Removed the code that types a function's name when it it selected
+    from the "JES Functions" menu. (Users reported that when students
+    are consulting the Functions menu for information on a function,
+    they usually haven't decided whether they want to use it yet.)
+
 *   Moved settings into a `.properties` file, which is stored in the
     user's platform-specific preferences directory.
     (Previously, settings were stored in a delicately-formatted `.txt`
