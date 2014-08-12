@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # JES- Jython Environment for Students
 # Copyright (C) 2002  Jason Ergle, Claire Bailey, David Raines, Joshua Sklare
 # See JESCopyright.txt for full licensing information
@@ -53,14 +54,12 @@ class Html_Browser(swing.JPanel):  # swing.JFrame):
 
     def buildTopPane(self, startUrl):
         label = swing.JLabel("Go To:")
-        self.field = swing.JTextField(preferredSize=(200, 20),
-                                      text=startUrl, actionPerformed=self.goToUrl)
-        go = swing.JButton("Go", size=(40, 100),
-                           actionPerformed=self.goToUrl)
-        self.back = swing.JButton("Back", size=(60, 100),
-                                  actionPerformed=self.goBack)
-        self.forward = swing.JButton("Forward", size=(60, 100),
-                                     actionPerformed=self.goForward)
+        self.field = swing.JTextField(startUrl, 20, actionPerformed=self.goToUrl)
+        go = swing.JButton("Go", actionPerformed=self.goToUrl)
+        self.back = swing.JButton(u"◀", actionPerformed=self.goBack,
+                                  toolTipText="Back")
+        self.forward = swing.JButton(u"▶", actionPerformed=self.goForward,
+                                     toolTipText="Forward")
         topPane = swing.JPanel()
         topPane.add(self.back)
         topPane.add(self.forward)
