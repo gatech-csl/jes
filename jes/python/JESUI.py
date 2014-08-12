@@ -477,6 +477,8 @@ class JESUI(swing.JFrame, FocusListener):
             [FILE_TITLE, [
                 self.program.fileManager.newAction,
                 self.program.fileManager.openAction,
+                self.program.fileManager.recentFiles.menu,
+                MENU_SEPARATOR,
                 self.program.fileManager.saveAction,
                 self.program.fileManager.saveAsAction,
                 MENU_SEPARATOR,
@@ -545,6 +547,8 @@ class JESUI(swing.JFrame, FocusListener):
             for entry in menuEntries:
                 if entry == MENU_SEPARATOR:
                     newMenu.addSeparator()
+                elif isinstance(entry, swing.JMenuItem):
+                    newMenu.add(entry)
                 elif isinstance(entry, Action):
                     newMenu.add(swing.JMenuItem(entry))
                 else:

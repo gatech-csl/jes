@@ -25,6 +25,9 @@ Contributors: Christine Alvarado, Stephen Bryant
     program while it's running displays a simple message,
     `[The program was stopped by the stop button.]`
 
+*   Added a list of recently opened and saved programs to the
+    `File` menu.
+
 *   Added a `Clear command window` option to the `Edit` menu, which
     empties the command window of all text (but preserves history and
     defined variables).

@@ -16,6 +16,7 @@ from javax.swing import JFileChooser, JOptionPane
 from jes.gui.components.actions import (methodAction, control, controlShift,
                                         PythonAction)
 from jes.gui.components.threading import threadsafe
+from .recents import RecentFiles
 
 PROMPT_SAVE_CAPTION = 'Save file?'
 
@@ -37,6 +38,8 @@ class FileManager(object):
         self.onNew = NamedSignal('onNew')
         self.onRead = NamedSignal('onRead')
         self.onWrite = NamedSignal('onWrite')
+
+        self.recentFiles = RecentFiles(self)
 
     ### Configuration
 

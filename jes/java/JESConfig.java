@@ -52,6 +52,10 @@ public class JESConfig {
     public static final String CONFIG_LOGBUFFER = "save.logs";
 
 
+    /** The list of recent files. */
+    public static final String CONFIG_RECENT_FILES = "recentfiles";
+
+
     /**
      * This Properties object contains properties which are used to "fill in"
      * a Properties file after it's loaded, when properties are absent.
@@ -72,6 +76,8 @@ public class JESConfig {
         defaults.setProperty(CONFIG_AUTOSAVEONRUN,          "0");
         defaults.setProperty(CONFIG_BACKUPSAVE,             "1");
         defaults.setProperty(CONFIG_LOGBUFFER,              "1");
+
+        defaults.setProperty(CONFIG_RECENT_FILES,           "");
     };
 
 
