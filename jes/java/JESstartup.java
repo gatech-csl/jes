@@ -34,6 +34,8 @@ public class JESstartup {
     * The main method which launches JES
     */
     public static void main(String[] strings) {
+        System.setProperty("jes.starttimens", String.valueOf(System.nanoTime()));
+
         String home = JESResources.getHomePath();
         if (home == null) {
             System.err.println("Your launcher did not set jes.home properly.");

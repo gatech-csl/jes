@@ -49,6 +49,8 @@ class JESProgram:
 
     def __init__(self, initialFilename=None):
         JESProgram.activeInstance = self
+        self.startupTimeSec = 0
+
         self.logBuffer = JESLogBuffer.JESLogBuffer(self)
 
         self.interpreter = terp = Interpreter()
@@ -99,6 +101,13 @@ class JESProgram:
         # Load the file?
         if initialFilename is not None:
             self.readFile(initialFilename)
+
+        # Startup complete!
+        startTimeNS = lang.System.getProperty("jes.starttimens")
+        if startTimeNS is not None:
+            self.startupTimeSec = (
+                (lang.System.nanoTime() - long(startTimeNS)) / 1000000000.0
+            )
 
         # Show introduction window if settings could not be loaded (Either new
         # JES user or bad write permissions)
