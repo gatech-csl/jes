@@ -193,7 +193,6 @@ else:
 # option names, and the accelerator keys for those menu options.
 
 LOAD_BUTTON_CAPTION = 'Load Program'
-STOP_BUTTON_CAPTION = 'Stop'
 SHOW_DEBUGGER_CAPTION = 'Watcher'
 HIDE_DEBUGGER_CAPTION = 'Watcher'
 UNTITLED_FILE_NAME = 'Untitled'
@@ -711,8 +710,6 @@ class JESUI(swing.JFrame, FocusListener):
                     self.program.loadFile()
             else:
                 self.program.loadFile()
-        elif actionCommand == STOP_BUTTON_CAPTION:
-            self.program.stopThread()
         elif actionCommand == SHOW_DEBUGGER_CAPTION or actionCommand == HIDE_DEBUGGER_CAPTION:
             self.program.interpreter.toggleDebugMode()
         elif actionCommand == COMMAND_EDITOR:
@@ -864,7 +861,6 @@ class JESUI(swing.JFrame, FocusListener):
 ##########################################################################
     def exit(self, event):
         if self.program.fileManager.continueAfterSaving(PROMPT_EXIT_MESSAGE):
-            JESConfig.getInstance().writeConfig()
             self.program.closeProgram()
 
 ##########################################################################

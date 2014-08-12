@@ -15,10 +15,6 @@ import JESLogBuffer
 import JESUI
 import os
 import os.path
-import java.io as io
-import java.lang as lang
-import javax.swing as swing
-import java.awt as awt
 
 import string
 import sys
@@ -27,6 +23,7 @@ import JavaMusic
 
 from code import compile_command
 from tokenize import TokenError
+from java.lang import System
 from javax.swing import JOptionPane
 from jes.bridge.replbuffer import REPLBuffer
 from jes.bridge.terpactions import addInterpreterActions
@@ -37,17 +34,8 @@ from jes.gui.components.threading import threadsafe
 from jes.gui.dialogs.intro import introController
 from jes.gui.filemanager import FileManager
 
-FILE_EXISTS_ERROR = 2
-
 
 class JESProgram:
-    ##########################################################################
-    # Function name: __init__
-    # Return:
-    # Description:
-    #
-    ##########################################################################
-
     def __init__(self, initialFilename=None):
         JESProgram.activeInstance = self
         self.startupTimeSec = 0
@@ -76,9 +64,6 @@ class JESProgram:
         self.gui = JESUI.JESUI(self)
         self.gui.windowSetting(None)
 
-        self.chooser = JESFileChooser.JESFileChooser()
-        self.defaultPath = io.File(
-            JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_MEDIAPATH))
         self.setHelpArray()
 
         self.gui.changeSkin(
@@ -106,10 +91,10 @@ class JESProgram:
             self.fileManager.readFile(initialFilename)
 
         # Startup complete!
-        startTimeNS = lang.System.getProperty("jes.starttimens")
+        startTimeNS = System.getProperty("jes.starttimens")
         if startTimeNS is not None:
             self.startupTimeSec = (
-                (lang.System.nanoTime() - long(startTimeNS)) / 1000000000.0
+                (System.nanoTime() - long(startTimeNS)) / 1000000000.0
             )
 
         # Show introduction window if settings could not be loaded (Either new
@@ -118,26 +103,25 @@ class JESProgram:
         loadError = config.getLoadError()
 
         if loadError is not None:
-            swing.JOptionPane.showMessageDialog(
+            JOptionPane.showMessageDialog(
                 self.gui,
                 "Your JESConfig.properties file could not be opened!\n" +
                 loadError.toString(),
                 "JES Configuration",
-                swing.JOptionPane.ERROR_MESSAGE
+                JOptionPane.ERROR_MESSAGE
             )
         elif config.wasMigrated():
-            swing.JOptionPane.showMessageDialog(
+            JOptionPane.showMessageDialog(
                 self.gui,
                 "Your settings were imported from JES 4.3.\n" +
                 "JES doesn't use the JESConfig.txt file in " +
                 "your home directory anymore, so you can delete it.",
                 "JES Configuration",
-                swing.JOptionPane.INFORMATION_MESSAGE
+                JOptionPane.INFORMATION_MESSAGE
             )
         elif not config.wasLoaded():
             introController.show()
 
-        # JavaMusic.open()
     def getVarsToHighlight(self):
         return self.varsToHighlight
 
@@ -235,50 +219,15 @@ class JESProgram:
 
 
 ##########################################################################
-# Function name: debugger_paused
-# Parameters:
-#     None
-# Description:
-#     sets the Interpreter and the JES gui into debugger mode, the debugger
-#     made a stop
-##########################################################################
-    def goto_debugger():
-        debugger_mode = true
-
-##########################################################################
-# Function name: editorLoaded
-# Description:
-#     returns whether the text editor has been loaded
-#
-##########################################################################
-
-    def editorLoaded(self):
-        return self.gui.loadButton.getForeground() == JESConstants.LOAD_BUTTON_DIFF_COLOR
-
-##########################################################################
 # Function name: closeProgram
 # Description:
 #     Exits JES
 ##########################################################################
 
     def closeProgram(self):
-        lang.System.exit(0)
+        JESConfig.getInstance().writeConfig()
+        System.exit(0)
 
-##########################################################################
-# Function name: stopThread
-# Description:
-#
-##########################################################################
-    def stopThread(self):
-        self.interpreter.stopThread()
-
-##########################################################################
-# Function name: openSettingsGUI
-# Description:
-#     Opens up a settingd GUI Dialog.
-##########################################################################
-    def openSettingsGUI(self):
-        self.gui.openSettings()
 
 ##########################################################################
 # Function Name: setHelpArray
@@ -316,22 +265,6 @@ class JESProgram:
         except Exception, e:
             print "ERROR opening help files"
             print e
-
-##########################################################################
-# Function name: runCommand
-# Parameters:
-#     -text:
-# Description:
-#
-##########################################################################
-    def runCommand(self, text):
-        # If the document in the editor is not current with the interpreter, warn
-        # the user.
-        if self.editorLoaded():
-            self.gui.commandWindow.display(JESConstants.EDITOR_LOAD_WARNING, 'system-message')
-
-        self.logBuffer.addCommand(text)
-        self.interpreter.runCommand(text)
 
 # locally useful util functions.
 def getdigits(str):
@@ -371,3 +304,4 @@ def helpfile_cmp(str1, str2):
 
 if __name__ == '__main__':
     mainJESProgram = JESProgram()
+
