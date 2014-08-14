@@ -20,8 +20,9 @@ from .controller import BasicDialog, DialogController
 
 class AboutDialog(BasicDialog):
     INFO_FILES = (
-        ("Authors/License", JESResources.getPathTo("help/JESCopyright.txt")),
-        ("Version History", JESResources.getPathTo("help/JESChangelog.txt")),
+        ("Authors/License",     JESResources.getPathTo("help/JESCopyright.txt")),
+        ("Version History",     JESResources.getPathTo("help/JESChangelog.txt")),
+        ("Included Software",   JESResources.getPathTo("help/JESDependencies.txt")),
     )
 
     WINDOW_TITLE = "About JES"

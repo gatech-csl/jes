@@ -1,0 +1,138 @@
+JES version 5.0 Included Software Licenses
+==========================================
+JES includes many third-party software components, which are released
+under varying Free Software or redistributable licenses.
+
+Free Software:
+
+* Jython 2.5.3 (Python Software Foundation License v2)
+* Blinker 1.3 (MIT/X11 License)
+* JMusic 1.6.4 (GNU General Public License v2+)
+* JavaZoom JLayer 1.0 (GNU Library General Public License v2+)
+* AVIDemo (Creative Commons 3.0-BY License)
+
+Non-Free Software (but still legally redistributable with JES):
+
+* Java Media Framework
+
+
+Jython 2.5.3
+------------
+Website: http://www.jython.org/
+
+Usage: JES uses this to interpret Python programs.
+
+Files:
+
+* dependencies/jars/jython-2.5.3.jar
+* dependencies/jython
+
+Copyright © 2001-2011 Python Software Foundation; All Rights Reserved.
+
+Released under the Python Software License version 2 (Free Software).
+
+Consult dependencies/jython/LICENSE.txt for full licensing information.
+
+
+Blinker 1.3
+-----------
+Website: https://github.com/jek/blinker
+
+Usage: JES uses this to connect different parts of the Python code together.
+
+Files:
+
+* dependencies/python/blinker
+
+Copyright © The Blinker authors and contributors <see dependencies/python/blinker/AUTHORS>.
+
+Released under the MIT/X11 license (Free Software).
+
+Consult dependencies/python/blinker/LICENSE for full licensing information.
+
+
+JMusic 1.6.4
+------------
+Website: http://explodingart.com/jmusic/index.html
+
+Usage: JES provides this so students can use it to synthesize music.
+
+Files:
+
+* dependencies/jars/jMusic1.6.4.jar
+* dependencies/jars/jmusic-instruments.jar
+* dependencies/jmusic-instruments
+
+Copyright © 2000-2009 Andrew Sorensen & Andrew Brown,
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or any
+later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+Consult jes/help/JESCopyright.txt for full licensing information.
+
+
+JavaZoom JLayer 1.0
+-------------------
+Website: http://www.javazoom.net/javalayer/javalayer.html
+
+Usage: JES uses this to convert MP3 files.
+
+Files:
+
+* dependencies/jars/jl1.0.jar
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU Library General Public License as published
+by the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Library General Public License for more details.
+
+You should have received a copy of the GNU Library General Public
+license along with this program; if not, write to the Free Software
+Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+
+AVIDemo
+-------
+Website: http://www.randelshofer.ch/blog/2008/08/writing-avi-videos-in-pure-java/
+
+Usage: JES uses this to write AVI files.
+
+Files:
+
+* dependencies/jars/AVIDemo.jar
+
+Copyright © 2008 Werner Randelshofer.
+
+Released under the Creative Commons Attribution 3.0 license (Free Software).
+
+Consult http://creativecommons.org/licenses/by/3.0/ for full licensing information.
+
+
+Java Media Framework
+--------------------
+Website: http://www.oracle.com/technetwork/java/javase/tech/index-jsp-140239.html
+
+Usage: JES uses this to synthesize movies from images.
+
+Files:
+
+* dependencies/jars/jmf.jar
+
+Released under the Oracle Binary Code License Agreement
+for Java SE (Non-Free Software).
+
+Consult http://www.oracle.com/technetwork/java/javase/downloads/java-se-archive-license-1382604.html
+for full licensing information.
+
