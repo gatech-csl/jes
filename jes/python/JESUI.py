@@ -29,7 +29,6 @@ import Html_Browser
 import JESGutter
 import JESConfig
 import JESConstants
-import JESDebugWindow
 import JESEditor
 import JESResources
 import JESPrintableDocument

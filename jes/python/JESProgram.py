@@ -126,8 +126,8 @@ class JESProgram:
         return self.varsToHighlight
 
     def initializeInterpreter(self, terp):
-        preproc = JESResources.getPathTo('python/JESPreprocessing.py')
-        terp.runFile(preproc, False)
+        startup = JESResources.getPathTo('python/jes/user-startup.py')
+        terp.runFile(startup, False)
 
 ##########################################################################
 # Function name: loadFile
