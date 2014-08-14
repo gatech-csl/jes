@@ -122,7 +122,6 @@ import SlideShow
 import SoundExplorer
 import Sound
 import SoundSample
-import SoundTest
 import Turtle
 import World
 
@@ -154,7 +153,6 @@ API_SECTIONS = [AnimationPanel,
                 SoundExplorer,
                 Sound,
                 SoundSample,
-                SoundTest,
                 Turtle,
                 World]
 
