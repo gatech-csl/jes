@@ -55,6 +55,7 @@
     <property name="jes.configfile.name"    value="JESConfig.properties" />
 
     <property name="jes.deps"               location="dependencies" />
+    <property name="jes.deps.python"        location="${jes.deps}/python" />
     <property name="jes.deps.jardir"        location="${jes.deps}/jars" />
     <property name="jes.deps.jmusic.jar"    location="${jes.deps.jardir}/jMusic1.6.4.jar" />
 
@@ -224,6 +225,7 @@
         description="Remove the cached Python bytecode.">
         <delete>
             <fileset dir="${jes.python.src}" includes="**/*$py.class" />
+            <fileset dir="${jes.deps.python}" includes="**/*$py.class" />
         </delete>
     </target>
 

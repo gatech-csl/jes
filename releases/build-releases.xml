@@ -55,6 +55,8 @@
         <include name="jes/python/**/*.py" />
         <include name="dependencies/jython/**/*" />
         <exclude name="dependencies/jython/**/*$py.class" />
+        <include name="dependencies/python/**/*" />
+        <exclude name="dependencies/python/**/*$py.class" />
     </fileset>
 
     <fileset id="jes.release.contents.java-src" dir="${basedir}">

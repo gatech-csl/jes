@@ -1,5 +1,5 @@
 @echo off
-setlocal
+setlocal EnableDelayedExpansion
 
 rem Launches JES in place on Windows.
 rem This will keep a Command Prompt window open,
@@ -48,20 +48,14 @@ set jars=%jes_base%\dependencies\jars
 
 set classpath=%jes_home%\classes.jar
 
-set classpath=%classpath%;%jars%\jython-2.5.3.jar
-set classpath=%classpath%;%jars%\junit.jar
-set classpath=%classpath%;%jars%\jmf.jar
-set classpath=%classpath%;%jars%\jl1.0.jar
-set classpath=%classpath%;%jars%\AVIDemo.jar
-set classpath=%classpath%;%jars%\jMusic1.6.4.jar
-set classpath=%classpath%;%jars%\jmusic-instruments.jar
+for %%J IN ("%jars%\*.jar") DO set classpath=!classpath!;%%~fJ
 
 
 rem Where's our Python code?
 
 set pythonhome=%jes_base%\dependencies\jython
 
-set pythonpath=%jes_home%\python
+set pythonpath=%jes_home%\python;%jes_base%\dependencies\python
 
 
 rem Where should the Jython cache live?
