@@ -10,13 +10,17 @@ This manages creating, opening, saving, and reading files into the editor.
 from __future__ import with_statement
 import JESConfig
 import os.path
+import re
 from blinker import NamedSignal
 from java.io import File, FileWriter
-from javax.swing import JFileChooser, JOptionPane
+from javax.swing import JOptionPane
 from jes.gui.components.actions import (methodAction, control, controlShift,
                                         PythonAction)
+from jes.gui.components.filechooser import FileChooser
 from jes.gui.components.threading import threadsafe
 from .recents import RecentFiles
+
+MODULE_NAME_RE = re.compile(r'^[a-zA-Z_][a-zA-Z0-9_]*\.py$')
 
 PROMPT_SAVE_CAPTION = 'Save file?'
 
@@ -33,7 +37,7 @@ class FileManager(object):
 
         self.logBuffer = logBuffer
 
-        self.directory = JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_MEDIAPATH)
+        self.createFileChooser()
 
         self.onNew = NamedSignal('onNew')
         self.onRead = NamedSignal('onRead')
@@ -62,12 +66,9 @@ class FileManager(object):
     @threadsafe
     def openAction(self):
         if self.continueAfterSaving(PROMPT_OPEN_MESSAGE):
-            chooser = JFileChooser(File(self.directory))
-            chooser.setApproveButtonText("Open File")
-
-            returnVal = chooser.showOpenDialog(self.parentWindow)
-            if returnVal == 0:
-                self.readFile(chooser.getSelectedFile().getPath())
+            programToOpen = self.selectProgramToOpen()
+            if programToOpen is not None:
+                self.readFile(programToOpen)
 
     @methodAction(name="Save Program", accelerator=control('s'))
     @threadsafe
@@ -80,14 +81,9 @@ class FileManager(object):
     @methodAction(name="Save Program As...", accelerator=controlShift('s'))
     @threadsafe
     def saveAsAction(self):
-        chooser = JFileChooser(File(self.directory))
-        chooser.setApproveButtonText("Save File")
-
-        returnVal = chooser.showSaveDialog(self.parentWindow)
-        if returnVal == 0:
-            return self.writeFile(chooser.getSelectedFile().getPath())
-        else:
-            return None
+        targetFile = self.selectProgramToSave()
+        if targetFile is not None:
+            self.writeFile(targetFile)
 
     @threadsafe
     def readAction(self, filename):
@@ -120,7 +116,7 @@ class FileManager(object):
             )
         else:
             self.filename = filename
-            self.directory = os.path.dirname(filename)
+            self.lastDirectory = os.path.dirname(filename)
 
             self.editor.modified = 0
 
@@ -140,7 +136,7 @@ class FileManager(object):
             )
         else:
             self.filename = filename
-            self.directory = os.path.dirname(filename)
+            self.lastDirectory = os.path.dirname(filename)
 
             self.editor.modified = 0
 
@@ -159,6 +155,46 @@ class FileManager(object):
                         "Could not save the backup file to", backupPath, exc
                     )
 
+            return True
+
+
+    ### File choosing
+
+    def createFileChooser(self):
+        defaultDir = JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_MEDIAPATH)
+        chooser = self.fileChooser = FileChooser(defaultDir)
+        chooser.addExtensionFilter("py", "Python programs")
+
+    def selectProgramToOpen(self):
+        self.fileChooser.dialogTitle = "Open Program"
+        self.fileChooser.validator = None
+        return self.fileChooser.chooseFileToOpen(self.parentWindow)
+
+    def selectProgramToSave(self):
+        self.fileChooser.dialogTitle = "Save Program"
+        self.fileChooser.validator = self.validateFileForSave
+        return self.fileChooser.chooseFileToSave(self.parentWindow)
+
+    def validateFileForSave(self, filename):
+        if os.path.isfile(filename) and filename != self.filename:
+            return self.confirmSave(
+                "There's already a file named " + os.path.basename(filename) + ".\n"
+                "Would you like to replace it?"
+            )
+        elif not filename.endswith(".py"):
+            return self.confirmSave(
+                "A file whose name doesn't end in .py won't be recognized\n"
+                "as a Python program by JES or other programs.\n"
+                "Are you sure you want to save the file with this name?"
+            )
+        elif MODULE_NAME_RE.match(os.path.basename(filename)) is None:
+            return self.confirmSave(
+                "Only .py files whose names are made up of letters, numbers,\n"
+                "and underscores can be imported as Python modules.\n"
+                "(You will still be able to load it in JES regardless.)\n"
+                "Are you sure you want to save the file with this name?"
+            )
+        else:
             return True
 
 
@@ -188,9 +224,15 @@ class FileManager(object):
         else:
             return True
 
-    def showErrorMessage(title, prefix, path, exc):
+    def showErrorMessage(self, title, prefix, path, exc):
         excMessage = getattr(exc, 'strerror', str(exc))
         message = "%s %s:\n%s" % (prefix, os.path.basename(path), excMessage)
         JOptionPane.showMessageDialog(self.parentWindow, message, title,
                                       JOptionPane.ERROR_MESSAGE)
+
+    def confirmSave(self, message):
+        return JOptionPane.showConfirmDialog(
+            self.parentWindow, message,
+            "Confirm Save", JOptionPane.YES_NO_OPTION
+        ) == JOptionPane.YES_OPTION
 

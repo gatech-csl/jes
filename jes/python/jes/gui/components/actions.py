@@ -71,7 +71,8 @@ class PythonAction(AbstractAction):
 
     def actionPerformed(self, event):
         args = (event,) + self._args if self._takesEvent else self._args
-        return self._callback(*args, **self._kwargs)
+        # Intentionally ignore return value
+        self._callback(*args, **self._kwargs)
 
     def getProperty(self, name):
         if name == 'enabled':
