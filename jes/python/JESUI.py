@@ -42,6 +42,7 @@ from jes.gui.components.panels import AutoScrollPane
 from jes.gui.debugger import DebugPanel
 from jes.gui.dialogs.about import aboutController
 from jes.gui.dialogs.bugreport import bugReportController
+from jes.gui.helpinfo import buildJESFunctionsMenu, buildJavaAPIMenu
 
 
 MENU_SEPARATOR = '-'
@@ -87,96 +88,6 @@ WINDOW_TITLE = 'Window Layout'
 SKINS_TITLE = 'Skins'
 HELP_FILE_EXTENTION = '.html'
 
-
-# fixme: there should be a cleaner way to do this for the api menu.
-#        maybe we could look into javaimporter that is in jython2.2alpha
-
-import AnimationPanel
-# import ArraySorter
-import ColorChooser
-import DigitalPicture
-import FileChooser
-import FrameSequencer
-import ImageDisplay
-import JavaMusic
-import MidiPlayer
-import ModelDisplay
-import MoviePlayer
-import PathSegment
-import Pen
-import PictureExplorer
-import PictureFrame
-import Picture
-import Pixel
-import Playback
-import SimpleInput
-import SimpleOutput
-import SimplePicture
-import SimpleSound
-import SimpleTurtle
-import SlideShow
-import SoundExplorer
-import Sound
-import SoundSample
-import Turtle
-import World
-
-# make sure all these are imported
-
-API_SECTIONS = [AnimationPanel,
-                ColorChooser,
-                DigitalPicture,
-                FileChooser,
-                FrameSequencer,
-                ImageDisplay,
-                JavaMusic,
-                MidiPlayer,
-                ModelDisplay,
-                MoviePlayer,
-                PathSegment,
-                Pen,
-                PictureExplorer,
-                PictureFrame,
-                Picture,
-                Pixel,
-                Playback,
-                SimpleInput,
-                SimpleOutput,
-                SimplePicture,
-                SimpleSound,
-                SimpleTurtle,
-                SlideShow,
-                SoundExplorer,
-                Sound,
-                SoundSample,
-                Turtle,
-                World]
-
-
-JES_API_SECTIONS = [
-    ('Colors', ['distance', 'makeColor', 'makeDarker', 'makeLighter',
-                'pickAColor', 'getColorWrapAround', 'setColorWrapAround']),
-    ('Files', ['pickAFile', 'pickAFolder', 'setMediaPath', 'setMediaFolder',
-               'getMediaPath', 'getMediaFolder', 'getShortPath', 'setLibPath']),
-    ('Input/Output', ['requestNumber', 'requestInteger', 'requestIntegerInRange', 'requestString',
-                      'showWarning', 'showInformation', 'showError', 'printNow']),
-    ('Turtles', ['turn', 'turnLeft', 'turnRight', 'forward', 'backward', 'moveTo', 'turnToFace',
-                 'makeTurtle', 'penUp', 'penDown', 'makeWorld',
-                 'getTurtleList', 'drop', 'getHeading', 'getXPos', 'getYPos']),
-    ('Movies', ['playMovie', 'makeMovie', 'makeMovieFromInitialFile',
-                'writeFramesToDirectory', 'addFrameToMovie', 'writeQuicktime', 'writeAVI',
-                'openFrameSequencerTool', 'explore']),
-    ('Pixels', ['getColor', 'setColor', 'getRed', 'getGreen', 'getBlue',
-                'setRed', 'setGreen', 'setBlue', 'getX', 'getY']),
-    ('Pictures', ['addArc', 'addArcFilled', 'addLine', 'addOval', 'addOvalFilled', 'addRect',
-                  'addRectFilled', 'addText', 'addTextWithStyle', 'copyInto', 'duplicatePicture', 'getHeight', 'getWidth',
-                  'getPixel', 'getPixels', 'getPixelAt', 'makePicture', 'makeEmptyPicture', 'makeStyle', 'show', 'repaint',
-                  'writePictureTo', 'openPictureTool', 'setAllPixelsToAColor', 'explore']),
-    ('Sound', ['blockingPlay', 'duplicateSound', 'getDuration', 'getLength', 'getNumSamples', 'getSampleObjectAt', 'getSamples', 'getSampleValue', 'getSampleValueAt',
-               'getSamplingRate', 'getSound', 'makeEmptySound', 'makeEmptySoundBySeconds', 'makeSound', 'play', 'playNote',
-               #           'playInRange', 'blockingPlayInRange', 'playAtRateInRange', 'blockingPlayAtRateInRange',
-               'setSampleValue', 'setSampleValueAt', 'stopPlaying', 'writeSoundTo', 'openSoundTool', 'explore'])]
-
 if System.getProperty('os.name').find('Mac') <> -1:  # if we are on a Mac
     CONTROL_KEY = Event.META_MASK
 else:
@@ -206,13 +117,6 @@ STATUS_BAR_HEIGHT = 30
 PROMPT_LOAD_MESSAGE = 'You must save the file that you are working\non before loading it.'
 
 PROMPT_EXIT_MESSAGE = 'If you exit JES, your changes will be lost.'
-
-def getMethodList(klass):
-    ret = []
-    for (name, val) in klass.__dict__.items():
-        if type(val).__name__.endswith('Function'):
-            ret.append(name)
-    return ret
 
 
 class JESUI(swing.JFrame, FocusListener):
@@ -509,10 +413,10 @@ class JESUI(swing.JFrame, FocusListener):
                 [COMMAND_FRAMESEQUENCER_TOOL, 0, 0]
             ]],
 
-            [JES_API_TITLE, []],
+            [JES_API_TITLE, buildJESFunctionsMenu(self.apiHelp)],
 
             # uncomment the following line to put the Java api menu in
-            # [API_TITLE, []],
+            # [API_TITLE, buildJavaAPIMenu(self.apiHelp)],
 
             [WINDOW_TITLE, [
                 [COMMAND_WINDOW_2,      KeyEvent.VK_R,  CONTROL_KEY],
@@ -553,31 +457,6 @@ class JESUI(swing.JFrame, FocusListener):
                         newMenuItem.setAccelerator(stroke)
                     newMenu.add(newMenuItem)
 
-            if menuTitle == API_TITLE:
-                # BUILD API HELP
-                for section in API_SECTIONS:
-                    newMenuSection = swing.JMenu(str(section),
-                                                 actionPerformed=self.apiHelp)
-
-                    for api_function in getMethodList(section):
-                        func_name = str(section) + '.' + api_function
-                        newMenuItem = swing.JMenuItem(func_name,
-                                                      actionPerformed=self.apiHelp)
-                        newMenuSection.add(newMenuItem)
-                    newMenu.add(newMenuSection)
-
-            if menuTitle == JES_API_TITLE:
-                # BUILD JES API HELP
-                for (section, api_functions) in JES_API_SECTIONS:
-                    newMenuSection = swing.JMenu(str(section),
-                                                 actionPerformed=self.apiHelp)
-
-                    for api_function in api_functions:
-                        newMenuItem = swing.JMenuItem(api_function,
-                                                      actionPerformed=self.apiHelp)
-                        newMenuSection.add(newMenuItem)
-                    newMenu.add(newMenuSection)
-
         return output, menuDict
 
     ##########################################################################
@@ -594,22 +473,14 @@ class JESUI(swing.JFrame, FocusListener):
 
         self.program.logBuffer.addMenuOption(actionCommand)
 
-        html_page = ''
-        section = ''
-        api_function = ''
-        try:
-            section, api_function = actionCommand.split('.', 2)
-        except:
-            pass
-
         if actionCommand.find('.') == -1:
             # JES SECTION HELP
             self.openExploreWindow(actionCommand)
-
         else:
             # JAVA SECTION HELP
-            # FIXME : jump directly to the function...difficult because javadoc
+            # TODO: jump directly to the function...difficult because javadoc
             # puts the types in the html A NAME field
+            section, api_function = actionCommand.split('.', 2)
             html_page = 'file://' + \
                 JESResources.getPathTo(
                     'javadoc') + '/' + section + '.html#method_summary'
