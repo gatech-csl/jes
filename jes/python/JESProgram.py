@@ -10,7 +10,6 @@ import JESConfig
 import JESExceptionRecord
 import JESConstants
 import JESResources
-import JESFileChooser
 import JESLogBuffer
 import JESUI
 import os
