@@ -1,8 +1,12 @@
-# A tool for interfacing with FrameSequencer for JES
-#
-# Timmy Douglas 2006
+# -*- coding: utf-8 -*-
+"""
+jes.tools.framesequencer
+========================
+A tool for viewing movies, frame by frame.
 
-
+:copyright: (C) 2006 Timmy Douglas
+:license:   GNU GPL v2 or later, see jes/help/JESCopyright.txt for details
+"""
 import java.awt.Font
 import java.awt as awt
 import javax.swing as swing

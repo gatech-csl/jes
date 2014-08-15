@@ -91,7 +91,6 @@ import user
 import Picture
 import Pixel
 import Sound
-import FrameSequencerTool
 import StoppableInput
 import StoppableOutput
 import Sample
@@ -99,6 +98,8 @@ import Samples
 import MoviePlayer
 import MovieWriter
 import FileChooser
+
+from jes.tools.framesequencer import FrameSequencerTool
 
 import org.python.core.PyString as String
 
@@ -1112,7 +1113,7 @@ def openPictureTool(picture):
 
 
 def openFrameSequencerTool(movie):
-    FrameSequencerTool.FrameSequencerTool(movie)
+    FrameSequencerTool(movie)
 
 
 def openSoundTool(sound):
@@ -1286,8 +1287,7 @@ def printNow(text):
     print text
 
 
-class Movie:
-
+class Movie(object):
     def __init__(self):  # frames are filenames
         self.frames = []
         self.dir = None
@@ -1453,7 +1453,7 @@ def makeMovieFromInitialFile(filename):
     regex = re.compile('[0-9]+')
     file_regex = regex.sub('.*', movie.init_file)
 
-    for item in os.listdir(movie.directory):
+    for item in sorted(os.listdir(movie.directory)):
         if re.match(file_regex, item):
             movie.addFrame(movie.directory + os.sep + item)
 
