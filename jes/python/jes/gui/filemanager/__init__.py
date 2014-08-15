@@ -24,10 +24,12 @@ from .recents import RecentFiles
 MODULE_NAME_RE = re.compile(r'^[a-zA-Z_][a-zA-Z0-9_]*\.py$')
 
 PROMPT_SAVE_CAPTION = 'Save file?'
+PROMPT_SAVE_OR_DISCARD = 'Would you like to save the open program first?'
+PROMPT_SAVE_REQUIRED = 'Would you like to save the program and continue?'
 
-PROMPT_NEW_MESSAGE = 'You are about to open a new program area\nWould you like to save the current program first?'
-PROMPT_OPEN_MESSAGE = 'You are about to open a file.\nWould you like to save the current program first?'
-PROMPT_PRINT_MESSAGE = 'You should save the file that you are working\non before printing it.\nWould you like to save now?'
+PROMPT_NEW_MESSAGE = 'You are about to create a new, blank program.'
+PROMPT_OPEN_MESSAGE = 'You are about to open a different program.'
+PROMPT_PRINT_MESSAGE = 'You must save the file that you are working\non before printing it.'
 
 class FileManager(object):
     def __init__(self, logBuffer):
@@ -60,13 +62,13 @@ class FileManager(object):
     @methodAction(name="New Program", accelerator=control('n'))
     @threadsafe
     def newAction(self):
-        if self.continueAfterSaving(PROMPT_NEW_MESSAGE):
+        if self.continueAfterSavingOrDiscarding(PROMPT_NEW_MESSAGE):
             self.newFile()
 
     @methodAction(name="Open Program...", accelerator=control('o'))
     @threadsafe
     def openAction(self):
-        if self.continueAfterSaving(PROMPT_OPEN_MESSAGE):
+        if self.continueAfterSavingOrDiscarding(PROMPT_OPEN_MESSAGE):
             programToOpen = self.selectProgramToOpen()
             if programToOpen is not None:
                 self.readFile(programToOpen)
@@ -88,7 +90,7 @@ class FileManager(object):
 
     @threadsafe
     def readAction(self, filename):
-        if self.continueAfterSaving(PROMPT_OPEN_MESSAGE):
+        if self.continueAfterSavingOrDiscarding(PROMPT_OPEN_MESSAGE):
             self.readFile(filename)
 
     @methodAction(name="Print", accelerator=control('p'))
@@ -214,10 +216,11 @@ class FileManager(object):
     ### Helpers
 
     @threadsafe
-    def continueAfterSaving(self, prompt):
+    def continueAfterSavingOrDiscarding(self, prompt):
         if self.editor.modified:
             promptResult = JOptionPane.showConfirmDialog(self.parentWindow,
-                prompt, PROMPT_SAVE_CAPTION, JOptionPane.YES_NO_CANCEL_OPTION
+                prompt + '\n' + PROMPT_SAVE_OR_DISCARD,
+                PROMPT_SAVE_CAPTION, JOptionPane.YES_NO_CANCEL_OPTION
             )
 
             if promptResult == JOptionPane.YES_OPTION:
@@ -231,6 +234,28 @@ class FileManager(object):
             elif promptResult == JOptionPane.NO_OPTION:
                 # The user elected not to save it, so keep going.
                 return True
+            else:
+                # The user decided to cancel, bail out.
+                return False
+        else:
+            return True
+
+    @threadsafe
+    def continueAfterSaving(self, prompt):
+        if self.filename is None or self.editor.modified:
+            promptResult = JOptionPane.showConfirmDialog(self.parentWindow,
+                prompt + '\n' + PROMPT_SAVE_REQUIRED,
+                PROMPT_SAVE_CAPTION, JOptionPane.YES_NO_OPTION
+            )
+
+            if promptResult == JOptionPane.YES_OPTION:
+                isSaved = self.saveAction()
+                if isSaved:
+                    # The file saved, keep going.
+                    return True
+                else:
+                    # The file _isn't_ saved, bail out.
+                    return False
             else:
                 # The user decided to cancel, bail out.
                 return False

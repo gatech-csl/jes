@@ -203,9 +203,9 @@ VSPLITTER_LOCATION = 320
 BUTTON_PANE_HEIGHT = 15
 STATUS_BAR_HEIGHT = 30
 
-PROMPT_LOAD_MESSAGE = 'You must save the file that you are working\non before loading it.\nWould you like to save now?'
+PROMPT_LOAD_MESSAGE = 'You must save the file that you are working\non before loading it.'
 
-PROMPT_EXIT_MESSAGE = 'Would you like to save your program before you exit?'
+PROMPT_EXIT_MESSAGE = 'If you exit JES, your changes will be lost.'
 
 def getMethodList(klass):
     ret = []
@@ -854,7 +854,7 @@ class JESUI(swing.JFrame, FocusListener):
 #     Modified to prompt for save on exit - 29 May 2008 by Buck Scharfnorth
 ##########################################################################
     def exit(self, event):
-        if self.program.fileManager.continueAfterSaving(PROMPT_EXIT_MESSAGE):
+        if self.program.fileManager.continueAfterSavingOrDiscarding(PROMPT_EXIT_MESSAGE):
             self.program.closeProgram()
 
 ##########################################################################
