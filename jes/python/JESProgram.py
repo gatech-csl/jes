@@ -7,7 +7,6 @@
 # java -Buck
 
 import JESConfig
-import JESExceptionRecord
 import JESConstants
 import JESResources
 import JESLogBuffer
@@ -27,6 +26,8 @@ from jes.bridge.replbuffer import REPLBuffer
 from jes.bridge.terpactions import addInterpreterActions
 from jes.bridge.terpcontrol import InterpreterControl
 from jes.core.interpreter import Interpreter
+from jes.core.interpreter.exceptionrecord import JESExceptionRecord
+from jes.core.interpreter.messages import TAB_ERROR_MESSAGE
 from jes.core.interpreter.watcher import Watcher
 from jes.gui.components.threading import threadsafe
 from jes.gui.dialogs.intro import introController
@@ -177,9 +178,7 @@ class JESProgram:
                 # error 3. didn't occur
                 if not lineWithError is None:
                     # an error has occured in the file
-                    self.setErrorByHand(JESConstants.TAB_ERROR_MESSAGE + '%d\n' % lineWithError,
-                                        lineWithError)
-
+                    self.setErrorByHand(TAB_ERROR_MESSAGE + '%d\n' % lineWithError, lineWithError)
                     return
 
                 # error 4. didn't occur,
@@ -195,19 +194,16 @@ class JESProgram:
                 self.gui.loadCurrent()
 
     def setErrorByHand(self, message, lineNumber):
-        excRecord = JESExceptionRecord.JESExceptionRecord(self.fileManager.filename)
+        excRecord = JESExceptionRecord(self.fileManager.filename)
         if message == JESConstants.JESPROGRAM_NO_FILE:
             excRecord.setByHand(message)
         else:
-            excRecord.setByHand(JESConstants.TAB_ERROR_MESSAGE +
-                                '%d\n' % lineNumber,
-                                lineNumber
-                                )
+            excRecord.setByHand(TAB_ERROR_MESSAGE + '%d\n' % lineNumber, lineNumber)
 
         self._sendFakeError(excRecord)
 
     def setErrorFromUserCode(self, type, value, trace):
-        excRecord = JESExceptionRecord.JESExceptionRecord(self.fileManager.filename)
+        excRecord = JESExceptionRecord(self.fileManager.filename)
         excRecord.setFromUserCode(type, value, trace)
 
         self._sendFakeError(excRecord)

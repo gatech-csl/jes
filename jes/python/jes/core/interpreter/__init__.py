@@ -15,7 +15,7 @@ from blinker import NamedSignal
 from codeop import compile_command
 from java.lang import Thread
 from threading import Lock, Semaphore
-from JESExceptionRecord import JESExceptionRecord
+from .exceptionrecord import JESExceptionRecord
 
 class Interpreter(object):
     """

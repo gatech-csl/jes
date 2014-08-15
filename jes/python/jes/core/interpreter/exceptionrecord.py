@@ -1,14 +1,27 @@
-# JES- Jython Environment for Students
-# Copyright (C) 2002  Jason Ergle, Claire Bailey, David Raines, Joshua Sklare
-# See JESCopyright.txt for full licensing information
-# 5/13/09: Changes for redesigning configuration writing from python to
-# java -Buck
+# -*- coding: utf-8 -*-
+"""
+jes.core.interpreter.exceptionrecord
+====================================
+This class holds information about exceptions.
 
+(It's kinda twisty. It's been this way since '09, and I'm scared to change
+it because it could subtly break the screenshots in the textbook.)
+
+:copyright: (C) 2014 Matthew Frazier and Mark Guzdial;
+            (C) 2009 William Scharfnorth, Brian Dorn, and Barbara Ericson;
+            (C) 2002 Jason Ergle, Claire Bailey, David Raines, Joshua Sklare
+:license:   GNU GPL v2 or later, see jes/help/JESCopyright.txt for details
+"""
 import JESConfig
 import JESConstants
-import sys
-import os
+import os.path
 from java.lang import ThreadDeath
+from .messages import (GENERIC_EXCEPTION_MESSAGE, EXCEPTION_MESSAGES,
+                       STOP_MESSAGE)
+
+COMMAND_FROM_CONSOLE = '<input>'
+STACK_MSG = ' in file %s, on line %d, in function %s\n'
+LINE_NUM_MSG = 'Please check line %d of %s\n'
 
 
 class JESExceptionRecord:
@@ -48,13 +61,13 @@ class JESExceptionRecord:
         for name in dir(exception):
             attributes[name] = getattr(exception, name)
 
-        if JESConstants.EXCEPTION_MESSAGES.has_key(className):
-            template = JESConstants.EXCEPTION_MESSAGES[className]
+        if EXCEPTION_MESSAGES.has_key(className):
+            template = EXCEPTION_MESSAGES[className]
             msg = template % attributes
             if doc:
                 msg = doc + '\n' + msg
         else:
-            msg = JESConstants.GENERIC_EXCEPTION_MESSAGE % className
+            msg = GENERIC_EXCEPTION_MESSAGE % className
             if doc:
                 msg = doc + '\n' + msg
 
@@ -226,7 +239,7 @@ class JESExceptionRecord:
         self.line_number = None
 
         if isThreadDeath:
-            exceptionDesc = JESConstants.STOP_MESSAGE + '\n'
+            exceptionDesc = STOP_MESSAGE + '\n'
         else:
             exceptionDesc = self.getExceptionDescription(exc_value)
             try:
@@ -280,7 +293,7 @@ class JESExceptionRecord:
     def showStack(self, txtStack):
 
         if ( len(txtStack) == 1) and \
-           (txtStack[0][0] == JESConstants.COMMAND_FROM_CONSOLE):
+           (txtStack[0][0] == COMMAND_FROM_CONSOLE):
             return None
 
         return not None
@@ -326,7 +339,7 @@ class JESExceptionRecord:
 
                 goodFrame = frame
 
-        msg = JESConstants.LINE_NUM_MSG % (goodFrame[1], goodFrame[0])
+        msg = LINE_NUM_MSG % (goodFrame[1], goodFrame[0])
         return msg
 
     def getStackMsg(self, txtStack):
@@ -336,12 +349,12 @@ class JESExceptionRecord:
 
             count = 1
             for frame in txtStack:
-                if (count == 1)and (frame[0] == JESConstants.COMMAND_FROM_CONSOLE):
+                if (count == 1)and (frame[0] == COMMAND_FROM_CONSOLE):
                     pass
                 else:
 
                     stackMsg = stackMsg + \
-                        JESConstants.STACK_MSG % frame
+                        STACK_MSG % frame
                 count += 1
             return stackMsg
         else:
