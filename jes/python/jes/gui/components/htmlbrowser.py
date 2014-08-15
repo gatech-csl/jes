@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
-# JES- Jython Environment for Students
-# Copyright (C) 2002  Jason Ergle, Claire Bailey, David Raines, Joshua Sklare
-# See JESCopyright.txt for full licensing information
+"""
+jes.gui.components.htmlbrowser
+==============================
+An HTML browser component.
 
+:copyright: (C) 2002  Jason Ergle, Claire Bailey, David Raines, Joshua Sklare
+:license:   GNU GPL v2 or later, see jes/help/JESCopyright.txt for details
+"""
 import javax.swing as swing
 import java
 import java.lang as lang
@@ -13,15 +17,15 @@ EXITED = swing.event.HyperlinkEvent.EventType.EXITED
 DEFAULT_HELP_LINK = "http://www.jython.org"
 
 
-class Html_Browser(swing.JPanel):  # swing.JFrame):
+class HTMLBrowser(swing.JPanel):
     ##########################################################################
     # Function name: __init__
     # Parameters:
     #     -urlString: urlString to open in the browser
     # Return:
-    #     An instance of the Html_Browser class.
+    #     An instance of the HTMLBrowser class.
     # Description:
-    #     Creates a new instance of the Html_Browser.
+    #     Creates a new instance of the HTMLBrowser.
     ##########################################################################
 
     def __init__(self, urlString=DEFAULT_HELP_LINK):
@@ -144,3 +148,4 @@ class Html_Browser(swing.JPanel):  # swing.JFrame):
             self.forward.enabled = 1
         else:
             self.forward.enabled = 0
+

@@ -24,7 +24,6 @@ import java.net as net
 import java.util as util
 import javax.swing as swing
 
-import Html_Browser
 import JESGutter
 import JESConfig
 import JESConstants
@@ -38,6 +37,7 @@ from javax.swing import Action, UIManager, SwingUtilities
 
 from jes.gui.commandwindow import CommandWindowController
 from jes.gui.commandwindow.themes import THEME_NAMES
+from jes.gui.components.htmlbrowser import HTMLBrowser
 from jes.gui.components.panels import AutoScrollPane
 from jes.gui.debugger import DebugPanel
 from jes.gui.dialogs.about import aboutController
@@ -233,8 +233,7 @@ class JESUI(swing.JFrame, FocusListener):
         splitterPane.setRightComponent(bottomPane)
 
         helpDivider.orientation = swing.JSplitPane.HORIZONTAL_SPLIT
-        self.htmlBrowser = Html_Browser.Html_Browser(
-            JESConstants.HELP_START_PAGE)
+        self.htmlBrowser = HTMLBrowser(JESConstants.HELP_START_PAGE)
         self.htmlBrowser.setMinimumSize(minSize)
         helpDivider.setDividerSize(SPLITTER_SIZE)
         helpDivider.setDividerLocation(HELP_HSPLITTER_LOCATION)
@@ -243,18 +242,18 @@ class JESUI(swing.JFrame, FocusListener):
 
         # 4 lines added to add a close button to help - 29 May 2008 by Buck
         # Scharfnorth
-        self.htmlBrowserWithHide = Html_Browser_With_Hide(self.htmlBrowser)
+        self.htmlBrowserWithHide = swing.JPanel()
         self.htmlBrowserWithHide.setLayout(
-            swing.BoxLayout(self.htmlBrowserWithHide, swing.BoxLayout.Y_AXIS))
+            swing.BoxLayout(self.htmlBrowserWithHide, swing.BoxLayout.Y_AXIS)
+        )
         self.htmlBrowserWithHide.add(hideRight(self.actionPerformed))
-        self.htmlBrowserWithHide.add(self.htmlBrowserWithHide.htmlBrowser)
+        self.htmlBrowserWithHide.add(self.htmlBrowser)
         # line modified to add a close button to help - 29 May 2008 by Buck
         # Scharfnorth
         helpDivider.setRightComponent(self.htmlBrowserWithHide)
 
         watcherDivider.orientation = swing.JSplitPane.HORIZONTAL_SPLIT
         watcherDivider.leftComponent = splitterPane
-        #self.htmlBrowser = Html_Browser.Html_Browser(JESConstants.HELP_START_PAGE)
 
         # see jesprogram.py, this is initialized later
         watcherDivider.rightComponent = self.debugPanel
@@ -625,8 +624,7 @@ class JESUI(swing.JFrame, FocusListener):
             str = ""
             # Pop up the help window:
 
-        # self.htmlBrowser.htmlPane.setText(msg)
-        self.htmlBrowserWithHide.htmlBrowser.htmlPane.setText(msg)
+        self.htmlBrowser.htmlPane.setText(msg)
 
         self.windowSetting(COMMAND_WINDOW_3HELP)
 
@@ -729,10 +727,8 @@ class JESUI(swing.JFrame, FocusListener):
 ##########################################################################
     def openBrowser(self, target):
         try:
-           # j=Html_Browser.Html_Browser(target)
-           # self.htmlBrowser.field.setText(target)
-            self.htmlBrowserWithHide.htmlBrowser.field.setText(target)
-            self.htmlBrowserWithHide.htmlBrowser.goToUrl(None)
+            self.htmlBrowser.field.setText(target)
+            self.htmlBrowser.goToUrl(None)
         except:
             print "ERROR opening broswer with file:", target
 
@@ -1358,19 +1354,3 @@ class hideRight(swing.JPanel):
         self.setLayout(awt.FlowLayout(awt.FlowLayout.TRAILING, 1, 1))
         self.add(hideRight)
 
-####################################################################
-####################################################################
-# Class: Html_Browser_With_Hide
-# Parameters:
-#     -htmlBrowser: The htmlBrowser used by this panel.
-# Description:
-#     Creates a subclass of a JPanel in order to use arbitrary property
-#     htmlBrowser (the instance of Html_Browser which is doing the actual work).
-####################################################################
-
-
-class Html_Browser_With_Hide(swing.JPanel):
-
-    def __init__(self, htmlBrowser):
-        swing.JPanel.__init__(self)
-        self.htmlBrowser = htmlBrowser
