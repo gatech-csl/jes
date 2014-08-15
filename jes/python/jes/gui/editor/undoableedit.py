@@ -1,24 +1,19 @@
-# JES- Jython Environment for Students
-# JESUndoableEdit
-# June 2008 Buck Scharfnorth
+# -*- coding: utf-8 -*-
+"""
+jes.editor.document
+===================
+An implementation of AbstractUndoableEdit for the UndoManager.
 
-# See JESCopyright.txt for full licensing information
-
+:copyright: (C) 2008 Buck Scharfnorth
+:license:   GNU GPL v2 or later, see jes/help/JESCopyright.txt for details
+"""
 import javax.swing as swing
 
 INSERT_EVENT = 1
 REMOVE_EVENT = 2
 MAX_UNDO_EVENTS_TO_RETAIN = 500
 
-##########################################################################
-# JESUndoableEdit
-#
-# a subclass of AbstractUndoableEdit
-# for the implementation of the UndoManager
-##########################################################################
-
-
-class JESUndoableEdit(swing.undo.AbstractUndoableEdit):
+class UndoableEdit(swing.undo.AbstractUndoableEdit):
 
     ######################################################################
     # Function name: __init__
@@ -29,7 +24,7 @@ class JESUndoableEdit(swing.undo.AbstractUndoableEdit):
     #     -offset: offset in the text that the event occured in
     #     -str: text that is being inserted or removed
     # Description:
-    #     Creates an instance of the JESUndoableEdit class.
+    #     Creates an instance of the UndoableEdit class.
     #     The last 3 parameters are the same as the classic JES addUndoEvent method
     ######################################################################
 
@@ -41,7 +36,7 @@ class JESUndoableEdit(swing.undo.AbstractUndoableEdit):
 ######################################################################
 # Function name: undo
 # Description:
-#     Undoes the last JESUndoableEdit from the document
+#     Undoes the last UndoableEdit from the document
 ######################################################################
     def undo(self):
         try:
@@ -58,7 +53,7 @@ class JESUndoableEdit(swing.undo.AbstractUndoableEdit):
 ######################################################################
 # Function name: undo
 # Description:
-#     Undoes the last JESUndoableEdit from the document
+#     Undoes the last UndoableEdit from the document
 ######################################################################
     def redo(self):
         try:
@@ -75,9 +70,10 @@ class JESUndoableEdit(swing.undo.AbstractUndoableEdit):
 ######################################################################
 # Function name: __init__
 # Returns:
-#     An UndoEvent based on this JESUndoableEdit
+#     An UndoEvent based on this UndoableEdit
 # Description:
-#     Returns this JESUndoableEdit in the classic JES UndoEvent format
+#     Returns this UndoableEdit in the classic JES UndoEvent format
 ######################################################################
     def getUndoEvent(self):
         return self.undoEvent
+

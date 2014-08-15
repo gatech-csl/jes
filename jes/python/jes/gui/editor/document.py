@@ -1,6 +1,12 @@
-# JES- Jython Environment for Students
-# Copyright (C) 2002  Jason Ergle, Claire Bailey, David Raines, Joshua Sklare
-# See JESCopyright.txt for full licensing information
+# -*- coding: utf-8 -*-
+"""
+jes.editor.document
+===================
+This is a special document class used by JESEditor.
+
+:copyright: (C) 2002 Jason Ergle, Claire Bailey, David Raines, Joshua Sklare
+:license:   GNU GPL v2 or later, see jes/help/JESCopyright.txt for details
+"""
 # Revisions:
 # 5/14/03: added removeErrorHighlighting() to be called before any changes take
 #          place in the text - AdamW
@@ -13,13 +19,13 @@
 
 import JESConfig
 import JESConstants
-import JESUndoableEdit
 import java.awt as awt
 import javax.swing as swing
 import HighlightingStyledDocument as HighlightingStyledDocument
 import keyword
 import string
 import java.lang.System as System
+from .undoableedit import UndoableEdit
 
 WORD_BREAKS = [' ', '\n', '\t', '[', ']', '{', '}', ',', '\'', '-', '+', '=',
                '<', '>',  ':', ';', '_', '(', ')', '.',  '#', '"', '%']
@@ -285,14 +291,7 @@ class JESEditorDocument(HighlightingStyledDocument):
 ##########################################################################
     def addUndoEvent(self, eventType, offset, str):
         self.editor.gui.editorChanged()
-        self.undoManager.addEdit(
-            JESUndoableEdit.JESUndoableEdit(self, 1, eventType, offset, str))
-        # if len(self.undoEvents) > MAX_UNDO_EVENTS_TO_RETAIN:
-        #    del self.undoEvents[0]
-
-        # self.undoEvents.append([eventType,
-        #                        offset,
-        #                        str])
+        self.undoManager.addEdit(UndoableEdit(self, 1, eventType, offset, str))
 
 ##########################################################################
 # Function name: undo

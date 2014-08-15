@@ -27,7 +27,6 @@ import javax.swing as swing
 import JESGutter
 import JESConfig
 import JESConstants
-import JESEditor
 import JESResources
 import Pixel
 
@@ -43,6 +42,7 @@ from jes.gui.components.panels import AutoScrollPane
 from jes.gui.debugger import DebugPanel
 from jes.gui.dialogs.about import aboutController
 from jes.gui.dialogs.bugreport import bugReportController
+from jes.gui.editor import JESEditor
 from jes.gui.explorers import Explorers
 from jes.gui.helpinfo import buildJESFunctionsMenu, buildJavaAPIMenu
 
@@ -154,7 +154,7 @@ class JESUI(swing.JFrame, FocusListener):
         self.runningBar = swing.JProgressBar(0, 5, string='',
                                              preferredSize=(50, 30))
 
-        self.editor = JESEditor.JESEditor(self)
+        self.editor = JESEditor(self)
         self.trackEditorFocus(self.editor)
 
         self.commandWindow = CommandWindowController()

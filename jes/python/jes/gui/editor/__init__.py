@@ -1,6 +1,13 @@
-# JES- Jython Environment for Students
-# Copyright (C) 2002  Jason Ergle, Claire Bailey, David Raines, Joshua Sklare
-# See JESCopyright.txt for full licensing information
+# -*- coding: utf-8 -*-
+"""
+jes.editor
+==========
+This has the text editor widget at the center of JES (physically, if not
+metaphorically).
+
+:copyright: (C) 2002 Jason Ergle, Claire Bailey, David Raines, Joshua Sklare
+:license:   GNU GPL v2 or later, see jes/help/JESCopyright.txt for details
+"""
 # Revisions:
 # 5/29/08: added support for "redo" - Buck Scharfnorth
 # 5/13/09: Changes for redesigning configuration writing from python to
@@ -8,11 +15,11 @@
 
 import JESConfig
 import JESConstants
-import JESEditorDocument
 import java.awt as awt
 import javax.swing as swing
 import java.lang.String as String
 import java.lang.Character as Character
+from .document import JESEditorDocument
 
 
 class JESEditor(swing.JTextPane,
@@ -32,7 +39,7 @@ class JESEditor(swing.JTextPane,
         self.gui = gui
         self.program = gui.program
         self.setContentType("text/plain")
-        self.setDocument(JESEditorDocument.JESEditorDocument(self))
+        self.setDocument(JESEditorDocument(self))
         self.addCaretListener(self)
         self.modified = 0
         self.boxX = 0
@@ -307,3 +314,4 @@ class JESEditor(swing.JTextPane,
         if self.boxX != 0:
             g.setColor(awt.Color(200, 200, 250))
             g.drawRect(self.boxX, self.boxY, self.boxWidth, self.boxHeight)
+
