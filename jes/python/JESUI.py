@@ -42,6 +42,7 @@ from jes.gui.components.panels import AutoScrollPane
 from jes.gui.debugger import DebugPanel
 from jes.gui.dialogs.about import aboutController
 from jes.gui.dialogs.bugreport import bugReportController
+from jes.gui.explorers import Explorers
 from jes.gui.helpinfo import buildJESFunctionsMenu, buildJavaAPIMenu
 
 
@@ -63,9 +64,6 @@ COMMAND_EDITOR = 'Editor'
 COMMAND_COMMAND = 'Command'
 COMMAND_EXPLORE = 'Explain'
 COMMAND_EXPLORE_HELP = 'Explain <click>'
-COMMAND_SOUND_TOOL = 'Sound Tool...'
-COMMAND_PICTURE_TOOL = 'Picture Tool...'
-COMMAND_FRAMESEQUENCER_TOOL = 'Movie Tool...'
 DEBUG_SHOW_DEBUGGER = 'Watcher'
 DEBUG_HIDE_DEBUGGER = 'Watcher'
 DEBUG_WATCH_VAR = 'add Variable...'
@@ -343,6 +341,9 @@ class JESUI(swing.JFrame, FocusListener):
         statusbar.add(cursorAndName, awt.BorderLayout.EAST)
         statusbar.add(self.docLabel, awt.BorderLayout.WEST)
 
+        # Add additional service providers
+        self.explorers = Explorers(self, self.program.interpreter)
+
         # Create the menu bar and menu items
         self.rebuildMenu()
 
@@ -407,11 +408,7 @@ class JESUI(swing.JFrame, FocusListener):
                 self.debugPanel.unwatchVariable
             ]],
 
-            [MEDIA_TOOLS_TITLE, [
-                [COMMAND_SOUND_TOOL, 0, 0],
-                [COMMAND_PICTURE_TOOL, 0, 0],
-                [COMMAND_FRAMESEQUENCER_TOOL, 0, 0]
-            ]],
+            [MEDIA_TOOLS_TITLE, self.explorers.actions],
 
             [JES_API_TITLE, buildJESFunctionsMenu(self.apiHelp)],
 
@@ -586,8 +583,6 @@ class JESUI(swing.JFrame, FocusListener):
         elif actionCommand[:len(EXPLAIN_PREFIX)] == EXPLAIN_PREFIX:
             self.openExploreWindow(actionCommand[len(EXPLAIN_PREFIX):])
 
-        elif actionCommand == COMMAND_SOUND_TOOL:
-            self.loadSoundTool()
         elif actionCommand == COMMAND_WINDOW_2 and not self.program.interpreter.debugger.running:
             self.windowSetting(COMMAND_WINDOW_2)
         elif actionCommand == COMMAND_WINDOW_3HELP:
@@ -600,11 +595,6 @@ class JESUI(swing.JFrame, FocusListener):
             JESConfig.getInstance().setBooleanProperty(JESConfig.CONFIG_AUTOSAVEONRUN,
                                                        not JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_AUTOSAVEONRUN))
             #self.program.autoSaveOnRun = not self.program.autoSaveOnRun
-
-        elif actionCommand == COMMAND_PICTURE_TOOL:
-            self.loadPictureTool()
-        elif actionCommand == COMMAND_FRAMESEQUENCER_TOOL:
-            self.loadFrameSequencerTool()
         else:
             self.CheckIfHelpTopic(actionCommand)
 
@@ -1303,109 +1293,6 @@ class JESUI(swing.JFrame, FocusListener):
             self.windowSetting(COMMAND_WINDOW_2)
         else:
             self.windowSetting(COMMAND_WINDOW_3DEBUG)
-
-
-######################################################################
-# Function name: loadSoundTool()
-# Description:
-#     Examines the namespace for all instances of sound, and presents
-#     a list for the user to pick from.  The chosen sound is then opened
-#     in the sound tool.
-######################################################################
-    def loadSoundTool(self):
-        #l = globals()
-        l = self.program.interpreter.contextForExecution
-        sounds = []
-        soundsdict = {}
-        for i in l.items():
-            try:
-                if i[1].__class__.__name__ == 'Sound':
-                    sounds.append(i[0])
-                    soundsdict.setdefault(i[0], i[1])
-            except Exception, e:
-                pass
-        if len(sounds) > 0:
-            sound = swing.JOptionPane.showInputDialog(self, "Choose a sound to examine:",
-                                                      "Open Sound Tool",
-                                                      swing.JOptionPane.INFORMATION_MESSAGE,
-                                                      None,
-                                                      sounds,
-                                                      sounds[0])
-            if sound != None:
-                media.openSoundTool(soundsdict[sound])
-        else:
-            swing.JOptionPane.showMessageDialog(self, "There are no sounds to examine.",
-                                                "No sounds",
-                                                swing.JOptionPane.ERROR_MESSAGE)
-
-######################################################################
-# Function name: loadPictureTool()
-# Description:
-#     Examines the namespace for all instances of picture, and presents
-#     a list for the user to pick from.  The chosen picture is then opened
-#     in the picture tool.
-######################################################################
-    def loadPictureTool(self):
-        #l = globals()
-        l = self.program.interpreter.contextForExecution
-        pictures = []
-        picturesdict = {}
-        for i in l.items():
-            try:
-                if i[1].__class__.__name__ == 'Picture':
-                    pictures.append(i[0])
-                    picturesdict.setdefault(i[0], i[1])
-            except Exception, e:
-                pass
-        if len(pictures) > 0:
-            picture = swing.JOptionPane.showInputDialog(self, "Choose a picture to examine:",
-                                                        "Open Picture Tool",
-                                                        swing.JOptionPane.INFORMATION_MESSAGE,
-                                                        None,
-                                                        pictures,
-                                                        pictures[0])
-            if picture != None:
-                media.openPictureTool(picturesdict[picture])
-        else:
-            swing.JOptionPane.showMessageDialog(self, "There are no pictures to examine.",
-                                                "No pictures",
-                                                swing.JOptionPane.ERROR_MESSAGE)
-
-
-######################################################################
-# Function name: loadFrameSequencerTool()
-# Description:
-#     Examines the namespace for all instances of picture, and presents
-#     a list for the user to pick from.  The chosen picture is then opened
-#     in the picture tool.
-######################################################################
-    def loadFrameSequencerTool(self):
-        #        media.showInformation('You will be asked to pick a folder. Temporary files will be stored here')
-        #        media.openFrameSequencerTool(media.pickAFolder())
-        #l = globals()
-        l = self.program.interpreter.contextForExecution
-        sounds = []
-        soundsdict = {}
-        for i in l.items():
-            try:
-                if i[1].__class__.__name__ == 'Movie':
-                    sounds.append(i[0])
-                    soundsdict.setdefault(i[0], i[1])
-            except Exception, e:
-                pass
-        if len(sounds) > 0:
-            sound = swing.JOptionPane.showInputDialog(self, "Choose a Movie to examine:",
-                                                      "Open Movie Tool",
-                                                      swing.JOptionPane.INFORMATION_MESSAGE,
-                                                      None,
-                                                      sounds,
-                                                      sounds[0])
-            if sound != None:
-                media.openFrameSequencerTool(soundsdict[sound])
-        else:
-            swing.JOptionPane.showMessageDialog(self, "There are no movies to examine.",
-                                                "No movies",
-                                                swing.JOptionPane.ERROR_MESSAGE)
 
     def trackEditorFocus(self, component):
         component.addFocusListener(self)
