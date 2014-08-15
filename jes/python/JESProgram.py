@@ -7,7 +7,6 @@
 # java -Buck
 
 import JESConfig
-import JESConstants
 import JESResources
 import JESLogBuffer
 import JESUI
@@ -34,6 +33,10 @@ from jes.gui.dialogs.intro import introController
 from jes.gui.filemanager import FileManager
 from jes.util.tabnanny import check as checkTabs
 
+ERROR_LOADING_FILE = '\nThere was an error loading the file. It may not actually exist. FILENAME: '
+ERROR_NO_FILE = ('\nNo file has been selected.\n '
+                 'You must open a saved file, or save the opened file,\n'
+                 'before clicking LOAD\n')
 
 class JESProgram:
     def __init__(self, initialFilename=None):
@@ -148,7 +151,7 @@ class JESProgram:
 ##########################################################################
     def loadFile(self):
         if self.fileManager.filename is None:
-            self.setErrorByHand(JESConstants.JESPROGRAM_NO_FILE, 0)
+            self.setErrorByHand(ERROR_NO_FILE, 0)
         else:  # error 1. didn't occur
 
             try:
@@ -156,8 +159,7 @@ class JESProgram:
                 fileText = file.read()
                 file.close()
             except:
-                self.setErrorByHand(
-                    JESConstants.JESPROGRAM_ERROR_LOADING_FILE + self.fileManager.filename + '\n', 0)
+                self.setErrorByHand(ERROR_LOADING_FILE + self.fileManager.filename + '\n', 0)
 
             else:  # error 2. didn't occur
                 try:
@@ -195,7 +197,7 @@ class JESProgram:
 
     def setErrorByHand(self, message, lineNumber):
         excRecord = JESExceptionRecord(self.fileManager.filename)
-        if message == JESConstants.JESPROGRAM_NO_FILE:
+        if message == ERROR_NO_FILE:
             excRecord.setByHand(message)
         else:
             excRecord.setByHand(TAB_ERROR_MESSAGE + '%d\n' % lineNumber, lineNumber)

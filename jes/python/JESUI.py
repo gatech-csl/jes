@@ -26,7 +26,6 @@ import javax.swing as swing
 
 import JESGutter
 import JESConfig
-import JESConstants
 import JESResources
 import Pixel
 
@@ -85,6 +84,8 @@ API_TITLE = 'Java API'
 JES_API_TITLE = 'JES Functions'
 WINDOW_TITLE = 'Window Layout'
 SKINS_TITLE = 'Skins'
+
+HELP_START_PAGE = 'http://coweb.cc.gatech.edu/mediaComp-teach/25'
 HELP_FILE_EXTENTION = '.html'
 
 if System.getProperty('os.name').find('Mac') <> -1:  # if we are on a Mac
@@ -95,6 +96,9 @@ else:
 # The following is an array that is used to build the main menu bar.  The
 # information stored in here is the high level menu item names, the menu bar
 # option names, and the accelerator keys for those menu options.
+
+APPLICATION_TITLE = 'JES - Jython Environment for Students - %s'
+INITIAL_WINDOW_SIZE = (1000, 600)
 
 LOAD_BUTTON_CAPTION = 'Load Program'
 SHOW_DEBUGGER_CAPTION = 'Watcher'
@@ -133,7 +137,7 @@ class JESUI(swing.JFrame, FocusListener):
         self.focusedEditor = None
         self.swing = swing
         self.program = program
-        self.size = JESConstants.INITIAL_WINDOW_SIZE
+        self.size = INITIAL_WINDOW_SIZE
         self.windowClosing = self.exit
 
         self.setLocationRelativeTo(None)
@@ -234,7 +238,7 @@ class JESUI(swing.JFrame, FocusListener):
         splitterPane.setRightComponent(bottomPane)
 
         helpDivider.orientation = swing.JSplitPane.HORIZONTAL_SPLIT
-        self.htmlBrowser = HTMLBrowser(JESConstants.HELP_START_PAGE)
+        self.htmlBrowser = HTMLBrowser(HELP_START_PAGE)
         self.htmlBrowser.setMinimumSize(minSize)
         helpDivider.setDividerSize(SPLITTER_SIZE)
         helpDivider.setDividerLocation(HELP_HSPLITTER_LOCATION)
@@ -770,7 +774,7 @@ class JESUI(swing.JFrame, FocusListener):
         if filename == '':
             filename = UNTITLED_FILE_NAME
 
-        self.title = JESConstants.APPLICATION_TITLE % filename
+        self.title = APPLICATION_TITLE % filename
 
 ##########################################################################
 # Function name: callTextEditFunction

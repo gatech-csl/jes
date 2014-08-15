@@ -14,7 +14,6 @@ metaphorically).
 # java -Buck
 
 import JESConfig
-import JESConstants
 import java.awt as awt
 import javax.swing as swing
 import java.lang.String as String

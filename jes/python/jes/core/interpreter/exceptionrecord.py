@@ -13,7 +13,6 @@ it because it could subtly break the screenshots in the textbook.)
 :license:   GNU GPL v2 or later, see jes/help/JESCopyright.txt for details
 """
 import JESConfig
-import JESConstants
 import os.path
 from java.lang import ThreadDeath
 from .messages import (GENERIC_EXCEPTION_MESSAGE, EXCEPTION_MESSAGES,

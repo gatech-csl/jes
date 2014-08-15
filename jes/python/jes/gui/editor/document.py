@@ -18,7 +18,6 @@ This is a special document class used by JESEditor.
 # java -Buck
 
 import JESConfig
-import JESConstants
 import java.awt as awt
 import javax.swing as swing
 import HighlightingStyledDocument as HighlightingStyledDocument
@@ -39,6 +38,13 @@ ERROR_LINE_FONT_COLOR = awt.Color.black
 ERROR_LINE_BACKGROUND_COLOR = awt.Color.yellow
 HIGHLIGHT_LINE_FONT_COLOR = awt.Color.black
 HIGHLIGHT_LINE_BACKGROUND_COLOR = awt.Color.green
+
+KEYWORD_COLOR = awt.Color(50, 50, 150)
+ENVIRONMENT_WORD_COLOR = awt.Color(150, 50, 150)
+COMMENT_COLOR = awt.Color(50, 120, 50)
+STRING_COLOR = awt.Color(150, 90, 90)
+LPAREN_COLOR = awt.Color(150, 0, 0)
+RPAREN_COLOR = awt.Color(150, 0, 0)
 
 
 class JESEditorDocument(HighlightingStyledDocument):
@@ -68,17 +74,17 @@ class JESEditorDocument(HighlightingStyledDocument):
             JESConfig.CONFIG_FONT)
 
         swing.text.StyleConstants.setForeground(
-            self.stringAttrib, JESConstants.STRING_COLOR)
+            self.stringAttrib, STRING_COLOR)
         swing.text.StyleConstants.setFontFamily(
             self.stringAttrib, "Monospaced")
 
         swing.text.StyleConstants.setForeground(
-            self.commentAttrib, JESConstants.COMMENT_COLOR)
+            self.commentAttrib, COMMENT_COLOR)
         swing.text.StyleConstants.setFontFamily(
             self.commentAttrib, "Monospaced")
 
         swing.text.StyleConstants.setForeground(
-            self.jesEnvironmentWordAttrib, JESConstants.ENVIRONMENT_WORD_COLOR)
+            self.jesEnvironmentWordAttrib, ENVIRONMENT_WORD_COLOR)
         swing.text.StyleConstants.setBold(
             self.jesEnvironmentWordAttrib, KEYWORD_BOLD)
         swing.text.StyleConstants.setFontSize(
@@ -91,7 +97,7 @@ class JESEditorDocument(HighlightingStyledDocument):
         swing.text.StyleConstants.setFontFamily(self.textAttrib, "Monospaced")
 
         swing.text.StyleConstants.setForeground(
-            self.keywordAttrib, JESConstants.KEYWORD_COLOR)
+            self.keywordAttrib, KEYWORD_COLOR)
         swing.text.StyleConstants.setBold(self.keywordAttrib, KEYWORD_BOLD)
         swing.text.StyleConstants.setFontSize(
             self.keywordAttrib, self.fontSize)
@@ -99,7 +105,7 @@ class JESEditorDocument(HighlightingStyledDocument):
             self.keywordAttrib, "Monospaced")
 
         swing.text.StyleConstants.setForeground(
-            self.lParenAttrib, JESConstants.LPAREN_COLOR)
+            self.lParenAttrib, LPAREN_COLOR)
         swing.text.StyleConstants.setBold(
             self.lParenAttrib, INVALID_PAREN_BOLD)
         swing.text.StyleConstants.setFontSize(self.lParenAttrib, self.fontSize)
@@ -107,7 +113,7 @@ class JESEditorDocument(HighlightingStyledDocument):
             self.lParenAttrib, "Monospaced")
 
         swing.text.StyleConstants.setForeground(
-            self.rParenAttrib, JESConstants.RPAREN_COLOR)
+            self.rParenAttrib, RPAREN_COLOR)
         swing.text.StyleConstants.setBold(
             self.rParenAttrib, INVALID_PAREN_BOLD)
         swing.text.StyleConstants.setFontSize(self.rParenAttrib, self.fontSize)
@@ -195,7 +201,7 @@ class JESEditorDocument(HighlightingStyledDocument):
         if self.highlightLineStart >= 0:
             self.removeLineHighlighting()
         if str == '\t':
-            str = JESConstants.TAB
+            str = "  "
         # Added to make auto indent work
         if str == '\n':
             defaultElement = self.getDefaultRootElement()

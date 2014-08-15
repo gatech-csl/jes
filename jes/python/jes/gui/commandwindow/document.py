@@ -9,7 +9,6 @@ This Document class controls how the text in the command window changes.
 """
 import CommandDocumentFilter
 import CommandDocumentListener
-import JESConstants
 from .themes import THEMES, DEFAULT_THEME_NAME, ALL_STYLES, MONOSPACE, NO_STYLES
 from blinker import NamedSignal
 from collections import namedtuple
