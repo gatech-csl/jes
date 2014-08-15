@@ -125,34 +125,33 @@ before you pass the class name (`JESstartup`).
 ### Java Classpath (-cp)
 
 The Java classpath controls where Java loads classes from.
+Usually, these are JAR files -- ZIP files full of compiled classes.
 JES contains a bunch of Java classes, whose source code lives in the
-`jes/java` folder. It also contains a few JAR's, which are ZIP files full
-of compiled classes. All of JES's JAR's were written by other people,
-and they live in `dependencies/jars`.
+`jes/java` folder. Ant compiles them into a JAR named `jes/classes.jar`.
 
-When launching JES, all the JAR's need to be on the classpath, and so do
-all of the JES classes.
+It also contains several JAR's written by other people, which live in
+`dependencies/jars`. When launching JES, its own JAR needs to be on the
+classpath, as well as all the JAR's in `dependencies/jars`.
 
 The classpath is different from other properties, because it's set using a
 `-cp` option, like:
 
-    -cp one.jar:another.jar:classes
+    -cp jes/classes.jar:one.jar:another.jar
 
-The generic launchers both assume that the compiled JES classes live in the
-`jes/classes` directory, but the OS X .app launcher assumes that they have
-been assembled into a `.jar` file, living in `jes/classes.jar`.
+If you need to add more JAR's, just put them in `dependencies/jars`,
+and the launchers and Ant will start loading them automatically.
 
 
 ### Python Home/Path (python.home and python.path)
 
 These properties control where Jython finds `.py` files to load.
-JES's own Python code lives in `jes/python`, but it also needs to load the
-Python standard library, because Jython's JAR file doesn't contain the
-library.
+JES's own Python code lives in `jes/python`, and there is some extra code
+in `dependencies/python`, but it also needs to load the Python
+standard library, because Jython's JAR file doesn't contain the library.
 
 So, `python.home` needs to be set to the directory that the bundled copy of
-Jython lives in, and `python.path` needs to be set to the directory that
-contains JES's Python code.
+Jython lives in, and `python.path` needs to include `jes/python` and
+`dependencies/python`.
 
 
 ### Python Cache Directory (python.cachedir)
