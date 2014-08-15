@@ -1009,8 +1009,8 @@ class JESUI(swing.JFrame, FocusListener):
                                      actionPerformed=self.optionsButtonPressed)
 
         modelabel = swing.JLabel("Mode:")
-        fontlabel = swing.JLabel(
-            "Font size (1-" + str(JESConstants.HIGH_FONT) + "):")
+        fontlabel = swing.JLabel("Font size (%d-%d):" %
+                                 (JESConfig.FONT_SIZE_MIN, JESConfig.FONT_SIZE_MAX))
         gutterlabel = swing.JLabel("Show line numbers:")
         blocklabel = swing.JLabel("Show indentation help:")
         logginglabel = swing.JLabel("Logging:")
@@ -1035,21 +1035,15 @@ class JESUI(swing.JFrame, FocusListener):
         self.loggerBox = swing.JCheckBox(
             "", JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_LOGBUFFER))
 
-        if JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_MODE) == JESConstants.BEGINNER_MODE:
-            self.userExperienceField = swing.JComboBox(JESConstants.USER_MODES)
+        if JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_MODE) == JESConfig.MODE_BEGINNER:
+            modes = [JESConfig.MODE_BEGINNER, JESConfig.MODE_EXPERT]
         else:
-            self.userExperienceField = swing.JComboBox(
-                JESConstants.USER_MODES_2)
+            modes = [JESConfig.MODE_EXPERT, JESConfig.MODE_BEGINNER]
+        self.userExperienceField = swing.JComboBox(modes)
 
-#        if int(self.program.userFont) ==  int(JESConstants.LOW_FONT):
-#            self.userFontField = swing.JComboBox( JESConstants.FONT_MODE_LOW)
-#        elif int(self.program.userFont) ==  int(JESConstants.MID_FONT):
-#            self.userFontField = swing.JComboBox( JESConstants.FONT_MODE_MID)
-#        else:
-#            self.userFontField = swing.JComboBox( JESConstants.FONT_MODE_HIGH)
-        fontSizes = range(JESConstants.LOW_FONT, JESConstants.MID_FONT + 1, 2)
-        userFont = int(
-            JESConfig.getInstance().getIntegerProperty(JESConfig.CONFIG_FONT))
+        fontSizes = range(JESConfig.FONT_SIZE_MIN, JESConfig.FONT_SIZE_MAXREC + 1, 2)
+        userFont = int(JESConfig.getInstance().getIntegerProperty(JESConfig.CONFIG_FONT))
+
         self.userFontField = swing.JComboBox(fontSizes)
         self.userFontField.setEditable(1)
         if userFont in fontSizes:
@@ -1119,11 +1113,18 @@ class JESUI(swing.JFrame, FocusListener):
                 JESConfig.CONFIG_MODE, self.userExperienceField.getSelectedItem())
 
             chosenFontSize = self.userFontField.getSelectedItem()
-            if (not str(chosenFontSize).isdigit() or chosenFontSize < 1 or chosenFontSize > JESConstants.HIGH_FONT):
+            if (
+                not str(chosenFontSize).isdigit() or
+                chosenFontSize < JESConfig.FONT_SIZE_MIN or
+                chosenFontSize > JESConfig.FONT_SIZE_MAX
+            ):
                 chosenFontSize = JESConfig.getInstance().getIntegerProperty(
                     JESConfig.CONFIG_FONT)
-                swing.JOptionPane.showMessageDialog(self, "Invalid Font Size.  Please try again using a number between 1 and " + str(
-                    JESConstants.HIGH_FONT), "Invalid Font Size", swing.JOptionPane.ERROR_MESSAGE)
+                swing.JOptionPane.showMessageDialog(self,
+                    "Invalid Font Size. Please try again using a number between %d and %d." %
+                    (JESConfig.FONT_SIZE_MIN, JESConfig.FONT_SIZE_MAX),
+                    "Invalid Font Size", swing.JOptionPane.ERROR_MESSAGE
+                )
 
             JESConfig.getInstance().setIntegerProperty(
                 JESConfig.CONFIG_FONT, chosenFontSize)

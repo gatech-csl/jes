@@ -305,7 +305,7 @@ class JESExceptionRecord:
 # message.
 ######################################################################
     def getNameOfExcMsg(self, exc_type, exc_value):
-        if JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_MODE) == JESConstants.EXPERT_MODE:
+        if JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_MODE) == JESConfig.MODE_EXPERT:
             return "%s: %s\n" % (exc_type.__name__, exc_value)
         elif exc_type.__name__ == 'SoundException':
             return "%s\n" % (exc_value)
@@ -344,7 +344,7 @@ class JESExceptionRecord:
 
     def getStackMsg(self, txtStack):
 
-        if JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_MODE) == JESConstants.EXPERT_MODE:
+        if JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_MODE) == JESConfig.MODE_EXPERT:
             stackMsg = ''
 
             count = 1

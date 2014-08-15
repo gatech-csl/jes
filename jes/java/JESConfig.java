@@ -26,6 +26,9 @@ public class JESConfig {
     /** The selected interface mode. */
     public static final String CONFIG_MODE = "interface.mode";
 
+    public static final String MODE_BEGINNER = "Beginner";
+    public static final String MODE_EXPERT = "Expert";
+
     /** The Java UI skin. */
     public static final String CONFIG_SKIN = "interface.skin";
 
@@ -34,6 +37,10 @@ public class JESConfig {
 
     /** The interface font size. */
     public static final String CONFIG_FONT = "interface.fontsize";
+
+    public static final int FONT_SIZE_MIN = 8;
+    public static final int FONT_SIZE_MAX = 72;
+    public static final int FONT_SIZE_MAXREC = 32;
 
     /** Whether to display line numbers. */
     public static final String CONFIG_GUTTER = "interface.gutter";
@@ -209,17 +216,16 @@ public class JESConfig {
             setStringProperty(CONFIG_MEDIAPATH, System.getProperty("user.home"));
         }
 
-        // Copied from JESConstants because that code is written in Python.
         int fontSize = getIntegerProperty(CONFIG_FONT);
         if (fontSize == 0) {
             // Reset it to the default.
             setIntegerProperty(CONFIG_FONT, 12);
-        } else if (fontSize < 8) {
+        } else if (fontSize < FONT_SIZE_MIN) {
             // Clamp it to 8 (the safe minimum).
-            setIntegerProperty(CONFIG_FONT, 8);
-        } else if (fontSize > 72) {
+            setIntegerProperty(CONFIG_FONT, FONT_SIZE_MIN);
+        } else if (fontSize > FONT_SIZE_MAX) {
             // Clamp it to 72 (the sane maximum).
-            setIntegerProperty(CONFIG_FONT, 72);
+            setIntegerProperty(CONFIG_FONT, FONT_SIZE_MAX);
         }
     }
 
