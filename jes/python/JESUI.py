@@ -29,6 +29,7 @@ import JESConfig
 import JESConstants
 import JESEditor
 import JESResources
+import Pixel
 
 from java.awt import Event
 from java.awt.event import ActionListener, FocusListener, KeyEvent
