@@ -19,7 +19,6 @@ import re
 import string
 
 import java.awt as awt
-import java.awt.print as printer
 import java.lang as lang
 import java.net as net
 import java.util as util
@@ -31,7 +30,6 @@ import JESConfig
 import JESConstants
 import JESEditor
 import JESResources
-import JESPrintableDocument
 
 from java.awt import Event
 from java.awt.event import ActionListener, FocusListener, KeyEvent
@@ -71,7 +69,6 @@ DEBUG_SHOW_DEBUGGER = 'Watcher'
 DEBUG_HIDE_DEBUGGER = 'Watcher'
 DEBUG_WATCH_VAR = 'add Variable...'
 DEBUG_UNWATCH_VAR = 'remove Variable...'
-PRINT = 'Print'
 AUTOSAVE = 'Auto save code file when loading'
 COMMAND_WINDOW_2 = 'Program Area + Interactions Area'
 COMMAND_WINDOW_3HELP = 'Program Area + Interactions Area + Help'
@@ -209,8 +206,6 @@ STATUS_BAR_HEIGHT = 30
 PROMPT_LOAD_MESSAGE = 'You must save the file that you are working\non before loading it.\nWould you like to save now?'
 
 PROMPT_EXIT_MESSAGE = 'Would you like to save your program before you exit?'
-
-PROMPT_PRINT_MESSAGE = 'You should save the file that you are working\non before printing it.\nWould you like to save now?'
 
 def getMethodList(klass):
     ret = []
@@ -480,7 +475,7 @@ class JESUI(swing.JFrame, FocusListener):
                 self.program.fileManager.saveAsAction,
                 MENU_SEPARATOR,
                 [COMMAND_LOAD,      KeyEvent.VK_L,      CONTROL_KEY],
-                [PRINT,             KeyEvent.VK_P,      CONTROL_KEY],
+                self.program.fileManager.printAction,
                 MENU_SEPARATOR,
                 [COMMAND_EXIT,      KeyEvent.VK_Q,      CONTROL_KEY]
             ]],
@@ -681,8 +676,6 @@ class JESUI(swing.JFrame, FocusListener):
             self.cut()
         elif actionCommand == COMMAND_COPY:
             self.copy()
-        elif actionCommand == PRINT:
-            self.printCommand()
         elif actionCommand == COMMAND_PASTE:
             self.paste()
         elif actionCommand == COMMAND_UNDO:
@@ -990,24 +983,6 @@ class JESUI(swing.JFrame, FocusListener):
 
         if isinstance(focusedComponent, swing.JTextPane):
             focusedComponent.redo()
-
-##########################################################################
-# Function name: print
-# Description:
-#     Prints the current Document contained in JES
-##########################################################################
-    def printCommand(self):
-        name = "(Unknown)"
-        if self.program.fileManager.continueAfterSaving(PROMPT_PRINT_MESSAGE):
-            printerJob = printer.PrinterJob.getPrinterJob()
-            printerJob.setPrintable(
-                JESPrintableDocument.JESPrintableDocument(self.program.filename, name))
-            doPrint = printerJob.printDialog()
-            if (doPrint):
-                try:
-                    printerJob.print()
-                except:
-                    print "Printing error"
 
 ##########################################################################
 # Function name: UpdateRowCol

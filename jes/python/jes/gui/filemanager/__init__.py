@@ -18,6 +18,7 @@ from jes.gui.components.actions import (methodAction, control, controlShift,
                                         PythonAction)
 from jes.gui.components.filechooser import FileChooser
 from jes.gui.components.threading import threadsafe
+from .printing import printFile
 from .recents import RecentFiles
 
 MODULE_NAME_RE = re.compile(r'^[a-zA-Z_][a-zA-Z0-9_]*\.py$')
@@ -26,7 +27,7 @@ PROMPT_SAVE_CAPTION = 'Save file?'
 
 PROMPT_NEW_MESSAGE = 'You are about to open a new program area\nWould you like to save the current program first?'
 PROMPT_OPEN_MESSAGE = 'You are about to open a file.\nWould you like to save the current program first?'
-
+PROMPT_PRINT_MESSAGE = 'You should save the file that you are working\non before printing it.\nWould you like to save now?'
 
 class FileManager(object):
     def __init__(self, logBuffer):
@@ -89,6 +90,18 @@ class FileManager(object):
     def readAction(self, filename):
         if self.continueAfterSaving(PROMPT_OPEN_MESSAGE):
             self.readFile(filename)
+
+    @methodAction(name="Print", accelerator=control('p'))
+    @threadsafe
+    def printAction(self):
+        if self.continueAfterSaving(PROMPT_PRINT_MESSAGE):
+            try:
+                printFile(self.filename)
+            except Exception, exc:
+                self.showErrorMessage(
+                    "Error printing", "Could not print the file",
+                    self.filename, exc
+                )
 
 
     ### Model methods -- touch the GUI, but carry out their actions instantly
