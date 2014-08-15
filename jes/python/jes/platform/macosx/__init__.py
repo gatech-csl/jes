@@ -35,7 +35,7 @@ class JESApplicationAdapter(ApplicationAdapter):
         self.program.gui.exit(event)
 
     def handleOpenFile(self, event):
-        invokeLater(self.program.gui.readAction, event.getFilename())
+        invokeLater(self.program.fileManager.readAction, event.getFilename())
 
 
 def installOpenHandler(program):
