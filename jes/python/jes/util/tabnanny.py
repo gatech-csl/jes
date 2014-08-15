@@ -1,13 +1,14 @@
 #! /usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+jes.util.tabnanny
+=================
+The Tab Nanny despises ambiguous indentation. She knows no mercy.
 
-"""The Tab Nanny despises ambiguous indentation.  She knows no mercy."""
+(This has been modified for JES.)
 
-# Released to the public domain, by Tim Peters, 15 April 1998.
-
-# XXX Note: this is now a standard library module.
-# XXX The API needs to undergo changes however; the current code is too
-# XXX script-like.  This will be addressed later.
-
+:copyright: Released to the public domain by Tim Peters, 15 April 1998.
+"""
 __version__ = "6"
 
 import os

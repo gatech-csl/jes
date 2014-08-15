@@ -17,7 +17,6 @@ import os.path
 
 import string
 import sys
-import JESTabnanny
 import JavaMusic
 
 from code import compile_command
@@ -32,6 +31,7 @@ from jes.core.interpreter.watcher import Watcher
 from jes.gui.components.threading import threadsafe
 from jes.gui.dialogs.intro import introController
 from jes.gui.filemanager import FileManager
+from jes.util.tabnanny import check as checkTabs
 
 
 class JESProgram:
@@ -138,7 +138,7 @@ class JESProgram:
 #                 null string)
 #              2) program.filename is a valid string, but the file no longer
 #                 exists
-#              3) JESTabnanny throws a Token Error - some kind of problem parsing
+#              3) tabnanny throws a Token Error - some kind of problem parsing
 #                 the file.  has something to do with unbalanced parenthesis
 #              4) The file contains ambigious indentation
 #        If any of these errors are present, a JESExceptionRecord is created
@@ -160,7 +160,7 @@ class JESProgram:
 
             else:  # error 2. didn't occur
                 try:
-                    lineWithError = JESTabnanny.check(self.fileManager.filename)
+                    lineWithError = checkTabs(self.fileManager.filename)
 
                 except:
 
@@ -171,7 +171,7 @@ class JESProgram:
                     return
 
                 #this is clugy
-                # JESTabnanny can either throw an exception,
+                # tabnanny can either throw an exception,
                 # or return a line number.
                 # both signal an error, and we handle them seperatly
                 # error 3. didn't occur
