@@ -6,14 +6,11 @@ from jm import JMC
 from jm.music.data import Note, Phrase
 from jm.util import Play
 
-full = 0.8
-half = 0.4
+hotCrossBuns = [Note(n, JMC.QUARTER_NOTE) for n in [JMC.B4, JMC.A4, JMC.G4]]
+hotCrossBuns.append(Note(JMC.REST, JMC.EIGHTH_NOTE))
 
-hotCrossBuns = [Note(n, full) for n in [JMC.B4, JMC.A4, JMC.G4]]
-hotCrossBuns.append(Note(JMC.REST, half))
-
-oneAPenny = [Note(JMC.G4, half) for n in range(4)]
-twoAPenny = [Note(JMC.A4, half) for n in range(4)]
+oneAPenny = [Note(JMC.G4, JMC.EIGHTH_NOTE) for n in range(4)]
+twoAPenny = [Note(JMC.A4, JMC.EIGHTH_NOTE) for n in range(4)]
 
 songNotes = hotCrossBuns + hotCrossBuns + oneAPenny + twoAPenny + hotCrossBuns
 
