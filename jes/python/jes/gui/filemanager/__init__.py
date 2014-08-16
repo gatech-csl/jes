@@ -117,7 +117,7 @@ class FileManager(object):
 
     @threadsafe
     def readFile(self, filename):
-        filename = os.path.normpath(filename)
+        filename = os.path.abspath(os.path.normpath(filename))
 
         try:
             with open(filename, 'r') as fd:
@@ -136,6 +136,7 @@ class FileManager(object):
 
     @threadsafe
     def writeFile(self, filename):
+        filename = os.path.abspath(os.path.normpath(filename))
         sourceText = self.editor.getText().encode('utf8')
 
         try:
