@@ -171,3 +171,9 @@ Contributors: Christine Alvarado, Stephen Bryant
     The Web-CAT submission engine may be integrated in the future to
     provide a replacement.
 
+*   Removed the Logging system (which created a `.pylog` file next
+    to each `.py` file). It appeared to be in a state of ill repair
+    already (for example, the "Logging" checkbox in the settings window
+    did nothing), and internal refactoring to JES made it difficult to
+    keep the log file up to date with the same set of information.
+

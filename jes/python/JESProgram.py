@@ -8,7 +8,6 @@
 
 import JESConfig
 import JESResources
-import JESLogBuffer
 import JESUI
 import os
 import os.path
@@ -43,8 +42,6 @@ class JESProgram:
         JESProgram.activeInstance = self
         self.startupTimeSec = 0
 
-        self.logBuffer = JESLogBuffer.JESLogBuffer(self)
-
         self.interpreter = terp = Interpreter()
         self.debugger = terp.debugger
         self.watcher = Watcher(self.debugger)
@@ -55,7 +52,7 @@ class JESProgram:
         self.varsToHighlight = list(terp.initialNames)
 
         # Install the file manager.
-        self.fileManager = FileManager(self.logBuffer)
+        self.fileManager = FileManager()
 
         self.setupGUI(initialFilename)
 

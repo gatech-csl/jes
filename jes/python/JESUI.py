@@ -472,8 +472,6 @@ class JESUI(swing.JFrame, FocusListener):
     def apiHelp(self, event):
         actionCommand = event.getActionCommand()
 
-        self.program.logBuffer.addMenuOption(actionCommand)
-
         if actionCommand.find('.') == -1:
             # JES SECTION HELP
             self.openExploreWindow(actionCommand)
@@ -535,10 +533,6 @@ class JESUI(swing.JFrame, FocusListener):
     ##########################################################################
     def actionPerformed(self, event):
         actionCommand = event.getActionCommand()
-
-        self.program.logBuffer.addMenuOption(actionCommand)
-
-        # print actionCommand
 
         if actionCommand == COMMAND_EXIT:
             # line modified to allow saving changes before exit. - Buck
@@ -1004,7 +998,7 @@ class JESUI(swing.JFrame, FocusListener):
     def openOptions(self):
         self.optionsWindow = swing.JFrame('JES Options')
 
-        self.optionsWindow.contentPane.layout = awt.GridLayout(11, 2)
+        self.optionsWindow.contentPane.layout = awt.GridLayout(10, 2)
         #self.optionsWindow.size = (350,550)
 
         donebutton = swing.JButton("Done", preferredSize=(100, 20),
@@ -1017,7 +1011,6 @@ class JESUI(swing.JFrame, FocusListener):
                                  (JESConfig.FONT_SIZE_MIN, JESConfig.FONT_SIZE_MAX))
         gutterlabel = swing.JLabel("Show line numbers:")
         blocklabel = swing.JLabel("Show indentation help:")
-        logginglabel = swing.JLabel("Logging:")
         autosavelabel = swing.JLabel("Automatically save before loading:")
         backupsavelabel = swing.JLabel("Save a backup copy on save:")
         wrappixellabel = swing.JLabel(
@@ -1036,8 +1029,6 @@ class JESUI(swing.JFrame, FocusListener):
         # alexr flopped the sense of this checkbox
         self.blockBox = swing.JCheckBox(
             "", not JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_BLOCK))
-        self.loggerBox = swing.JCheckBox(
-            "", JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_LOGBUFFER))
 
         if JESConfig.getInstance().getStringProperty(JESConfig.CONFIG_MODE) == JESConfig.MODE_BEGINNER:
             modes = [JESConfig.MODE_BEGINNER, JESConfig.MODE_EXPERT]
@@ -1082,9 +1073,6 @@ class JESUI(swing.JFrame, FocusListener):
         self.optionsWindow.contentPane.add(self.gutterBox)
         self.optionsWindow.contentPane.add(blocklabel)
         self.optionsWindow.contentPane.add(self.blockBox)
-
-        self.optionsWindow.contentPane.add(logginglabel)
-        self.optionsWindow.contentPane.add(self.loggerBox)
 
         self.optionsWindow.contentPane.add(autosavelabel)
         self.optionsWindow.contentPane.add(self.autosaveBox)
@@ -1136,8 +1124,6 @@ class JESUI(swing.JFrame, FocusListener):
                 JESConfig.CONFIG_BLOCK, not self.blockBox.isSelected())
             JESConfig.getInstance().setBooleanProperty(
                 JESConfig.CONFIG_GUTTER, self.gutterBox.isSelected())
-            JESConfig.getInstance().setBooleanProperty(
-                JESConfig.CONFIG_LOGBUFFER, self.loggerBox.isSelected())
             JESConfig.getInstance().setBooleanProperty(
                 JESConfig.CONFIG_AUTOSAVEONRUN, self.autosaveBox.isSelected())
             JESConfig.getInstance().setBooleanProperty(

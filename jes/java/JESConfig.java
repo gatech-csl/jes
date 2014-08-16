@@ -55,9 +55,6 @@ public class JESConfig {
     /** Whether to save backup files. */
     public static final String CONFIG_BACKUPSAVE = "save.backups";
 
-    /** Whether to save program logs or not. */
-    public static final String CONFIG_LOGBUFFER = "save.logs";
-
 
     /** The list of recent files. */
     public static final String CONFIG_RECENT_FILES = "recentfiles";
@@ -82,7 +79,6 @@ public class JESConfig {
 
         defaults.setProperty(CONFIG_AUTOSAVEONRUN,          "0");
         defaults.setProperty(CONFIG_BACKUPSAVE,             "1");
-        defaults.setProperty(CONFIG_LOGBUFFER,              "1");
 
         defaults.setProperty(CONFIG_RECENT_FILES,           "");
     };
@@ -136,7 +132,7 @@ public class JESConfig {
         CONFIG_SKIN,
         null,
         CONFIG_BACKUPSAVE,
-        CONFIG_LOGBUFFER,
+        null,
         CONFIG_MEDIAPATH
     };
 

@@ -32,13 +32,11 @@ PROMPT_OPEN_MESSAGE = 'You are about to open a different program.'
 PROMPT_PRINT_MESSAGE = 'You must save the file that you are working\non before printing it.'
 
 class FileManager(object):
-    def __init__(self, logBuffer):
+    def __init__(self):
         self.filename = None
 
         self.parentWindow = None
         self.editor = None
-
-        self.logBuffer = logBuffer
 
         self.createFileChooser()
 
@@ -115,7 +113,6 @@ class FileManager(object):
 
         self.editor.modified = 0
 
-        self.logBuffer.resetBuffer()
         self.onNew.send(self)
 
     @threadsafe
@@ -135,7 +132,6 @@ class FileManager(object):
 
             self.editor.modified = 0
 
-            self.logBuffer.openLogFile(filename)
             self.onRead.send(self, filename=filename)
 
     @threadsafe
@@ -155,7 +151,6 @@ class FileManager(object):
 
             self.editor.modified = 0
 
-            self.logBuffer.saveLogFile(self.filename)
             self.onWrite.send(self, filename=filename)
 
             # Now write the backup
