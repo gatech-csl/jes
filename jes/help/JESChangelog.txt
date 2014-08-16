@@ -44,6 +44,18 @@ Contributors: Christine Alvarado, Stephen Bryant
     are consulting the Functions menu for information on a function,
     they usually haven't decided whether they want to use it yet.)
 
+*   Added an "Open Recent Program" menu that tracks the last 8 files
+    opened or saved.
+
+*   Fixed the rules for deciding when a filename is illegal,
+    but allowed the users to override JES's decision.
+
+*   Filtered out non-.py files in Open and Save by default.
+
+*   Improved the layout of program printouts, to properly center- and
+    right-align the headings and provide additional space for the
+    program text.
+
 *   Moved settings into a `.properties` file, which is stored in the
     user's platform-specific preferences directory.
     (Previously, settings were stored in a delicately-formatted `.txt`
