@@ -18,7 +18,7 @@ setDockIcon()
 
 import JESstartup
 import sys
-from JESProgram import JESProgram
+from jes.program import JESProgram
 
 def usageError():
     JESstartup.showHelp()

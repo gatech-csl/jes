@@ -1,16 +1,20 @@
-# JES- Jython Environment for Students
-# Copyright (C) 2002  Jason Ergle, Claire Bailey, David Raines, Joshua Sklare
-# See JESCopyright.txt for full licensing information
-# 5/16/03: Added coloring to the load button to indicate concurrency with the
-#          editor document -AdamW
-# 5/29/08: Added hideRight class to give the htmlBrowser and watcher
-#          panels close buttons, and set their OneTouchExpandable to 1.
-#          Prompt for saving changes on exit, and cancel option for
-#          users at promptSave. Support for "redo" - Buck Scharfnorth
-#          (hideRight for help fixed as of 7/04/08)
-# 5/13/09: Changes for redesigning configuration writing from python to
-# java -Buck
+# -*- coding: utf-8 -*-
+"""
+jes.gui.mainwindow
+==================
+This is the JESUI, which is a serious chunk of the JES interface code.
+(I'm trying to make it smaller and more of a container, but there's just
+*so much* to move around!)
 
+:copyright: (C) 2014 Matthew Frazier and Mark Guzdial;
+            (C) 2009 William Scharfnorth, Brian Dorn, and Barbara Ericson;
+            (C) 2008 Brian O'Neill, William Scharfnorth, and Barbara Ericson;
+            (C) 2006, 2007 Alex Rudnick, Timmy Douglas, and Barbara Ericson;
+            (C) 2003 Ellie Harmon, Yu Cheung Ho, Keith McDermott,
+                     Eric Mickley, Larry Olson, and Adam Wilson
+            (C) 2002 Jason Ergle, Claire Bailey, David Raines, Joshua Sklare
+:license:   GNU GPL v2 or later, see jes/help/JESCopyright.txt for details
+"""
 import media
 
 import httplib
@@ -19,7 +23,6 @@ import re
 import string
 
 import java.awt as awt
-import java.lang as lang
 import java.net as net
 import java.util as util
 import javax.swing as swing
@@ -31,7 +34,7 @@ import Pixel
 
 from java.awt import Event
 from java.awt.event import ActionListener, FocusListener, KeyEvent
-from java.lang import System, Thread
+from java.lang import Short, System, Thread
 from javax.swing import Action, UIManager, SwingUtilities
 
 from jes.gui.commandwindow import CommandWindowController
@@ -277,8 +280,8 @@ class JESUI(swing.JFrame, FocusListener):
         self.watcherWithHide.setMinimumSize(awt.Dimension(500, 400))
         self.watcherWithHide.setPreferredSize(awt.Dimension(600, 400))
 
-        editorPane.setPreferredSize(awt.Dimension(lang.Short.MAX_VALUE,
-                                                  lang.Short.MAX_VALUE))
+        editorPane.setPreferredSize(awt.Dimension(Short.MAX_VALUE,
+                                                  Short.MAX_VALUE))
         editorPane.getVerticalScrollBar().setUnitIncrement(14)
 
         buttonPane.setLayout(awt.BorderLayout())
@@ -287,7 +290,7 @@ class JESUI(swing.JFrame, FocusListener):
         #                                        VISUAL_CONTROL_MARGIN_SIZE,
         #                                       VISUAL_CONTROL_MARGIN_SIZE,
         #                                      VISUAL_CONTROL_MARGIN_SIZE))
-        buttonPane.setMaximumSize(awt.Dimension(lang.Short.MAX_VALUE,
+        buttonPane.setMaximumSize(awt.Dimension(Short.MAX_VALUE,
                                                 BUTTON_PANE_HEIGHT))
 
         commandPane.setMinimumSize(
@@ -297,7 +300,7 @@ class JESUI(swing.JFrame, FocusListener):
                                              swing.BoxLayout.Y_AXIS))
 
         statusbar.setMinimumSize(awt.Dimension(0, STATUS_BAR_HEIGHT))
-        statusbar.setMaximumSize(awt.Dimension(lang.Short.MAX_VALUE,
+        statusbar.setMaximumSize(awt.Dimension(Short.MAX_VALUE,
                                                STATUS_BAR_HEIGHT))
         statusbar.setLayout(awt.BorderLayout())
         statusbar.setBorder(swing.BorderFactory.createLoweredBevelBorder())
@@ -315,7 +318,7 @@ class JESUI(swing.JFrame, FocusListener):
         self.bottomPane = bottomPane
 
         eastBar = swing.JPanel()
-        # eastBar.setMaximumSize(awt.Dimension(lang.Short.MAX_VALUE,
+        # eastBar.setMaximumSize(awt.Dimension(Short.MAX_VALUE,
         #                                    BUTTON_PANE_HEIGHT))
         eastBar.add(self.debuggerButton)
         eastBar.add(self.stopButton)

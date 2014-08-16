@@ -1,14 +1,23 @@
-# JES- Jython Environment for Students
-# Copyright (C) 2002  Jason Ergle, Claire Bailey, David Raines, Joshua Sklare
-# See JESCopyright.txt for full licensing information
-# 5/16/03: updated save() and saveAs() to return success booleans. -AdamW
-# 18 Jul 2007: Added option for backup save.
-# 5/13/09: Changes for redesigning configuration writing from python to
-# java -Buck
+# -*- coding: utf-8 -*-
+"""
+jes.program
+===========
+This is the JESProgram class, which functions as a sort of container for
+all the different components of JES. (It also has some historical leftover
+code that I haven't had a chance to refactor yet.)
 
+:copyright: (C) 2014 Matthew Frazier and Mark Guzdial;
+            (C) 2009 William Scharfnorth, Brian Dorn, and Barbara Ericson;
+            (C) 2008 Brian O'Neill, William Scharfnorth, and Barbara Ericson;
+            (C) 2006, 2007 Alex Rudnick, Timmy Douglas, and Barbara Ericson;
+            (C) 2003 Ellie Harmon, Yu Cheung Ho, Keith McDermott,
+                     Eric Mickley, Larry Olson, and Adam Wilson
+            (C) 2002 Jason Ergle, Claire Bailey, David Raines, Joshua Sklare
+:license:   GNU GPL v2 or later, see jes/help/JESCopyright.txt for details
+"""
+from __future__ import absolute_import
 import JESConfig
 import JESResources
-import JESUI
 import os
 import os.path
 
@@ -30,6 +39,7 @@ from jes.core.interpreter.watcher import Watcher
 from jes.gui.components.threading import threadsafe
 from jes.gui.dialogs.intro import introController
 from jes.gui.filemanager import FileManager
+from jes.gui.mainwindow import JESUI
 from jes.util.tabnanny import check as checkTabs
 
 ERROR_LOADING_FILE = '\nThere was an error loading the file. It may not actually exist. FILENAME: '
@@ -61,7 +71,7 @@ class JESProgram:
 
     @threadsafe
     def setupGUI(self, initialFilename):
-        self.gui = JESUI.JESUI(self)
+        self.gui = JESUI(self)
         self.gui.windowSetting(None)
 
         self.setHelpArray()
