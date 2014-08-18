@@ -43,6 +43,17 @@ public class Pixel {
     }
 
     /**
+     * Round and correct a color level to be within 0 and 255,
+     * according to the current wrapLevels setting.
+     *
+     * @param level The user-provided level.
+     * @return A value within 0 and 255.
+     */
+    public static int correctLevel (double level) {
+        return correctLevel((int) Math.round(level));
+    }
+
+    /**
      * Correct a color level to be within 0 and 255,
      * according to the current wrapLevels setting.
      *
