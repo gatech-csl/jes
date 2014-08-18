@@ -1043,7 +1043,11 @@ def requestIntegerInRange(message, min, max):
 
 
 def requestString(message):
-    return StoppableInput.getString(message)
+    s = StoppableInput.getString(message)
+    if s is None:
+        return None
+    else:
+        return str(s)
 
 
 def input(message=None):
