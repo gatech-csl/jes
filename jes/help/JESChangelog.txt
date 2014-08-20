@@ -80,6 +80,13 @@ Contributors: Christine Alvarado, Stephen Bryant
 
 ### Media API Improvements
 
+*   Added a plugin system, to allow add-on libraries to be easily
+    packaged for use with JES. Plugins are distributed as JAR files,
+    and they can be installed by selecting "Install Plugin" from the
+    "File" menu, choosing the JAR file, and restarting JES.
+    Instructions for making plugins are included in the JES
+    source code repository.
+
 *   Renamed `setLibPath` to `addLibPath`, since there can be more than
     one library path. (The old name still works.)
 
