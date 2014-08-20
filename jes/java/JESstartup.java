@@ -15,7 +15,7 @@ public class JESstartup {
     /*synthetic*/ static Class array$Ljava$lang$String;
 
     public static void showHelp () {
-        System.out.printf("JES %s Launcher\n", JESVersion.getRelease());
+        System.out.printf("%s %s Launcher\n", JESVersion.getTitle(), JESVersion.getRelease());
         System.out.println("- Pass no arguments to open a new file in the editor");
         System.out.println("- Pass a filename to open that file in the editor");
         System.out.println();
@@ -52,7 +52,8 @@ public class JESstartup {
                 showHelp();
                 System.exit(0);
             } else if (option.equals("--version")) {
-                System.out.println(JESVersion.getMessage());
+                System.out.println(JESVersion.getBaseMessage());
+                jython.main(new String[] {"-m", "jes.core.plugins"});
                 System.exit(0);
             } else if (option.equals("--properties")) {
                 // Print all the properties, and exit

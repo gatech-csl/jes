@@ -19,7 +19,7 @@ from .controller import BasicDialog, DialogController
 class IntroDialog(BasicDialog):
     INFO_FILE = JESResources.getPathTo("help/JESIntroduction.txt")
 
-    WINDOW_TITLE = "Welcome to JES!"
+    WINDOW_TITLE = "Welcome to %s!" % JESVersion.TITLE
     WINDOW_SIZE = (400, 300)
 
     def __init__(self):

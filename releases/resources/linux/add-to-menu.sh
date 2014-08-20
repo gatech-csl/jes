@@ -1,6 +1,6 @@
 #!/bin/sh
 # add-to-menu.sh
-# Creates a .desktop for JES.
+# Creates a .desktop for @title@.
 
 # Where are we?
 
@@ -15,14 +15,14 @@ APPLICATIONS=${XDG_DATA_HOME:=$HOME/.local/share}/applications
 
 # All right, let's build one!
 
-DESKTOP=$APPLICATIONS/jes.desktop
+DESKTOP=$APPLICATIONS/@basename@.desktop
 
 echo "[Desktop Entry]" > $DESKTOP
 echo "Type=Application" >> $DESKTOP
 echo "Version=1.0" >> $DESKTOP
 echo >> $DESKTOP
 
-echo "Name=JES" >> $DESKTOP
+echo "Name=@title@" >> $DESKTOP
 echo "Comment=Write Python programs to work with pictures, sounds, and videos" >> $DESKTOP
 echo "Icon=$JES_HOME/images/jesicon.png" >> $DESKTOP
 echo "Categories=Development;Education" >> $DESKTOP

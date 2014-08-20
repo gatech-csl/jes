@@ -7,6 +7,7 @@ This allows you to install plugins in JES.
 :copyright: (C) 2014 Matthew Frazier and Mark Guzdial
 :license:   GNU GPL v2 or later, see jes/help/JESCopyright.txt for details
 """
+import JESVersion
 import os
 import os.path
 from java.lang import System
@@ -119,6 +120,7 @@ class PluginInstaller(object):
         self.builtinDir = System.getProperty("jes.plugins.builtin")
         self.available = self.userDir is not None
         self.toRemove = []
+        self.registerPluginsWithJESVersion()
 
     def cleanUp(self):
         for jarInfo in self.toRemove:
@@ -181,6 +183,12 @@ class PluginInstaller(object):
     def getInstalledPluginInfo(self):
         return self.getMultiplePluginInfos(self.getInstalledPlugins())
 
+    def registerPluginsWithJESVersion(self):
+        plugins = []
+        for info in self.getAllPluginInfo().values():
+            plugins.append(info['display'] + ' - ' + info['status'])
+        JESVersion.setPlugins(plugins)
+
     def findConflicts(self, jarInfo):
         infos = self.getAllPluginInfo()
         conflicts = []
@@ -224,4 +232,12 @@ class PluginInstaller(object):
                                    "directory. Find out what it is and "
                                    "remove it so you can use plugins." %
                                    self.userDir)
+
+
+if __name__ == '__main__':
+    # Used by JESstartup's --version option
+    data = PluginData()
+    installer = PluginInstaller(data)
+
+    print JESVersion.getPluginMessage()
 

@@ -25,7 +25,7 @@ class AboutDialog(BasicDialog):
         ("Included Software",   JESResources.getPathTo("help/JESDependencies.txt")),
     )
 
-    WINDOW_TITLE = "About JES"
+    WINDOW_TITLE = "About " + JESVersion.TITLE
     WINDOW_SIZE = (600, 600)
 
     def __init__(self):
@@ -51,7 +51,7 @@ class AboutDialog(BasicDialog):
         self.add(tabs, BorderLayout.CENTER)
 
         # Add a label at the top
-        versionLabel = JLabel("JES version " + JESVersion.RELEASE)
+        versionLabel = JLabel(JESVersion.TITLE + " version " + JESVersion.RELEASE)
         versionLabel.alignmentX = Component.CENTER_ALIGNMENT
 
         versionPanel = JPanel()
@@ -67,5 +67,5 @@ class AboutDialog(BasicDialog):
         self.visible = False
 
 
-aboutController = DialogController("About JES", AboutDialog)
+aboutController = DialogController("About %s" % JESVersion.TITLE, AboutDialog)
 

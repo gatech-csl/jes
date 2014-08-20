@@ -53,6 +53,11 @@ class JESProgram:
         JESProgram.activeInstance = self
         self.startupTimeSec = 0
 
+        # Install all the plugins
+        self.pluginData = PluginData()
+        self.pluginInstaller = PluginInstaller(self.pluginData)
+
+        # Set up the interpreter
         self.interpreter = terp = Interpreter()
         self.debugger = terp.debugger
         self.watcher = Watcher(self.debugger)
@@ -61,10 +66,6 @@ class JESProgram:
 
         terp.initialize(self.initializeInterpreter)
         self.varsToHighlight = list(terp.initialNames)
-
-        # Install all the plugins
-        self.pluginData = PluginData()
-        self.pluginInstaller = PluginInstaller(self.pluginData)
 
         # Install the file manager.
         self.fileManager = FileManager()

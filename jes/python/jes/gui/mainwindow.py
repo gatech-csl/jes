@@ -30,6 +30,7 @@ import javax.swing as swing
 import JESGutter
 import JESConfig
 import JESResources
+import JESVersion
 import Pixel
 
 from java.awt import Event
@@ -101,7 +102,7 @@ else:
 # information stored in here is the high level menu item names, the menu bar
 # option names, and the accelerator keys for those menu options.
 
-APPLICATION_TITLE = 'JES - Jython Environment for Students - %s'
+APPLICATION_TITLE = JESVersion.FULL_TITLE + ' - %s'
 INITIAL_WINDOW_SIZE = (1000, 600)
 
 LOAD_BUTTON_CAPTION = 'Load Program'

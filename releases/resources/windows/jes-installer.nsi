@@ -14,7 +14,7 @@
 #
 #   makensis jes-installer.nsi
 #
-# which will generate the output file 'jes-@release@-windows.exe'.
+# which will generate the output file '@basename@-@release@-windows.exe'.
 
 !addplugindir ..\..\resources\windows\nsis-plugins
 !addincludedir ..\..\resources\windows\nsis-plugins
@@ -22,27 +22,27 @@
 !include MUI2.nsh
 !include zipdll.nsh
 
-!define APPNAME "JES"
-!define APPFULLNAME "JES - Jython Environment for Students"
+!define APPNAME "@title@"
+!define APPFULLNAME "@fulltitle@"
 !define APPVERSION "@release@"
 !define APPGUID "{AE72B60E-47B2-46FE-AC9E-0436A26DAD7D}"
-!define PUBLISHERNAME "Georgia Institute of Technology"
+!define PUBLISHERNAME "@vendor@"
 
 !define REQUIREDJAVA "1.5"
 
-!define INSTALLSUBTITLE "JES: Jython Environment for Students (version @release@)"
+!define INSTALLSUBTITLE "@fulltitle@ (version @release@)"
 
-!define UNINSTALLNAME "Uninstall JES"
+!define UNINSTALLNAME "Uninstall @title@"
 !define UNINSTALLREGKEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${APPGUID}"
 
 !define PYTHONCLASS "GATech.JES.Python"
 
 Name "${APPNAME}"
-OutFile "jes-@release@-windows.exe"
+OutFile "@basename@-@release@-windows.exe"
 
 RequestExecutionLevel admin
 
-InstallDir "$ProgramFiles\JES"
+InstallDir "$ProgramFiles\@title@"
 InstallDirRegKey HKLM "Software\JES" "InstallDir"
 
 ShowInstDetails hide
@@ -59,25 +59,25 @@ Var TotalInstalledSize
 
 # Modern UI Pages
 
-!define MUI_WELCOMEPAGE_TITLE "JES: Jython Environment for Students"
-!define MUI_WELCOMEPAGE_TEXT "This program will install JES version @release@ on your computer. It won't take long; just follow the instructions."
+!define MUI_WELCOMEPAGE_TITLE "@fulltitle@"
+!define MUI_WELCOMEPAGE_TEXT "This program will install @title@ version @release@ on your computer. It won't take long; just follow the instructions."
 !insertmacro MUI_PAGE_WELCOME
 
 !define MUI_PAGE_HEADER_TEXT "License"
 !define MUI_PAGE_HEADER_SUBTEXT "${INSTALLSUBTITLE}"
-!define MUI_LICENSEPAGE_TEXT_TOP "JES is Free Software, released under the GNU General Public License."
-!define MUI_LICENSEPAGE_TEXT_BOTTOM "This means that everyone may use JES, free of charge, and share it with anyone. Everyone can also make changes to JES and share those changes."
+!define MUI_LICENSEPAGE_TEXT_TOP "@title@ is Free Software, released under the GNU General Public License."
+!define MUI_LICENSEPAGE_TEXT_BOTTOM "This means that everyone may use @title@, free of charge, and share it with anyone. Everyone can also make changes to @title@ and share those changes."
 !insertmacro MUI_PAGE_LICENSE "JESCopyright.txt"
 
 !define MUI_PAGE_HEADER_TEXT "Installation Options"
 !define MUI_PAGE_HEADER_SUBTEXT "${INSTALLSUBTITLE}"
-!define MUI_COMPONENTSPAGE_TEXT_TOP "This lets you customize how JES is installed. (The defaults are usually fine.)"
+!define MUI_COMPONENTSPAGE_TEXT_TOP "This lets you customize how @title@ is installed. (The defaults are usually fine.)"
 !define MUI_COMPONENTSPAGE_TEXT_COMPLIST "Select options:"
 !insertmacro MUI_PAGE_COMPONENTS
 
 !define MUI_PAGE_HEADER_TEXT "Select Install Location"
 !define MUI_PAGE_HEADER_SUBTEXT "${INSTALLSUBTITLE}"
-!define MUI_DIRECTORYPAGE_TEXT_TOP "Where would you like to install JES? (The default is usually fine.)"
+!define MUI_DIRECTORYPAGE_TEXT_TOP "Where would you like to install @title@? (The default is usually fine.)"
 !insertmacro MUI_PAGE_DIRECTORY
 
 !define MUI_PAGE_HEADER_TEXT "Installing..."
@@ -88,18 +88,18 @@ Var TotalInstalledSize
 !define MUI_INSTFILESPAGE_ABORTHEADER_SUBTEXT "${INSTALLSUBTITLE}"
 !insertmacro MUI_PAGE_INSTFILES
 
-!define MUI_FINISHPAGE_TITLE "JES installation complete"
+!define MUI_FINISHPAGE_TITLE "@title@ installation complete"
 !define MUI_FINISHPAGE_TEXT "Now you can write your own programs for working with media! Have fun!"
 !define MUI_FINISHPAGE_RUN "$INSTDIR\JES.exe"
-!define MUI_FINISHPAGE_RUN_TEXT "Run JES now"
+!define MUI_FINISHPAGE_RUN_TEXT "Run @title@ now"
 !define MUI_FINISHPAGE_NOREBOOTSUPPORT
 !define MUI_FINISHPAGE_BUTTON "Finish"
 !insertmacro MUI_PAGE_FINISH
 
 
-!define MUI_PAGE_HEADER_TEXT "Uninstall JES?"
+!define MUI_PAGE_HEADER_TEXT "Uninstall @title@?"
 !define MUI_PAGE_HEADER_SUBTEXT "${INSTALLSUBTITLE}"
-!define MUI_UNCONFIRMPAGE_TEXT_TOP "This program will remove JES from your computer. Any programs you wrote will remain, but you won't be able to run them."
+!define MUI_UNCONFIRMPAGE_TEXT_TOP "This program will remove @title@ from your computer. Any programs you wrote will remain, but you won't be able to run them."
 !insertmacro MUI_UNPAGE_CONFIRM
 
 !define MUI_PAGE_HEADER_TEXT "Uninstalling..."
@@ -110,7 +110,7 @@ Var TotalInstalledSize
 !define MUI_UNINSTFILESPAGE_ABORTHEADER_SUBTEXT "${INSTALLSUBTITLE}"
 !insertmacro MUI_UNPAGE_INSTFILES
 
-!define MUI_FINISHPAGE_TITLE "JES uninstallation complete"
+!define MUI_FINISHPAGE_TITLE "@title@ uninstallation complete"
 !define MUI_FINISHPAGE_NOREBOOTSUPPORT
 !define MUI_FINISHPAGE_BUTTON "Finish"
 !insertmacro MUI_UNPAGE_FINISH
@@ -187,23 +187,23 @@ Section "Java Runtime Environment" SecJRE
 SectionEnd
 
 Section "Start Menu Shortcuts" SecStartMenu
-  CreateDirectory "$SMPROGRAMS\JES"
-  CreateShortCut "$SMPROGRAMS\JES\${UNINSTALLNAME}.lnk" "$INSTDIR\${UNINSTALLNAME}.exe" "" "$INSTDIR\${UNINSTALLNAME}.exe" 0
-  CreateShortCut "$SMPROGRAMS\JES\JES.lnk" "$INSTDIR\.\JES.exe" "" "$INSTDIR\.\JES.exe" 0
+  CreateDirectory "$SMPROGRAMS\@title@"
+  CreateShortCut "$SMPROGRAMS\@title@\${UNINSTALLNAME}.lnk" "$INSTDIR\${UNINSTALLNAME}.exe" "" "$INSTDIR\${UNINSTALLNAME}.exe" 0
+  CreateShortCut "$SMPROGRAMS\@title@\@title@.lnk" "$INSTDIR\.\JES.exe" "" "$INSTDIR\.\JES.exe" 0
 SectionEnd
 
 Section "Desktop Icon" SecDesktop
-  CreateShortCut "$DESKTOP\JES.lnk" "$INSTDIR\.\JES.exe" "" "$INSTDIR\.\JES.exe" 0
+  CreateShortCut "$DESKTOP\@title@.lnk" "$INSTDIR\.\JES.exe" "" "$INSTDIR\.\JES.exe" 0
 SectionEnd
 
 
 # Section descriptions
 
-LangString DESC_JRE ${LANG_ENGLISH} "This installs a Java Runtime Environment for JES to use. If you don't have a JRE installed already, the installer will select this for you."
+LangString DESC_JRE ${LANG_ENGLISH} "This installs a Java Runtime Environment for @title@ to use. If you don't have a JRE installed already, the installer will select this for you."
 
-LangString DESC_StartMenu ${LANG_ENGLISH} "This will add a shortcut to JES (and its uninstaller) in the Start Menu."
+LangString DESC_StartMenu ${LANG_ENGLISH} "This will add a shortcut to @title@ (and its uninstaller) in the Start Menu."
 
-LangString DESC_Desktop ${LANG_ENGLISH} "This will place a JES icon on your Desktop, so you can launch it quickly."
+LangString DESC_Desktop ${LANG_ENGLISH} "This will place a @title@ icon on your Desktop, so you can launch it quickly."
 
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
   !insertmacro MUI_DESCRIPTION_TEXT ${SecJRE} $(DESC_JRE)
@@ -237,7 +237,7 @@ Section "Uninstall" UnsecJES
   # Maybe we should delete the file type too?
   ReadRegStr $1 HKCR ".py" ""
   StrCmp $1 "${PYTHONCLASS}" DeleteFileType DontDeleteFileType
-  
+
   DeleteFileType:
     DeleteRegKey HKCR ".py"
   DontDeleteFileType:
@@ -315,7 +315,7 @@ Function DetectJava
     StrCpy $3 $0 1    # Copy character 0 of the requested JRE version to $3
     StrCpy $4 $1 1    # Copy character 0 of the found JRE version to $4
     IntCmp $4 $3 0 DetectJavaOld DetectJavaNew
-    
+
     # Compare the minor versions
     StrCpy $3 $0 1 2  # Copy character 2 of the requested JRE version to $3
     StrCpy $4 $1 1 2  # Copy character 2 of the found JRE version to $4
@@ -356,13 +356,13 @@ Function ComputeTotalInstalledSize
   Push $1
 
   StrCpy $TotalInstalledSize 0
-  
+
   ${ForEach} $1 0 256 + 1
     ${if} ${SectionIsSelected} $1
       SectionGetSize $1 $0
       IntOp $TotalInstalledSize $TotalInstalledSize + $0
     ${Endif}
-    
+
     ${if} ${errors}
       ${break}
     ${Endif}
@@ -377,14 +377,14 @@ FunctionEnd
 
 !define SHCNE_ASSOCCHANGED 0x08000000
 !define SHCNF_IDLIST 0
- 
+
 Function RefreshShellIcons
   ; By Jerome Tremblay - april 2003
   ; http://nsis.sourceforge.net/Refresh_shell_icons
   System::Call 'shell32.dll::SHChangeNotify(i, i, i, i) v \
   (${SHCNE_ASSOCCHANGED}, ${SHCNF_IDLIST}, 0, 0)'
 FunctionEnd
- 
+
 Function un.RefreshShellIcons
   System::Call 'shell32.dll::SHChangeNotify(i, i, i, i) v \
   (${SHCNE_ASSOCCHANGED}, ${SHCNF_IDLIST}, 0, 0)'

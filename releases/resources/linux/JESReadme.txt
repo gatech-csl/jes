@@ -1,14 +1,14 @@
-JES @release@ for Linux
-==========================
+@title@ @release@ for Linux
+============================================================
 @introductiontext@
 
 Requirements
 ------------
-This is the Linux package of JES. It works on all Linux distributions
+This is the Linux package of @title@. It works on all Linux distributions
 and other kinds of Unix (including Mac OS X, though an OS X-specific package
 is also available).
 
-To run JES, you first need a Java Runtime Environment to be installed.
+To run @title@, you first need a Java Runtime Environment to be installed.
 Open your Terminal or Terminal Emulator program (on many Linux versions,
 this will be in your "Applications" menu in the "Accessories" category),
 and run this command to see if you have Java installed:
@@ -26,27 +26,27 @@ print out an "unknown command" error, you're fine. If it does print out an
 "unknown command" error, consult your system documentation for instructions
 on how to install Java.
 
-All of JES's other dependencies are included in this ZIP file.
+All of @title@'s other dependencies are included in this ZIP file.
 You just need a working Java Runtime Environment.
 
 
-Running JES
+Running @title@
 -----------
-To start JES, just run the `jes.sh` shell script file. You should be able to
+To start @title@, just run the `jes.sh` shell script file. You should be able to
 run it just by double-clicking on it in your file manager.
 
 If not, open your Terminal or Terminal Emulator program (see above),
 and `cd` to the directory where you unzipped JES (it probably won't be
 this exact folder):
 
-    cd Downloads/jes-@release@-linux
+    cd Downloads/@basename@-@release@-linux
 
 Then, you can run the shell script with:
 
     sh jes.sh
 
 
-Adding JES to Your Menu
+Adding @title@ to Your Menu
 -----------------------
 If you use a desktop environment like GNOME or KDE, you can put JES in your
 applications menu by running the `add-to-menu.sh` shell script file.
@@ -62,12 +62,12 @@ Python programs in another editor.)
 When you delete JES, the menu entry *should* disappear on its own.
 If not, run this command in your Terminal:
 
-    rm ${XDG_DATA_HOME:-$HOME/.local/share}/applications/jes.desktop
+    rm ${XDG_DATA_HOME:-$HOME/.local/share}/applications/@basename@.desktop
 
 
-JES Development
+@title@ Development
 ---------------
-JES's homepage is on @homepagehost@, at <@homepage@>.
-You can keep track of JES development, download the latest version,
-report issues, or even contribute your own code to JES!
+@title@'s homepage is on @homepagehost@, at <@homepage@>.
+You can keep track of development, download the latest version,
+report issues, or even contribute your own code to @title@!
 

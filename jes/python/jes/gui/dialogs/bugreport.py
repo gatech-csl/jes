@@ -16,10 +16,8 @@ from javax.swing import JTextPane, JScrollPane, JButton, JLabel
 from jes.gui.components.actions import methodAction
 from .controller import BasicDialog, DialogController
 
-WEBSITE_HOST = "GitHub"
-WEBSITE_URI = URI("https://github.com/gatech-csl/jes/issues")
-
-INDENTED_MESSAGE = "\n".join("    " + line for line in JESVersion.getMessage().splitlines())
+WEBSITE_HOST = JESVersion.ISSUES_HOST
+WEBSITE_URI = URI(JESVersion.ISSUES_URL)
 
 MESSAGE = (
     "If you find any problems in JES, or anything breaks unexpectedly, "
@@ -30,10 +28,10 @@ MESSAGE = (
     "submitted the same bug. And please include this version information, "
     "so we know what to test with: "
     "\n\n"
-    "%s"
+    "%%s"
     "\n\n"
     "Thank you for your feedback!"
-) % (WEBSITE_HOST, INDENTED_MESSAGE)
+) % WEBSITE_HOST
 
 
 class BugReportDialog(BasicDialog):
@@ -46,7 +44,9 @@ class BugReportDialog(BasicDialog):
         # Add a message
         textPane = JTextPane()
         textPane.editable = False
-        textPane.text = MESSAGE
+
+        version = "\n".join("    " + line for line in JESVersion.getMessage().splitlines())
+        textPane.text = MESSAGE % version
 
         scrollPane = JScrollPane(textPane)
         scrollPane.preferredSize = (32767, 32767)   # just a large number

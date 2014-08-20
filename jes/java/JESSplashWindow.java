@@ -40,7 +40,7 @@ public class JESSplashWindow {
             RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
         String[] lines = {
-            "JES version " + JESVersion.getRelease() +
+            JESVersion.getTitle() + " version " + JESVersion.getRelease() +
                 " – " + JESVersion.getReleaseDate(),
             "© " + JESVersion.getCopyrightYears() + " various authors.",
             "JES is Free Software (" + JESVersion.getLicense() + ").",

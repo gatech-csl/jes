@@ -1,4 +1,13 @@
 public class JESVersion {
+    public static final String TITLE = "@title@";
+    public static final String FULL_TITLE = "@fulltitle@";
+
+    public static final String HOMEPAGE_URL = "@homepage@";
+    public static final String HOMEPAGE_HOST = "@homepagehost@";
+
+    public static final String ISSUES_URL = "@issues@";
+    public static final String ISSUES_HOST = "@issueshost@";
+
     public static final String VERSION = "@version@";
     public static final String RELEASE = VERSION + "@releasesuffix@";
 
@@ -14,6 +23,21 @@ public class JESVersion {
 
     public static final String SCM_INFO = "@scminfo@";
 
+
+    private static String[] pluginDescriptions = null;
+
+    public static void setPlugins (String[] plugins) {
+        pluginDescriptions = plugins;
+    }
+
+
+    public static String getTitle () {
+        return TITLE;
+    }
+
+    public static String getFullTitle () {
+        return FULL_TITLE;
+    }
 
     public static String getVersion () {
         return VERSION;
@@ -55,21 +79,43 @@ public class JESVersion {
         }
     }
 
-    public static String getMessage () {
+    public static String getBaseMessage () {
         return String.format(
-            "JES version %s\n" +
+            "%s version %s\n" +
             "Release date:   %s\n" +
             "Source control: %s\n" +
             "Java version:   %s (%s/%s)\n" +
             "Jython version: %s (build %s)\n" +
             "Computer OS:    %s (%s architecture)",
-            RELEASE, RELEASE_DATE, SCM_INFO,
+            TITLE, RELEASE, RELEASE_DATE, SCM_INFO,
             System.getProperty("java.version"),
             System.getProperty("java.runtime.name"),
             System.getProperty("java.vm.name"),
             org.python.Version.PY_VERSION, org.python.Version.getBuildInfo(),
             getOSVersion(), System.getProperty("os.arch")
         );
+    }
+
+    public static String getPluginMessage () {
+        if (pluginDescriptions == null) {
+            return "";
+        } else {
+            StringBuilder builder = new StringBuilder();
+            String template = "\nPlugins:        %s";
+
+            for (int i = 0; i < pluginDescriptions.length; i++) {
+                builder.append(String.format(template, pluginDescriptions[i]));
+                if (i == 0) {
+                    template = "\n                %s";
+                }
+            }
+
+            return builder.toString();
+        }
+    }
+
+    public static String getMessage () {
+        return getBaseMessage() + getPluginMessage();
     }
 }
 
