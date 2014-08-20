@@ -114,27 +114,29 @@ class PluginData(object):
 class PluginInstaller(object):
     def __init__(self, data):
         self.data = data
-        self.dir = System.getProperty("jes.plugindir")
-        self.available = self.dir is not None
+        self.userDir = System.getProperty("jes.plugins.user")
+        self.systemDir = System.getProperty("jes.plugins.system")
+        self.builtinDir = System.getProperty("jes.plugins.builtin")
+        self.available = self.userDir is not None
         self.toRemove = []
 
     def cleanUp(self):
         for jarInfo in self.toRemove:
-            if jarInfo['dirname'] == self.dir:
+            if jarInfo['dirname'] == self.userDir:
                 os.remove(jarInfo['filename'])
 
     def getAllPlugins(self):
         return self.data.activePlugins | self.getInstalledPlugins()
 
     def getInstalledPlugins(self):
-        if self.dir is None or not os.path.isdir(self.dir):
+        if self.userDir is None or not os.path.isdir(self.userDir):
             return set()
 
         plugins = set()
-        for basename in os.listdir(self.dir):
+        for basename in os.listdir(self.userDir):
             if not basename.endswith(".jar"):
                 continue
-            pathname = os.path.normpath(os.path.join(self.dir, basename))
+            pathname = os.path.normpath(os.path.join(self.userDir, basename))
 
             try:
                 info = self.data.getPluginInfo(pathname)
@@ -147,7 +149,9 @@ class PluginInstaller(object):
     def getMultiplePluginInfos(self, names):
         plugins = self.data.getMultiplePluginInfos(names)
         for info in plugins.values():
-            if os.path.dirname(info['filename']) == self.dir:
+            info['isInstalled'] = False
+
+            if info['dirname'] == self.userDir:
                 info['isInstalled'] = True
                 if info['isActive']:
                     info['status'] = 'installed'
@@ -157,15 +161,18 @@ class PluginInstaller(object):
                     info['status'] = 'to be installed'
                     info['note'] = ("(This plugin will be activated when you "
                                     "restart JES.)")
-            else:
-                info['isInstalled'] = False
-                if info['isActive']:
-                    info['status'] = 'built in'
-                    info['note'] = ("(This plugin is installed with JES "
-                                    "in the installation directory.)")
-                else:
-                    info['status'] = 'not installed'
-                    info['note'] = "(This plugin is not installed yet.)"
+            elif info['dirname'] == self.systemDir and info['isActive']:
+                info['status'] = 'installed for all users'
+                info['note'] = ("(This plugin has been installed for all "
+                                "users of this copy of JES.)")
+            elif info['dirname'] == self.builtinDir and info['isActive']:
+                info['status'] = 'built-in'
+                info['note'] = ("(This plugin is built into this copy "
+                                "of JES.)")
+            elif info['isActive']:
+                info['status'] = 'manually loaded'
+                info['note'] = ("(This plugin was manually loaded using "
+                                "the Java classpath.)")
         return plugins
 
     def getAllPluginInfo(self):
@@ -191,10 +198,10 @@ class PluginInstaller(object):
                 raise InvalidPluginError(message)
 
         self.checkPluginDirectory()
-        if not os.path.exists(self.dir):
-            os.makedirs(self.dir)
+        if not os.path.exists(self.userDir):
+            os.makedirs(self.userDir)
 
-        copy(jarInfo['filename'], os.path.join(self.dir, jarInfo['basename']))
+        copy(jarInfo['filename'], os.path.join(self.userDir, jarInfo['basename']))
 
     def uninstall(self, jarInfo):
         self.checkPluginDirectory()
@@ -210,11 +217,11 @@ class PluginInstaller(object):
         if not self.available:
             raise EnvironmentError("The plugin system is not configured.\n"
                                    "(Make sure your launcher is setting the "
-                                   "jes.plugindir system property.)")
+                                   "jes.plugins.user system property.)")
 
-        if os.path.exists(self.dir) and not os.path.isdir(self.dir):
-            raise EnvironmentError("The plugin directory (%s) is not a "
+        if os.path.exists(self.userDir) and not os.path.isdir(self.userDir):
+            raise EnvironmentError("The user plugin directory (%s) is not a "
                                    "directory. Find out what it is and "
                                    "remove it so you can use plugins." %
-                                   self.dir)
+                                   self.userDir)
 

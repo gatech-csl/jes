@@ -63,7 +63,7 @@ class PluginActions(object):
     def managePlugins(self):
         try:
             self.installer.checkPluginDirectory()
-            plugins = self.installer.getInstalledPluginInfo()
+            plugins = self.installer.getAllPluginInfo()
 
             if not plugins:
                 JOptionPane.showMessageDialog(self.parentWindow,

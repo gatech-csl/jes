@@ -59,12 +59,29 @@ set pythonpath=%jes_home%\python;%jes_base%\dependencies\python
 
 
 rem Do we have any plugins to load?
+rem User plugins:
 
-set jesplugindir=%APPDATA%\JES\Plugins
+set jes_user_plugins=%APPDATA%\JES\Plugins
 
-if EXIST "%jesplugindir%" (
-    for %%J IN ("%jesplugindir%\*.jar") DO set classpath=!classpath!;%%~fJ
-)
+if NOT EXIST "%jes_user_plugins%" GOTO :nouserplugins
+for %%J IN ("%jes_user_plugins%\*.jar") DO set "classpath=!classpath!;%%~fJ"
+:nouserplugins
+
+rem System plugins:
+
+set jes_system_plugins=%jes_base%\plugins
+
+if NOT EXIST "%jes_system_plugins%" GOTO :nosystemplugins
+for %%J IN ("%jes_system_plugins%\*.jar") DO set "classpath=!classpath!;%%~fJ"
+:nosystemplugins
+
+rem Built-in plugins:
+
+set jes_builtin_plugins=%jes_home%\builtin-plugins
+
+if NOT EXIST "%jes_builtin_plugins%" GOTO :nobuiltinplugins
+for %%J IN ("%jes_builtin_plugins%\*.jar") DO SET "classpath=!classpath!,%%~fJ"
+:nobuiltinplugins
 
 
 rem Where should the Jython cache live?
@@ -95,7 +112,9 @@ if NOT DEFINED JES_JAVA_MEMORY (
     -Dfile.encoding="UTF-8" ^
     -Djes.home="%jes_home%" ^
     -Djes.configfile="%jesconfig%" ^
-    -Djes.plugindir="%jesplugindir%" ^
+    -Djes.plugins.user="%jes_user_plugins%" ^
+    -Djes.plugins.system="%jes_system_plugins%" ^
+    -Djes.plugins.builtin="%jes_builtin_plugins%" ^
     -Dpython.home="%pythonhome%" ^
     -Dpython.path="%pythonpath%" ^
     -Dpython.cachedir="%pythoncache%" ^

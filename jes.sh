@@ -11,10 +11,10 @@ JES_HOME="$JES_BASE/jes"
 
 if test -d "$HOME/Library/Application Support"; then
     JESCONFIGDIR="$HOME/Library/Application Support/JES"
-    JESPLUGINDIR="$HOME/Library/Application Support/JES/Plugins"
+    JES_USER_PLUGINS="$HOME/Library/Application Support/JES/Plugins"
 else
     JESCONFIGDIR="${XDG_CONFIG_HOME:-$HOME/.config}/jes"
-    JESPLUGINDIR="${XDG_DATA_HOME:-$HOME/.local/share}/jes/plugins"
+    JES_USER_PLUGINS="${XDG_DATA_HOME:-$HOME/.local/share}/jes/plugins"
 fi
 
 if test -f "$JESCONFIGDIR/JESEnvironment.sh"; then
@@ -53,9 +53,30 @@ PYTHONPATH="$JES_HOME/python:$JES_BASE/dependencies/python"
 
 
 # Do we have any plugins to load?
+# User plugins:
 
-if test -d "$JESPLUGINDIR"; then
-    for jar in "$JESPLUGINDIR"/*.jar; do
+if test -d "$JES_USER_PLUGINS"; then
+    for jar in "$JES_USER_PLUGINS"/*.jar; do
+        CLASSPATH="$CLASSPATH:$jar"
+    done
+fi
+
+# System plugins:
+
+JES_SYSTEM_PLUGINS="$JES_BASE/plugins"
+
+if test -d "$JES_SYSTEM_PLUGINS"; then
+    for jar in "$JES_SYSTEM_PLUGINS"/*.jar; do
+        CLASSPATH="$CLASSPATH:$jar"
+    done
+fi
+
+# Built-in plugins:
+
+JES_BUILTIN_PLUGINS="$JES_HOME/builtin-plugins"
+
+if test -d "$JES_BUILTIN_PLUGINS"; then
+    for jar in "$JES_BUILTIN_PLUGINS"/*.jar; do
         CLASSPATH="$CLASSPATH:$jar"
     done
 fi
@@ -86,7 +107,9 @@ exec "$JAVA" \
     -Dfile.encoding="UTF-8" \
     -Djes.home="$JES_HOME" \
     -Djes.configfile="$JESCONFIG" \
-    -Djes.plugindir="$JESPLUGINDIR" \
+    -Djes.plugins.user="$JES_USER_PLUGINS" \
+    -Djes.plugins.system="$JES_SYSTEM_PLUGINS" \
+    -Djes.plugins.builtin="$JES_BUILTIN_PLUGINS" \
     -Dpython.home="$PYTHONHOME" \
     -Dpython.path="$PYTHONPATH" \
     -Dpython.cachedir="$PYTHONCACHE" \

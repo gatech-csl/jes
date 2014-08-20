@@ -133,6 +133,11 @@ It also contains several JAR's written by other people, which live in
 `dependencies/jars`. When launching JES, its own JAR needs to be on the
 classpath, as well as all the JAR's in `dependencies/jars`.
 
+And finally, every plugin JAR has to be included on the classpath, because
+Java has no easy way to activate JARs at runtime. Add every `*.jar` file
+from the user, system, and built-in plugin directories, in order.
+(See below for detail on where those are.)
+
 The classpath is different from other properties, because it's set using a
 `-cp` option, like:
 
@@ -186,4 +191,27 @@ Most of the time users don't really need to see it or edit it.
 So you should store it somewhere "behind the scenes" in the user's
 home directory. (If it's left out, JES will put it *directly*
 in the user's home directory, which may annoy people. I know it annoys me.)
+
+
+### JES Plugin Directories (jes.plugins.user, .system, .builtin)
+
+These properties are used by the plugin installer to determine what it can
+do with plugins. They point to directories where the plugins live.
+`jes.plugins.system` and `jes.plugins.builtin` are purely informational,
+but `jes.plugins.user` indicates a directory that JES *should* have write
+access to, where it can add and delete `.jar` files.
+
+`.user` is for plugins downloaded by the user theirselves. It should live
+in the user's home directory, near the configuration file.
+
+`.system` is for plugins added by the system adminstrator. If JES has just
+been unpacked some random place, it should be the `plugins` directory
+next to `jes` and `dependencies`. If JES was installed at the system level
+and the standard directory tree might not exist, it should be somewhere
+that the system administrator traditionally installs software.
+
+`.builtin` is for plugins built into this copy of JES. They live in
+`$JES_HOME/builtin-plugins`. Right now, the release system doesn't actually
+have a way to pack built-in plugins into the release archives, but that will
+change soon.
 

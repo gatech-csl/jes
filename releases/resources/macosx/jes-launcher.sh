@@ -57,6 +57,7 @@ done
 
 ContentsMacOS=`dirname "$PRG"`
 Contents=`dirname "$ContentsMacOS"`
+AppBundle=`dirname "$Contents"`
 
 JES_BASE="$Contents/Resources/Java"
 JES_HOME="$JES_BASE/jes"
@@ -133,11 +134,32 @@ PYTHONPATH="$JES_HOME/python:$JES_BASE/dependencies/python"
 
 
 # Do we have any plugins to load?
+# User plugins:
 
-JESPLUGINDIR="$HOME/Library/Application Support/JES/Plugins"
+JES_USER_PLUGINS="$HOME/Library/Application Support/JES/Plugins"
 
-if test -d "$JESPLUGINDIR"; then
-    for jar in "$JESPLUGINDIR"/*.jar; do
+if test -d "$JES_USER_PLUGINS"; then
+    for jar in "$JES_USER_PLUGINS"/*.jar; do
+        CLASSPATH="$CLASSPATH:$jar"
+    done
+fi
+
+# System plugins:
+
+JES_SYSTEM_PLUGINS="/Library/Application Support/JES/Plugins"
+
+if test -d "$JES_SYSTEM_PLUGINS"; then
+    for jar in "$JES_SYSTEM_PLUGINS"/*.jar; do
+        CLASSPATH="$CLASSPATH:$jar"
+    done
+fi
+
+# Built-in plugins:
+
+JES_BUILTIN_PLUGINS="$JES_HOME/builtin-plugins"
+
+if test -d "$JES_BUILTIN_PLUGINS"; then
+    for jar in "$JES_BUILTIN_PLUGINS"/*.jar; do
         CLASSPATH="$CLASSPATH:$jar"
     done
 fi
@@ -171,7 +193,9 @@ exec "$JAVA" \
     -Dfile.encoding="UTF-8" \
     -Djes.home="$JES_HOME" \
     -Djes.configfile="$JESCONFIG" \
-    -Djes.plugindir="$JESPLUGINDIR" \
+    -Djes.plugins.user="$JES_USER_PLUGINS" \
+    -Djes.plugins.system="$JES_SYSTEM_PLUGINS" \
+    -Djes.plugins.builtin="$JES_BUILTIN_PLUGINS" \
     -Dpython.home="$PYTHONHOME" \
     -Dpython.path="$PYTHONPATH" \
     -Dpython.cachedir="$PYTHONCACHE" \

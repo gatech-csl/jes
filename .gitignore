@@ -1,3 +1,6 @@
+# Files for users
+plugins/
+
 # Compiled Java files
 *.class
 jes/classes.jar
