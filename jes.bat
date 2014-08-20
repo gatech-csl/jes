@@ -58,6 +58,15 @@ set pythonhome=%jes_base%\dependencies\jython
 set pythonpath=%jes_home%\python;%jes_base%\dependencies\python
 
 
+rem Do we have any plugins to load?
+
+set jesplugindir=%APPDATA%\JES\Plugins
+
+if EXIST "%jesplugindir%" (
+    for %%J IN ("%jesplugindir%\*.jar") DO set classpath=!classpath!;%%~fJ
+)
+
+
 rem Where should the Jython cache live?
 
 set pythoncache=%LOCALAPPDATA%\JES\jython-cache
@@ -86,6 +95,7 @@ if NOT DEFINED JES_JAVA_MEMORY (
     -Dfile.encoding="UTF-8" ^
     -Djes.home="%jes_home%" ^
     -Djes.configfile="%jesconfig%" ^
+    -Djes.plugindir="%jesplugindir%" ^
     -Dpython.home="%pythonhome%" ^
     -Dpython.path="%pythonpath%" ^
     -Dpython.cachedir="%pythoncache%" ^

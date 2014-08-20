@@ -11,8 +11,10 @@ JES_HOME="$JES_BASE/jes"
 
 if test -d "$HOME/Library/Application Support"; then
     JESCONFIGDIR="$HOME/Library/Application Support/JES"
+    JESPLUGINDIR="$HOME/Library/Application Support/JES/Plugins"
 else
     JESCONFIGDIR="${XDG_CONFIG_HOME:-$HOME/.config}/jes"
+    JESPLUGINDIR="${XDG_DATA_HOME:-$HOME/.local/share}/jes/plugins"
 fi
 
 if test -f "$JESCONFIGDIR/JESEnvironment.sh"; then
@@ -50,6 +52,15 @@ PYTHONHOME="$JES_BASE/dependencies/jython"
 PYTHONPATH="$JES_HOME/python:$JES_BASE/dependencies/python"
 
 
+# Do we have any plugins to load?
+
+if test -d "$JESPLUGINDIR"; then
+    for jar in "$JESPLUGINDIR"/*.jar; do
+        CLASSPATH="$CLASSPATH:$jar"
+    done
+fi
+
+
 # Where should the Jython cache live?
 
 if test -d "$HOME/Library/Caches"; then
@@ -75,6 +86,7 @@ exec "$JAVA" \
     -Dfile.encoding="UTF-8" \
     -Djes.home="$JES_HOME" \
     -Djes.configfile="$JESCONFIG" \
+    -Djes.plugindir="$JESPLUGINDIR" \
     -Dpython.home="$PYTHONHOME" \
     -Dpython.path="$PYTHONPATH" \
     -Dpython.cachedir="$PYTHONCACHE" \

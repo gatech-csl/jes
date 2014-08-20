@@ -47,6 +47,7 @@ from jes.gui.dialogs.bugreport import bugReportController
 from jes.gui.editor import JESEditor
 from jes.gui.explorers import Explorers
 from jes.gui.helpinfo import buildJESFunctionsMenu, buildJavaAPIMenu
+from jes.gui.plugins import PluginActions
 
 
 MENU_SEPARATOR = '-'
@@ -349,6 +350,7 @@ class JESUI(swing.JFrame, FocusListener):
         statusbar.add(self.docLabel, awt.BorderLayout.WEST)
 
         # Add additional service providers
+        self.pluginActions = PluginActions(self, self.program.pluginInstaller)
         self.explorers = Explorers(self, self.program.interpreter)
 
         # Create the menu bar and menu items
@@ -388,6 +390,9 @@ class JESUI(swing.JFrame, FocusListener):
                 MENU_SEPARATOR,
                 [COMMAND_LOAD,      KeyEvent.VK_L,      CONTROL_KEY],
                 self.program.fileManager.printAction,
+                MENU_SEPARATOR,
+                self.pluginActions.managePlugins,
+                self.pluginActions.installPlugin,
                 MENU_SEPARATOR,
                 [COMMAND_EXIT,      KeyEvent.VK_Q,      CONTROL_KEY]
             ]],

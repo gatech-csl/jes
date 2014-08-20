@@ -36,6 +36,7 @@ from jes.core.interpreter import Interpreter
 from jes.core.interpreter.exceptionrecord import JESExceptionRecord
 from jes.core.interpreter.messages import TAB_ERROR_MESSAGE
 from jes.core.interpreter.watcher import Watcher
+from jes.core.plugins import PluginData, PluginInstaller
 from jes.gui.components.threading import threadsafe
 from jes.gui.dialogs.intro import introController
 from jes.gui.filemanager import FileManager
@@ -60,6 +61,10 @@ class JESProgram:
 
         terp.initialize(self.initializeInterpreter)
         self.varsToHighlight = list(terp.initialNames)
+
+        # Install all the plugins
+        self.pluginData = PluginData()
+        self.pluginInstaller = PluginInstaller(self.pluginData)
 
         # Install the file manager.
         self.fileManager = FileManager()
@@ -230,6 +235,7 @@ class JESProgram:
 
     def closeProgram(self):
         JESConfig.getInstance().writeConfig()
+        self.pluginInstaller.cleanUp()
         System.exit(0)
 
 

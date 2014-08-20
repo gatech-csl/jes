@@ -1,0 +1,6 @@
+This directory contains demo programs, and any media files they need.
+It will be included alongside the plugin .jar file in the .zip file.
+
+If you don't place any files in this directory,
+there will be no demos/ directory in the .zip file.
+(This one doesn't count.)

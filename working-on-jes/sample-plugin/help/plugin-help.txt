@@ -1,0 +1,7 @@
+This directory contains any detailed help files you want to include.
+It will be included alongside the plugin .jar file in the .zip file.
+(You can also put normal *.txt files in the plugin's main directory.)
+
+If you don't place any files in this directory,
+there will be no help/ directory in the .zip file.
+(This one doesn't count.)

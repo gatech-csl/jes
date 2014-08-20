@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+    Most plugins will not need to modify this file,
+    except to change the <project name="whatever"> attribute.
+    You can use the plugin.properties file to set the plugin's metadata,
+    and most of the properties here (if you need to).
+-->
+
+<project name="sample-plugin" basedir="." default="zip"
+    xmlns:if="ant:if" xmlns:unless="ant:unless">
+    <!-- Changing these will break things -->
+    <property name="jes.encoding"           value="UTF-8" />
+    <property name="jes.target-java"        value="1.5" />
+
+    <!-- Load our plugin.properties file -->
+    <loadproperties srcFile="${basedir}/plugin.properties" encoding="${jes.encoding}" />
+
+    <!-- Load a property file of settings -->
+    <condition property="build.properties.exists">
+        <resourceexists>
+            <file file="${basedir}/build.properties" />
+        </resourceexists>
+    </condition>
+
+    <loadproperties srcFile="${basedir}/build.properties" encoding="${jes.encoding}"
+                    if:set="build.properties.exists" />
+
+
+    <!-- Check that everything is in plugin.properties -->
+    <fail unless="plugin.basename">The plugin.basename property is required</fail>
+    <fail unless="plugin.title">The plugin.title property is required</fail>
+    <fail unless="plugin.version">The plugin.version property is required</fail>
+    <fail unless="plugin.description">The plugin.description property is required</fail>
+
+
+    <!-- Some filename definitions -->
+    <property name="contents.jardir"        location="jars" />
+    <property name="contents.java.src"      location="java" />
+    <property name="contents.java.class"    location="classes" />
+    <property name="contents.python"        location="python" />
+    <property name="contents.resources"     location="resources" />
+
+    <property name="extras.demos"           location="demos" />
+    <property name="extras.help"            location="help" />
+
+    <property name="jar.filename"           value="${plugin.basename}.jar" />
+    <property name="zip.basename"           value="${plugin.basename}-${plugin.version}" />
+    <property name="zip.filename"           value="${zip.basename}.zip" />
+
+    <!-- You probably don't need to change anything below here -->
+    <defaultexcludes add="plugin-help.txt" />
+
+    <property name="jar.file"               location="${jar.filename}" />
+    <property name="zip.file"               location="${zip.filename}" />
+
+    <!-- Do these things exist? -->
+    <macrodef name="test-existence">
+        <attribute name="directory-prop" />
+        <attribute name="includes" />
+
+        <sequential>
+            <condition property="@{directory-prop}.exists">
+                <resourcecount when="greater" count="0">
+                    <fileset dir="${@{directory-prop}}" includes="@{includes}" />
+                </resourcecount>
+            </condition>
+        </sequential>
+    </macrodef>
+
+    <test-existence directory-prop="contents.jardir" includes="**/*.jar" />
+    <test-existence directory-prop="contents.java.src" includes="**/*.java" />
+    <test-existence directory-prop="contents.python" includes="**/*.py" />
+    <test-existence directory-prop="contents.resources" includes="**/*" />
+
+    <test-existence directory-prop="extras.demos" includes="**/*" />
+    <test-existence directory-prop="extras.help" includes="**/*" />
+
+    <!-- JAR references -->
+    <fileset id="contents.jars" dir="${contents.jardir}">
+        <include name="*.jar" />
+    </fileset>
+
+    <path id="classpath">
+        <pathelement path="${contents.java.class}" />
+        <fileset refid="contents.jars" />
+    </path>
+
+
+    <!-- The Java code -->
+    <target name="compile"
+        description="Build the Java class files.">
+        <mkdir dir="${contents.java.class}" />
+        <javac srcdir="${contents.java.src}" destdir="${contents.java.class}"
+               source="${jes.target-java}" target="${jes.target-java}"
+               debug="on" encoding="${jes.encoding}"
+               includeantruntime="false">
+            <classpath refid="classpath" />
+        </javac>
+    </target>
+
+    <target name="clean-java"
+        description="Erase the built Java class files.">
+        <delete includeemptydirs="true">
+            <fileset dir="${contents.java.class}" includes="**/*" />
+        </delete>
+    </target>
+
+
+    <!-- The Python code -->
+    <target name="clean-python"
+        description="Remove the cached Python bytecode.">
+        <delete>
+            <fileset dir="${contents.python}" includes="**/*$py.class" />
+        </delete>
+    </target>
+
+
+    <!-- Put it all together -->
+    <property name="jes.description-file" value=".JESDescription.txt" />
+
+    <target name="build" depends="compile"
+        description="Build the JAR.">
+        <echo message="${plugin.description}" file="${basedir}/${jes.description-file}" />
+
+        <jar destfile="${jar.filename}" filesetmanifest="mergewithoutmain">
+            <manifest>
+                <attribute name="JES-Plugin-Title" value="${plugin.title}" />
+                <attribute name="JES-Plugin-Version" value="${plugin.version}" />
+            </manifest>
+
+            <fileset dir="${basedir}" includes="${jes.description-file}" />
+            <fileset dir="${contents.java.class}" includes="**/*.class"
+                     if:set="contents.java.src.exists" />
+            <fileset dir="${contents.python}" includes="**/*.py"
+                     if:set="contents.python.exists" />
+            <fileset dir="${contents.resources}" includes="**/*"
+                     if:set="contents.resources.exists" />
+
+            <zipgroupfileset dir="${contents.jardir}" includes="**/*.jar"
+                             if:set="contents.jardir.exists" />
+        </jar>
+
+        <delete file="${basedir}/${jes.description-file}" />
+    </target>
+
+    <target name="clean-jar"
+        description="Remove the built plugin JAR.">
+        <delete file="${jar.filename}" />
+    </target>
+
+
+    <!-- ZIP it up -->
+    <target name="zip" depends="build"
+        description="Make a ZIP file.">
+        <zip destfile="${zip.filename}">
+            <zipfileset prefix="${zip.basename}" dir="${basedir}">
+                <include name="*.txt" />
+                <include name="${jar.filename}" />
+            </zipfileset>
+
+            <zipfileset prefix="${zip.basename}/demos"
+                dir="${extras.demos}" includes="**/*"
+                if:set="extras.demos.exists" />
+
+            <zipfileset prefix="${zip.basename}/help"
+                dir="${extras.help}" includes="**/*"
+                if:set="extras.help.exists" />
+        </zip>
+    </target>
+
+    <target name="clean-zip"
+        description="Remove the assembled ZIP file.">
+        <delete file="${zip.filename}" />
+    </target>
+
+
+    <!-- Meta-targets -->
+    <target name="clean" depends="clean-java, clean-python, clean-jar, clean-zip"
+        description="Clean ALL THE THINGS!" />
+
+
+    <!-- Debugging the build file -->
+    <target name="antprops"
+        description="Print Ant properties (for working on the build script).">
+        <echoproperties />
+    </target>
+</project>
+

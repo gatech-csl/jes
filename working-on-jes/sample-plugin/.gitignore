@@ -1,0 +1,10 @@
+# Machine-specific files
+build.properties
+
+# Built files
+/*.jar
+/*.zip
+
+# Temporary files
+classes/
+.JESDescription.txt

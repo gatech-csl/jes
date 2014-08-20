@@ -1,0 +1,5 @@
+Put Python source files for your module in here.
+They will be included in the .jar file, and JES will be able to import them.
+(Only .py files will be included!)
+
+If you don't place any .py files in this directory, nothing happens.

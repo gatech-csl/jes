@@ -1,0 +1,5 @@
+Put JAR files needed by your plugin in here.
+They will be included while your plugin's Java code compiles,
+and merged with the resulting plugin JAR.
+
+If you don't place any .jar files in this directory, nothing happens.

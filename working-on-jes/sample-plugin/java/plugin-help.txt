@@ -1,0 +1,4 @@
+Put .java source files for your plugin in here.
+These will be compiled and included in the JAR.
+
+If you don't place any .java files in here, nothing happens.

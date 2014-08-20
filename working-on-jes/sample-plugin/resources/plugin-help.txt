@@ -1,0 +1,5 @@
+Any files you place in this directory will be included in the JAR.
+(You'll need to use the ClassLoader and its API's to load them.)
+
+If you don't place any files in this directory, nothing happens.
+(This one doesn't count.)

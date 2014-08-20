@@ -1,0 +1,52 @@
+JES Plugin Creation Kit
+=======================
+This directory contains everything you need to make your own JES plugin!
+To use it, you need a copy of Apache Ant (http://ant.apache.org/).
+The basic steps are:
+
+1.  Copy this directory tree.
+2.  Edit the `plugin.properties` file and `README.txt`.
+3.  Delete the `python/greetings.py` file, and place your plugin's code,
+    documentation, and other resources in the directories provided.
+4.  Run `ant`.
+5.  Open up JES and install the plugin `.jar` file,
+    or copy it directly into the JES plugin directory for speed.
+6.  Once you have it at a point you like,
+    take the `.zip` file and share it with your friends!
+    (You should also put the plugin code on GitHub.)
+
+All the directories have `plugin-help.txt` files explaining what they do,
+but here's quick summary. For stuff that's part of the plugin:
+
+* `python` is for Python code.
+* `java` is for Java code (just the source `.java` files).
+* `jars` is for JAR files (they will get merged).
+* `resources` is for other stuff that needs to end up in the JAR.
+
+And stuff distributed along with the plugin:
+
+* `demos` is for demo programs, and anything else you want.
+* `help` is for detailed help files.
+* You can also put any `*.txt` file in the plugin base directory
+  (good for things like README's and licenses).
+
+If you don't put things in these directories, they'll be ignored,
+so you don't have to delete them.
+
+
+Licensing
+---------
+The skeleton itself is released under the highly permissive MIT/X11 license.
+The copyright notice is provided in the README.txt file, so make sure you
+include it in your plugin, in addition to your own license file.
+
+If you create a plugin that just contains code for JES programs to use,
+without any reference to JES itself other than being a JES plugin,
+it's (probably) not a derivative work of JES. So, you can release it
+under any license compatible with the components.
+
+However, if your plugin integrates with JES itself (for example, by adding
+new menu items or overriding what happens at program load), it's almost
+definitely a derivative work of JES. You will need to release it under the
+GNU General Public License.
+
