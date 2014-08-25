@@ -99,7 +99,7 @@
     <property name="jes.deps"               location="dependencies" />
     <property name="jes.deps.python"        location="${jes.deps}/python" />
     <property name="jes.deps.jardir"        location="${jes.deps}/jars" />
-    <property name="jes.deps.jmusic.jar"    location="${jes.deps.jardir}/jMusic1.6.4.jar" />
+    <property name="jes.deps.jmusic.jar"    location="${jes.deps.jardir}/jMusic1.7.jar" />
 
     <property name="jes.instruments"        location="${jes.deps}/jmusic-instruments" />
     <property name="jes.instruments.src"    location="${jes.instruments}/java" />

@@ -76,7 +76,10 @@
     </fileset>
 
     <fileset id="jes.release.extras" dir="${basedir}">
-        <include name="demos/**/*.py" />
+        <include name="demos/**/*" />
+        <exclude name="**/*.pybak" />
+        <exclude name="**/*.pylog" />
+        <exclude name="**/*$py.class" />
     </fileset>
 
 
@@ -119,6 +122,12 @@
         <!-- OK, now actually sign them -->
         <mkdir dir="${jes.release.jars}/jes" />
         <mkdir dir="${jes.release.jars}/dependencies/jars" />
+
+        <delete>
+            <fileset dir="${jes.release.jars}">
+                <include name="**/*.jar" />
+            </fileset>
+        </delete>
 
         <signjar destDir="${jes.release.jars}"
             keystore="${signing.keystore}" alias="${signing.key}"
