@@ -1,0 +1,61 @@
+@title@ @release@ for Mac OS X
+============================================================
+@title@ is a development environment designed for [Media Computation][].
+It allows students to use the Python programming language (specifically,
+Jython, which is a version of Python implemented in Java) to manipulate
+images, sounds, and videos.
+
+[Media Computation]: http://mediacomputation.org/
+
+JES is incorporated in "Introduction to Computing and Programming in Python:
+A Multimedia Approach," by Mark Guzdial and Barbara Ericson. Dr. Guzdial
+is the project leader, and the project has been worked on by many people
+over the years.
+
+@title@ is Free Software, made available under the GNU General Public License.
+This means that everyone may use JES, free of charge, and share it with
+anyone. Everyone can also make changes to JES and share those changes.
+You can read the full license information in the "@title@ Copyright.txt" file.
+
+
+Requirements
+------------
+This is the Mac OS X package of @title@. It will work on any Mac OS X
+system, as long as a Java Runtime Environment is installed.
+
+* On OS X 10.6 and below, Java is included in the operating system..
+* On OS X 10.7 and above, Java is no longer included in the operating system.
+  If Java has not already been installed on your computer,
+  you will need to download Java from <https://www.java.com/en/download/>.
+
+For more information about Java on Mac OS X,
+see <https://www.java.com/en/download/faq/java_mac.xml>.
+
+
+Running @title@
+-----------
+In many cases, you can start @title@ simply by double-clicking the
+"@title@" application icon. (You can copy it into your Applications folder,
+if you like.) If you downloaded it from the Internet, it may ask you
+whether or not you want to really want to open it first.
+
+However, if you are running a recent version of Mac OS X, Gatekeeper
+may prevent you from opening @title@, warning you that @title@ was
+not released by a recognized developer, or that it was not downloaded from
+the Mac App Store. To open it, hold Control and click on the "@title@"
+application icon, and select "Open" from the menu. OS X will then ask you
+if you want to open it, and you can select "Open."
+
+(This isn't because @title@ is unsafe, but because it is developed by a
+university professor with many other projects, obtaining a Developer ID
+is too complicated and expensive.)
+
+For more information, see <http://support.apple.com/kb/HT5290>.
+
+
+@title@ Development
+---------------
+@title@'s homepage is on @homepagehost@, at <@homepage@>.
+You can keep track of development, download the latest version,
+report issues, or even contribute your own code to @title@!
+
