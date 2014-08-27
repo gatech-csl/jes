@@ -778,7 +778,7 @@ class JESUI(swing.JFrame, FocusListener):
         if filename == '':
             filename = UNTITLED_FILE_NAME
 
-        self.title = APPLICATION_TITLE % filename
+        self.title = APPLICATION_TITLE % os.path.basename(filename)
 
 ##########################################################################
 # Function name: callTextEditFunction
