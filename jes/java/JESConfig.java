@@ -70,7 +70,7 @@ public class JESConfig {
         defaults.setProperty(CONFIG_WRAPPIXELVALUES,        "0");
         defaults.setProperty(CONFIG_MEDIAPATH,              "");
 
-        defaults.setProperty(CONFIG_MODE,                   "Normal");
+        defaults.setProperty(CONFIG_MODE,                   MODE_BEGINNER);
         defaults.setProperty(CONFIG_SKIN,                   "");
         defaults.setProperty(CONFIG_FONT,                   "12");
         defaults.setProperty(CONFIG_COMMAND_WINDOW_THEME,   "Old JES (Yellow on Black)");
