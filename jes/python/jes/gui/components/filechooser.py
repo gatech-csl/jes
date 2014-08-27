@@ -12,6 +12,28 @@ from java.io import File
 from javax.swing import JFileChooser, JOptionPane
 from javax.swing.filechooser import FileFilter
 
+"""
+I'm just going to add some notes about the JFileChooser under GTK+ here.
+If you're running the GTK+ Look and Feel, it appears Oracle
+cares about you as much as they care about anyone else who uses one of
+their open source projects, which is to say, enough to make it
+technically "work" so that the cost of forking is higher than the cost
+of just keeping on using it, but not enough that it's actually pleasant
+to use.
+
+For example, the GTK+ JFileChooser looks like something out of Windows 3.1.
+To make it worse, the file filters are broken...they put the toString()
+output in the dropdown instead of the description
+(OpenJDK bug: https://bugs.openjdk.java.net/browse/JDK-8029536).
+And if you try to override it by plugging in the Metal UI, it breaks.
+
+The AWT FileDialog displays beautifully under GTK+, but we can't use it
+because its API doesn't expose all the methods we need.
+So, after reading way too much JDK source code trying to find workarounds,
+I've officially given up. You should probably just use Metal.
+"""
+
+
 ### Filtering filenames
 
 class ExtensionFileFilter(FileFilter):

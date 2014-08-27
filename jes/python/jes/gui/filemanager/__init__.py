@@ -179,11 +179,26 @@ class FileManager(object):
     def selectProgramToOpen(self):
         self.fileChooser.dialogTitle = "Open Program"
         self.fileChooser.validator = None
+
+        # Don't leave the current file selected when the dialog box opens.
+        self.fileChooser.selectedFile = None
+
+        # But do navigate to the current file's directory.
+        # (If it was opened from the command line, the file chooser would
+        # still be sitting in the media path.)
+        if self.filename is not None:
+            self.fileChooser.currentDirectory = File(os.path.dirname(self.filename))
+
         return self.fileChooser.chooseFileToOpen(self.parentWindow)
 
     def selectProgramToSave(self):
         self.fileChooser.dialogTitle = "Save Program"
         self.fileChooser.validator = self.validateFileForSave
+
+        # Navigate to the current file's directory. (See above.)
+        if self.filename is not None:
+            self.fileChooser.selectedFile = File(self.filename)
+
         return self.fileChooser.chooseFileToSave(self.parentWindow)
 
     def validateFileForSave(self, filename):

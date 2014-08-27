@@ -527,7 +527,8 @@ class JESUI(swing.JFrame, FocusListener):
         # If these components aren't onscreen right now, they may not pick up
         # on the theme change.
         components = [self.helpDivider, self.htmlBrowserWithHide,
-                      self.watcherDivider, self.watcherWithHide]
+                      self.watcherDivider, self.watcherWithHide,
+                      self.program.fileManager.fileChooser]
         for component in components:
             SwingUtilities.updateComponentTreeUI(component)
 
