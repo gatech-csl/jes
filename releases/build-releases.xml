@@ -181,7 +181,7 @@
         <copy file="${jes.release.linux.readme}" todir="${jes.release.linux.stage}" filtering="on" />
 
         <!-- Tar it all up -->
-        <tar destfile="${jes.release.linux.tarball}" longfile="gnu">
+        <tar destfile="${jes.release.linux.tarball}" longfile="gnu" compression="gzip">
             <tarfileset dir="${jes.release.stage}"
                 includes="${jes.release.linux.basename}/**/*"
                 excludes="${jes.release.linux.basename}/jes.sh" />
