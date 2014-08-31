@@ -6,13 +6,13 @@ Our records of what changed in version 4.3 and earlier are fragmentary.
 
 JES 5.0
 -------
-Release Date: Pending (expected in August 2014)
+Release Date: August 31, 2014
 
 Supervisor: Mark Guzdial
 
 Primary Developer: Matthew Frazier
 
-Contributors: Christine Alvarado, Stephen Bryant
+Contributors: Christine Alvarado, Stephen Bryant, Bill Manaris
 
 ### User Interface Improvements
 
