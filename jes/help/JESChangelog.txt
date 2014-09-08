@@ -3,6 +3,15 @@ JES Changelog
 This changelog only covers changes in JES versions 5.0 and later.
 Our records of what changed in version 4.3 and earlier are fragmentary.
 
+JES 5.01
+--------
+Release Date: Sept 10, 2014
+
+Fixing Developer: Mark Guzdial
+
+Save out files without CR line endings -- replace \r\n with \n.
+
+Had to update jarbuilder so that it would compile on MacOS X until Java 1.6.
 
 JES 5.0
 -------
