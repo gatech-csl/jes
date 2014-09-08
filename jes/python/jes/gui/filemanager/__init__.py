@@ -138,6 +138,7 @@ class FileManager(object):
     def writeFile(self, filename):
         filename = os.path.abspath(os.path.normpath(filename))
         sourceText = self.editor.getText().encode('utf8')
+        sourceText = sourceText.replace("\r\n","\n") # Deal with Windows file endings
 
         try:
             with open(filename, 'w') as fd:
