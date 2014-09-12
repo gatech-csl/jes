@@ -47,7 +47,7 @@
     <!-- Other metadata -->
     <property name="jes.vendor"         value="Georgia Institute of Technology" />
     <property name="jes.copyright"      value="© 2014 Matthew Frazier, Mark Guzdial, and others" />
-    <property name="jes.version"        value="5.0" />
+    <property name="jes.version"        value="5.01" />
     <property name="jes.release"        value="${jes.version}${release}" />
 
     <tstamp>
