@@ -1,6 +1,7 @@
 JES: Jython Environment for Students
 https://github.com/gatech-csl/jes
 
+Version 5.01: © 2014 Mark Guzdial
 Version 5.0: © 2014  Matthew Frazier and Mark Guzdial
 Version 4.3: © 2009  Brian Dorn and Barbara Ericson
 Version 4.2.1: © 2009  William Scharfnorth, Brian Dorn, and Barbara Ericson
@@ -366,4 +367,3 @@ proprietary programs.  If your program is a subroutine library, you may
 consider it more useful to permit linking proprietary applications with the
 library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.
-
