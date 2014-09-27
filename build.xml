@@ -6,10 +6,6 @@
 
 <project name="jes" basedir="." default="build"
     xmlns:if="ant:if" xmlns:unless="ant:unless">
-    <!-- Source code properties -->
-    <property name="jes.encoding"       value="UTF-8" />
-
-
     <!-- Load a property file -->
     <condition property="build.properties.exists">
         <resourceexists>
@@ -17,7 +13,7 @@
         </resourceexists>
     </condition>
 
-    <loadproperties srcFile="${basedir}/build.properties" encoding="${jes.encoding}"
+    <loadproperties srcFile="${basedir}/build.properties" 
                     if:set="build.properties.exists" />
 
 
@@ -28,21 +24,22 @@
     <property name="jes.title"          value="JES" />
     <property name="jes.basename"       value="jes" />
 
-    <condition property="jes.name.original-jes">
+    <!-- <condition property="jes.name.original-jes">
         <equals arg1="${jes.title}" arg2="JES" />
-    </condition>
+    </condition> -->
 
-    <property name="jes.fulltitle"      value="JES - Jython Environment for Students" if:set="jes.name.original-jes" />
-    <property name="jes.fulltitle"      value="${jes.title}" unless:set="jes.name.original-jes" />
-
-    <condition property="jes.name.contain-jes">
+    <!-- <property name="jes.fulltitle"      value="JES - Jython Environment for Students" if:set="jes.name.original-jes" />
+    <property name="jes.fulltitle"      value="${jes.title}" unless:set="jes.name.original-jes" /> -->
+    <property name="jes.fulltitle"      value="JES - Jython Environment for Students"  />
+    <!-- <property name="jes.fulltitle"      value="JES"  /> -->
+    <!-- <condition property="jes.name.contain-jes">
         <and>
             <contains string="${jes.fulltitle}" substring="JES" />
             <contains string="${jes.basename}" substring="jes" />
         </and>
     </condition>
 
-    <fail unless:set="jes.name.contain-jes">Your build's name should include the name "JES."</fail>
+    <fail unless:set="jes.name.contain-jes">Your build's name should include the name "JES."</fail> -->
 
     <!-- Other metadata -->
     <property name="jes.vendor"         value="Georgia Institute of Technology" />
@@ -63,9 +60,9 @@
     <property name="jes.issues.host"    value="GitHub" />
 
     <!-- Filter tokens -->
-    <filter token="basename"            value="${jes.basename}" />
-    <filter token="title"               value="${jes.title}" />
-    <filter token="fulltitle"           value="${jes.fulltitle}" />
+    <filter token="basename"            value="jes" />
+    <filter token="title"               value="JES" />
+    <filter token="fulltitle"           value="JES" />
     <filter token="copyright"           value="${jes.copyright}" />
     <filter token="vendor"              value="${jes.vendor}" />
 
@@ -86,6 +83,7 @@
 
     <!-- Paths to things in the repository -->
     <property name="jes.home"           location="jes" />
+    <property name="jes.encoding"       value="UTF-8" />
 
     <property name="jes.python.src"     location="${jes.home}/python" />
     <property name="jes.java.src"       location="${jes.home}/java" />
@@ -288,4 +286,3 @@
         <echoproperties />
     </target>
 </project>
-
