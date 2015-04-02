@@ -572,7 +572,7 @@ class JESUI(swing.JFrame, FocusListener):
         elif (actionCommand == LOAD_BUTTON_CAPTION) or (actionCommand == COMMAND_LOAD):
             if self.editor.modified:
                 if JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_AUTOSAVEONRUN):
-                    self.program.fileManager.saveFile()
+                    self.program.fileManager.saveAction()
                     self.editor.document.removeErrorHighlighting()
                     self.program.loadFile()
                 elif self.program.fileManager.continueAfterSaving(PROMPT_LOAD_MESSAGE):

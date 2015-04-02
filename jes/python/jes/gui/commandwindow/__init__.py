@@ -15,6 +15,7 @@ from .pane import CommandWindowPane
 from .prompt import promptService
 from jes.gui.components.actions import methodAction
 from jes.gui.components.threading import threadsafe
+from media import * # Debugging
 
 class CommandWindowController(object):
     """
@@ -130,6 +131,8 @@ class CommandWindowController(object):
             text = self._history.commit()
             if cb is not None:
                 cb(text)
+            else:
+                raise Exception("A prompt is None.")
 
     @methodAction(name="Clear command window")
     @threadsafe

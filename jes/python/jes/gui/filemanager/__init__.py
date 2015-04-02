@@ -121,7 +121,7 @@ class FileManager(object):
 
         try:
             with open(filename, 'r') as fd:
-                self.editor.setText(fd.read().decode('utf8', 'replace'))
+                self.editor.setText(fd.read().encode('ascii','replace')) #decode('utf8', 'replace'))
         except EnvironmentError, exc:
             self.showErrorMessage(
                 "Error opening file", "Could not open the file", filename, exc

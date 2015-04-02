@@ -26,7 +26,7 @@ class Interpreter(object):
         self.lock = Lock()
         self.isRunning = False
         self.runningThread = None
-        self._threadLaunched = Semaphore(0)
+        #self._threadLaunched = Semaphore(0)
 
         self.debugger = Debugger(self)
         self.debugMode = False
@@ -124,7 +124,7 @@ class Interpreter(object):
         lock before returning. This is used to serialize execution.
         """
         thread.start()
-        self._threadLaunched.acquire()
+        #self._threadLaunched.acquire()
         return thread
 
     def stopThread(self):
@@ -147,7 +147,7 @@ class InterpreterThread(Thread):
 
         with terp.lock:
             terp.runningThread = self
-            terp._threadLaunched.release()
+            #terp._threadLaunched.release()
 
             excRecord = None
             terp.namespace.update(self.extraVars)
