@@ -212,6 +212,10 @@ public class SoundExplorer implements MouseMotionListener, ActionListener,
 
         //display everything
         createWindow();
+        //in sounds with less than 640 samples, this value would be zero causing errors
+        if (framesPerPixel < 1) {
+           handleFramesPerPixel(1);
+       }
     }
 
     /**

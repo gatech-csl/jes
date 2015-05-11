@@ -796,7 +796,7 @@ public class SimpleSound {
     public void playAtRateInRange(float rate, int startFrame,
                                   int endFrame)
     throws SoundException {
-        playAtRateInRange(rate, startFrame, endFrame, false);
+        playAtRateInRange(rate, startFrame, endFrame, true);
     }
 
     /**
@@ -941,9 +941,9 @@ public class SimpleSound {
          until the loop begins in which data is actually written out.
          see Playback#run()
          */
-        while (!playback.getPlaying()) {
+       /* while (!playback.getPlaying()) {
             ;
-        }
+        } */ 
 
         setBuffer(oldBuffer);//restore the buffer
         setAudioFileFormat(oldAFF);//restore the file format
