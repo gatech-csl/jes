@@ -172,6 +172,8 @@ class InterpreterThread(Thread):
 
     def tryStop(self):
         self.stopSignal = True
+        from jes.gui.commandwindow.prompt import promptService
+        promptService.commandWindow.cancelPrompt()
         self.stop()
 
 

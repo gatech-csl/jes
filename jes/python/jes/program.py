@@ -28,6 +28,7 @@ import JavaMusic
 from code import compile_command
 from tokenize import TokenError
 from java.lang import System
+from java.lang import Thread 
 from javax.swing import JOptionPane
 from jes.bridge.replbuffer import REPLBuffer
 from jes.bridge.terpactions import addInterpreterActions
@@ -143,7 +144,10 @@ class JESProgram:
 
     def initializeInterpreter(self, terp):
         startup = JESResources.getPathTo('python/jes/user-startup.py')
-        terp.runFile(startup, False)
+        #terp.runFile(startup, False)
+        #Henry Rachootin did this. This way, everything will be loaded before we start using it.
+        startupThread = terp.runFile(startup, False)
+        startupThread.join()
 
 ##########################################################################
 # Function name: loadFile
