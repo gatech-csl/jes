@@ -24,9 +24,10 @@ class PromptService(object):
             raise RuntimeError("Command window hasn't registered itself")
         if prompt is None:
             prompt = ''
-
-        self.commandWindow.prompt(prompt, 'standard-output', self.respond, 'standard-input')
+        #def prompt(self,         promptText, promptStyle,      responseCallback, responseStyle, historyGroup=None):
+        self.commandWindow.prompt(prompt,    'standard-output', self.respond,     'standard-input')
         self.semaphore.acquire()
+        
 
         if self.response is None:
             raise KeyboardInterrupt

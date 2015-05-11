@@ -80,6 +80,8 @@ import JavaMusic
 ###################################
 
 import java.awt.Font
+import java.awt.event.KeyEvent as keyEvent
+import java.awt.event.MouseEvent as mouseEvent
 import java.awt as awt
 import javax.swing as swing
 import java.util
@@ -115,6 +117,46 @@ _lastFilePath = ""
 true = 1
 false = 0
 
+def getMouseX(picture):
+    return picture.getPictureFrame().mouse.getMouseX()
+    
+def getMouseY(picture):
+    return picture.getPictureFrame().mouse.getMouseY()
+    
+def getMousePosition(picture):
+    return (getMouseX(picture),getMouseY(picture))
+    
+def isLeftMouseDown(picture):
+    return picture.getPictureFrame().mouse.isLeftMouseDown()
+
+def getKeyCode(keyName):
+    return getattr(keyEvent, "VK_" + keyName.upper())
+    
+def isKeyDown(picture, code):
+    return picture.getPictureFrame().keyboard.isKeyDown(code)
+    
+def hasKeyEvent(picture):
+    return picture.getPictureFrame().keyboard.hasNext()
+    
+def hasMouseEvent(picture):
+    return picture.getPictureFrame().mouse.hasNext()
+    
+def getKeyEvent(picture):
+    event = picture.getPictureFrame().keyboard.getKeyEvent()
+    if event == None:
+        return None
+    else:
+        pressed = event.getID() == keyEvent.KEY_PRESSED
+        key = event.getKeyCode()
+        char = event.getKeyChar()
+        return (key,pressed,char)
+
+def getMouseEvent(picture):
+    event = picture.getPictureFrame().mouse.getMouseEvent()
+    if event == None:
+        return None
+    else:
+        return (event.getButton(),event.getID()==mouseEvent.MOUSE_PRESSED,event.getX(),event.getY())
 
 def setMediaPath(file=None):
     global mediaFolder
@@ -1436,6 +1478,7 @@ def writeAVI(movie, destPath, framesPerSec=16):
         raise ValueError
     movie.writeAVI(destPath, framesPerSec)
 
+    
 
 def makeMovie():
     return Movie()

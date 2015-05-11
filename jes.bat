@@ -120,4 +120,3 @@ if NOT DEFINED JES_JAVA_MEMORY (
     -Dpython.cachedir="%pythoncache%" ^
     %JES_JAVA_MEMORY% %JES_JAVA_OPTIONS% ^
     JESstartup %*
-

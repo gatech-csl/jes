@@ -69,6 +69,7 @@ class Interpreter(object):
 
         # Call the function.
         initCode(self)
+        
 
         # Capture the variables from the function.
         # (Lock to ensure that all the threads launched by initCode
@@ -172,6 +173,25 @@ class InterpreterThread(Thread):
 
     def tryStop(self):
         self.stopSignal = True
+        #media.py got us into this mess, so a dirty hack can get us out.
+        #This is the opposite of extensible, but honestly I just want to patch out this one bug
+        #Basically, if you try to close a thread while it is blocking, waiting for a prompt,
+        #it never is reset, and throws an error until JES is restart.
+        #Rather than fixing the problem, I'm just cancelling the prompt before it can
+        #become a problem.
+        #I think the correct solution lies with the people who make Jython.
+        
+        
+        #Ideally there would be some way for a Java Exception to be passed to python.
+        #Here, it would be an interrupt exception being passed to us.
+        #If such a thing were possible, we could just put the blocking part of the prompt function
+        #into a try except block, which would call cancelPrompt when it was interrupted.
+        #Unfortunately there is no way to figure out whether the thread you are waiting on no longer
+        #exists, and if it throws an InterruptedException it just halts some Java thread which was
+        #started using the reflective language.
+        from jes.gui.commandwindow.prompt import promptService
+        promptService.commandWindow.cancelPrompt()
+        
         self.stop()
 
 

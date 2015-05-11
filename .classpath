@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="dependencies/jmusic-instruments/java"/>
+	<classpathentry kind="src" path="jes/java"/>
+	<classpathentry kind="lib" path="dependencies/jars/AVIDemo.jar"/>
+	<classpathentry kind="lib" path="dependencies/jars/imgscalr-lib-4.2.jar"/>
+	<classpathentry kind="lib" path="dependencies/jars/javaosc-core.jar"/>
+	<classpathentry kind="lib" path="dependencies/jars/jl1.0.jar"/>
+	<classpathentry kind="lib" path="dependencies/jars/jmf.jar"/>
+	<classpathentry kind="lib" path="dependencies/jars/jMusic1.7.jar"/>
+	<classpathentry kind="lib" path="dependencies/jars/jsyn.jar"/>
+	<classpathentry kind="lib" path="dependencies/jars/jython-2.5.3.jar"/>
+	<classpathentry kind="lib" path="releases/resources/macosx/jarbundler-2.3.1.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

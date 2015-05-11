@@ -1,6 +1,140 @@
 <html><body>
 API Documentation for functions in media.py
 _
+getMouseX|<b>getMouseX</b>(picture)<br>
+<font color=blue>picture</font>: the picture which you want the mouse position for.<br>
+Returns the x coordinate of the mouse on a picture. The picture must be shown at the time of calling this function.<br>
+<b>Examples:</b>
+<pre>
+#print the x-position of the mouse on a new picture
+p = makeEmptyPicture(600,600)
+show(p)
+print(getMouseX(p))
+</pre>
+_
+getMouseY|<b>getMouseY</b>(picture)<br>
+<font color=blue>picture</font>: the picture which you want the mouse position for.<br>
+Returns the y coordinate of the mouse on a picture. The picture must be shown at the time of calling this function.<br>
+<b>Examples:</b>
+<pre>
+#print the y-position of the mouse on a new picture
+p = makeEmptyPicture(600,600)
+show(p)
+print(getMouseY(p))
+</pre>
+_
+getMousePosition|<b>getMousePosition</b>(picture)<br>
+<font color=blue>picture</font>: the picture which you want the mouse position for.<br>
+Returns the (x,y) coordinates of the mouse on a picture, as a 2-tuple. The picture must be shown at the time of calling this function.<br>
+<b>Examples:</b>
+<pre>
+#print the position of the mouse on a new picture
+p = makeEmptyPicture(600,600)
+show(p)
+print(getMousePosition(p))
+</pre>
+_
+isLeftMouseDown|<b>isLeftMouseDown</b>(picture)<br>
+<font color=blue>picture</font>: the picture which you want the mouse information for.<br>
+Returns whether or not the left mouse is currently held on the picture. The picture must be shown at the time of calling this function.<br>
+<b>Examples:</b>
+<pre>
+#print whether left mouse is held on a new picture
+p = makeEmptyPicture(600,600)
+show(p)
+print(isLeftMouseDown(p))
+</pre>
+_
+isKeyDown|<b>isKeyDown</b>(picture, code)<br>
+<font color=blue>picture</font>: the picture which you want the key information for.<br>
+<font color=blue>code</font>: the code for the key you want to query. This code can be obtained using <b>getKeyCode("KEY&#95;NAME")</b>.<br>
+Returns whether or not a key is currently held on the picture: true if the key is held, false if not. The picture must be shown at the time of calling this function.<br>
+<b>Examples:</b>
+<pre>
+#print whether the E key is held on a new picture
+p = makeEmptyPicture(600,600)
+code = getKeyCode("E")
+show(p)
+print(isKeyDown(p,code))
+</pre>
+_
+getKeyCode|<b>getKeyCode</b>(keyName)<br>
+<font color=blue>keyName</font>: the name of the key you want the code for, as a string<br>
+Returns a number which represents the name of a key on the keyboard. This number may not be consistent from computer to computer, so it is best to query it on launch, rather than hardcode a number.<br>
+<a href="http://docs.oracle.com/javase/7/docs/api/java/awt/event/KeyEvent.html">This page lists all the names of the keys.</a> They all start with VK&#95;, but don't include the VK&#95; part of the name, that is handled automatically. For "normal" (letter) keys, this means you can just use "E" or "V" or "W". For more complex keys, you may want to look it up. For example the code for left shift is "LSHIFT" and the code for numpad asterisk is "MULTIPLY".<br>
+<b>Examples:</b>
+<pre>
+#print the keyCode for the E key
+print(getKeyCode("E")) #prints a number representing the E key.
+</pre>
+_
+hasKeyEvent|<b>hasKeyEvent</b>(picture)<br>
+<font color=blue>picture</font>: the picture which you want the key information for.<br>
+Returns whether or not there are any key events ready to be read using the <b>getKeyEvent(picture)</b> function. Returns true if there are, and false if there aren't. The picture must be shown at the time of calling this function.<br>
+<b>Examples:</b>
+<pre>
+#print all the key events currently on a picture, in the order that they happened.
+p=makeEmptyPicture(600,600)
+show(p)
+time.sleep(10) #SPAM THE KEYBOARD, GENERATE SOME INPUT
+while(hasKeyEvent(p)):
+    print(getKeyEvent(p))
+</pre>
+_
+getKeyEvent|<b>getKeyEvent</b>(picture)<br>
+<font color=blue>picture</font>: the picture which you want the key information for.<br>
+Returns a tuple representing a key event on a picture. Successive calls to this function will return events in the order they happened. Each event will only be returned once. If there are not events to return, this function returns <b>None</b>. The returned tuple is formatted as follows:<br>
+<pre>
+(keycode,pressed,char)
+keycode: a numeric code representing the key of the event. It will line up with the codes given by <b>getKeyCode</b>.
+pressed: true if the key was pressed, false if it was released
+char: a character representing the event. The R key will give "r". If shift is held, the R key will give "R". Many keys will give nonsense characters, like LSHIFT or LCONTROL.
+</pre><br>
+<b>PLEASE NOTE: ONLY 1000 EVENTS WILL BE STORED. DON'T WAIT TOO LONG BEFORE READING THE EVENTS, OR YOU WILL LOSE SOME!</b><br>
+<b>Examples:</b>
+<pre>
+#print all the key events currently on a picture, in the order that they happened.
+p=makeEmptyPicture(600,600)
+show(p)
+time.sleep(10) #SPAM THE KEYBOARD, GENERATE SOME INPUT
+while(hasKeyEvent(p)):
+    print(getKeyEvent(p))
+</pre>
+_
+hasMouseEvent|<b>hasMouseEvent</b>(picture)<br>
+<font color=blue>picture</font>: the picture which you want the mouse information for.<br>
+Returns whether or not there are any mouse events ready to be read using the <b>getMouseEvent(picture)</b> function. Returns true if there are, and false if there aren't. The picture must be shown at the time of calling this function.<br>
+<b>Examples:</b>
+<pre>
+#print all the mouse events currently on a picture, in the order that they happened.
+p=makeEmptyPicture(600,600)
+show(p)
+time.sleep(10) #SPAM THE MOUSE, GENERATE SOME INPUT
+while(hasMouseEvent(p)):
+    print(getMouseEvent(p))
+</pre>
+_
+getMouseEvent|<b>getMouseEvent</b>(picture)<br>
+<font color=blue>picture</font>: the picture which you want the mouse information for.<br>
+Returns a tuple representing a mouse event on a picture. Successive calls to this function will return events in the order they happened. Each event will only be returned once. If there are not events to return, this function returns <b>None</b>. The returned tuple is formatted as follows:<br>
+<pre>
+(button,pressed,x,y)
+button: the mouse button which caused the event. 1 is left mouse, right mouse and middle mouse are each either 2 or 3.
+pressed: true if the button was pressed, false if it was released
+x: the x-coordinate of the mouse when the event happened. 
+y: the y-coordinate of the mouse when the event happened. 
+</pre><br>
+<b>PLEASE NOTE: ONLY 1000 EVENTS WILL BE STORED. DON'T WAIT TOO LONG BEFORE READING THE EVENTS, OR YOU WILL LOSE SOME!</b><br>
+<b>Examples:</b>
+<pre>
+#print all the mouse events currently on a picture, in the order that they happened.
+p=makeEmptyPicture(600,600)
+show(p)
+time.sleep(10) #SPAM THE MOUSE, GENERATE SOME INPUT
+while(hasMouseEvent(p)):
+    print(getMouseEvent(p))
+</pre>
+_
 addArc|<b>addArc</b>(picture, startX, startY, width, height, start, angle[, color]):<br>
 <font color=blue>picture</font>: the picture you want to draw the arc on<br>
 <font color=blue>startX</font>: the x-coordinate of the center of the arc<br>

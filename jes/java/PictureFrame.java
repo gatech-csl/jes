@@ -1,5 +1,7 @@
+import input.KeyInput;
+import input.MouseInput;
+
 import javax.swing.*;
-import java.awt.*;
 
 /**
  * Class that holds a digital picture and displays it.
@@ -30,6 +32,11 @@ public class PictureFrame {
      * Digital Picture to display
      */
     private DigitalPicture picture;
+    
+    //input manager objects (listeners, but with some extra methods added to make them not look like listeners from the students point of view)
+    //Henry Rachootin
+    public MouseInput mouse = new MouseInput();
+    public KeyInput keyboard = new KeyInput();
 
     ///////////////// constructors ////////////////////////
 
@@ -161,6 +168,12 @@ public class PictureFrame {
 
         // pack the frame (set the size to as big as it needs to be)
         frame.pack();
+        
+        //add mouse listeners and key listeners.
+        //Henry Rachootin
+        label.addMouseListener(mouse);
+        label.addMouseMotionListener(mouse);
+        frame.addKeyListener(keyboard);
 
         // make the frame visible
         frame.setVisible(true);

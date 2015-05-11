@@ -33,7 +33,9 @@ JES_API_SECTIONS = [
     ('Sound', ['blockingPlay', 'duplicateSound', 'getDuration', 'getLength', 'getNumSamples', 'getSampleObjectAt', 'getSamples', 'getSampleValue', 'getSampleValueAt',
                'getSamplingRate', 'getSound', 'makeEmptySound', 'makeEmptySoundBySeconds', 'makeSound', 'play', 'playNote',
                #           'playInRange', 'blockingPlayInRange', 'playAtRateInRange', 'blockingPlayAtRateInRange',
-               'setSampleValue', 'setSampleValueAt', 'stopPlaying', 'writeSoundTo', 'openSoundTool', 'explore'])]
+               'setSampleValue', 'setSampleValueAt', 'stopPlaying', 'writeSoundTo', 'openSoundTool', 'explore']),
+    ('Keyboard/Mouse Input', ['getMouseX', 'getMouseY', 'getMousePosition', 'isLeftMouseDown','getKeyCode',
+               'isKeyDown', 'hasKeyEvent', 'hasMouseEvent','getMouseEvent','getKeyEvent'])]
 
 
 def buildJESFunctionsMenu(action):
