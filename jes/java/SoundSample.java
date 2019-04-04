@@ -14,6 +14,67 @@ public class SoundSample {
     /** the frame number of this sample in the buffer */
     private int frameNumber = 0;
 
+
+    ///////////////////// configuration (wraparound) //////////////////////////////////
+    private static boolean wrapLevels = false;
+
+    /**
+     * Indicates whether levels outside the range (-32768, 32767) are clamped
+     * or wrapped around (saturating or modular arithmetic).
+     *
+     * @return False to clamp levels, true to modulo them.
+     */
+    public static boolean getWrapLevels () {
+        return wrapLevels;
+    }
+
+    /**
+     * Changes Sample's behavior for dealing with levels outside the range
+     * (-32768, 32767).
+     *
+     * @param wrap If true, values will be wrapped (modular arithmetic).
+     * If false, values will be clamped (saturating arithmetic).
+     */
+    public static void setWrapLevels (boolean wrap) {
+        wrapLevels = wrap;
+    }
+    
+    /**
+     * Round and correct a color level to be within (-32768, 32767),
+     * according to the current wrapLevels setting.
+     *
+     * @param level The user-provided level.
+     * @return A value within (-32768, 32767).
+     */
+    public static int correctLevel (double level) {
+        return correctLevel((int) Math.round(level));
+    }
+
+    /**
+     * Correct a sample level to be within (-32768, 32767),
+     * according to the current wrapLevels setting.
+     *
+     * @param level The user-provided level.
+     * @return A value within (-32768, 32767).
+     */
+    public static int correctLevel (int level) {
+        if (wrapLevels) {
+            if (level < 0) {
+                return -1*((-1*level) % 32768);
+            } 
+            else if (level > 0) {
+                return level % 32767;
+            }
+        } 
+        else if (level < -32768) {
+            return 0;
+        } 
+        else if (level > 32767) {
+            return 32767;
+        } 
+        return level;
+    }
+
     ///////////////////// Constructors //////////////////////////////////
 
     /**

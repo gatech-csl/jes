@@ -1,6 +1,6 @@
 import unittest
-import Sound
 import SimpleSound
+import Sound
 import os.path
 import javax.sound.sampled.AudioFileFormat as AudioFileFormat
 import javax.sound.sampled.AudioFileFormat.Type as AudioFileFormatType

@@ -31,12 +31,15 @@ def debugJES():
 
 import JESVersion
 from java.lang import System
+from java.lang import Runtime
 from jes.util.interactive import SystemMessage
 
 if System.getProperty('os.name').find('Mac') != -1:
     quit = exit = SystemMessage('Press Command + Q or select "Exit" from the "File" menu to exit JES')
 else:
     quit = exit = SystemMessage('Press Ctrl + Q or select "Exit" from the "File" menu to exit JES')
+
+
 
 version = SystemMessage(JESVersion.getMessage())
 
