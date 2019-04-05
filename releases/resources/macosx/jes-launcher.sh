@@ -2,7 +2,7 @@
 
 ##################################################################################
 #                                                                                #
-# jes-launcher.sh                                                                #
+# jes.sh                                                                #
 #                                                                                #
 # A shell script for launching JES on Mac OS X.                                  #
 # Part of it is based on Tobias Fischer's Universal Java Application Stub,       #
@@ -57,12 +57,11 @@ done
 
 ContentsMacOS=`dirname "$PRG"`
 Contents=`dirname "$ContentsMacOS"`
-AppBundle=`dirname "$Contents"`
 
-JES_BASE="$Contents/Resources/Java"
+JES_BASE="$(dirname $(readlink -f $0))."
 JES_HOME="$JES_BASE/jes"
 
-InfoPlistFile="$Contents/Info.plist"
+InfoPlistFile="$ContentsMacOS/Info.plist"
 
 # read the program name from CFBundleName
 CFBundleName=`/usr/libexec/PlistBuddy -c "print :CFBundleName" ${InfoPlistFile}`
@@ -91,17 +90,10 @@ elif [ -n "$JAVA_HOME" ]; then
     JAVA="$JAVA_HOME/bin/java"
 
 # otherwise check "/usr/libexec/java_home" symlinks
-elif [ -x /usr/libexec/java_home ]; then
-    JAVA="`/usr/libexec/java_home`/bin/java"
-
-# otherwise check Java standard symlink (old Apple Java)
-elif test -h /Library/Java/Home; then
-    JAVA="/Library/Java/Home/bin/java"
-
-# fallback: public JRE plugin (Oracle Java)
 else
-    JAVA="/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home/bin/java"
+    JAVA="`/usr/libexec/java_home  -v 1.8`/bin/java"
 fi
+
 
 
 # ...Did we find one?
@@ -120,6 +112,7 @@ fi
 JARS="$JES_BASE/dependencies/jars"
 
 CLASSPATH="$JES_HOME/classes.jar"
+
 
 for jar in "$JARS"/*.jar; do
     CLASSPATH="$CLASSPATH:$jar"
@@ -188,7 +181,7 @@ export CFProcessPath="$0"
 
 exec "$JAVA" \
     -classpath "$CLASSPATH" \
-    -Xdock:icon="$CONTENTS/Resources/${CFBundleIconFile}" \
+    -Xdock:icon="$ContentsMacOS/${CFBundleIconFile}" \
     -Xdock:name="${CFBundleName}" \
     -Dfile.encoding="UTF-8" \
     -Djes.home="$JES_HOME" \
@@ -200,6 +193,6 @@ exec "$JAVA" \
     -Dpython.path="$PYTHONPATH" \
     -Dpython.cachedir="$PYTHONCACHE" \
     -Dapple.laf.useScreenMenuBar=true \
-    ${JES_JAVA_MEMORY:--Xmx512m} ${JES_JAVA_OPTIONS} \
+    ${JES_JAVA_MEMORY:--Xmx1024m} ${JES_JAVA_OPTIONS} \
     JESstartup "$@"
 

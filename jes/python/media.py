@@ -98,6 +98,7 @@ import Samples
 import MoviePlayer
 import MovieWriter
 import FileChooser
+import random
 
 from jes.tools.framesequencer import FrameSequencerTool
 
@@ -176,9 +177,21 @@ setLibPath = addLibPath
 # Global sound functions
 ##
 
+def samplesToSound(samples, maxIndex=100):
+    # Find maxX
+    maxIndex = max([getIndex(s) for s in samples])
+    newSound = makeEmptySound(maxIndex + 1,
+                              int(getSamplingRate(samples[0].getSound())))
+    for s in samples:
+        x = getIndex(s)
+        setSampleValueAt(newSound, x, getSampleValue(s))
+    return newSound
 
-def makeSound(filename):
+
+def makeSound(filename, maxIndex=100):
     global mediaFolder
+    if not isinstance(filename, str):
+        return samplesToSound(filename, maxIndex=maxIndex)
     if not os.path.isabs(filename):
         filename = mediaFolder + filename
     if not os.path.isfile(filename):
@@ -199,10 +212,6 @@ def makeEmptySound(numSamples, samplingRate=Sound.SAMPLE_RATE):
         print "makeEmptySound(numSamples[, samplingRate]): Created sound must be less than 600 seconds"
         raise ValueError
     return Sound(numSamples, samplingRate)
-#    if size > 600:
-#        print "makeEmptySound(size): size must be 600 seconds or less"
-#        raise ValueError
-#    return Sound(size * Sound.SAMPLE_RATE)
 
 # Brian O (5 May 2008): Added method for creating sound by duration
 
@@ -431,6 +440,18 @@ def writeSoundTo(sound, filename):
         raise ValueError
     sound.writeToFile(filename)
 
+
+def randomSamples(someSound, number):
+    samplelist = []
+    samples = getSamples(someSound)
+    for count in range(number):
+        samplelist.append(random.choice(samples))
+    explore(samplesToSound(samplelist))
+
+
+def getIndex(sample):
+    return int(str(sample).split()[2])
+
 ##
 # Globals for styled text
 ##
@@ -588,8 +609,31 @@ cyan = Color(0, 255, 255)
 ##
 
 
-def makePicture(filename):
+def randomPixels(somePic, number):
+    pixellist = []
+    pixels = getPixels(somePic)
+    for count in range(number):
+        pixellist.append(random.choice(pixels))
+    explore(pixelsToPicture(pixellist))
+
+
+def pixelsToPicture(pixels, defaultColor=white, maxX=100, maxY=100):
+    # Find maxX
+    maxX = max([getX(p) for p in pixels])
+    # find maxY
+    maxY = max([getY(p) for p in pixels])
+    newpic = makeEmptyPicture(maxX + 1, maxY + 1, defaultColor)
+    for pixel in pixels:
+        x = getX(pixel)
+        y = getY(pixel)
+        setColor(getPixel(newpic, x, y), getColor(pixel))
+    return newpic
+
+
+def makePicture(filename, defaultColor=white):
     global mediaFolder
+    if not isinstance(filename, str):
+        return pixelsToPicture(filename, defaultColor=defaultColor)
     if not os.path.isabs(filename):
         filename = mediaFolder + filename
     if not os.path.isfile(filename):
