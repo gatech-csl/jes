@@ -1,0 +1,7 @@
+Welcome to JES @version@!
+
+JES - The Jython Environment for Students:
+Inside this Software Suite, you will find all the tools you need to make pictures, audio, and video using the Jython language.
+
+Good luck and have fun,
+The JES Team

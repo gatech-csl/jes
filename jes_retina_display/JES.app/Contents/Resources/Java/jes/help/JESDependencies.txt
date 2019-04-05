@@ -1,0 +1,250 @@
+JES version 5.0 Included Software Licenses
+==========================================
+JES includes many third-party software components, which are released
+under varying Free Software or redistributable licenses.
+
+Free Software:
+
+* Jython 2.5.3 (Python Software Foundation License v2)
+* Blinker 1.3 (MIT/X11 License)
+* Jython Music Libraries (GNU General Public License v2+)
+* JMusic 1.7 (GNU General Public License v2+)
+* JavaZoom JLayer 1.0 (GNU Library General Public License v2+)
+* AVIDemo (Creative Commons 3.0-BY License)
+* imgscalr 4.2 * (Apache 2)
+* JavaOSC *
+
+Non-Free Software (but still legally redistributable with JES):
+
+* Java Media Framework
+* jSyn *
+
+(Dependencies marked * are only required by the Jython Music libraries.)
+
+
+Jython 2.5.3
+------------
+Website: http://www.jython.org/
+
+Usage: JES uses this to interpret Python programs.
+
+Files:
+
+* dependencies/jars/jython-2.5.3.jar
+* dependencies/jython
+
+Copyright © 2001-2011 Python Software Foundation; All Rights Reserved.
+
+Released under the Python Software License version 2 (Free Software).
+
+Consult dependencies/jython/LICENSE.txt for full licensing information.
+
+
+Blinker 1.3
+-----------
+Website: https://github.com/jek/blinker
+
+Usage: JES uses this to connect different parts of the Python code together.
+
+Files:
+
+* dependencies/python/blinker
+
+Copyright © The Blinker authors and contributors <see dependencies/python/blinker/AUTHORS>.
+
+Released under the MIT/X11 license (Free Software).
+
+Consult dependencies/python/blinker/LICENSE for full licensing information.
+
+
+Jython Music Libraries
+----------------------
+Website: http://www.jythonmusic.org/
+
+Usage: JES provides these so students can use the included libraries,
+specifically for following the exercises in "Making Music with Computers"
+by Bill Manaris.
+
+Files:
+
+* jes/python/music.py, midi.py, image.py, gui.py, osc.py, timer.py, zipf.py
+
+Copyright (C) 2014 Bill Manaris, Nora Grossman, and Kenneth Hanson
+
+Jython Music is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 2 of the License, or
+(at your option) any later version.
+
+Jython Music is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Jython Music.  If not, see <http://www.gnu.org/licenses/>.
+
+
+JMusic 1.7
+----------
+Website: http://explodingart.com/jmusic/index.html
+
+Usage: JES provides this so students can use it to synthesize music.
+It is also a dependency of the Jython Music libraries.
+
+Files:
+
+* dependencies/jars/jMusic1.7.jar
+* dependencies/jars/jmusic-instruments.jar
+* dependencies/jmusic-instruments
+
+Copyright © 2000-2009 Andrew Sorensen & Andrew Brown,
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or any
+later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+Consult jes/help/JESCopyright.txt for full licensing information.
+
+
+JavaZoom JLayer 1.0
+-------------------
+Website: http://www.javazoom.net/javalayer/javalayer.html
+
+Usage: JES uses this to convert MP3 files.
+
+Files:
+
+* dependencies/jars/jl1.0.jar
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU Library General Public License as published
+by the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Library General Public License for more details.
+
+You should have received a copy of the GNU Library General Public
+license along with this program; if not, write to the Free Software
+Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+
+AVIDemo
+-------
+Website: http://www.randelshofer.ch/blog/2008/08/writing-avi-videos-in-pure-java/
+
+Usage: JES uses this to write AVI files.
+
+Files:
+
+* dependencies/jars/AVIDemo.jar
+
+Copyright © 2008 Werner Randelshofer.
+
+Released under the Creative Commons Attribution 3.0 license (Free Software).
+
+Consult http://creativecommons.org/licenses/by/3.0/ for full licensing information.
+
+
+imgscalr
+--------
+Website: http://www.thebuzzmedia.com/software/imgscalr-java-image-scaling-library/
+
+Usage: The Jython Music GUI library uses this to resize images.
+
+Files:
+
+* dependencies/jars/imgscalr-lib-4.2.jar
+
+(C) 2011 The Buzz Media, LLC.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+
+JavaOSC
+-------
+Website: http://www.illposed.com/software/javaosc.html
+
+Usage: The Jython Music OSC library uses this to communicate with musical instruments.
+
+Files:
+
+* dependencies/jars/javaosc-core.jar
+
+Copyright (c) 2002-2014, Chandrasekhar Ramakrishnan / Illposed Software
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.
+
+* Neither the name of the {organization} nor the names of its
+contributors may be used to endorse or promote products derived from
+this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+Java Media Framework
+--------------------
+Website: http://www.oracle.com/technetwork/java/javase/tech/index-jsp-140239.html
+
+Usage: JES uses this to synthesize movies from images.
+
+Files:
+
+* dependencies/jars/jmf.jar
+
+Released under the Oracle Binary Code License Agreement
+for Java SE (Non-Free Software).
+
+Consult http://www.oracle.com/technetwork/java/javase/downloads/java-se-archive-license-1382604.html
+for full licensing information.
+
+
+jSyn
+----
+Website: http://www.softsynth.com/jsyn/
+
+Usage: The Jython Music library uses this to play audio samples as instruments.
+
+Files:
+
+* dependencies/jars/jsyn.jar
+
+Distributed by special permission from Phil Burk.
+

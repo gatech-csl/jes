@@ -1,0 +1,2 @@
+The plistlib.py module was backported from CPython 2.6.
+All other modules are as in the original distribution.

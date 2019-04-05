@@ -1,0 +1,61 @@
+<html>
+<head>
+<title>JES Help</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<a name="top"></a><a href="../JESHelp/0_Table_of_Contents.html">Table of Contents</a>
+&gt; <a href="../JESHelp/4_Understanding_Sound.html">Understanding Sound in JES
+</a> &gt; Sound Objects in JES
+<hr size="1">
+<table width="80%" border="0" cellspacing="0" cellpadding="5">
+  <tr>
+    <td bgcolor="#dddddd" height="107">
+      <b>Sound Objects in JES</b>
+<br>
+       <br>
+      To understand how to work with sound in JES, you must first understand the objects (or encodings) that represent sounds. <br>
+      <br>
+      You can imagine that each <b>sound</b> is made up of a collection of <b>samples</b>, which is made up of <b>sample</b> 0, sample 1, sample 2, etc. </td>
+  </tr>
+  <tr>
+    <td>
+      <table width="100%" border="0" cellspacing="0" cellpadding="5">
+        <tr>
+          <td width="25%">Sounds<br>
+            </td>
+          <td width="75%">Sounds are encodings of sounds, typically coming from a WAV file.</td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">Samples<br>
+            </td>
+          <td bgcolor="#eeeeee">
+            <p>Samples are collections of Sample objects, each indexed by a number, e.g. sample #0, sample #1, etc. <b>samples[0]</b> is the first Sample object, <b>samples[1]</b> is the second, etc. You can manipulate each Sample in the Samples like this:</p>
+            <pre>for s in samples:</pre>
+            </td>
+        </tr>
+        <tr>
+          <td>Sample<br>
+            </td>
+          <td>A sample is a value between -32768 and 32767 representing the voltage that a microphone would generate at a given instant when recording a sound. The length of the instant is typically either 1/44100 of a second<br>
+            (for CD-quality sound) or 1/22050 of a second (for good enough sound on most computers). A Sample object remembers what sound it came from, so if you change its value, it knows to go back and change the right sample in the sound.</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td align="right"> <a href="#top"><img src="images/arro.gif" width="13" height="10" border="0">jump
+      to top</a>
+      <hr size="1">
+    </td>
+  </tr>
+
+
+
+
+
+</table>
+</body>
+</html>

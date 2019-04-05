@@ -1,0 +1,66 @@
+<html>
+<head>
+<title>JES Help</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<a name="top"></a><a href="../JESHelp/0_Table_of_Contents.html">Table of Contents</a>
+&gt; <a href="../JESHelp/6_Understanding_Pictures.html">Understanding Pictures in JES
+</a> &gt; Picture Objects in JES
+<hr size="1">
+<table width="80%" border="0" cellspacing="0" cellpadding="5">
+  <tr>
+    <td bgcolor="#dddddd" height="107" colspan="2">
+      <b>Picture Objects in JES
+</b><br>
+       <br>
+      To understand how to work with pictures in JES, you must first understand the objects (or encodings) that represent pictures.<a href="#arrays"></a> <br>
+      <br>
+      You can imagine that each <b>picture</b> is made up of a collection of <b>pixels</b>, which is made up of <b>pixel</b> 0, pixel 1, pixel 2, etc, and that each pixel has it's own particular <b>color</b>.
+    </td>
+  </tr>
+
+
+
+  <tr>
+    <td colspan="2">
+      <table width="100%" border="0" cellspacing="0" cellpadding="5">
+        <tr>
+          <td width="25%">Pictures<br>
+            </td>
+          <td width="75%">Pictures are encodings of images, typically coming from a JPEG file.</td>
+        </tr>
+        <tr>
+          <td bgcolor="#eeeeee">Pixels<br>
+            </td>
+          <td bgcolor="#eeeeee">Pixels are a sequence of Pixel objects. They flatten the two dimensional nature of the pixels in a picture and give you instead an arraylike sequence of pixels. <b>pixels[0] </b>returns the leftmost pixel in a picture.</td>
+        </tr>
+        <tr>
+          <td>Pixel<br>
+            </td>
+          <td>A pixel is a dot in the Picture. It has a color and an (x, y) position associated with it. It remembers its own Picture so that a change to the pixel changes the real dot in the picture.</td>
+        </tr>
+        <tr bgcolor="#EEEEEE">
+          <td>Color</td>
+          <td>It&#146;s a mixture of red, green, and blue values, each between 0 and 255.</td>
+        </tr>
+      </table>
+        </td>
+  </tr>
+  <tr>
+    <td align="right" colspan="2"> <a href="#top"><img src="images/arro.gif" width="13" height="10" border="0">jump
+      to top</a>
+      <hr size="1">
+    </td>
+  </tr>
+
+
+
+
+
+</table>
+<p>&nbsp;</p>
+</body>
+</html>
