@@ -97,6 +97,13 @@ class Test_SimpleSound(unittest.TestCase):
         self.assertEquals(AF.isBigEndian(), 0,
                           'Sound is Big-Endian Byte Order')
 
+    def makeSoundWithSamples(self):
+        s = makeSound("tests/test-sounds/preamble.wav")
+        sound = makeSound([smpl for smpl in getSamples(s) if getIndex(smpl) % 5 == 0])
+
+        for sample in getSamples(s):
+            self.assertEqual(getIndex(sample) % 5 == 0)
+
 #suite = unittest.makeSuite(Test_SimpleSound)
 #results = unittest.TextTestRunner(verbosity=2).run(suite)
 

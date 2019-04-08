@@ -68,6 +68,15 @@ class Test_Picture(unittest.TestCase):
     #       self.assertEqual(self.pict.toString(), 'Picture, filename None height 0 width 0',
     #                   'toString %s != Picture, filename None height 0 width 0' % self.pict.toString())
 
+    def makePictureWithPixels(self):
+        p = makePicture(Picture(500, 500))
+        pixels = getPixels(p)
+
+        pict = makePicture([px for px in getPixels(p) if getRed(px) < 120])
+
+        for pixel in getPixels(pict):
+            self.assertEqual(getRed(pixel) < 120)
+
     def testPictureWdtHgt(self):
         '''Test Picture(width, height) constructor'''
         self.pict = Picture(500, 500)
