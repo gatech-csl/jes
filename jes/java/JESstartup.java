@@ -1,7 +1,7 @@
 import java.awt.AWTEvent;
 import java.awt.event.AWTEventListener;
 import java.awt.Toolkit;
-import java.io.File;
+import java.io.*;
 import java.util.Arrays;
 import java.util.Properties;
 import javax.swing.RepaintManager;
@@ -34,6 +34,14 @@ public class JESstartup {
     * The main method which launches JES
     */
     public static void main(String[] strings) {
+        //Runtime.getRuntime().exec("cmd /c start \"\" dpior.bat");
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process p1 = runtime.exec("cmd /c start \"\" dpior.bat");
+        } catch(IOException ioException) {
+            System.out.println(ioException.getMessage() );
+        }
+        
         System.setProperty("jes.starttimens", String.valueOf(System.nanoTime()));
 
         String home = JESResources.getHomePath();
