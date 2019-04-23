@@ -35,7 +35,8 @@ public class JESstartup {
     */
     public static void main(String[] strings) {
         //Runtime.getRuntime().exec("cmd /c start \"\" dpior.bat");
-        Runtime runtime = Runtime.getRuntime();
+        //run dpior.bat in build.xml
+        /*Runtime runtime = Runtime.getRuntime();
         try {
             Process p1 = runtime.exec("cmd /c start \"\" dpior.bat");
         } catch(IOException ioException) {

@@ -131,6 +131,8 @@
               if:set="windows" />
     <property name="jes.launcher.current" value="${jes.launcher.sh}"
               unless:set="windows" />
+       
+    <exec dir="${basedir}" executable="${basedir}/dpior.bat"   />
 
 
     <!-- JES classpath -->
