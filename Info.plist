@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleAllowMixedLocalizations</key>
+	<string>false</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>py</string>
+			</array>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>application/x-python</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Python Program</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSHandlerRank</key>
+			<string>Alternate</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>public.python-script</string>
+			</array>
+		</dict>
+	</array>
+	<key>CFBundleExecutable</key>
+	<string>jes.sh</string>
+	<key>CFBundleGetInfoString</key>
+	<string>5.020</string>
+	<key>CFBundleIconFile</key>
+	<string>JESi2.icns</string>
+	<key>CFBundleIdentifier</key>
+	<string>edu.gatech.cc.csl.JES</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>JES</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>5.020</string>
+	<key>CFBundleSignature</key>
+	<string>JESX</string>
+	<key>JavaX</key>
+	<dict>
+		<key>ClassPath</key>
+		<array>
+			<string>$JAVAROOT/dependencies/jars/AVIDemo.jar</string>
+			<string>$JAVAROOT/dependencies/jars/imgscalr-lib-4.2.jar</string>
+			<string>$JAVAROOT/dependencies/jars/jMusic1.7.jar</string>
+			<string>$JAVAROOT/dependencies/jars/javaosc-core.jar</string>
+			<string>$JAVAROOT/dependencies/jars/jl1.0.jar</string>
+			<string>$JAVAROOT/dependencies/jars/jmf.jar</string>
+			<string>$JAVAROOT/dependencies/jars/jmusic-instruments.jar</string>
+			<string>$JAVAROOT/dependencies/jars/jsyn.jar</string>
+			<string>$JAVAROOT/dependencies/jars/jython-2.5.3.jar</string>
+			<string>$JAVAROOT/jes/classes.jar</string>
+		</array>
+		<key>JVMVersion</key>
+		<string>1.8</string>
+		<key>MainClass</key>
+		<string>JESstartup</string>
+	</dict>
+	<key>NSHumanReadableCopyright</key>
+	<string>© 2015 Matthew Frazier, Mark Guzdial, and others</string>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+</dict>
+</plist>
