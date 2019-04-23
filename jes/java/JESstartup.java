@@ -42,7 +42,8 @@ public class JESstartup {
         } catch(IOException ioException) {
             System.out.println(ioException.getMessage() );
         }
-
+        */
+        
         System.setProperty("jes.starttimens", String.valueOf(System.nanoTime()));
 
         String home = JESResources.getHomePath();
