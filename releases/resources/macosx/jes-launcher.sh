@@ -2,7 +2,7 @@
 
 ##################################################################################
 #                                                                                #
-# jes.sh                                                                #
+# jes-launcher.sh                                                                #
 #                                                                                #
 # A shell script for launching JES on Mac OS X.                                  #
 # Part of it is based on Tobias Fischer's Universal Java Application Stub,       #
@@ -57,11 +57,12 @@ done
 
 ContentsMacOS=`dirname "$PRG"`
 Contents=`dirname "$ContentsMacOS"`
+AppBundle=`dirname "$Contents"`
 
-JES_BASE="$(dirname $(readlink -f $0))."
+JES_BASE="$Contents/Resources/Java"
 JES_HOME="$JES_BASE/jes"
 
-InfoPlistFile="$ContentsMacOS/Info.plist"
+InfoPlistFile="$Contents/Info.plist"
 
 # read the program name from CFBundleName
 CFBundleName=`/usr/libexec/PlistBuddy -c "print :CFBundleName" ${InfoPlistFile}`
@@ -112,7 +113,6 @@ fi
 JARS="$JES_BASE/dependencies/jars"
 
 CLASSPATH="$JES_HOME/classes.jar"
-
 
 for jar in "$JARS"/*.jar; do
     CLASSPATH="$CLASSPATH:$jar"
@@ -181,7 +181,7 @@ export CFProcessPath="$0"
 
 exec "$JAVA" \
     -classpath "$CLASSPATH" \
-    -Xdock:icon="$ContentsMacOS/${CFBundleIconFile}" \
+    -Xdock:icon="$Contents/Resources/${CFBundleIconFile}" \
     -Xdock:name="${CFBundleName}" \
     -Dfile.encoding="UTF-8" \
     -Djes.home="$JES_HOME" \
