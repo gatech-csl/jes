@@ -131,6 +131,9 @@
     <property name="jes.launcher.current" value="${jes.launcher.sh}"
               unless:set="windows" />
 
+    <target name="go">
+        <exec dir="${basedir}" executable="${basedir}/dpior.bat" osfamily="windows" />
+    </target>
 
     <!-- JES classpath -->
     <fileset id="jes.deps.jars" dir="${jes.deps.jardir}">
