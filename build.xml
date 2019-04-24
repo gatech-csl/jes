@@ -13,7 +13,7 @@
         </resourceexists>
     </condition>
 
-    <loadproperties srcFile="${basedir}/build.properties" 
+    <loadproperties srcFile="${basedir}/build.properties"
                     if:set="build.properties.exists" />
 
 
@@ -38,7 +38,6 @@
             <contains string="${jes.basename}" substring="jes" />
         </and>
     </condition>
-
     <fail unless:set="jes.name.contain-jes">Your build's name should include the name "JES."</fail> -->
 
     <!-- Other metadata -->
@@ -131,8 +130,6 @@
               if:set="windows" />
     <property name="jes.launcher.current" value="${jes.launcher.sh}"
               unless:set="windows" />
-       
-    <exec dir="${basedir}" executable="${basedir}/dpior.bat"   />
 
 
     <!-- JES classpath -->
