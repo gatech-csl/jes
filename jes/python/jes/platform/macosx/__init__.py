@@ -48,13 +48,15 @@ def installOpenHandler(program):
 
 
 def setDockIcon():
-    if onMacOSX:
-        # I don't know _why_ passing null here works.
-        # My guess is that Apple somehow elects an image based on the
-        # first window created, and setting it to null means
-        # "ignore windows, just use the default."
-        # Then the -Xdock:icon JVM option sets the default.
-        app = Application.getApplication()
-        if hasattr(app, 'setDockIconImage'):
-            app.setDockIconImage(None)
+    # commenting out to avoid nullpointer exception
+    pass
+    # if onMacOSX:
+    #     # I don't know _why_ passing null here works.
+    #     # My guess is that Apple somehow elects an image based on the
+    #     # first window created, and setting it to null means
+    #     # "ignore windows, just use the default."
+    #     # Then the -Xdock:icon JVM option sets the default.
+    #     app = Application.getApplication()
+    #     if hasattr(app, 'setDockIconImage'):
+    #         app.setDockIconImage(None)
 

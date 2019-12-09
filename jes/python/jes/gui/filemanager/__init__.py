@@ -159,7 +159,7 @@ class FileManager(object):
             if JESConfig.getInstance().getBooleanProperty(JESConfig.CONFIG_BACKUPSAVE):
                 try:
                     backupPath = self.filename + "bak"
-                    with open(filename, 'w') as fd:
+                    with open(backupPath, 'w') as fd:
                         fd.write(sourceText)
                 except EnvironmentError, exc:
                     self.showErrorMessage(
@@ -218,6 +218,7 @@ class FileManager(object):
             return self.confirmSave(
                 "Only .py files whose names are made up of letters, numbers,\n"
                 "and underscores can be imported as Python modules.\n"
+                "Python modules also cannot start with a numeral.\n"
                 "(You will still be able to load it in JES regardless.)\n"
                 "Are you sure you want to save the file with this name?"
             )

@@ -3,6 +3,14 @@ JES Changelog
 This changelog only covers changes in JES versions 5.0 and later.
 Our records of what changed in version 4.3 and earlier are fragmentary.
 
+JES 6.00
+--------
+Release Date: May 1, 2019
+
+Miscellaneous bug fixes 
+
+Ability to create pictures and sounds from collections of pixels and samples.
+
 JES 5.01
 --------
 Release Date: Sept 10, 2014

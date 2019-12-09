@@ -29,3 +29,7 @@ jmusic.tmp
 *.pylog
 
 .firsttimebuilding
+.idea/*
+.DS_Store
+releases/resources/.DS_Store
+releases/resources/macosx/.DS_Store
