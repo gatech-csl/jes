@@ -1,7 +1,7 @@
 JES: Jython Environment for Students
 https://github.com/gatech-csl/jes
 
-Version 6.00: © 2019 Veronica Day, Audrey Zhang, Matthew Frazier, and Mark Guzdial
+Version 6.00: © 2019 Veronica Day, Audrey Zhang, Nigel Charleston, Matthew Frazier, and Mark Guzdial
 Version 5.01: © 2014 Mark Guzdial
 Version 5.0: © 2014  Matthew Frazier and Mark Guzdial
 Version 4.3: © 2009  Brian Dorn and Barbara Ericson
