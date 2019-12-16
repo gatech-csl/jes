@@ -16,7 +16,6 @@
     <loadproperties srcFile="${basedir}/build.properties"
                     if:set="build.properties.exists" />
 
-
     <!-- Project metadata -->
     <property name="release"            value="-snapshot" unless:set="release" />
 
@@ -42,8 +41,8 @@
 
     <!-- Other metadata -->
     <property name="jes.vendor"         value="Georgia Institute of Technology" />
-    <property name="jes.copyright"      value="© 2015 Matthew Frazier, Mark Guzdial, and others" />
-    <property name="jes.version"        value="5.02" />
+    <property name="jes.copyright"      value="© 2019 Matthew Frazier, Mark Guzdial, and others" />
+    <property name="jes.version"        value="6.0" />
     <property name="jes.release"        value="${jes.version}${release}" />
 
     <tstamp>
