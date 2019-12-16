@@ -201,7 +201,7 @@
     <property name="jes.release.windows.stage.readmes"
             location="${jes.release.windows.stage}/readmes" />
 
-    <property name="jes.release.windows.jre.basename" value="jre-win32-1.7.0_60" />
+    <property name="jes.release.windows.jre.basename" value="jre-win64-1.8_231" />
     <property name="jes.release.windows.jre.zipfile"
             location="${jes.release.windows.resources}/${jes.release.windows.jre.basename}.zip" />
 
