@@ -1,5 +1,5 @@
 ################################################################################################################
-# gui.py        Version 2.96        02-May-2014     Bill Manaris, Dana Hughes, David Johnson, and Kenneth Hanson
+# gui.py        Version 3.6        20-Feb-2018     Bill Manaris, Dana Hughes, David Johnson, and Kenneth Hanson
 
 ###########################################################################
 #
@@ -35,50 +35,94 @@
 #
 # REVISIONS:
 #
-#   2.96    02-May-2014 (bzm) Added fixWorkingDirForJEM() solution to work with new JEM editor by Tobias Kohn.
+#   3.6     20-Feb-2018 (bm)  Added guicontrols (simply import them at end). 
 #
-#   2.95    28-Jan-2014 (bzm) Using the imgscalr Java library for resizing images.
+#   3.5     26-Dec-2015 (bm)  Added setX(), getX(), setY(), getY() functions to every object.
+#						Also, changed mouse events to translate / remap coordinates
+#                       for JPanel components, so, when a mouse event occurs with a GUI object's 
+#                       JPanel, the global (enclosing Display) coordinates are communicated (instead
+#                       of the internal JPanel coordinates, which were returned up until now).  
+#                       This translation / remapping makes things more natural for the end-user (programmer),
+#                       as it allows them to always work using global (enclosing Display) coordinates.  
+#
+#   3.4     01-Dec-2015 (bm)  Added Icon functions, setHeight(), setWidth(), getPixel(), setPixel(),
+#						getPixels(), and setPixels().  This is to introduce consistency with functions 
+#						available in Image library (see image.py). 
+#
+#   3.3     16-Feb-2015 (bm)  Added Display.close() function.  This will call onClose() callback
+#                       if provided. 
+#
+#   3.2     19-Nov-2014 (bm)  Fixed bug in Icon resizing.  Now, we resize to best fit provided 
+#                       dimensions (as opposed to maintaining image proportions at all costs).
+#                       Also fixed bug in cleaning up objects after JEM's stop button is pressed -
+#                       if list of active objects already exists, we do not redefine it - thus, we 
+#                       do not lose older objects, and can still clean them up.
+#
+#   3.1     06-Nov-2014 (bm)  Added functionality to properly close displays and clean-up GUI objects
+#                       via JEM's Stop button - see registerStopFunction().
+#
+#   3.0     01-Nov-2014 (bm)  Fixed Point() and drawPoint() to display properly.
+#
+#   2.99    23-Oct-2014 (bm)  Added Display.getItems() which returns a list of items currently
+#                       on the display.  Also, for convenience, modified colorGradient() to 
+#                       also work with java.awt.Color parameters, in which case it returns 
+#                       a list of java.awt.Color colors.
+#
+#   2.98    02-Oct-2014 (bm)  Updated Label() to be able to set/get foreground (text) color,
+#                       and background color.  
+#
+#   2.97    28-Aug-2014 (bm)  Added Arc() graphics object and Display.drawArc() function.  
+#                       An arc specified by two diagonal corners, the start angle, and the end angle.  
+#                       Angles are interpreted such that 0 degrees is at the three o'clock position. 
+#                       A positive value indicates a counter-clockwise rotation while 
+#                       a negative value indicates a clockwise rotation.
+#
+#                       Also added antialiasing in the rendering of GUI objects.  Nice!
+#
+#   2.96    02-May-2014 (bm) Added fixWorkingDirForJEM() solution to work with new JEM editor by Tobias Kohn.
+#
+#   2.95    28-Jan-2014 (bm) Using the imgscalr Java library for resizing images.
 #
 #   2.94    22-Nov-2013 (dj)  Added Display.addOrder() function.  This adds layering 
 #                       capabilities to the standard add method.  The object is added to the 
 #                       display at the specified order. Layers are ordered from smallest to 
 #                       largest where 0 is the closet to the front of the display.
 #
-#   2.93    02-Jun-2013 (bzm) Adjusted Point() to be a circle with radius 0 (vs. 1).
+#   2.93    02-Jun-2013 (bm) Adjusted Point() to be a circle with radius 0 (vs. 1).
 #
-#   2.92    29-May-2013 (bzm) Added colorGradient().  Removed Timer() and put it in each own
+#   2.92    29-May-2013 (bm) Added colorGradient().  Removed Timer() and put it in each own
 #                       library module, timer.py, which is imported here.
 #
-#   2.91    01-May-2013 (bzm) Added Icon.crop(x, y, width, height) to crop icons from point x, y
+#   2.91    01-May-2013 (bm) Added Icon.crop(x, y, width, height) to crop icons from point x, y
 #                       up to the provided width and height.
 #
-#   2.9     17-Apr-2013 (bzm) Changed Checkbox callback function to accept one parameter, i.e.,
+#   2.9     17-Apr-2013 (bm) Changed Checkbox callback function to accept one parameter, i.e.,
 #                       the state of the checkbox (True means checked, False means unchecked)
 #
-#   2.8     10-Apr-2013 (bzm) Add +1 to JPanel size for lines, circles, etc.  Also, added 
+#   2.8     10-Apr-2013 (bm) Add +1 to JPanel size for lines, circles, etc.  Also, added 
 #                       getPosition() for all widgets, which returns a widget's (x, y) position, and 
 #                       setPosition(x, y) which the widget's position (and, if on a display, also
 #                       repositions the widget).  Also added display setPosition() and getPosition().  
 #                       Added initial x and y position coordinates in Display constructor. 
 #                       Finally, added Icon.rotate() - this however may crop rotated images.
 #
-#   2.7     07-Apr-2013 (bzm) Various fixes, including making graphics object JPanels exactly the size
+#   2.7     07-Apr-2013 (bm) Various fixes, including making graphics object JPanels exactly the size
 #                       of the graphics object (as opposed +1).  Also added, Display.setSize(), and
 #                       Icon.getWidth() and getHeight(), which report the rigth size (as opposed to +1).
 #
-#   2.6     29-Mar-2013 (bzm) callback functions for keyDown/keyUp are given the key code (e.g., VK_A
+#   2.6     29-Mar-2013 (bm) callback functions for keyDown/keyUp are given the key code (e.g., VK_A
 #                       or KeyEvent.VK_A).  Also added Display.removeAll() for quick clean up of display objects.
 #                       Also added Widget.encloses() and Widget.intersects() for collision detection.
 #                       Added unit test for animation (i.e., game engine example).
 #
-#   2.5     19-Mar-2013 (bzm) Added a Timer class to schedule repeated tasks to be executed, without
+#   2.5     19-Mar-2013 (bm) Added a Timer class to schedule repeated tasks to be executed, without
 #                       using sleep().  (The latter causes the Swing GUI event loop to sleep, locking
 #                       up the GUI.)
 #
-#   2.4     12-Mar-2013 (bzm) After a Widget (e.g., button) event is handled, focus is returned to 
+#   2.4     12-Mar-2013 (bm) After a Widget (e.g., button) event is handled, focus is returned to 
 #                       the parent display, so that more events (especially keyboard events) can be handled.
 #
-#   2.3     02-Mar-2013 (bzm) Added thickness parameter in all graphics objects.  Also
+#   2.3     02-Mar-2013 (bm) Added thickness parameter in all graphics objects.  Also
 #                       added Polygon() class.  Added several Display.draw functions
 #                       for convenience, i.e., drawLine(), drawCircle(), drawPoint(), drawOval(),
 #                       drawRectangle(), drawPolygon(), drawImage(), and drawLabel().  With these
@@ -93,76 +137,97 @@
 #                       Also, removed set/getThickness(), set/getFill() for drawable
 #                       graphics objects - user can always create another object to change these.
 #
-#   2.2     27-Feb-2013 (bzm) Added Display helper functions to show/hide display coordinates
+#   2.2     27-Feb-2013 (bm) Added Display helper functions to show/hide display coordinates
 #                       at mouse cursor (useful to discover coordinates of where to widgets 
 #                       when building a GUI).  They are Display.showMouseCoordinates(), and
 #                       Display.hideMouseCoordinates().
 #
-#   2.1     15-Feb-2013 (bzm) Added Oval(); also Display.add(), move(), and delete().
+#   2.1     15-Feb-2013 (bm) Added Oval(); also Display.add(), move(), and delete().
 #                       Removed thickness from Drawable, as it is very hard to impelement correctly
 #                       (i.e., without cropping) given our inversion of the y-axis (i.e., having
 #                       orgigin (0,0) at bottom, as opposed to top.
 #
-#   2.01    19-Jan-2013 (bzm) Added JEM working directory fix (minor issue).
+#   2.01    19-Jan-2013 (bm) Added JEM working directory fix (minor issue).
 #
-#   2.00    15-Dec-2012 (bzm) When an item is moved (placed) from one display to another, it is
+#   2.00    15-Dec-2012 (bm) When an item is moved (placed) from one display to another, it is
 #                       explicitly removed from the first one.
 #                       Added set/getColor(), set/getThickness(), set/getFill() for drawable
 #                       graphics objects (e.g., Line, Circle, etc.) via Drawable superclass.
 #                       Setting one of those attributes automatically redraws object.
 #                       Finalized API for 2.0 release.
 #
-#   1.89    06-Dec-2012 (bzm) Simplified menu creation - see addItem() and addItemList().
+#   1.89    06-Dec-2012 (bm) Simplified menu creation - see addItem() and addItemList().
 #                       Now, there is no need to create a menuItem anymore - we cut to the chase,
 #                       i.e., we create a menu, add items to it (i.e., a string (name) and a function to call
 #                       when item is selected), and add menu to the display.  Display updates itself
 #                       to show new menus.  Menus appear on existing menu bar (no need to create one).
 #                       So, now we just build a menu and add it.  Simpler, faster.
-#   1.88    26-Nov-2012 (bzm) Tested all regular Widgets (and added sample unit tests).
-#   1.87    18-Nov-2012 (bzm) Changed Display() to put new object in the display at beginning
+#
+#   1.88    26-Nov-2012 (bm) Tested all regular Widgets (and added sample unit tests).
+#
+#   1.87    18-Nov-2012 (bm) Changed Display() to put new object in the display at beginning
 #                       of z-order list - add() at index 0.
-#   1.86    07-Nov-2012 (bzm) Changed Display() to use the default JFrame's content pane.
+#
+#   1.86    07-Nov-2012 (bm) Changed Display() to use the default JFrame's content pane.
 #                       This seems to fix the problem with a "dead" display area 
 #                       at the bottom (lowest 20 pixels or so).
-#   1.85    01-Nov-2012 (bzm) Refactored common code of widgets and graphics objects 
+#
+#   1.85    01-Nov-2012 (bm) Refactored common code of widgets and graphics objects 
 #                       into class Widget().
+#
 #   1.84    31-Oct-2012 (dth) Fixed bug with resizing widgets and graphics objects.
-#   1.83    24-Oct-2012 (bzm) Image class was renamed to Icon (to fix conflict with image.py).
+#
+#   1.83    24-Oct-2012 (bm) Image class was renamed to Icon (to fix conflict with image.py).
 #                       The two image classes are incompatible enough to keep separate.
-#   1.82    24-Oct-2012 (bzm) Image is created without specifying an initial position.
+#
+#   1.82    24-Oct-2012 (bm) Image is created without specifying an initial position.
 #                       Positioning is handled when placing() the image on a Display.
-#   1.81    12-Oct-2012 (bzm) Slider callback function now expects one parameter, the slider value
-#   1.8     21-Sep-2012 (bzm) Fixed problem with adding submenus (they needed special treatment).
+#
+#   1.81    12-Oct-2012 (bm) Slider callback function now expects one parameter, the slider value.
+#
+#   1.8     21-Sep-2012 (bm) Fixed problem with adding submenus (they needed special treatment).
 #                       (But what about PopUpMenu's?  Can they have submenus?  If so,
 #                        we need to handle that as well.)
 #                       Fixed problem with KEY_RELEASED.  Now we capture status of modifier keys.
 #                       Also, we properly report the key pressed/released/typed (to the best
 #                       of our abilities - some keys are modified in the keyboard driver,
 #                       before they get to us - but everything else, we now can handle).
-#   1.7     19-Sep-2012 (bzm) Drawable objects are now specified using absolute coordinates
+#
+#   1.7     19-Sep-2012 (bm) Drawable objects are now specified using absolute coordinates
 #                       (e.g., Line(x1, y1, x2, y2), etc. 
 #                       Also, fixed minor bug with resizing Image() using only height argument.
 #                       Also, fixed Display keyboard listener (now, keyboard events can be handled). 
-#   1.6     14-Sep-2012 (bzm) Added Display.setToolTipText() to use Display's internal JPanel.
+#
+#   1.6     14-Sep-2012 (bm) Added Display.setToolTipText() to use Display's internal JPanel.
 #                       Fixed Display.getHeight() bug to return the height specified in constructor.
 #                       Commented out Display.draw(), erase() - legacy code (to be removed?)
-#   1.5     11-Sep-2012 (bzm) Added a Point class.
-#   1.4     05-Sep-2012 (bzm) Renamed module as 'gui'.
-#	1.3		01-Jun-2012	(dth) Add menus and resize shapes.
-#	1.2.2	01-Jun-2012	(dth) Fixed Image to be scalable.
-#	1.2.1	21-May-2012	(dth) Added onClose.  Modified instantiating event listeners in shapes 
+#
+#   1.5     11-Sep-2012 (bm) Added a Point class.
+#
+#   1.4     05-Sep-2012 (bm) Renamed module as 'gui'.
+#
+#   1.3     01-Jun-2012 (dth) Add menus and resize shapes.
+#
+#   1.2.2   01-Jun-2012 (dth) Fixed Image to be scalable.
+#
+#   1.2.1   21-May-2012 (dth) Added onClose.  Modified instantiating event listeners in shapes 
 #                       to wait until a callback function is provided (to allow events to fall
-#   					through if not handled by the shape).
+#                  through if not handled by the shape).
+#
 #   1.2     16-May-2012 (dth, keh) Implemented API changes.
+#
 #   1.1.1   14-May-2012 (dth) Modified mouse click to pass x and y coordinates of mouse to 
 #                       user-defined function.
 #
+#
 # TODO: 
 #
-# 0. Remove JFrame, etc. as a superclass for GUI widgets and graphics objects (i.e., make the
-#    JFrame an attribute of the Display class).  
-#    Rationale:  If the end-user (programmer) accidentally redefines a JFrame's functions (e.g., getX, etc.), 
-#    the end-code breaks in unpredictable ways (that are hard to trace - make no sense to the end-programmer).  
+# 0. Remove JButton, JPanel, etc. as a superclass for GUI widgets and graphics objects (i.e., make the
+#    JButton an attribute of the Button class, etc.).  
+#    Rationale:  If the end-user (programmer) accidentally redefines a JButton's functions (e.g., getX, etc.), 
+#    the end-code breaks in unpredictable ways (that are hard to trace - make no sense to the end-programmer). 
+#    The disadvantage is that we lose access to all inherited functions - we would know need to introduce 
+#    appropriate wrappers for all needed ones and it's hard to anticipate which may be needed by every end-programmer). 
 #
 # 1. Make it possible to draw text in various orientations.  Explore Java Graphics drawString().
 #    For now we use Label objects - also it's possible to use Icons (perhaps this is more enabling,
@@ -193,7 +258,6 @@ from org.imgscalr import Scalr
 from java.awt.event.KeyEvent import *   # so that we can use either VK_A or KeyEvent.VK_A)
 
 from timer import *    # import Timer class
-
 
 
 # Is this needed?  It causes a naming conflict with jMusic's View class
@@ -243,6 +307,9 @@ from timer import *    # import Timer class
 # Notice how the final color, white, has to be included separately (using list concatenation).  
 # Now, gc contains a total of 25 unique gradient colors.
 #
+# For convenience, colorGradient() also works with java.awt.Color parameters, in which case
+# it returns a list of java.awt.Color colors.
+#
 
 def colorGradient(color1, color2, steps):
    """
@@ -254,22 +321,39 @@ def colorGradient(color1, color2, steps):
    """
    gradientList = []   # holds RGB lists of individual gradient colors
    
+   # check if using java.awt.Color
+   if type(color1) == type(color2) and type(color2) == type(Color.RED):
+   
+      # extract RGB values
+      red1, green1, blue1 = color1.getRed(), color1.getGreen(), color1.getBlue()
+      red2, green2, blue2 = color2.getRed(), color2.getGreen(), color2.getBlue()
+      
+   else:  # assume RGB list
+   
+      # extract RGB values
+      red1, green1, blue1 = color1
+      red2, green2, blue2 = color2
+   
    # find difference between color extremes
-   differenceR = color2[0] - color1[0]   # R component
-   differenceG = color2[1] - color1[1]   # G component
-   differenceB = color2[2] - color1[2]   # B component
+   differenceR = red2 - red1       # R component
+   differenceG = green2 - green1   # G component
+   differenceB = blue2 - blue1     # B component
    
    # interpolate RGB values between extremes
    for i in range(steps):
-      gradientR = color1[0] + i * differenceR / steps
-      gradientG = color1[1] + i * differenceG / steps
-      gradientB = color1[2] + i * differenceB / steps
+      gradientR = red1 + i * differenceR / steps
+      gradientG = green1 + i * differenceG / steps
+      gradientB = blue1 + i * differenceB / steps
 
       gradientList.append( [gradientR, gradientG, gradientB] )
    # now, gradient list contains all the intermediate colors, including color1 
    # but not color2
    
-   return gradientList   # so, return it
+   # if original in java.awt.Color, convert result accordingly
+   if type(color1) == type(Color.RED):
+      gradientList = [Color(x[0], x[1], x[2]) for x in gradientList]
+   
+   return gradientList   # and return it
 
 
 ###############################################################################
@@ -618,10 +702,10 @@ class MouseClickListener(MouseListener):
    A listener for when the mouse is clicked.  Ignores other mouse button operations
    """
 
-   #def __init__(self, remapCoordinates):
-   def __init__(self):
+   def __init__(self, remapCoordinates):
+   #def __init__(self):
 
-      #self.remapCoordinates = remapCoordinates       # Who is this listening to?
+      self.remapCoordinates = remapCoordinates       # Who is this listening to?
 
       self.clickFunction = self.nullFunction
       self.pressFunction = self.nullFunction
@@ -645,7 +729,7 @@ class MouseClickListener(MouseListener):
       x = mouseEvent.getX()
       y = mouseEvent.getY()
 
-      #(x, y) = self.remapCoordinates(x, y)
+      (x, y) = self.remapCoordinates(x, y)
 
       if mouseEvent.isPopupTrigger():
          if self.popupMenu:
@@ -661,7 +745,7 @@ class MouseClickListener(MouseListener):
       x = mouseEvent.getX()
       y = mouseEvent.getY()
 
-      #(x, y) = self.remapCoordinates(x, y)
+      (x, y) = self.remapCoordinates(x, y)
 
       if mouseEvent.isPopupTrigger():
          if self.popupMenu:
@@ -677,7 +761,7 @@ class MouseClickListener(MouseListener):
       x = mouseEvent.getX()
       y = mouseEvent.getY()
 
-      #(x, y) = self.remapCoordinates(x, y)
+      (x, y) = self.remapCoordinates(x, y)
 
       self.enterFunction(x, y)
 
@@ -689,7 +773,7 @@ class MouseClickListener(MouseListener):
       x = mouseEvent.getX()
       y = mouseEvent.getY()
 
-      #(x, y) = self.remapCoordinates(x, y)
+      (x, y) = self.remapCoordinates(x, y)
 
       self.exitFunction(x, y)
 
@@ -701,7 +785,7 @@ class MouseClickListener(MouseListener):
       x = mouseEvent.getX()
       y = mouseEvent.getY()
 
-      #(x, y) = self.remapCoordinates(x, y)
+      (x, y) = self.remapCoordinates(x, y)
 
       if mouseEvent.isPopupTrigger():
          if self.popupMenu:
@@ -725,10 +809,10 @@ class MouseMovementListener(MouseMotionListener):
    A listener to handle when the mouse moves
    """
 
-   #def __init__(self, remapCoordinates):
-   def __init__(self):
+   def __init__(self, remapCoordinates):
+   #def __init__(self):
 
-      #self.remapCoordinates = remapCoordinates
+      self.remapCoordinates = remapCoordinates
 
       self.moveFunction = self.nullFunction
       self.dragFunction = self.nullFunction
@@ -749,7 +833,7 @@ class MouseMovementListener(MouseMotionListener):
       x = mouseEvent.getX()
       y = mouseEvent.getY()
 
-      #(x, y) = self.remapCoordinates(x, y)
+      (x, y) = self.remapCoordinates(x, y)
 
       # And call the move function
 
@@ -765,7 +849,7 @@ class MouseMovementListener(MouseMotionListener):
       x = mouseEvent.getX()
       y = mouseEvent.getY()
 
-      #(x, y) = self.remapCoordinates(x, y)
+      (x, y) = self.remapCoordinates(x, y)
 
       # And call the move function
 
@@ -826,35 +910,35 @@ class ComponentChangeListener(ComponentListener):
    """
    
    def __init__(self):
-      """	  
-      """	  
+      """     
+      """     
       pass
 
    def componentHidden(self, event):
       """
-      """	  
+      """     
       pass
 #      print "Component Hidden"
-	  
+     
    def componentMoved(self, event):
-      """	  
+      """     
       """
       pass
 #      print "Component Moved"
 
    def componentResized(self, event):
-      """	  
-	  """
+      """     
+     """
 #      print "Component Resized"
-	  
+     
       component = event.getComponent()
       x, y = component.position
       if component.display:
          cp = component.display.getParent().getParent().getParent()
          cp.reposition(component, x, y)
-	  
+     
    def componentShown(self, event):
-      """	  
+      """     
       """
       pass
  #     print "Component Shown"
@@ -883,17 +967,6 @@ class Widget():
       self.mouseMovementListener = None
       self.componentChangeListener = ComponentChangeListener()
 
-#   def __remapCoordinates__(self, x, y):
-#      """
-#      Adjust the coordinates so that y is in the lower-left corner
-#      """
-#      height = self.getSize().height
-#
-#      x = x + self.position[0]
-#      y = height - y - 1 + self.position[1]
-#
-#      return x, y
-
    def encloses(self, widget):
       """
       Determines whether or not this Widget encloses (contains) the specified Widget.
@@ -905,6 +978,30 @@ class Widget():
       Determines whether or not this Widget and the specified Widget intersect.
       """      
       return self.getBounds().intersects( widget.getBounds() )
+
+   def getX(self):
+      """
+      Returns the x coordinate of this Widget.
+      """      
+      return self.position[0]
+
+   def setX(self, x):
+      """
+      Set the x coordinate of this Widget.
+      """      
+      self.setPosition(x, self.position[1])
+
+   def getY(self):
+      """
+      Returns the y coordinate of this Widget.
+      """      
+      return self.position[1]
+
+   def setY(self, y):
+      """
+      Set the y coordinate of this Widget.
+      """      
+      self.setPosition(self.position[0], y)
 
    def getPosition(self):
       """
@@ -955,14 +1052,34 @@ class Widget():
 
       self.keyboardListener.releasedFunction = callbackFunction
 
+   # NOTE: This function is introduced here to take care of remapping coordinates
+   # for JPanel components, so when a mouse event occurs with a GUI object's JPanel
+   # the global (enclosing Display) coordinates are communicated (instead of the internal
+   # JPanel coordinates, which are by default returned).  We are doing this translation /
+   # remapping because it is more natural for the end-user (programmer) to think in terms
+   # of global (enclosing Display) coordinates (as these are the coordinates they are dealing
+   # with all the time).  This function may be overloaded by any GUI object (e.g., Circle)
+   # that has a different way of thinking of its position on the enclosing Display (e.g., Circle's
+   # consider their position to be relative to their center, and not the top-left corner, as
+   # most (all?) other GUI objects).  Something to be aware of and careful when creating
+   # new, special-case GUI objects (like Circle).
+   def __remapCoordinates__(self, x, y):
+      """
+      Adjust the coordinates relative to the underlying display.
+      """
+      x = x + self.position[0]
+      y = y + self.position[1]
+
+      return x, y
+
    def onMouseClick(self, callbackFunction):
       """
       Set up a callback function for when the mouse is clicked.
       """
 
       if self.mouseClickListener == None:
-         #self.mouseClickListener = MouseClickListener(self.__remapCoordinates__)
-         self.mouseClickListener = MouseClickListener()
+         self.mouseClickListener = MouseClickListener(self.__remapCoordinates__)
+         #self.mouseClickListener = MouseClickListener()
          self.addMouseListener(self.mouseClickListener)
 
       self.mouseClickListener.clickFunction = callbackFunction
@@ -973,8 +1090,8 @@ class Widget():
       """
 
       if self.mouseClickListener == None:
-         #self.mouseClickListener = MouseClickListener(self.__remapCoordinates__)
-         self.mouseClickListener = MouseClickListener()
+         self.mouseClickListener = MouseClickListener(self.__remapCoordinates__)
+         #self.mouseClickListener = MouseClickListener()
          self.addMouseListener(self.mouseClickListener)
 
       self.mouseClickListener.pressFunction = callbackFunction
@@ -985,8 +1102,8 @@ class Widget():
       """
 
       if self.mouseClickListener == None:
-         #self.mouseClickListener = MouseClickListener(self.__remapCoordinates__)
-         self.mouseClickListener = MouseClickListener()
+         self.mouseClickListener = MouseClickListener(self.__remapCoordinates__)
+         #self.mouseClickListener = MouseClickListener()
          self.addMouseListener(self.mouseClickListener)
 
       self.mouseClickListener.releaseFunction = callbackFunction
@@ -997,8 +1114,8 @@ class Widget():
       """
 
       if self.mouseClickListener == None:
-         #self.mouseClickListener = MouseClickListener(self.__remapCoordinates__)
-         self.mouseClickListener = MouseClickListener()
+         self.mouseClickListener = MouseClickListener(self.__remapCoordinates__)
+         #self.mouseClickListener = MouseClickListener()
          self.addMouseListener(self.mouseClickListener)
 
       self.mouseClickListener.enterFunction = callbackFunction
@@ -1009,8 +1126,8 @@ class Widget():
       """
 
       if self.mouseClickListener == None:
-         #self.mouseClickListener = MouseClickListener(self.__remapCoordinates__)
-         self.mouseClickListener = MouseClickListener()
+         self.mouseClickListener = MouseClickListener(self.__remapCoordinates__)
+         #self.mouseClickListener = MouseClickListener()
          self.addMouseListener(self.mouseClickListener)
 
       self.mouseClickListener.exitFunction = callbackFunction
@@ -1021,8 +1138,8 @@ class Widget():
       """
 
       if self.mouseMovementListener == None:
-         #self.mouseMovementListener = MouseMovementListener(self.__remapCoordinates__)
-         self.mouseMovementListener = MouseMovementListener()
+         self.mouseMovementListener = MouseMovementListener(self.__remapCoordinates__)
+         #self.mouseMovementListener = MouseMovementListener()
          self.addMouseMotionListener(self.mouseMovementListener)
 
       self.mouseMovementListener.moveFunction = callbackFunction
@@ -1033,17 +1150,18 @@ class Widget():
       """
 
       if self.mouseMovementListener == None:
-         #self.mouseMovementListener = MouseMovementListener(self.__remapCoordinates__)
-         self.mouseMovementListener = MouseMovementListener()
+         self.mouseMovementListener = MouseMovementListener(self.__remapCoordinates__)
+         #self.mouseMovementListener = MouseMovementListener()
          self.addMouseMotionListener(self.mouseMovementListener)
 
       self.mouseMovementListener.dragFunction = callbackFunction
+      #self.mouseMovementListener.remapCoordinates = self.remapCoordinates  # used to map coordinates relative to underlying display
 
    def addPopupMenu(self, menu):
 
       if self.mouseClickListener == None:
-         #self.mouseClickListener = MouseClickListener(self.__remapCoordinates__)
-         self.mouseClickListener = MouseClickListener()
+         self.mouseClickListener = MouseClickListener(self.__remapCoordinates__)
+         #self.mouseClickListener = MouseClickListener()
          self.addMouseListener(self.mouseClickListener)
 
       self.mouseClickListener.popupMenu = menu.__toJPopupMenu__()
@@ -1121,6 +1239,17 @@ class Drawable():
 #      return self.thickness
 
 
+# __ActiveDisplays__ is used to keep track which displays are active, so we can close them properly
+# and clean-up all contain GUI objects when JEM's Stop button is pressed 
+
+try:
+
+   __ActiveDisplays__          # if already defined (from an earlier run, do nothing, as it already contains material)
+   
+except:
+
+   __ActiveDisplays__ = []     # first run - let's define it to hold active displays
+
 
 ###############################################################################
 # Display
@@ -1150,6 +1279,8 @@ class Drawable():
 # NOTE:  This class was originally called Window, but was renamed for simplicity
 # due to the presence of a Window class in jMusic.
 ###############################################################################
+
+from copy import copy   # used by Display.getItems()
 
 class Display():
    """
@@ -1200,18 +1331,42 @@ class Display():
       # keyboard events are apparently being sent to JFrame 
       self.display.addKeyListener(self.keyboardListener)     
       #self.contentPane.addKeyListener(self.keyboardListener)
-      #self.mouseClickListener = MouseClickListener(self.__remapCoordinates__)
-      self.mouseClickListener = MouseClickListener()
+      self.mouseClickListener = MouseClickListener(self.__remapCoordinates__)
+      #self.mouseClickListener = MouseClickListener()
       # mouse events are apparently being sent to JPanel 
       self.contentPane.addMouseListener(self.mouseClickListener)
-      #self.mouseMovementListener = MouseMovementListener(self.__remapCoordinates__)
-      self.mouseMovementListener = MouseMovementListener()
+      self.mouseMovementListener = MouseMovementListener(self.__remapCoordinates__)
+      #self.mouseMovementListener = MouseMovementListener()
       # mouse events are apparently being sent to JPanel 
       self.contentPane.addMouseMotionListener(self.mouseMovementListener)
       
       # remember all items placed on display - used by removeAll()
       self.items = []
 
+      # remember that this display has been created and is active (so that it can be closed properly by JEM, if desired)
+      __ActiveDisplays__.append(self)
+
+
+   # NOTE: This function has been introduced to take care of remapping coordinates
+   # for JPanel components, so when a mouse event occurs with a GUI object's JPanel
+   # the global (enclosing Display) coordinates are communicated (instead of the internal
+   # JPanel coordinates, which are by default returned).  However, since Display also 
+   # uses the same internbal mechanism for handling mouse events (as normal GUI objects),
+   # we need to introduce this dummy function here, so that everything will work as
+   # defined by the MouseMotionListener API.
+   def __remapCoordinates__(self, x, y):
+      """
+      No mapping is required for Display objects.
+      """
+      return x, y
+
+   def close(self):
+      """Closes the display."""
+      # first, call the onClose() callback function (if any - default is the null function)
+      # this is done here because the next statement, self.display.dispose(), will NOT call it.  A fix.
+      self.displayListener.closeCallback()   
+
+      self.display.dispose()
 
    def show(self):
       """Shows the display."""
@@ -1220,6 +1375,10 @@ class Display():
    def hide(self):
       """Hides the display."""
       self.display.hide()
+
+   def getItems(self):
+      """Returns a deep copy of the items currently on the display."""
+      return copy(self.items)
 
 #   def place(self, item, x=None, y=None):
 #      """
@@ -1459,7 +1618,7 @@ class Display():
       self.add(circle)   # add it      
       return circle      # and return it
 
-   def drawPoint(self, x, y, color = Color.BLACK, thickness=0):
+   def drawPoint(self, x, y, color = Color.BLACK, thickness=1):
       """
       Draw a point at (x, y) with the given color and thickness.
       
@@ -1479,6 +1638,16 @@ class Display():
       oval = Oval(x1, y1, x2, y2, color, fill, thickness)   # create oval
       self.add(oval)   # add it      
       return oval      # and return it
+
+   def drawArc(self, x1, y1, x2, y2, startAngle, endAngle, color = Color.BLACK, fill = False, thickness = 1):
+      """
+      Draw an arc using the provided coordinates, arc angles, color, fill, and thickness.
+      
+      Returns the arc object (in case we want to move it or delete it later).
+      """
+      arc = Arc(x1, y1, x2, y2, startAngle, endAngle, color, fill, thickness)   # create arc
+      self.add(arc)   # add it      
+      return arc      # and return it
 
    def drawRectangle(self, x1, y1, x2, y2, color = Color.BLACK, fill = False, thickness = 1):
       """
@@ -1531,8 +1700,7 @@ class Display():
       #
       # see http://docs.oracle.com/javase/tutorial/2d/text/fonts.html#logical-fonts
 
-      label = Label(text)          # create label
-      label.setForeground(color)   # set the color      
+      label = Label(text, LEFT, color)   # create label
       if font:                     # did they provide a font?
          label.setFont(font)          # yes, so set it
       self.add(label, x, y)        # add it at given coordinates    
@@ -1607,6 +1775,7 @@ class Display():
       Set up a callback function for when the mouse is dragged.
       """
       self.mouseMovementListener.dragFunction = callbackFunction
+      self.mouseMovementListener.remapCoordinates = self.remapCoordinates  # needed by listener (does nothing for displays)
 
    def onClose(self, callbackFunction):
       self.displayListener.closeCallback = callbackFunction
@@ -1647,6 +1816,49 @@ class Display():
          # this will happen if they called us before ever calling showMouseCoordinates()
          pass   #  nothing to restore
          
+   def remapCoordinates(self, x, y):
+      """
+      Leave coordinates as is - we are a display (needed for mouse drag).
+      """
+      return x, y
+
+
+######################################################################################
+# If running inside JEM, register function that stops everything, when the Stop button
+# is pressed inside JEM.
+######################################################################################
+
+# function to stop and clean-up all active displays
+def __stopActiveDisplays__():
+
+   global __ActiveDisplays__
+
+   # first, remove and clear all GUI objects contained in each display
+   for display in __ActiveDisplays__:
+   
+      # first, dispose all items in the display
+      for guiObject in display.getItems():
+         display.remove(guiObject)   # remove it from display
+         del guiObject               # and delete it from Jython
+      
+      # now dispose the display itself
+      display.display.dispose()      # bye, bye
+
+   # also empty list, so things can be garbage collected
+   __ActiveDisplays__ = []   # remove access to deleted items   
+
+# now, register function with JEM (if possible)
+try:
+
+    # if we are inside JEM, registerStopFunction() will be available
+    registerStopFunction(__stopActiveDisplays__)   # tell JEM which function to call when the Stop button is pressed
+
+except:  # otherwise (if we get an error), we are NOT inside JEM 
+
+    pass    # so, do nothing.
+
+
+
 
 ###############################################################################
 # Menu
@@ -1798,17 +2010,31 @@ class MenuItem(JMenuItem):
 # Methods:
 #
 # Label(text)
-# Label(text, alignment)
+# Label(text, alignment, foregroundColor, backgroundColor)
 #   Create a new label containing the text.  The alignment may be LEFT,
-#   CENTER (default), or RIGHT.
+#   CENTER (default), or RIGHT.  The two colors, if provided, refer to
+#   the text color and the background color.
 #
-# setFont(), e.g., setFont( Font("Serif", Font.ITALIC, 16) )
+# setFont(font), e.g., setFont( Font("Serif", Font.ITALIC, 16) )
+#
+# setText(text)
+#   Sets the text contained in the text field (as a string).
 #
 # getText()
 #   Returns the text contained in the text field (as a string).
 #
-# setText()
-#   Sets the text contained in the text field (as a string).
+# setBackgroundColor(color)
+#   Change the color of the label's background.
+#
+# getBackgroundColor()
+#   Returns the color of the label.
+#
+# setForegroundColor(color)
+#   Change the color of the label's text.
+#
+# getForegroundColor()
+#   Returns the color of the label's text.
+#
 ###############################################################################
 
 LEFT = SwingConstants.LEFT
@@ -1820,7 +2046,7 @@ class Label(JLabel, Widget):
    A widget to contain text.
    """
 
-   def __init__(self, text, alignment = LEFT):
+   def __init__(self, text, alignment = LEFT, foregroundColor = None, backgroundColor = None):
       """
       Create the text label
       """
@@ -1830,8 +2056,66 @@ class Label(JLabel, Widget):
       self.offset = (0,0)
       self.position = (0,0)
       self.display = None
-      
+
       self.setSize(self.getPreferredSize())
+      
+      # remember default foreground and background color
+      self.backgroundColor = backgroundColor
+      self.foregroundColor = foregroundColor
+      
+      # set colors, if necessary
+      if self.backgroundColor != None:
+         self.setBackgroundColor( self.backgroundColor )
+      if self.foregroundColor != None:
+         self.setForegroundColor( self.foregroundColor )       
+         
+   def setBackgroundColor(self, color=None):
+      """
+      Change the color of the label's background.  If no color provided, use dialog box to select.
+      """
+      
+      if color == None:
+         color = JColorChooser().showDialog(None, "Select a color", Color.ORANGE) 
+         print color   # useful side-efect for discovering new colors
+
+      # labels need to be opaque to show their background color, so, since we want show a background color
+      # we first need to make the label opaque
+      self.setOpaque(True)
+      self.backgroundColor = color    # remember it
+      self.setBackground(color)       # and set it (using jLabel's appropriate function)
+
+   def getBackgroundColor(self):
+      """
+      Returns the color of the label.
+      """
+      
+      # if background is not set, return the color of the display
+      if self.backgroundColor == None and self.display != None:
+         color = self.display.getColor()
+      else:
+         color = self.backgroundColor
+      
+      return color
+
+   def setForegroundColor(self, color=None):
+      """
+      Change the color of the label's text.  If no color provided, use dialog box to select.
+      """
+      
+      if color == None:
+         color = JColorChooser().showDialog(None, "Select a color", Color.ORANGE) 
+         print color   # useful side-efect for discovering new colors
+
+      self.foregroundColor = color    # remember it
+      self.setForeground(color)       # and set it (using jLabel's appropriate function)
+
+   def getForegroundColor(self):
+      """
+      Returns the color of the label's text.
+      """
+      
+      return self.foregroundColor
+
 
 ###############################################################################
 # Button
@@ -2243,7 +2527,7 @@ class Icon(JPanel, Widget):
 
       # JEM working directory fix (see above)
       filename = fixWorkingDirForJEM( filename )   # does nothing if not in JEM
-	  
+     
       # ***
       #print "fixWorkingDirForJEM( filename ) =", filename
 
@@ -2335,12 +2619,73 @@ class Icon(JPanel, Widget):
       #                          width, height, Scalr.OP_ANTIALIAS)
       #scaledIcon = Scalr.resize(self.originalIcon, Scalr.Method.QUALITY, Scalr.Mode.AUTOMATIC,
       #                          width, height, Scalr.OP_ANTIALIAS)
-      scaledIcon = Scalr.resize(self.originalIcon, Scalr.Method.BALANCED, Scalr.Mode.AUTOMATIC,
-                                width, height, Scalr.OP_ANTIALIAS)
       #scaledIcon = Scalr.resize(self.originalIcon, Scalr.Method.SPEED, Scalr.Mode.AUTOMATIC,
       #                          width, height, Scalr.OP_ANTIALIAS)
+      #scaledIcon = Scalr.resize(self.originalIcon, Scalr.Method.BALANCED, Scalr.Mode.AUTOMATIC,
+      #                          width, height, Scalr.OP_ANTIALIAS)
+      
+      # use this to adjust image dimensions as expected (all above, retain proportions of image)
+      scaledIcon = Scalr.resize(self.originalIcon, Scalr.Method.BALANCED, Scalr.Mode.FIT_EXACT,
+                                width, height, Scalr.OP_ANTIALIAS)
 
       return scaledIcon
+
+   def getPixel(self, col, row):
+      """Returns a list of the RGB values for this pixel, e.g., [255, 0, 0].""" 
+      
+      # Obsolete - convert the row so that row zero refers to the bottom row of pixels.
+      #row = self.height - row - 1
+
+      color = Color(self.icon.getRGB(col, row))  # get pixel's color
+      return [color.getRed(), color.getGreen(), color.getBlue()]  # create list of RGB values (0-255)
+
+   def setPixel(self, col, row, RGBlist):
+      """Sets this pixel's RGB values, e.g., [255, 0, 0].""" 
+      
+      # Obsolete - convert the row so that row zero refers to the bottom row of pixels.
+      #row = self.height - row - 1
+
+      color = Color(RGBlist[0], RGBlist[1], RGBlist[2])  # create color from RGB values
+      self.icon.setRGB(col, row, color.getRGB())
+
+      # some pixels have changed, so refresh display
+      if self.display:
+         self.display.display.repaint()
+
+   def getPixels(self):
+      """Returns a 2D list of pixels (col, row) - each pixel is a list of RGB values, e.g., [255, 0, 0].""" 
+      
+      pixels = []                      # initialize list of pixels
+      #for row in range(self.height-1, 0, -1):   # load pixels from image      
+      for row in range(0, self.getHeight()):   # load pixels from image      
+         pixels.append( [] )              # add another empty row
+         for col in range(self.getWidth()):    # populate row with pixels    
+            # RGBlist = self.getPixel(col, row)   # this works also (but slower)    
+            color = Color(self.icon.getRGB(col, row))  # get pixel's color
+            RGBlist = [color.getRed(), color.getGreen(), color.getBlue()]  # create list of RGB values (0-255)
+            pixels[-1].append( RGBlist )   # add a pixel as (R, G, B) values (0-255, each)
+
+      # now, 2D list of pixels has been created, so return it
+      return pixels
+
+   def setPixels(self, pixels):
+      """Sets image to the provided 2D list of pixels (col, row) - each pixel is a list of RGB values, e.g., [255, 0, 0].""" 
+      
+      height = len(pixels)        # get number of rows
+      width  = len(pixels[0])     # get number of columns (assume all columns have same length
+      
+      #for row in range(self.height-1, 0, -1):   # iterate through all rows      
+      for row in range(0, height):   # iterate through all rows     
+         for col in range(width):    # iterate through every column on this row
+         
+            RGBlist = pixels[row][col]
+            #self.setPixel(col, row, RGBlist)   # this works also (but slower)
+            color = Color(RGBlist[0], RGBlist[1], RGBlist[2])  # create color from RGB values
+            self.icon.setRGB(col, row, color.getRGB())
+
+      # some pixels have changed, so refresh display
+      if self.display:
+         self.display.display.repaint()
 
    def setSize(self, width, height):
       """
@@ -2358,6 +2703,18 @@ class Icon(JPanel, Widget):
          xPosition, yPosition = self.position
          self.setBounds(xPosition, yPosition, width, height)
          self.display.display.repaint()
+
+   def setWidth(self, width):
+      """
+      Change the width of this icon.
+      """
+      self.setSize( width, self.getHeight() )
+
+   def setHeight(self, height):
+      """
+      Change the width of this icon.
+      """
+      self.setSize( self.getWidth(), height )
 
    def getWidth(self):
       """
@@ -2586,6 +2943,7 @@ class Line(JPanel, Widget, Drawable):
       # using CAP_BUTT for line ends, to ensure that lines "line" up regardless of thickness
       # (see http://www.zetcode.com/gfx/java2d/basicdrawing/)
       graphics2DContext.setStroke( BasicStroke(self.thickness, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND) )
+      graphics2DContext.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
       graphics2DContext.drawLine(self.startX_JPanel+self.halfThick, self.startY_JPanel+self.halfThick, self.endX_JPanel+self.halfThick, self.endY_JPanel+self.halfThick)
       
       Toolkit.getDefaultToolkit().sync()  # sync graphics for animation 
@@ -2628,6 +2986,18 @@ class Circle(JPanel, Widget, Drawable):
       #self.setSize( self.diameter+self.thickness, self.diameter+self.thickness)
  
 
+   # NOTE: Here we overload the Widget __remapCoordinates__() function, since Circle objects have
+   # their own special way to think of their position in an enclosing Display, i.e., NOT relative to
+   # their top-left corner, but relative to their center.
+   def __remapCoordinates__(self, x, y):
+      """
+      Adjust the coordinates relative to the underlying display.
+      """
+      x = x + self.position[0] - self.radius
+      y = y + self.position[1] - self.radius
+
+      return x, y
+
    def paint(self, graphics2DContext):
       """
       Paint me on the display
@@ -2636,6 +3006,7 @@ class Circle(JPanel, Widget, Drawable):
       # set color, and draw it
       graphics2DContext.setPaint(self.color)        
       graphics2DContext.setStroke( BasicStroke(self.thickness, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND) )
+      graphics2DContext.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
       graphics2DContext.drawOval(0+self.halfThick, 0+self.halfThick, self.diameter, self.diameter)
       if self.fill:    # do we need to fill the circle?
          graphics2DContext.fillOval(0+self.halfThick, 0+self.halfThick, self.diameter, self.diameter)
@@ -2652,12 +3023,12 @@ class Point(Circle):
    A simple point
    """
 
-   def __init__(self, x, y, color=Color.BLACK, thickness=0):
+   def __init__(self, x, y, color=Color.BLACK, thickness=1):
       """
       Create a new point
       """
       # a point is a circle of radius = thickness
-      Circle.__init__(self, x, y, thickness, color, True)
+      Circle.__init__(self, x, y, thickness, color, True, 0)
 
 
 # Oval
@@ -2714,6 +3085,7 @@ class Oval(JPanel, Widget, Drawable):
       # set color, rounded ends, and draw it
       graphics2DContext.setPaint(self.color)        
       graphics2DContext.setStroke( BasicStroke(self.thickness, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND) )
+      graphics2DContext.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
       graphics2DContext.drawOval(self.startX_JPanel, self.startY_JPanel, self.endX_JPanel, self.endY_JPanel)
       if self.fill:    # do we need to fill the rectangle?
          graphics2DContext.fillOval(self.startX_JPanel, self.startY_JPanel, self.endX_JPanel, self.endY_JPanel)
@@ -2776,6 +3148,7 @@ class Rectangle(JPanel, Widget, Drawable):
       # set color, rounded ends, and draw it
       graphics2DContext.setPaint(self.color)        
       graphics2DContext.setStroke( BasicStroke(self.thickness, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND) )
+      graphics2DContext.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
       graphics2DContext.drawRect(self.startX_JPanel, self.startY_JPanel, self.endX_JPanel, self.endY_JPanel)
       if self.fill:    # do we need to fill the rectangle?
          graphics2DContext.fillRect(self.startX_JPanel, self.startY_JPanel, self.endX_JPanel, self.endY_JPanel)
@@ -2783,6 +3156,76 @@ class Rectangle(JPanel, Widget, Drawable):
       Toolkit.getDefaultToolkit().sync()  # sync graphics for animation 
 
          
+# Arc
+#
+# Creates an arc to be added to a display.
+
+class Arc(JPanel, Widget, Drawable):
+   """
+   An arc specified by two diagonal corners, the start angle, and the end angle.  Angles are interpreted such that 0 degrees is 
+   at the three o'clock position. A positive value indicates a counter-clockwise rotation while 
+   a negative value indicates a clockwise rotation.
+   """
+
+   def __init__(self, x1, y1, x2, y2, startAngle, endAngle, color = Color.BLACK, fill = False, thickness=1):
+      """
+      Create a new arc
+      """
+     
+      JPanel.__init__(self)
+      Widget.__init__(self)                 # set up listeners, etc.
+      Drawable.__init__(self, color, fill, thickness)  # set up color, fill, thickness, etc.
+
+      # NOTE: Arc will be draw inside a JPanel (a rectangle) that as big as the rectangle's dimensions,
+      # i.e., the JPanel tightly encloses the rectangle.  This means the original rectangle coordinates have
+      # to be mapped the internal JPanel coordinates (0,0 is at top left), and also to the JPanel's position
+      # within the display (when the Rectangle object is eventually added to a display).
+       
+      dx = abs(x2-x1)     # width
+      dy = abs(y2-y1)     # height
+      self.halfThick = self.thickness/2   # adjustment for drawing
+
+      self.offset = (0,0)        # offset of object placement relative to the first (x,y) point (no offset for rectangles)
+
+      # let's determine the top-left corner
+      x = min(x1, x2)    # get left-most line x coordinate
+      y = min(y1, y2)    # get left-most line y coordinate
+      self.position = ( x-self.halfThick, y-self.halfThick )  # position of the JPanel in the display (when added)
+      self.display = None
+
+      # JPanel should be big enough to contain the rectangle
+      self.setPreferredSize(Dimension( dx+self.thickness+1,  dy+self.thickness+1 ))
+      self.setSize( dx+self.thickness+1,  dy+self.thickness+1 )
+      #self.setPreferredSize(Dimension( dx+self.thickness,  dy+self.thickness ))
+      #self.setSize( dx+self.thickness,  dy+self.thickness )
+
+      # make sure we end up with top-left and bottom-right corners
+      self.startX_JPanel = 0 + self.halfThick
+      self.startY_JPanel = 0 + self.halfThick
+      self.endX_JPanel = dx
+      self.endY_JPanel = dy
+      
+      # remember angles
+      self.startAngle = startAngle
+      self.arcAngle = endAngle - startAngle  # calculate arcAngle (as needed by drawArc() and fillArc()
+      
+
+   def paint(self, graphics2DContext):
+      """
+      Paint me on the display
+      """
+
+      # set color, rounded ends, and draw it
+      graphics2DContext.setPaint(self.color)        
+      graphics2DContext.setStroke( BasicStroke(self.thickness, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND) )
+      graphics2DContext.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
+      graphics2DContext.drawArc(self.startX_JPanel, self.startY_JPanel, self.endX_JPanel, self.endY_JPanel, self.startAngle, self.arcAngle)
+      if self.fill:    # do we need to fill the arc?
+         graphics2DContext.fillArc(self.startX_JPanel, self.startY_JPanel, self.endX_JPanel, self.endY_JPanel, self.startAngle, self.arcAngle)
+      
+      Toolkit.getDefaultToolkit().sync()  # sync graphics for animation 
+
+
 # Polygon
 #
 # Creates a polygon to be added to a display.
@@ -2843,11 +3286,19 @@ class Polygon(JPanel, Widget, Drawable):
       # set color, rounded ends, and draw it
       graphics2DContext.setPaint(self.color)        
       graphics2DContext.setStroke( BasicStroke(self.thickness, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND) )
+      graphics2DContext.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
       graphics2DContext.drawPolygon(self.xPoints, self.yPoints, len(self.xPoints))
       if self.fill:    # do we need to fill the rectangle?
          graphics2DContext.fillPolygon(self.xPoints, self.yPoints, len(self.xPoints))
       
       Toolkit.getDefaultToolkit().sync()  # sync graphics for animation 
+
+
+
+###### GUI CONTROLS ###################################
+
+# import additional GUI controls (new as of v3.6) 
+from guicontrols import *
 
                        
 
@@ -2955,7 +3406,7 @@ if __name__ == "__main__":
    # define a function to handle display keyboard press/release events
    def echo1(key):
       """Display keyboard press/release events on label l1."""
-      l1.setText("key =", key)
+      l1.setText("key =" + str(key))
 
    # when a key is typed on display2, call the above function to update label l1       
    display2.onKeyDown( echo1 ) # echo keys pressed
@@ -3408,3 +3859,17 @@ if __name__ == "__main__":
    
    # so, start the engine!
    g.start()
+
+
+### SIXTH DISPLAY TEST ###
+
+   # create display
+   display6 = Display("Sixth Display - Arc objects", 800, 800, 150, 150)     
+   display6.show() 
+   
+   # draw some arcs
+   display6.drawArc(400, 250, 500, 350, 240, 60) 
+   display6.drawArc(200, 250, 300, 350, 180, 0)  
+   display6.drawArc(5, 250, 105, 350, 90, 270) 
+   display6.drawArc(5, 450, 105, 550, 90, -90) 
+   display6.drawArc(200, 450, 300, 550, 240, -60)

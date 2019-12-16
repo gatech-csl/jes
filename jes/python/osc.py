@@ -1,15 +1,15 @@
 ################################################################################################################
-# osc.py       Version 1.1     02-Dec-2013     David Johnson and Bill Manaris
+# osc.py       Version 1.6     07-Mar-2018     David Johnson and Bill Manaris
 
 ###########################################################################
 #
 # This file is part of Jython Music.
 #
-# Copyright (C) 2014 David Johnson and Bill Manaris
+# Copyright (C) 2014-2018 David Johnson and Bill Manaris
 #
 #    Jython Music is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 2 of the License, or
+#    the Free Software Foundation, either version 3 of the License, or
 #    (at your option) any later version.
 #
 #    Jython Music is distributed in the hope that it will be useful,
@@ -28,6 +28,26 @@
 #
 # REVISIONS:
 #
+#   1.6     07-Mar-2018 (bm) Now, we allow mutliple callback functions to be associated with the same 
+#                       incoming OSC address.  This is was introduced to be consistent with the MidiIn API.
+#
+#   1.5     11-Feb-2016 (dj) Update in how we get host IP address in OscIn object to fix Mac OSX problem.
+#
+#   1.4     07-Dec-2014 (bm) Changed OscIn object functionality to allow registering of only *one*
+#                       callback function per address (to mirror the corresponding MidiIn's object's
+#                       behavior in the midi.py library).  The goal is to promote consistency of behavior
+#                       between the two libraries.  Also, added MidiIn showMessages() and hideMessages() 
+#                       to turn on and off printing of incoming OSC messages.  This allows to easily explore
+#                       what messages are being send by a particular device (so that they can be mapped to 
+#                       different functions).
+#
+#   1.3     19-Nov-2014 (bm) Fixed bug in cleaning up objects after JEM's stop button is pressed -
+#                       if list of active objects already exists, we do not redefine it - thus, we 
+#                       do not lose older objects, and can still clean them up.
+#
+#   1.2     06-Nov-2014 (bm) Added functionality to stop osc objects via JEM's Stop button
+#                       - see registerStopFunction().
+#
 #   1.1     02-Dec-2013 (bm) Updated iiposed.com import statement to fix import error under 
 #                       some Windows / Java combinations.
 #
@@ -40,6 +60,19 @@ from com.illposed.osc import OSCListener, OSCMessage, OSCPacket, OSCPort, OSCPor
 #from com.illposed.osc.utility import *
 import socket
 from java.net import InetAddress
+
+# used to keep track which osc objects are active, so we can stop them when
+# JEM's Stop button is pressed
+
+try:
+
+   _ActiveOscInObjects_         # if already defined (from an earlier run, do nothing, as it already contains material)
+   
+except:
+
+   _ActiveOscInObjects_  = []   # first run - let's define it to hold active objects
+   _ActiveOscOutObjects_ = []   # first run - let's define it to hold active objects
+
 
 #################### OscIn ##############################
 #
@@ -90,6 +123,9 @@ from java.net import InetAddress
 # oscIn.onInput("/.*", complete)   # all OSC addresses call this function
 #
 
+# a useful OSC meessage constant
+ALL_MESSAGES = "/.*"    # matches all possible OSC addresses
+
 class OscIn():
 
    def __init__(self, port = 57110):
@@ -99,43 +135,93 @@ class OscIn():
       self.oscPortIn.startListening()        # and start it
 
       # also, get our host IP address (to output below, for the user's convenience)
-      self.IPaddress = socket.gethostbyname(socket.getfqdn())  
+      self.IPaddress = socket.gethostbyname(socket.gethostname())
       print "\nOSC Server started:"    
       print "Accepting OSC input on IP address", self.IPaddress, "at port", self.port
       print "(use this info to configure OSC clients)"
       print
       
-      ## provide a default OSC message handler 
-      ## uncomment this to see incoming OSC messages (for troubleshooting)
-      #self.onInput( "/.*", self.__echoPrintInput__)
+      # create dictionary to hold registered callback functions, so that we can replace them
+      # when a new call to onInput() is made for a given address - the dictionary key is the
+      # address, and the dictionary value is the GenericListener created for this address,
+      # so that may update the callback function it is associated with.
+      self.oscAddressHandlers = {}
+      
+      self.showIncomingMessages = True   # print all incoming OSC messages by default
+
+      # provide a default OSC message handler 
+      # prints out all incoming OSC messages (if desired - see showMessages() and hideMessages())
+      self.onInput(ALL_MESSAGES, self. _printIncomingMessage_)
+
+      # remember that this OscIn has been created and is active (so that it can be stopped/terminated by JEM, if desired)
+      _ActiveOscInObjects_.append(self)
+      
       
    def onInput(self, OSCaddress, function):
       """
       Associate callback 'function' to OSC messages send to 'OSCaddress' on this device.  An 'OSCaddress'
       looks like a URL, e.g., "/first/second/third".
       """
-      self.oscPortIn.addListener(OSCaddress, GenericListener( function ))  # register function to call for this address
 
-   def __echoPrintInput__(self, message):
-      """It just echo-prints the incoming OSC message."""
+      # register callback function for this OSC address
+      if self.oscAddressHandlers.has_key( OSCaddress ):   # is there an existing hanlder already?
+         
+         # yes, so update it (i.e., update the GenericListener's functions attribute)
+         self.oscAddressHandlers[ OSCaddress ].functions.append( function )
+         
+      else:
+      
+         # no, so add a new handler for this address
+         handler = GenericListener( function )            # create the listener
+         self.oscAddressHandlers[ OSCaddress ] = handler  # remember it
+         self.oscPortIn.addListener(OSCaddress, handler)  # and add it to the OscIn object
 
-      OSCaddress = message.getAddress()
-      args = message.getArguments()
-      print "\nOSC Event:"
-      print "OSC In - Address:", OSCaddress,   # print the time and address         
-      for i in range( len(args) ):             # and any message arguments (all on the same line)
-         print ", Argument " + str(i) + ": " + str(args[i]),
-      print
+
+   def _printIncomingMessage_(self, message):
+      """It prints out the incoming OSC message (if desired)."""
+
+      # determine if we need to print out the message
+      if self.showIncomingMessages:   # echo print incoming OSC messages?
+      
+         # yes, so extract info
+         OSCaddress = message.getAddress()
+         args = message.getArguments()
+         
+         # and print out the message
+         #print "\nOSC Event:"
+         print "OSC In - Address:", '"' + str(OSCaddress) + '"',   # print the address         
+         for i in range( len(args) ):                              # and any message arguments (all on the same line)
+            if type(args[i]) == unicode:     # is the argument a string?
+               print ", Argument " + str(i) + ': "' + args[i] + '"',   # yes, so use double quotes
+            else:
+               print ", Argument " + str(i) + ": " + str(args[i]),     # no, so print as is
+         print
+
+   def showMessages(self):
+      """
+      Turns on printing of incoming OSC messages (useful for exploring what OSC messages 
+      are generated by a particular device).
+      """
+      self.showIncomingMessages = True
+
+   def hideMessages(self):
+      """
+      Turns off printing of incoming OSC messages.
+      """
+      self.showIncomingMessages = False
+
 
 ############# helper class for OscIn #################
 class GenericListener(OSCListener):
 
    def __init__(self, function = None):
-      self.function = function
+      self.functions = [function]
 
    def acceptMessage(self, time, oscMessage):
       #self.function(time, oscMessage)  # *** for now, hide time, as it is not used
-      self.function(oscMessage)
+      for function in self.functions:
+         function(oscMessage)
+
 
 #################### OscOut ##############################
 #
@@ -178,6 +264,10 @@ class OscOut():
       oscMessage = OSCMessage( oscAddress, args )          # create OSC message from this OSC address and arguments
       self.portOut.send(oscMessage)                        # and send it to the OSC device that's listening to us
 
+      # remember that this OscIn has been created and is active (so that it can be stopped/terminated by JEM, if desired)
+      _ActiveOscOutObjects_.append(self)
+      
+
 # TO DO??: Do we need a sendBundle() for time-stamped, bunded OSC messages?
 #          To resolve - what does the timestamp mean?  When to execute?  
 #          For answers, see - http://opensoundcontrol.org/spec-1_0
@@ -188,12 +278,50 @@ class OscOut():
 #      """
 #
 
+
+######################################################################################
+# If running inside JEM, register function that stops everything, when the Stop button
+# is pressed inside JEM.
+######################################################################################
+
+# function to stop and clean-up all active Osc objects
+def _stopActiveOscObjects_():
+
+   global _ActiveOscInObjects_, _ActiveOscOutObjects_
+
+   # first, stop OscIn objects
+   for oscIn in _ActiveOscInObjects_:
+      oscIn.oscPortIn.stopListening()
+      oscIn.oscPortIn.close()
+
+   # now, stop OscOut objects
+   for oscOut in _ActiveOscOutObjects_:
+      oscOut.portOut.close()
+
+   # then, delete all of them
+   for oscObject in (_ActiveOscInObjects_ + _ActiveOscOutObjects_):
+      del oscObject
+
+   # also empty list, so things can be garbage collected
+   _ActiveOscInObjects_ = []   # remove access to deleted items   
+   _ActiveOscInObjects_ = []   # remove access to deleted items   
+
+# now, register function with JEM (if possible)
+try:
+
+    # if we are inside JEM, registerStopFunction() will be available
+    registerStopFunction(_stopActiveOscObjects_)   # tell JEM which function to call when the Stop button is pressed
+
+except:  # otherwise (if we get an error), we are NOT inside JEM 
+
+    pass    # so, do nothing.
+
+   
+   
 #################### Unit Testing ##############################
 
 if __name__ == '__main__':
 
-   from music import *
-   
    ###### create an OSC input object ######
    oscIn = OscIn( 57110 )        # get input from OSC devices on port 57110
 
@@ -201,20 +329,9 @@ if __name__ == '__main__':
    def simple(message):      
       print "Hello world!"
 
-   def complete(message):    
-      OSCaddress = message.getAddress()
-      args = message.getArguments()
-      print "\nOSC Event:"
-      print "OSC In - Address:", OSCaddress,   # print the time and address         
-      for i in range( len(args) ):             # and any message arguments (all on the same line)
-         print ", Argument " + str(i) + ": " + str(args[i]),
-      print
-
    # tell OSC input object which functions to call for which OSC addresses
    oscIn.onInput("/helloWorld", simple)   # if the incoming OSC message's address is "/helloWorld" call this function 
-   oscIn.onInput("/.*", complete)         # also, for all addresses call this function
 
-   # NOTE:  If two address specs (regular expressions) match (see above), both functions will be called!
 
 
    ###### create an OSC output object ######
