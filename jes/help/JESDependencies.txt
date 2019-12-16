@@ -1,11 +1,11 @@
-JES version 5.0 Included Software Licenses
+JES version 6.0 Included Software Licenses
 ==========================================
 JES includes many third-party software components, which are released
 under varying Free Software or redistributable licenses.
 
 Free Software:
 
-* Jython 2.5.3 (Python Software Foundation License v2)
+* Jython 2.7.1b3 (Python Software Foundation License v2)
 * Blinker 1.3 (MIT/X11 License)
 * Jython Music Libraries (GNU General Public License v2+)
 * JMusic 1.7 (GNU General Public License v2+)
@@ -22,7 +22,7 @@ Non-Free Software (but still legally redistributable with JES):
 (Dependencies marked * are only required by the Jython Music libraries.)
 
 
-Jython 2.5.3
+Jython 2.7.1b3
 ------------
 Website: http://www.jython.org/
 
@@ -30,7 +30,7 @@ Usage: JES uses this to interpret Python programs.
 
 Files:
 
-* dependencies/jars/jython-2.5.3.jar
+* dependencies/jars/jython-2.7.1b3.jar
 * dependencies/jython
 
 Copyright © 2001-2011 Python Software Foundation; All Rights Reserved.

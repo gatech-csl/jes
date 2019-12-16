@@ -28,7 +28,7 @@
 !define APPGUID "{AE72B60E-47B2-46FE-AC9E-0436A26DAD7D}"
 !define PUBLISHERNAME "@vendor@"
 
-!define REQUIREDJAVA "1.5"
+!define REQUIREDJAVA "1.8"
 
 !define INSTALLSUBTITLE "@fulltitle@ (version @release@)"
 
@@ -181,8 +181,8 @@ Section "Java Runtime Environment" SecJRE
   ; We keep the JRE in a ZIP file because it's really huge
   ; (Even the ZIP file is 45 MB, unpacked it's like 120 MB)
   GetTempFileName $3
-  File /oname=$3 "..\..\resources\windows\jre-win32-1.7.0_60.zip"
-  !insertmacro ZIPDLL_EXTRACT "$3" "$INSTDIR\dependencies\jre-win32" "<ALL>"
+  File /oname=$3 "..\..\resources\windows\jre-win64-1.8_231.zip"
+  !insertmacro ZIPDLL_EXTRACT "$3" "$INSTDIR\dependencies\jre-win64" "<ALL>"
   Delete $3
 SectionEnd
 

@@ -1,5 +1,5 @@
 ################################################################################################################
-# image.py    Version 1.4     02-May-2014     Bill Manaris
+# image.py    Version 1.5     19-May-2014     Bill Manaris
 
 ###########################################################################
 #
@@ -9,7 +9,7 @@
 #
 #    Jython Music is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 2 of the License, or
+#    the Free Software Foundation, either version 3 of the License, or
 #    (at your option) any later version.
 #
 #    Jython Music is distributed in the hope that it will be useful,
@@ -29,23 +29,28 @@
 #
 # Revisions:
 #
-# 1.4   02-May-2014 Added fixWorkingDirForJEM() solution to work with new JEM editor by Tobias Kohn.
+#   1.5     19-Nov-2014 (bm) Added functionality to stop osc objects via JEM's Stop button
+#                       - see registerStopFunction().  Also, fixed bug in cleaning up objects -
+#                       if list of active objects already exists, we do not redefine it - thus, we 
+#                       do not lose older objects, and can still clean them up.
 #
-# 1.3   17-Mar-2013 Origin moved to top-left (for consistency with other systems).
+#   1.4     02-May-2014 (bm) Added fixWorkingDirForJEM() solution to work with new JEM editor by Tobias Kohn.
 #
-# 1.2   10-Feb-2013 Now Image() constructor accepts a filename, as well as a width and a height.
-#                   If the filename argument is a string, then it is treated as a filename
-#                   to be opened.  If filename is an int, it is treated as width, and the second
-#                   argument is treated as height of a blank image to be created.  This way, we
-#                   do not need Read.image() from the music library anymore (which was creating
-#                   an unnecessary content coupling between the two libraries - image and music.py).
-#                   Also, added show() and hide().
+#   1.3     17-Mar-2013 (bm) Origin moved to top-left (for consistency with other systems).
 #
-# 1.1   05-Sep-2012 Renamed package to 'image'.
+#   1.2     10-Feb-2013 (bm) Now Image() constructor accepts a filename, as well as a width and a height.
+#                       If the filename argument is a string, then it is treated as a filename
+#                       to be opened.  If filename is an int, it is treated as width, and the second
+#                       argument is treated as height of a blank image to be created.  This way, we
+#                       do not need Read.image() from the music library anymore (which was creating
+#                       an unnecessary content coupling between the two libraries - image and music.py).
+#                       Also, added show() and hide().
 #
-# 1.0.1	21-May-2012	Changed origin of image to lower-left corner.
+#   1.1     05-Sep-2012 (bm) Renamed package to 'image'.
 #
-# 1.0	16-Nov-2011	Original version.
+#   1.0.1	21-May-2012	(bm) Changed origin of image to lower-left corner.
+#
+#   1.0	    16-Nov-2011	(bm) Original version.
 #
 
 from java.awt import Color
@@ -96,6 +101,19 @@ def fixWorkingDirForJEM( filename ):
       return filename
 
 
+# used to keep track which image objects are active, so we can close them when
+# JEM's Stop button is pressed - this way everything timed to happen into
+# the future (notes, animation, etc.) stops
+
+try:
+
+   _ActiveImages_         # if already defined (from an earlier run, do nothing, as it already contains material)
+   
+except:
+
+   _ActiveImages_ = []    # first run - let's define it to hold active objects
+
+
 ######################################################################################
 class Image:
    """Holds an image of RGB pixels accessed by column and row indices (col, row).  
@@ -140,6 +158,9 @@ class Image:
       self.display.setResizable(False)
       self.display.pack()
       self.display.setVisible(True)
+
+      # remember that this image has been created and is active (so that it can be stopped/terminated by JEM, if desired)
+      _ActiveImages_.append(self)
 
  
    def getWidth(self):
@@ -260,3 +281,36 @@ class Image:
       
       self.display.setVisible(False)
       
+
+######################################################################################
+# If running inside JEM, register function that stops everything, when the Stop button
+# is pressed inside JEM.
+######################################################################################
+
+# function to stop and clean-up all active images
+def _stopActiveImages_():
+
+   global _ActiveImages_
+
+   # first, hide them
+   for image in _ActiveImages_:
+      image.hide()
+
+   # then, delete them
+   for image in _ActiveImages_:
+      del image
+
+   # also empty list, so things can be garbage collected
+   _ActiveImages_ = []   # remove access to deleted items   
+
+# now, register function with JEM (if possible)
+try:
+
+    # if we are inside JEM, registerStopFunction() will be available
+    registerStopFunction(_stopActiveImages_)   # tell JEM which function to call when the Stop button is pressed
+
+except:  # otherwise (if we get an error), we are NOT inside JEM 
+
+    pass    # so, do nothing.
+
+
