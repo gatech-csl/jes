@@ -153,7 +153,7 @@ public class JESstartup {
         // then close the splash window
         if (splashWindow != null) {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(3000);
             } catch (InterruptedException ie) {
                 System.err.println("timeout exception, eep?");
             }
