@@ -187,12 +187,14 @@ Section "Java Runtime Environment" SecJRE
 SectionEnd
 
 Section "Start Menu Shortcuts" SecStartMenu
+  SetShellVarContext all
   CreateDirectory "$SMPROGRAMS\@title@"
   CreateShortCut "$SMPROGRAMS\@title@\${UNINSTALLNAME}.lnk" "$INSTDIR\${UNINSTALLNAME}.exe" "" "$INSTDIR\${UNINSTALLNAME}.exe" 0
   CreateShortCut "$SMPROGRAMS\@title@\@title@.lnk" "$INSTDIR\.\JES.exe" "" "$INSTDIR\.\JES.exe" 0
 SectionEnd
 
 Section "Desktop Icon" SecDesktop
+  SetShellVarContext all
   CreateShortCut "$DESKTOP\@title@.lnk" "$INSTDIR\.\JES.exe" "" "$INSTDIR\.\JES.exe" 0
 SectionEnd
 
