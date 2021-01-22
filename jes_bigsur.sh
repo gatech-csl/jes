@@ -2,20 +2,11 @@
 # Launches JES in place on Mac and Linux.
 
 # Where are we?
-PRG=$0
 
-while [ -h "$PRG" ]; do
-    ls=`ls -ld "$PRG"`
-    link=`expr "$ls" : '^.*-> \(.*\)$' 2>/dev/null`
-    if expr "$link" : '^/' 2> /dev/null >/dev/null; then
-        PRG="$link"
-    else
-        PRG="`dirname "$PRG"`/$link"
-    fi
-done
-
-JES_BASE=`dirname "$PRG"`
+JES_BASE=`pwd -P`
 JES_HOME="$JES_BASE/jes"
+JES_JAVA_HOME="/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home"
+
 
 InfoPlistFile="$JES_BASE/Info.plist"
 
